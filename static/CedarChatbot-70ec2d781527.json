@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "cedarchatbot",
+  "private_key_id": "70ec2d781527cbd96710389d1d530e90f7c3d00e",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCHve2CAb/NrSCA\n5FsOdXvfbumVlr0EgGpSS9btiExImuvfyevw1DOH83Nm/to5pNpjU8vsZrpYVEvC\nDu8riRjMwG2HucnaZVAZ4f/yKHCpz/CDSbmQPbNdSZSUe8q4L0A49HBWG7IZtbfi\nBqd20YPAPKvb7KFqeYHX1sIXzXYIoJAC6gbRJbp4/qJwZDgZmxGPqXC4+s7Yi1G9\nQQ8Dur0gt7M4ZfAoQhDC/ex763QzgG8qdzXF2ar4VXpz4RH1pMmECJIlXmMQTriY\nNxftWZjidNsYMWBQAJhJ1Kqs5VkL4N5KyAPgkUObXL2ySh608hXEYcWV+UZgixYc\n/+230b0rAgMBAAECggEABB8TpYVeaKUaM1+mQMeiEF7NOndTsN3MnJ1kiVzAjYR1\nUfD5uBuxSYOY8ZEeWMQKb3FIDprwiyWwESnOlYtO6fSTvscOJmfkvoxv7s8kheYO\n3uWaUT4BAqhCbx8HwNTfxdBCKD3PXVwjmPoWaT347+7HpwtFvAu0EgoZZYtIS1W4\nB4kJvfY+KSobZSRIIMCtGnBVkMEJEvnIx4hQtVg5gosPdzLl6094p9n41ycXym67\nXvaZuc5hXoKwr9lTnCHNL315ms7u97jR4pNDzWVLDmLJ/3yShcN82kISpN29o1cv\nh+aMJb0jxd6y1qtc76hc4/j8QdEH17kKukRdaJ0JeQKBgQC8sMnPlld9a895ln90\nSZlkgcoJTLi22Yb/BoB28C9J1NIPg8fsLhwVBALCzrI8wMAeQy7ryUpdm/RA/g2l\nQILYz7Ndb0yLqqwDZwFO8Fs4WIX7z4I3vHas+oXIKDrNGQuzIn611O31O956eV37\nv6ixLQRoOtgljARtupn8q6IowwKBgQC4Kd6x9zMsVqH0Q5ThAzbvkzAMTZUpeGCT\n/IjxEBnjmTAFk+9quTEzu7oVAvrenADcfUZxLHhAJR2Bb+fzQ3Tskkh/9XLEoux0\npJJuhhrmzyA/VOA3pmKfM2Za97gZAdfzgOBAsWSg8joMlTSpkgjYZqnn2yVf8fsu\nh94U8eITeQKBgEK+jkRdu8jjr9okgCUUO6wvtNWhS91yCKyBEkQAJdoJ69wNE1TZ\n4pkUeB2Mm8OdsteBkEFbTHDcT4QF2bHQpfgnUB0G15632mzBrNbNcpb1yT8PYdJx\nWdFKNLRedp5B87+Dvip3jUynxsSv1azNWNCDSgHMftSZOJ/P19Rmqc+dAoGBAJrf\ny0IKy2Q8LtLGist38pkjRMLz877+Vunc9CUWD0+SIgpu0GcF+tSwyNqmuObAdxD1\n4WmHplD7ZYbW3096qTfSBVpmxe+LvCKTy/lamgEEqu/Xpv/l0wZjKW7S6GVPYZaM\nCQseo6ueSScPy0vXXczu+W/cod/AFiaZaDBhAmixAoGBALGGcWhreRnX8aekIu8C\n12m3P3IppaWgNgJVayvwV5UhYNg7gRPhgKuAVEJwp+Qm9aIWbbOzbWSw45oeUpnM\nl0SB4b6U2JIT7ktCXYX3aVLP1EgPQfvd+Qn/CncR3Pet2FN6g0suVsfb4VoucsPt\nfiEveJiTAqyjwYE58aAsGWTz\n-----END PRIVATE KEY-----\n",
+  "client_email": "cedarchatbot@appspot.gserviceaccount.com",
+  "client_id": "108664779300237458632",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/cedarchatbot%40appspot.gserviceaccount.com"
+}

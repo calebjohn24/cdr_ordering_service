@@ -1,0 +1,182 @@
+body,h1,h2,h3,h4,h5,h6,button,li
+body, html {
+  font-family: 'Raleway', sans-serif;
+  color: white;
+  line-height: 1.5;
+  text-align: center;
+  background-color: black;
+}
+button {
+background-color: #FFFFFF;
+font-family: 'Raleway', sans-serif;
+  border: none;
+  color: black;
+  padding: 5px 10px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 20px;
+  margin: 2px 2px;
+  cursor: pointer;
+  outline: none;
+  text-decoration: none;
+  color: #000000;
+  background: #ffffff;
+  display: inline-block;
+  box-shadow: 0 4px 6px rgba(50, 50, 93, .11), 0 1px 3px rgba(0, 0, 0, .08);
+  letter-spacing: 0.025em;
+  text-decoration: none;
+  -webkit-transition: all 250ms ease;
+  transition: all 250ms ease;
+}
+
+button:hover {
+ text-align: center;
+  transform: translateY(-8px);
+  box-shadow: 0 7px 14px rgba(50, 50, 93, .10), 0 3px 6px rgba(0, 0, 0, .08);
+  background-color: #c7c7c7;
+}
+dropbtn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+}
+
+dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f1f1f1;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+}
+
+dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+dropdown-content a:hover {background-color: #ddd;}
+
+dropdown:hover .dropdown-content {display: block;}
+
+dropdown:hover .dropbtn {background-color: #3e8e41;}
+
+.split {
+  height: 50%;
+  width: 100%;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  overflow-x: hidden;
+  padding-top: 20px;
+}
+
+.left {
+  left: 0;
+  background-color: black;
+}
+
+.right {
+  right: 0;
+  background-color: black;
+}
+
+.centered {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.centered img {
+  width: 150px;
+}
+#first {
+  background-color: #000000;
+}
+#second {
+  background-color: #FF8A66;
+}
+.section {
+  padding: 100px;
+  padding-left: 150px;
+}
+.section input[type="radio"],
+.section input[type="checkbox"]{
+  display: none;
+}
+.container {
+  margin-bottom: 10px;
+}
+.container label {
+  position: relative;
+}
+
+/* Base styles for spans */
+.container span::before,
+.container span::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+}
+
+/* Radio buttons */
+.container span.radio:hover {
+  cursor: pointer;
+}
+.container span.radio::before {
+  left: -52px;
+  width: 45px;
+  height: 25px;
+  background-color: #c4c4c4;
+  border-radius: 50px;
+}
+.container span.radio::after {
+  left: -49px;
+  width: 17px;
+  height: 17px;
+  border-radius: 10px;
+  background-color: #7d7d7d;
+  transition: left .25s, background-color .25s;
+}
+input[type="radio"]:checked + label span.radio::after {
+  left: -27px;
+  background-color: #ffffff;
+}
+
+/* Check-boxes */
+.container span.checkbox::before {
+  width: 27px;
+  height: 27px;
+  background-color: #000000;
+  left: -35px;
+  box-sizing: border-box;
+  border: 3px solid transparent;
+  transition: border-color .2s;
+}
+.container span.checkbox:hover::before {
+  border: 3px solid #F0FF76;
+}
+.container span.checkbox::after {
+  content: '\f00c';
+  font-family: 'FontAwesome';
+  left: -31px;
+  top: 2px;
+  color: transparent;
+  transition: color .2s;
+}
+input[type="checkbox"]:checked + label span.checkbox::after {
+  color: #62AFFF;
