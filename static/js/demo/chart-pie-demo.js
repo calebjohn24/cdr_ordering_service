@@ -33,3 +33,34 @@ var myPieChart = new Chart(ctx, {
     cutoutPercentage: 80,
   },
 });
+
+
+var ctx2 = document.getElementById("CustBreakdown");
+var CustBreakdown = new Chart(ctx2, {
+  type: 'doughnut',
+  data: {
+    labels: ["New", "Returning"],
+    datasets: [{
+      data: [40, 60],
+      backgroundColor: ['#34eb4f', '#1e44eb'],
+      hoverBorderColor: "rgba(234, 236, 244, 1)",
+    }],
+  },
+  options: {
+    maintainAspectRatio: false,
+    tooltips: {
+      backgroundColor: "rgb(255,255,255)",
+      bodyFontColor: "#858796",
+      borderColor: '#dddfeb',
+      borderWidth: 1,
+      xPadding: 15,
+      yPadding: 15,
+      displayColors: false,
+      caretPadding: 10,
+    },
+    legend: {
+      display: false
+    },
+    cutoutPercentage: 80,
+  },
+});
