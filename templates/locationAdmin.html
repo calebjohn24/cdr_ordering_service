@@ -2,7 +2,23 @@
 <html lang="en">
 
 <head>
-
+  <link rel="apple-touch-icon" sizes="60x60" href="../static/img/CedarRobotics Logo.jpg">
+  <link rel="apple-touch-icon" sizes="57x57" href="../static/img/CedarRobotics Logo.jpg">
+  <link rel="apple-touch-icon" sizes="72x72" href="../static/img/CedarRobotics Logo.jpg">
+  <link rel="apple-touch-icon" sizes="76x76" href="../static/img/CedarRobotics Logo.jpg">
+  <link rel="apple-touch-icon" sizes="114x114" href="../static/img/CedarRobotics Logo.jpg">
+  <link rel="apple-touch-icon" sizes="120x120" href="../static/img/CedarRobotics Logo.jpg">
+  <link rel="apple-touch-icon" sizes="144x144" href="../static/img/CedarRobotics Logo.jpg">
+  <link rel="apple-touch-icon" sizes="152x152" href="../static/img/CedarRobotics Logo.jpg">
+  <link rel="apple-touch-icon" sizes="180x180" href="../static/img/CedarRobotics Logo.jpg">
+  <link rel="icon" type="image/png" sizes="192x192"  href="../static/img/CedarRobotics Logo.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../static/img/CedarRobotics Logo.jpg">
+  <link rel="icon" type="image/png" sizes="96x96" href="../static/img/CedarRobotics Logo.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="../static/img/CedarRobotics Logo.jpg">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="msapplication-TileColor" content="#000000">
+  <meta name="msapplication-TileImage" content="../static/img/CedarRobotics Logo.jpg">
+  <meta name="theme-color" content="#000000">
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -26,7 +42,7 @@
   <div id="wrapper">
 
     <!-- Sidebar -->
-    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+    <ul class="navbar-nav bg-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
       <!-- Sidebar - Brand -->
       <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
@@ -38,14 +54,14 @@
 
       <!-- Nav Item - Dashboard -->
       <li class="nav-item">
-        <a class="nav-link" href="index.html">
+        <a class="nav-link" href="/admin">
           <i class="fas fa-home"></i>
           <span>Home</span></a>
 
 
-          <a class="nav-link" href="index.html">
+          <a class="nav-link" href="/admin/{{LocName}}">
           <i class="fas fa-store-alt"></i>
-            <span>{{Location Name}}</span></a>
+            <span>{{LocName}}</span></a>
 
 
       </li>
@@ -55,61 +71,101 @@
 
       <!-- Heading -->
       <div class="sidebar-heading">
-        Tools
+
       </div>
 
       <!-- Nav Item - Pages Collapse Menu -->
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="true" aria-controls="collapseTwo">
-          <i class="fas fa-fw fa-cog"></i>
-          <span>Components</span>
+          <i class="fas fa-calculator"></i>
+          <span>Stats</span>
         </a>
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Custom Components:</h6>
-            <a class="collapse-item" href="buttons.html">Buttons</a>
-            <a class="collapse-item" href="cards.html">Cards</a>
+            <h6 class="collapse-header">Stats</h6>
+            <a class="collapse-item" href="buttons.html">Customer Stats</a>
+            <a class="collapse-item" href="buttons.html">Loyalty Program</a>
+            <a class="collapse-item" href="cards.html">Order Stats</a>
           </div>
         </div>
       </li>
-
       <!-- Nav Item - Utilities Collapse Menu -->
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseUtilities" aria-expanded="true" aria-controls="collapseUtilities">
-          <i class="fas fa-fw fa-wrench"></i>
-          <span>Utilities</span>
+          <i class="fas fa-book-open"></i>
+          <span>Menus</span>
         </a>
         <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Custom Utilities:</h6>
-            <a class="collapse-item" href="utilities-color.html">Colors</a>
-            <a class="collapse-item" href="utilities-border.html">Borders</a>
-            <a class="collapse-item" href="utilities-animation.html">Animations</a>
-            <a class="collapse-item" href="utilities-other.html">Other</a>
+            <h6 class="collapse-header">Edit Menus</h6>
+            <a class="collapse-item" href="utilities-border.html">Create/Activate Menu</a>
+            <a class="collapse-item" href="utilities-animation.html">Edit Menu</a>
+            <a class="collapse-item" href="utilities-other.html">Delete/Deactivate Menu</a>
           </div>
         </div>
       </li>
-
-
       <!-- Nav Item - Pages Collapse Menu -->
-      <li class="nav-item active">
-        <a class="nav-link" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
-          <i class="fas fa-fw fa-folder"></i>
-          <span>Pages</span>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
+          <i class="fas fa-utensils"></i>
+          <span>Orders</span>
         </a>
-        <div id="collapsePages" class="collapse show" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Login Screens:</h6>
-            <a class="collapse-item" href="login.html">Login</a>
-            <a class="collapse-item" href="register.html">Register</a>
-            <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
-            <div class="collapse-divider"></div>
-            <h6 class="collapse-header">Other Pages:</h6>
-            <a class="collapse-item" href="404.html">404 Page</a>
-            <a class="collapse-item active" href="blank.html">Blank Page</a>
+            <h6 class="collapse-header">Orders</h6>
+            <a class="collapse-item" href="login.html">View Open Orders</a>
+            <a class="collapse-item" href="register.html">View All Orders</a>
+            <a class="collapse-item" href="register.html">View Closed Orders</a>
+            <a class="collapse-item" href="forgot-password.html">Refund Order</a>
           </div>
         </div>
       </li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseX" aria-expanded="true" aria-controls="collapseX">
+          <i class="fas fa-gift"></i>
+          <span>Gift Cards</span>
+        </a>
+        <div id="collapseX" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Change Card Balance</h6>
+            <a class="collapse-item" href="login.html">Create New Gift Card</a>
+            <a class="collapse-item" href="forgot-password.html">Forgot Password</a>
+          </div>
+        </div>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCust" aria-expanded="true" aria-controls="collapseCust">
+          <i class="fas fa-user-friends"></i>
+          <span>Customers</span>
+        </a>
+        <div id="collapseCust" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">View Customers</h6>
+            <a class="collapse-item" href="login.html">View Your Customers</a>
+            <a class="collapse-item" href="login.html">Find New Customers</a>
+            <a class="collapse-item" href="register.html">Targeted Search</a>
+          </div>
+        </div>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseInv" aria-expanded="true" aria-controls="collapseInv">
+          <i class="fas fa-tasks"></i>
+          <span>Inventory</span>
+        </a>
+        <div id="collapseInv" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Inventory</h6>
+            <a class="collapse-item" href="utilities-color.html">Set Items In/Out of Stock</a>
+            <a class="collapse-item" href="login.html">Take Inventory</a>
+            <a class="collapse-item" href="utilities-color.html">View Inentory Logs</a>
+          </div>
+        </div>
+      </li>
+
 
       <!-- Divider -->
       <hr class="sidebar-divider d-none d-md-block">
@@ -138,7 +194,7 @@
 
           <!-- Topbar Search -->
             <div class="input-group">
-              <h3 class="h3 mb-0 text-gray-800">{{restName}} Dashboard</h3>
+              <h3 class="h3 mb-0 text-gray-800">{{locName}} Dashboard</h3>
             </div>
 
           <!-- Topbar Navbar -->
@@ -429,75 +485,6 @@
           </div>
 
         </div>
-        <div class="row">
-          <!-- Pie Chart -->
-          <div class="col-xl-4 col-lg-5">
-            <div class="card shadow mb-4">
-              <!-- Card Header - Dropdown -->
-              <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Order Breakdown</h6>
-                <div class="dropdown no-arrow">
-                  <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                  </a>
-                  <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                    <div class="dropdown-header">Dropdown Header:</div>
-                    <a class="dropdown-item" href="#">Action</a>
-                    <a class="dropdown-item" href="#">Another action</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Card Body -->
-              <div class="card-body">
-                <div class="chart-pie pt-4 pb-2">
-                  <canvas id="myPieChart"></canvas>
-                </div>
-                <div class="mt-4 text-center small">
-                  <span class="mr-2">
-                    <i class="fas fa-circle text-primary"></i> To Go
-                  </span>
-                  <span class="mr-2">
-                    <i class="fas fa-circle text-success"></i> Dine In
-                  </span>
-                  <span class="mr-2">
-                    <i class="fas fa-circle text-info"></i> Delivery
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- Area Chart -->
-          <div class="col-xl-8 col-lg-7">
-            <div class="card shadow mb-4">
-              <!-- Card Header - Dropdown -->
-              <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
-                <div class="dropdown no-arrow">
-                  <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                  </a>
-                  <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                    <div class="dropdown-header">Dropdown Header:</div>
-                    <a class="dropdown-item" href="#">Action</a>
-                    <a class="dropdown-item" href="#">Another action</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                  </div>
-                </div>
-              </div>
-              <!-- Card Body -->
-              <div class="card-body">
-                <div class="chart-area">
-                  <canvas id="myAreaChart"></canvas>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
         <!-- /.container-fluid -->
 
       </div>
@@ -507,7 +494,7 @@
       <footer class="sticky-footer bg-white">
         <div class="container my-auto">
           <div class="copyright text-center my-auto">
-            <span>Copyright &copy; Your Website 2019</span>
+            <span>Copyright &copy; Cedar Robotics 2019</span>
           </div>
         </div>
       </footer>
