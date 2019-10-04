@@ -69,7 +69,8 @@ global locationsPaths
 locationsPaths = {}
 app = Flask(__name__)
 sslify = SSLify(app)
-app.secret_key = 'fe71b83d-9f64-46c2-b083-3a9d29d02f5d'
+scKey = uuid.uuid4()
+app.secret_key = scKey
 
 api_locations = squareClient.locations
 mobile_authorization_api = squareClient.mobile_authorization
@@ -161,23 +162,19 @@ def getReply(msg, number):
         return ("no msg")
 
 
-@app.route('/<location>/admin',methods=["POST","GET"])
-def login(location):
-    if(checkLocation(location,0)[0] == 1):
-        return(redirect(url_for(checkLocation(location,0)[1])))
+@app.route('/admin',methods=["GET"])
+def login():
     return render_template("login.html", btn=str("admin2"), restName=estNameStr)
 
 
-@app.route('/<location>/admin2', methods=["POST"])
-def loginPageCheck(location):
-    if(checkLocation(location,0)[0] == 1):
-        return(redirect(url_for(checkLocation(location,0)[1])))
+@app.route('/admin2', methods=["POST"])
+def loginPageCheck():
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
-    email = str(rsp["email"])
+    email = str(rsp["emailAddr"])
     pw = str(rsp["pw"])
     try:
-        user = auth.sign_in_with_email_and_password(str(rsp["email"]), pw)
+        user = auth.sign_in_with_email_and_password(email, pw)
         # print(user['localId'])
         authentication = firebase.FirebaseAuthentication('if7swrlQM4k9cBvm0dmWqO3QsI5zjbcdbstSgq1W',
                                                          'cajohn0205@gmail.com', extra={'id': dbid})
@@ -189,11 +186,11 @@ def loginPageCheck(location):
                                                     authentication=authentication)
 
             LoginToken = str((uuid.uuid4())) +"-"+str((uuid.uuid4()))
-            database.put("/restaurants/" + estName + "/"+location+"/", "LoginToken",LoginToken)
-            database.put("/restaurants/" + estName + "/"+location+"/", "LoginTime",time.time())
+            database.put("/restaurants/" + estName + "/", "LoginToken",LoginToken)
+            database.put("/restaurants/" + estName + "/", "LoginTime",time.time())
             session['fbToken'] = user['idToken']
             session['token'] = LoginToken
-            return redirect(url_for('.panel', location=location))
+            return redirect(url_for('panel'))
         else:
             authentication = firebase.FirebaseAuthentication('if7swrlQM4k9cBvm0dmWqO3QsI5zjbcdbstSgq1W',
                                                              'cajohn0205@gmail.com', extra={'id': dbid})
@@ -210,28 +207,42 @@ def loginPageCheck(location):
         return render_template("login2.html", btn=str("admin"), restName=estNameStr)
 
 
-@app.route('/<location>/adminpanel', methods=["GET"])
-def panel(location):
+@app.route('/admin-panel', methods=["GET"])
+def panel():
     idToken = session.get('token', None)
     fbToken = session.get('fbToken', None)
     authentication = firebase.FirebaseAuthentication('if7swrlQM4k9cBvm0dmWqO3QsI5zjbcdbstSgq1W',
                                                      'cajohn0205@gmail.com', extra={'id': dbid})
     database = firebase.FirebaseApplication("https://cedarchatbot.firebaseio.com/",
                                             authentication=authentication)
-    if((idToken == database.get("restaurants/" + uid+"/"+location+"/", "LoginToken")) and (time.time() - database.get("restaurants/" + uid+"/"+location+"/", "LoginTime") < adminSessTime)):
-        return render_template("panel.html",
-                               gcard=location+"/giftcard",
-                               addCpn=location+"/addCoupon",
-                               remCpn=location+"/removeCoupon",
-                               editMenu=location+"/editMenu",
-                               createMenu=location+"/createMenu",
-                               importMenu=location+"/importMenu",
-                               outStck=location+"/changestock",
-                               promo=location+"/promoSuite",
-                               spreadSheet=gsheetsLink)
+    if((idToken == database.get("restaurants/" + uid+"/", "LoginToken")) and (time.time() - database.get("restaurants/" + uid+"/", "LoginTime") < adminSessTime)):
+        getSquare()
+        LocName = list(locationsPaths.keys())
+        return render_template("AdminPanel.html",
+                               restName=estNameStr,
+                               LocName=LocName,
+                               lenLocName = len(LocName))
     else:
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login'))
 
+@app.route('/admin-location/<location>')
+def locPanel(location):
+    idToken = session.get('token', None)
+    fbToken = session.get('fbToken', None)
+    authentication = firebase.FirebaseAuthentication('if7swrlQM4k9cBvm0dmWqO3QsI5zjbcdbstSgq1W',
+                                                     'cajohn0205@gmail.com', extra={'id': dbid})
+    database = firebase.FirebaseApplication("https://cedarchatbot.firebaseio.com/",
+                                            authentication=authentication)
+    if((idToken == database.get("restaurants/" + uid+"/", "LoginToken")) and (time.time() - database.get("restaurants/" + uid+"/", "LoginTime") < adminSessTime)):
+        getSquare()
+        LocName = list(locationsPaths.keys())
+        return render_template("locationAdmin.html",
+                               restName=estNameStr,
+                               LocName=LocName,
+                               lenLocName=len(LocName),
+                               currentLoc=location)
+    else:
+        return redirect(url_for('.login'))
 
 @app.route('/<location>/createMenu', methods=["POST"])
 def meun1(location):
@@ -332,14 +343,13 @@ def inbound_sms():
 if __name__ == '__main__':
     try:
         getSquare()
-        print(locationsPaths)
-        app.secret_key = 'fe71b83d-9f64-46c2-b083-3a9d29d02f5d'
+        print(locationsPaths.keys())
+        app.secret_key = scKey
         sslify = SSLify(app)
         app.config['SESSION_TYPE'] = 'filesystem'
         sess = Session()
         sess.init_app(app)
         app.permanent_session_lifetime = datetime.timedelta(minutes=200)
-        #app.debug = True
-        app.run(host="0.0.0.0", port=8888)
+        app.run(host="0.0.0.0", port=5000)
     except KeyboardInterrupt:
         sys.exit()

@@ -2,22 +2,22 @@
 <html lang="en">
 
 <head>
-  <link rel="apple-touch-icon" sizes="60x60" href="../static/img/CedarRobotics Logo.jpg">
- <link rel="apple-touch-icon" sizes="57x57" href="../static/img/CedarRobotics Logo.jpg">
- <link rel="apple-touch-icon" sizes="72x72" href="../static/img/CedarRobotics Logo.jpg">
- <link rel="apple-touch-icon" sizes="76x76" href="../static/img/CedarRobotics Logo.jpg">
- <link rel="apple-touch-icon" sizes="114x114" href="../static/img/CedarRobotics Logo.jpg">
- <link rel="apple-touch-icon" sizes="120x120" href="../static/img/CedarRobotics Logo.jpg">
- <link rel="apple-touch-icon" sizes="144x144" href="../static/img/CedarRobotics Logo.jpg">
- <link rel="apple-touch-icon" sizes="152x152" href="../static/img/CedarRobotics Logo.jpg">
- <link rel="apple-touch-icon" sizes="180x180" href="../static/img/CedarRobotics Logo.jpg">
- <link rel="icon" type="image/png" sizes="192x192"  href="../static/img/CedarRobotics Logo.jpg">
- <link rel="icon" type="image/png" sizes="32x32" href="../static/img/CedarRobotics Logo.jpg">
- <link rel="icon" type="image/png" sizes="96x96" href="../static/img/CedarRobotics Logo.jpg">
- <link rel="icon" type="image/png" sizes="16x16" href="../static/img/CedarRobotics Logo.jpg">
+  <link rel="apple-touch-icon" sizes="60x60" href="../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="57x57" href="../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="72x72" href="../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="76x76" href="../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="114x114" href="../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="120x120" href="../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="144x144" href="../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="152x152" href="../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="180x180" href="../static/img/CedarRoboticsLogo.jpg">
+ <link rel="icon" type="image/png" sizes="192x192"  href="../static/img/CedarRoboticsLogo.jpg">
+ <link rel="icon" type="image/png" sizes="32x32" href="../static/img/CedarRoboticsLogo.jpg">
+ <link rel="icon" type="image/png" sizes="96x96" href="../static/img/CedarRoboticsLogo.jpg">
+ <link rel="icon" type="image/png" sizes="16x16" href="../static/img/CedarRoboticsLogo.jpg">
  <link rel="manifest" href="/manifest.json">
  <meta name="msapplication-TileColor" content="#000000">
- <meta name="msapplication-TileImage" content="../static/img/CedarRobotics Logo.jpg">
+ <meta name="msapplication-TileImage" content="../static/img/CedarRoboticsLogo.jpg">
  <meta name="theme-color" content="#000000">
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -45,7 +45,7 @@
     <ul class="navbar-nav bg-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
       <!-- Sidebar - Brand -->
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="/admin-panel">
         <div class="sidebar-brand-text mx-3">Cedar Admin Panel</div>
       </a>
 
@@ -54,14 +54,15 @@
 
       <!-- Nav Item - Dashboard -->
       <li class="nav-item">
-        <a class="nav-link" href="/admin">
+        <a class="nav-link" href="/admin-panel">
           <i class="fas fa-home"></i>
           <span>Home</span></a>
 
-
-          <a class="nav-link" href="/admin/{{LocName}}">
+             {%for j in range(0, lenLocName)%}
+          <a class="nav-link" href="/admin-location/{{LocName[j]}}">
           <i class="fas fa-store-alt"></i>
-            <span>{{LocName}}</span></a>
+            <span>{{LocName[j]}}</span></a>
+            {%endfor%}
 
 
       </li>
@@ -102,6 +103,7 @@
             <a class="collapse-item" href="utilities-border.html">Create/Activate Menu</a>
             <a class="collapse-item" href="utilities-animation.html">Edit Menu</a>
             <a class="collapse-item" href="utilities-other.html">Delete/Deactivate Menu</a>
+            <a class="collapse-item" href="utilities-color.html">Set Items In/Out of Stock</a>
           </div>
         </div>
       </li>
@@ -116,8 +118,8 @@
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Orders</h6>
             <a class="collapse-item" href="login.html">View Open Orders</a>
-            <a class="collapse-item" href="register.html">View All Orders</a>
             <a class="collapse-item" href="register.html">View Closed Orders</a>
+            <a class="collapse-item" href="register.html">View All Orders</a>
             <div class="collapse-divider"></div>
             <a class="collapse-item" href="forgot-password.html">Refund Order</a>
           </div>
@@ -164,7 +166,7 @@
             <a class="collapse-item" href="utilities-color.html">Create New Promo</a>
             <a class="collapse-item" href="utilities-color.html">Deactivate Promo</a>
             <a class="collapse-item" href="utilities-color.html">Edit Promo</a>
-                        <a class="collapse-item" href="forgot-password.html">Create Gift Card</a>
+            <a class="collapse-item" href="forgot-password.html">Create Gift Card</a>
           </div>
         </div>
       </li>
@@ -222,38 +224,6 @@
                 </form>
               </div>
             </li>
-
-            <!-- Nav Item - Alerts -->
-            <li class="nav-item dropdown no-arrow mx-1">
-              <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-bell fa-fw"></i>
-                <!-- Counter - Alerts -->
-                <span class="badge badge-danger badge-counter">{{numAlerts}}</span>
-              </a>
-              <!-- Dropdown - Alerts -->
-              <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
-                <h6 class="dropdown-header">
-                  Alerts Center
-                </h6>
-                <a class="dropdown-item d-flex align-items-center" href="#">
-                  <div class="mr-3">
-                  </div>
-                  <div>
-                    <div class="small text-gray-500">December 12, 2019</div>
-                    <span class="font-weight-bold">A new monthly report is ready to download!</span>
-                  </div>
-                </a>
-                <a class="dropdown-item d-flex align-items-center" href="#">
-                  <div class="mr-3">
-                  </div>
-                  <div>
-                    <div class="small text-gray-500">December 7, 2019</div>
-                    <span class="font-weight-bold">A new monthly report is ready to download!</span>
-                  </div>
-                </a>
-              </div>
-            </li>
-
             <!-- Nav Item - User Information -->
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -357,18 +327,11 @@
             <div class="card shadow mb-4">
               <!-- Card Header - Dropdown -->
               <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Weekly Overview</h6>
                 <div class="dropdown no-arrow">
                   <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+
                   </a>
-                  <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                    <div class="dropdown-header">Dropdown Header:</div>
-                    <a class="dropdown-item" href="#">Action</a>
-                    <a class="dropdown-item" href="#">Another action</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                  </div>
                 </div>
               </div>
               <!-- Card Body -->
@@ -388,15 +351,8 @@
                 <h6 class="m-0 font-weight-bold text-primary">Order Breakdown</h6>
                 <div class="dropdown no-arrow">
                   <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+
                   </a>
-                  <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-                    <div class="dropdown-header">Dropdown Header:</div>
-                    <a class="dropdown-item" href="#">Action</a>
-                    <a class="dropdown-item" href="#">Another action</a>
-                    <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="#">Something else here</a>
-                  </div>
                 </div>
               </div>
 
@@ -437,15 +393,9 @@
         <h6 class="m-0 font-weight-bold text-primary">Customer Breakdown</h6>
         <div class="dropdown no-arrow">
           <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
+
           </a>
-          <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
-            <div class="dropdown-header">Dropdown Header:</div>
-            <a class="dropdown-item" href="#">Action</a>
-            <a class="dropdown-item" href="#">Another action</a>
-            <div class="dropdown-divider"></div>
-            <a class="dropdown-item" href="#">Something else here</a>
-          </div>
+
         </div>
       </div>
 
