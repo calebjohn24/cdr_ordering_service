@@ -197,14 +197,14 @@ def loginPageCheck():
             print("incorrect password")
             database = firebase.FirebaseApplication("https://cedarchatbot.firebaseio.com/",
                                                     authentication=authentication)
-            return render_template("login2.html", btn=str(estNameStr), restName=estNameStr)
+            return render_template("login2.html", btn=str("admin2"), restName=estNameStr)
     except Exception:
         print("exec")
         authentication = firebase.FirebaseAuthentication('if7swrlQM4k9cBvm0dmWqO3QsI5zjbcdbstSgq1W',
                                                          'cajohn0205@gmail.com', extra={'id': dbid})
         database = firebase.FirebaseApplication("https://cedarchatbot.firebaseio.com/",
                                                 authentication=authentication)
-        return render_template("login2.html", btn=str("admin"), restName=estNameStr)
+        return render_template("login2.html", btn=str("admin2"), restName=estNameStr)
 
 
 @app.route('/admin-panel', methods=["GET"])
