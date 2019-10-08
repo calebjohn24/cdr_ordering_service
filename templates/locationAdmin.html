@@ -58,12 +58,11 @@
           <i class="fas fa-home"></i>
           <span>Home</span></a>
 
-
-          {%for j in range(0, lenLocName)%}
-       <a class="nav-link" href="/admin-location/{{LocName[j]}}">
-       <i class="fas fa-store-alt"></i>
-         <span>{{LocName[j]}}</span></a>
-         {%endfor%}
+             {%for j in range(0, lenLocName)%}
+          <a class="nav-link" href="/admin-location/{{LocName[j]}}">
+          <i class="fas fa-store-alt"></i>
+            <span>{{LocName[j]}}</span></a>
+            {%endfor%}
 
 
       </li>
@@ -84,11 +83,9 @@
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Analytics</h6>
-            <a class="collapse-item" href="buttons.html">Customers</a>
-            <a class="collapse-item" href="buttons.html">Loyalty Program</a>
-            <a class="collapse-item" href="cards.html">Orders</a>
-            <a class="collapse-item" href="cards.html">Location Comparison</a>
-            <a class="collapse-item" href="cards.html">View Spreadsheets</a>
+            <a class="collapse-item" href="/{{LocName}}/admin-CustAnalytics">Customers</a>
+            <a class="collapse-item" href="/{{LocName}}/admin-OrdAnalytics">Orders</a>
+            <a class="collapse-item" href="/{{LocName}}/admin-MenuAnalytics">Menus</a>
           </div>
         </div>
       </li>
@@ -101,10 +98,10 @@
         <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Edit Menus</h6>
-            <a class="collapse-item" href="utilities-border.html">Create/Activate Menu</a>
-            <a class="collapse-item" href="utilities-animation.html">Edit Menu</a>
-            <a class="collapse-item" href="utilities-other.html">Delete/Deactivate Menu</a>
-            <a class="collapse-item" href="utilities-color.html">Set Items In/Out of Stock</a>
+            <a class="collapse-item" href="/{{LocName}}/admin-CreateMenu">Create/Activate Menu</a>
+            <a class="collapse-item" href="/{{LocName}}/admin-EditMenu">Edit Menu</a>
+            <a class="collapse-item" href="/{{LocName}}/admin-DeleteMenu">Delete/Deactivate Menu</a>
+            <a class="collapse-item" href="/{{LocName}}/admin-SetInOut">Set Items In/Out of Stock</a>
           </div>
         </div>
       </li>
@@ -118,11 +115,11 @@
         <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Orders</h6>
-            <a class="collapse-item" href="login.html">View Open Orders</a>
-            <a class="collapse-item" href="register.html">View Closed Orders</a>
-            <a class="collapse-item" href="register.html">View All Orders</a>
+            <a class="collapse-item" href="/{{LocName}}/admin-OpenOrders">View Open Orders</a>
+            <a class="collapse-item" href="/{{LocName}}/admin-ClosedOrders">View Closed Orders</a>
+            <a class="collapse-item" href="/{{LocName}}/admin-AllOrders">View All Orders</a>
             <div class="collapse-divider"></div>
-            <a class="collapse-item" href="forgot-password.html">Refund Order</a>
+            <a class="collapse-item" href="/{{LocName}}/admin-Refund">Refund Order</a>
           </div>
         </div>
       </li>
@@ -135,25 +132,7 @@
         <div id="collapseCust" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">View Customers</h6>
-            <a class="collapse-item" href="login.html">View Your Customers</a>
-            <a class="collapse-item" href="login.html">Find New Customers</a>
-            <a class="collapse-item" href="register.html">Targeted Search</a>
-          </div>
-        </div>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseInv" aria-expanded="true" aria-controls="collapseInv">
-          <i class="fas fa-tags"></i>
-          <span>Promotions</span>
-        </a>
-        <div id="collapseInv" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Promotions</h6>
-            <a class="collapse-item" href="utilities-color.html">Create New Promo</a>
-            <a class="collapse-item" href="utilities-color.html">Deactivate Promo</a>
-            <a class="collapse-item" href="utilities-color.html">Edit Promo</a>
-            <a class="collapse-item" href="forgot-password.html">Create Gift Card</a>
+            <a class="collapse-item" href="/{{LocName}}/admin-viewCustomers">View Your Customers</a>
           </div>
         </div>
       </li>
@@ -186,7 +165,7 @@
 
           <!-- Topbar Search -->
             <div class="input-group">
-              <h3 class="h3 mb-0 text-gray-800">{{restName}} {{currentLoc}} Dashboard</h3>
+              <h3 class="h3 mb-0 text-gray-800">{{LocName}} {{restName}} Dashboard</h3>
             </div>
 
           <!-- Topbar Navbar -->
@@ -211,10 +190,6 @@
                 </form>
               </div>
             </li>
-
-            <!-- Nav Item - Alerts -->
-
-
             <!-- Nav Item - User Information -->
             <li class="nav-item dropdown no-arrow">
               <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -318,7 +293,7 @@
             <div class="card shadow mb-4">
               <!-- Card Header - Dropdown -->
               <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Earnings Overview</h6>
+                <h6 class="m-0 font-weight-bold text-primary">Weekly Overview</h6>
                 <div class="dropdown no-arrow">
                   <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 
@@ -344,6 +319,7 @@
                   <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 
                   </a>
+                
                 </div>
               </div>
 
@@ -386,6 +362,7 @@
           <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 
           </a>
+
         </div>
       </div>
 

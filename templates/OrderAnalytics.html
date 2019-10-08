@@ -251,13 +251,165 @@
 
         <!-- Begin Page Content -->
         <div class="container-fluid">
-          <br>
+
           <!-- CODEHERE -->
+          <div class="col-xl-12 col-lg-7">
+            <div class="card shadow mb-4">
+              <!-- Card Header - Dropdown -->
+              <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Average Orders By Day</h6>
+                <div class="dropdown no-arrow">
+                  <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+                  </a>
+                </div>
+              </div>
+              <!-- Card Body -->
+              <div class="card-body">
+                <div class="chart-area">
+                  <canvas id="myAreaChart"></canvas>
+                </div>
+              </div>
+            </div>
+              </div>
 
 
 
 
+    <div class="row">
+      <!-- Earnings (Monthly) Card Example -->
+      <div class="col-xl-4 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2" onclick="">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Average Ticket Size</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">5 Items</div>
+              </div>
+              <div class="col-auto">
+                <i class="fas fa-money-check-alt fa-2x text-gray-300"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-4 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2" onclick="">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Average Ticket Amount</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">$4.68</div>
+              </div>
+              <div class="col-auto">
+                <i class="fas fa-money-check-alt fa-2x text-gray-300"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-4 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2" onclick="">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Orders Per Day</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">55</div>
+              </div>
+              <div class="col-auto">
+                <i class="fas fa-money-check-alt fa-2x text-gray-300"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-12 col-lg-7">
+        <div class="card shadow mb-4">
+          <!-- Card Header - Dropdown -->
+          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Average Number of Orders By Hour</h6>
+            <div class="dropdown no-arrow">
+              <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+              </a>
+            </div>
+          </div>
+          <!-- Card Body -->
+          <div class="card-body">
+            <div class="chart-area">
+              <canvas id="myAreaChart"></canvas>
+            </div>
+          </div>
+        </div>
+          </div>
+          </div>
+
+          <div class="row">
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-4 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2" onclick="">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Average Wait Time</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">167 seconds</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-money-check-alt fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-4 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2" onclick="">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1"></div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-money-check-alt fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-4 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2" onclick="">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Daily Average Revenue</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">$5,714.29</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-money-check-alt fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+  </div>
+
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">Wait Time By Day</h6>
     </div>
+    <div class="card-body">
+      <div class="chart-bar">
+        <canvas id="myBarChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  </div>
 
     <!-- End of Content Wrapper -->
 
@@ -311,14 +463,8 @@
 
   <!-- Page level custom scripts -->
   <script src="../static/js/demo/chart-area-demo.js"></script>
+  <script src="../static/js/demo/chart-bar-demo.js"></script>
   <script src="../static/js/demo/chart-pie-demo.js"></script>
-    <script src="../static/js/demo/chart-bar-demo.js"></script>
-  <script src = "../static/js/demo/datatables-demo.js"></script>
-  <script src="../static/vendor/datatables/jquery.dataTables.min.js"></script>
-  <script src="../static/vendor/datatables/dataTables.bootstrap4.min.js"></script>
-
-  <!-- Page level custom scripts -->
-  <script src="../static/js/demo/datatables-demo.js"></script>
 
 
 </body>
