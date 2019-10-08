@@ -2,22 +2,22 @@
 <html lang="en">
 
 <head>
-  <link rel="apple-touch-icon" sizes="60x60" href="../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="57x57" href="../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="72x72" href="../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="76x76" href="../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="114x114" href="../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="120x120" href="../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="144x144" href="../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="152x152" href="../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="180x180" href="../static/img/CedarRoboticsLogo.jpg">
- <link rel="icon" type="image/png" sizes="192x192"  href="../static/img/CedarRoboticsLogo.jpg">
- <link rel="icon" type="image/png" sizes="32x32" href="../static/img/CedarRoboticsLogo.jpg">
- <link rel="icon" type="image/png" sizes="96x96" href="../static/img/CedarRoboticsLogo.jpg">
- <link rel="icon" type="image/png" sizes="16x16" href="../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="57x57" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="72x72" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="76x76" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="114x114" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="120x120" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="144x144" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="152x152" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="180x180" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="icon" type="image/png" sizes="192x192"  href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="icon" type="image/png" sizes="32x32" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="icon" type="image/png" sizes="96x96" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="icon" type="image/png" sizes="16x16" href="../../../static/img/CedarRoboticsLogo.jpg">
  <link rel="manifest" href="/manifest.json">
  <meta name="msapplication-TileColor" content="#000000">
- <meta name="msapplication-TileImage" content="../static/img/CedarRoboticsLogo.jpg">
+ <meta name="msapplication-TileImage" content="../../../static/img/CedarRoboticsLogo.jpg">
  <meta name="theme-color" content="#000000">
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -28,12 +28,11 @@
   <title>Admin Panel</title>
 
   <!-- Custom fonts for this template-->
-  <link href="../static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="../../../static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
   <!-- Custom styles for this template-->
-  <link href="../static/css/sb-admin-2.min.css" rel="stylesheet">
-    <link href="../static/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+  <link href="../../../static/css/sb-admin-2.min.css" rel="stylesheet">
 
 </head>
 
@@ -173,6 +172,20 @@
         </div>
       </li>
 
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseInventory" aria-expanded="true" aria-controls="collapseInventory">
+          <i class="fas fa-tasks"></i>
+          <span>Inventory</span>
+        </a>
+        <div id="collapseInventory" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Inventory</h6>
+            <a class="collapse-item" href="/admin-viewInvRaw">View Ingredient Inventory</a>
+            <a class="collapse-item" href="/admin-viewInvSku">View SKU Inventory</a>
+          </div>
+        </div>
+      </li>
+
 
       <!-- Divider -->
       <hr class="sidebar-divider d-none d-md-block">
@@ -252,16 +265,111 @@
 
         <!-- Begin Page Content -->
         <div class="container-fluid">
-          <br>
+
           <!-- CODEHERE -->
+          <div class="col-xl-12 col-lg-7">
+            <div class="card shadow mb-4">
+              <!-- Card Header - Dropdown -->
+              <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Average Orders By Day</h6>
+                <div class="dropdown no-arrow">
+                  <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+                  </a>
+                </div>
+              </div>
+              <!-- Card Body -->
+              <div class="card-body">
+                <div class="chart-area">
+                  <canvas id="myAreaChart"></canvas>
+                </div>
+              </div>
+            </div>
+              </div>
+
+
+
+
+    <div class="row">
+      <!-- Earnings (Monthly) Card Example -->
+      <div class="col-xl-4 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2" onclick="">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Average Ticket Size</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">5 Items</div>
+              </div>
+              <div class="col-auto">
+                <i class="fas fa-money-check-alt fa-2x text-gray-300"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-4 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2" onclick="">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Average Ticket Amount</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">$4.68</div>
+              </div>
+              <div class="col-auto">
+                <i class="fas fa-money-check-alt fa-2x text-gray-300"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-4 col-md-6 mb-4">
+        <div class="card border-left-info shadow h-100 py-2" onclick="">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col mr-2">
+                <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Orders Per Day</div>
+                <div class="h5 mb-0 font-weight-bold text-gray-800">55</div>
+              </div>
+              <div class="col-auto">
+                <i class="fas fa-money-check-alt fa-2x text-gray-300"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-xl-12 col-lg-7">
+        <div class="card shadow mb-4">
+          <!-- Card Header - Dropdown -->
+          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+            <h6 class="m-0 font-weight-bold text-primary">Average Number of Orders By Hour</h6>
+            <div class="dropdown no-arrow">
+              <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+              </a>
+            </div>
+          </div>
+          <!-- Card Body -->
+          <div class="card-body">
+            <div class="chart-area">
+              <canvas id="myAreaChart"></canvas>
+            </div>
+          </div>
+        </div>
+          </div>
+          </div>
+
           <div class="row">
-            <div class="col-xl-6 col-md-6 mb-4">
-              <div class="card border-left-info shadow h-100 py-2" onclick="">
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-4 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2" onclick="">
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Revenue</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">$500,000</div>
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Average Wait Time</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">167 seconds</div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-money-check-alt fa-2x text-gray-300"></i>
@@ -271,13 +379,12 @@
               </div>
             </div>
 
-
-            <div class="col-xl-6 col-md-6 mb-4">
+            <div class="col-xl-4 col-md-6 mb-4">
               <div class="card border-left-success shadow h-100 py-2" onclick="">
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Food Cost</div>
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1"></div>
                       <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
                     </div>
                     <div class="col-auto">
@@ -287,64 +394,36 @@
                 </div>
               </div>
             </div>
-                </div>
 
-                <div class="card shadow mb-4">
-                  <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Location Data from last 30 days</h6>
-                  </div>
-                  <div class="card-body">
-                    <div class="table-responsive">
-                      <table class="table table-bordered" id="dataTableLoc" width="100%" cellspacing="0">
-                        <thead>
-                          <tr>
-                            <th>Location Name</th>
-                            <th>Number of Orders</th>
-                            <th>New Customers</th>
-                            <th>Returning Customers</th>
-                            <th>30 Day New Customer Change %</th>
-                            <th>Orders/Hour</th>
-                            <th>Orders/Day</th>
-                            <th>30 Day Revenue Change %</th>
-                            <th>Revenue $</th>
-                            <th>% of Total Revenue</th>
-                            <th>Food Cost $</th>
-                            <th>Food Cost %</th>
-                            <th>Labor Hours</th>
-                            <th>Ingredient Waste %</th>
-                            <th>Ingredient Waste $</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>Location 1</td>
-                            <td>150</td>
-                            <td>30</td>
-                            <td>20</td>
-                            <td>10</td>
-                            <td>4</td>
-                            <td>48</td>
-                            <td>25</td>
-                            <td>250</td>
-                            <td>90</td>
-                            <td>24</td>
-                            <td>10</td>
-                            <td>100</td>
-                            <td>24</td>
-                            <td>25</td>
-                          </tr>
-                        </tbody>
-
-                      </table>
+            <div class="col-xl-4 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2" onclick="">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Daily Average Revenue</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">$5,714.29</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-money-check-alt fa-2x text-gray-300"></i>
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+  </div>
 
-
-
-
-
+  <div class="card shadow mb-4">
+    <div class="card-header py-3">
+      <h6 class="m-0 font-weight-bold text-primary">Wait Time By Day</h6>
     </div>
+    <div class="card-body">
+      <div class="chart-bar">
+        <canvas id="myBarChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  </div>
 
     <!-- End of Content Wrapper -->
 
@@ -384,28 +463,22 @@
   </div>
 
   <!-- Bootstrap core JavaScript-->
-  <script src="../static/vendor/jquery/jquery.min.js"></script>
-  <script src="../static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../../../static/vendor/jquery/jquery.min.js"></script>
+  <script src="../../../static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
   <!-- Core plugin JavaScript-->
-  <script src="../static/vendor/jquery-easing/jquery.easing.min.js"></script>
+  <script src="../../../static/vendor/jquery-easing/jquery.easing.min.js"></script>
 
   <!-- Custom scripts for all pages-->
-  <script src="../static/js/sb-admin-2.min.js"></script>
+  <script src="../../../static/js/sb-admin-2.min.js"></script>
 
   <!-- Page level plugins -->
-  <script src="../static/vendor/chart.js/Chart.min.js"></script>
+  <script src="../../../static/vendor/chart.js/Chart.min.js"></script>
 
   <!-- Page level custom scripts -->
-  <script src="../static/js/demo/chart-area-demo.js"></script>
-  <script src="../static/js/demo/chart-pie-demo.js"></script>
-    <script src="../static/js/demo/chart-bar-demo.js"></script>
-
-  <script src = "../static/js/demo/datatables-demo.js"></script>
-  <script src="../static/vendor/datatables/jquery.dataTables.min.js"></script>
-  <script src="../static/vendor/datatables/dataTables.bootstrap4.min.js"></script>
-  <!-- Page level custom scripts -->
-  <script src="../static/js/demo/datatables-demo.js"></script>
+  <script src="../../../static/js/demo/chart-area-demo.js"></script>
+  <script src="../../../static/js/demo/chart-bar-demo.js"></script>
+  <script src="../../../static/js/demo/chart-pie-demo.js"></script>
 
 
 </body>

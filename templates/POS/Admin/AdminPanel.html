@@ -2,22 +2,22 @@
 <html lang="en">
 
 <head>
-  <link rel="apple-touch-icon" sizes="60x60" href="../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="57x57" href="../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="72x72" href="../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="76x76" href="../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="114x114" href="../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="120x120" href="../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="144x144" href="../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="152x152" href="../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="180x180" href="../static/img/CedarRoboticsLogo.jpg">
- <link rel="icon" type="image/png" sizes="192x192"  href="../static/img/CedarRoboticsLogo.jpg">
- <link rel="icon" type="image/png" sizes="32x32" href="../static/img/CedarRoboticsLogo.jpg">
- <link rel="icon" type="image/png" sizes="96x96" href="../static/img/CedarRoboticsLogo.jpg">
- <link rel="icon" type="image/png" sizes="16x16" href="../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="57x57" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="72x72" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="76x76" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="114x114" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="120x120" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="144x144" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="152x152" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="180x180" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="icon" type="image/png" sizes="192x192"  href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="icon" type="image/png" sizes="32x32" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="icon" type="image/png" sizes="96x96" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="icon" type="image/png" sizes="16x16" href="../../../static/img/CedarRoboticsLogo.jpg">
  <link rel="manifest" href="/manifest.json">
  <meta name="msapplication-TileColor" content="#000000">
- <meta name="msapplication-TileImage" content="../static/img/CedarRoboticsLogo.jpg">
+ <meta name="msapplication-TileImage" content="../../../static/img/CedarRoboticsLogo.jpg">
  <meta name="theme-color" content="#000000">
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -28,11 +28,11 @@
   <title>Admin Panel</title>
 
   <!-- Custom fonts for this template-->
-  <link href="../static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="../../../static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 
   <!-- Custom styles for this template-->
-  <link href="../static/css/sb-admin-2.min.css" rel="stylesheet">
+  <link href="../../../static/css/sb-admin-2.min.css" rel="stylesheet">
 
 </head>
 
@@ -168,6 +168,20 @@
             <a class="collapse-item" href="/admin-editPromo">Edit Promo</a>
             <a class="collapse-item" href="/admin-createGC">Create Gift Card</a>
             <a class="collapse-item" href="/admin-editGC">Edit Gift Card</a>
+          </div>
+        </div>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseInventory" aria-expanded="true" aria-controls="collapseInventory">
+          <i class="fas fa-tasks"></i>
+          <span>Inventory</span>
+        </a>
+        <div id="collapseInventory" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Inventory</h6>
+            <a class="collapse-item" href="/admin-viewInvRaw">View Ingredient Inventory</a>
+            <a class="collapse-item" href="/admin-viewInvSku">View SKU Inventory</a>
           </div>
         </div>
       </li>
@@ -538,21 +552,21 @@
   </div>
 
   <!-- Bootstrap core JavaScript-->
-  <script src="../static/vendor/jquery/jquery.min.js"></script>
-  <script src="../static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="../../../static/vendor/jquery/jquery.min.js"></script>
+  <script src="../../../static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
   <!-- Core plugin JavaScript-->
-  <script src="../static/vendor/jquery-easing/jquery.easing.min.js"></script>
+  <script src="../../../static/vendor/jquery-easing/jquery.easing.min.js"></script>
 
   <!-- Custom scripts for all pages-->
-  <script src="../static/js/sb-admin-2.min.js"></script>
+  <script src="../../../static/js/sb-admin-2.min.js"></script>
 
   <!-- Page level plugins -->
-  <script src="../static/vendor/chart.js/Chart.min.js"></script>
+  <script src="../../../static/vendor/chart.js/Chart.min.js"></script>
 
   <!-- Page level custom scripts -->
-  <script src="../static/js/demo/chart-area-demo.js"></script>
-  <script src="../static/js/demo/chart-pie-demo.js"></script>
+  <script src="../../../static/js/demo/chart-area-demo.js"></script>
+  <script src="../../../static/js/demo/chart-pie-demo.js"></script>
 
 
 </body>
