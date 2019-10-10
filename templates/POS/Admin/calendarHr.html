@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -33,7 +34,6 @@
 
   <!-- Custom styles for this template-->
   <link href="../../../static/css/sb-admin-2.min.css" rel="stylesheet">
-    <link href="../../../static/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
 </head>
 
@@ -87,6 +87,7 @@
             <a class="collapse-item" href="/admin-CustAnalytics">Customers</a>
             <a class="collapse-item" href="/admin-OrdAnalytics">Orders</a>
             <a class="collapse-item" href="/admin-MenuAnalytics">Menus</a>
+            <a class="collapse-item" href="/admin-InvAnalytics">Inventory</a>
             <a class="collapse-item" href="/admin-LocAnalytics">Location Comparison</a>
             <a class="collapse-item" href="/SpreadsheetLink">View Quickbooks</a>
           </div>
@@ -151,6 +152,7 @@
             <h6 class="collapse-header">View Customers</h6>
             <a class="collapse-item" href="/admin-viewCustomers">View Your Customers</a>
             <a class="collapse-item" href="/admin-findCustomers">Find New Customers</a>
+
           </div>
         </div>
       </li>
@@ -182,6 +184,8 @@
             <h6 class="collapse-header">Inventory</h6>
             <a class="collapse-item" href="/admin-viewInvRaw">View Ingredient Inventory</a>
             <a class="collapse-item" href="/admin-viewInvSku">View SKU Inventory</a>
+            <a class="collapse-item" href="/admin-addInventory">Edit Ingredient Inventory</a>
+            <a class="collapse-item" href="/admin-addSku">Edit SKU Inventory</a>
             <a class="collapse-item" href="/admin-viewInvSku">View Ingredient Waste</a>
             <a class="collapse-item" href="/admin-viewInvSku">View SKU Waste</a>
           </div>
@@ -285,65 +289,12 @@
         <div class="container-fluid">
           <br>
           <!-- CODEHERE -->
-                <div class="card shadow mb-4">
-                  <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Customers From Nearby Restaurants That Haven't Tried You're Restaurant</h6>
-                  </div>
-                  <div class="card-body">
-                    <div class="table-responsive">
-                      <table class="table table-bordered" id="dataTableCust1" width="100%" cellspacing="0">
-                        <thead>
-                          <tr>
-                            <th>Name</th>
-                            <th>Number of Orders</th>
-                            <th>Life Time Value</th>
-                            <th>Average Ticket Value</th>
-                            <th>Average Ticket Size</th>
-                            <th>Number of Items ordered</th>
-                            <th>Last Visit</th>
-                            <th>Zip Code</th>
-                            <th>Points Earned</th>
-                            <th>Points Used</th>
-                            <th>Store Card Value Purchased</th>
-                            <th>Store Card Used</th>
-                            <th>Store Card Expired</th>
-                            <th>Restaurants Visited</th>
-                            <th>% of Total Revenue</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>John Doe</td>
-                            <td>2</td>
-                            <td>$24.90</td>
-                            <td>$12.45</td>
-                            <td>4</td>
-                            <td>8</td>
-                            <td>10/2/2019</td>
-                            <td>98075</td>
-                            <td>50</td>
-                            <td>0</td>
-                            <td>5</td>
-                            <td>0</td>
-                            <td>5</td>
-                            <td>Rest2</td>
-                            <td>5</td>
-                          </tr>
-                        </tbody>
-
-                      </table>
-                    </div>
-                  </div>
-                </div>
-
+          <iframe src="https://calendar.google.com/calendar/embed?src=rdvffhamgr49olud29l5adop5s%40group.calendar.google.com&ctz=America%2FLos_Angeles" style="border: 0" width="100%" height="800" frameborder="0" scrolling="no"></iframe>
 
 
 
 
     </div>
-  </div>
-</div>
-</div>
 
     <!-- End of Content Wrapper -->
 
@@ -382,7 +333,6 @@
     </div>
   </div>
 
-
   <!-- Bootstrap core JavaScript-->
   <script src="../../../static/vendor/jquery/jquery.min.js"></script>
   <script src="../../../static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -400,10 +350,10 @@
   <script src="../../../static/js/demo/chart-area-demo.js"></script>
   <script src="../../../static/js/demo/chart-pie-demo.js"></script>
     <script src="../../../static/js/demo/chart-bar-demo.js"></script>
-
   <script src = "../../../static/js/demo/datatables-demo.js"></script>
   <script src="../../../static/vendor/datatables/jquery.dataTables.min.js"></script>
   <script src="../../../static/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
   <!-- Page level custom scripts -->
   <script src="../../../static/js/demo/datatables-demo.js"></script>
 

@@ -11,3 +11,6 @@ $(document).ready(function() {
 $(document).ready(function() {
   $('#dataTableCust1').DataTable();
 });
+$(document).ready(function() {
+  $('#dataTableEmp').DataTable();
+});

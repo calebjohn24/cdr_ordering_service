@@ -151,6 +151,7 @@
             <h6 class="collapse-header">View Customers</h6>
             <a class="collapse-item" href="/admin-viewCustomers">View Your Customers</a>
             <a class="collapse-item" href="/admin-findCustomers">Find New Customers</a>
+
           </div>
         </div>
       </li>
@@ -203,6 +204,7 @@
           </div>
         </div>
       </li>
+
 
 
       <!-- Divider -->
@@ -285,48 +287,107 @@
         <div class="container-fluid">
           <br>
           <!-- CODEHERE -->
+          <div class="row">
+            <!-- Earnings (Monthly) Card Example -->
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2" onclick="">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Monthly Labor Costs</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">$54,050</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-money-check-alt fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2" onclick="">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Monthly Labor Costs</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">$4,000</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-money-check-alt fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2" onclick="">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Tracked Employees</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">35</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-money-check-alt fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-xl-3 col-md-6 mb-4">
+              <div class="card border-left-success shadow h-100 py-2" onclick="">
+                <div class="card-body">
+                  <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Average Daily Hours Worked</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">50</div>
+                    </div>
+                    <div class="col-auto">
+                      <i class="fas fa-utensils fa-2x text-gray-300"></i>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+        </div>
                 <div class="card shadow mb-4">
                   <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Customers From Nearby Restaurants That Haven't Tried You're Restaurant</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Employee Data Last 30 Days (Do not Use This Data For Official Documents, Use Data from Quicbooks)</h6>
                   </div>
                   <div class="card-body">
                     <div class="table-responsive">
-                      <table class="table table-bordered" id="dataTableCust1" width="100%" cellspacing="0">
+                      <table class="table table-bordered" id="dataTableEmp" width="100%" cellspacing="0">
                         <thead>
                           <tr>
                             <th>Name</th>
-                            <th>Number of Orders</th>
-                            <th>Life Time Value</th>
-                            <th>Average Ticket Value</th>
-                            <th>Average Ticket Size</th>
-                            <th>Number of Items ordered</th>
-                            <th>Last Visit</th>
+                            <th>Hours Worked</th>
+                            <th>Wage Rate</th>
+                            <th>Wages Earned</th>
+                            <th>Total Wages Earned</th>
+                            <th>Job Description</th>
+                            <th>Permissions</th>
                             <th>Zip Code</th>
-                            <th>Points Earned</th>
-                            <th>Points Used</th>
-                            <th>Store Card Value Purchased</th>
-                            <th>Store Card Used</th>
-                            <th>Store Card Expired</th>
-                            <th>Restaurants Visited</th>
-                            <th>% of Total Revenue</th>
+                            <th>Date Started</th>
+                            <th>Locations</th>
+                            <th>% of Total Labor Costs</th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr>
                             <td>John Doe</td>
                             <td>2</td>
-                            <td>$24.90</td>
-                            <td>$12.45</td>
-                            <td>4</td>
-                            <td>8</td>
-                            <td>10/2/2019</td>
+                            <td>$11</td>
+                            <td>$22</td>
+                            <td>$220</td>
+                            <td>Test Employee</td>
+                            <td>Manager</td>
                             <td>98075</td>
-                            <td>50</td>
-                            <td>0</td>
-                            <td>5</td>
-                            <td>0</td>
-                            <td>5</td>
-                            <td>Rest2</td>
+                            <td>10/2/2019</td>
+                            <td>Loc1</td>
                             <td>5</td>
                           </tr>
                         </tbody>
@@ -379,6 +440,8 @@
           <a class="btn btn-primary" href="login.html">Logout</a>
         </div>
       </div>
+    </div>
+  </div>
     </div>
   </div>
 
