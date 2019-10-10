@@ -1,27 +1,25 @@
-import calendar
+import datetime
 import datetime
 import json
-import random
 import smtplib
+import sys
 import time
 import uuid
-import requests
-import pandas as pd
+
 import plivo
 import pygsheets
 import pyrebase
 import pytz
-from square.client import Client
-import dateparser
 from flask import Flask, request, session
 from flask import redirect, url_for
 from flask import render_template
 from flask_session import Session
 from flask_sslify import SSLify
-from fpdf import FPDF
+from square.client import Client
 from werkzeug.datastructures import ImmutableOrderedMultiDict
+
 from firebase import firebase
-import sys
+
 dbid = "d1ab1a95-ddb5-4ee4-83db-9179d37f8e78"
 infoFile = open("info.json")
 info = json.load(infoFile)
@@ -40,7 +38,7 @@ authentication = firebase.FirebaseAuthentication('if7swrlQM4k9cBvm0dmWqO3QsI5zjb
 
 database = firebase.FirebaseApplication("https://cedarchatbot.firebaseio.com/", authentication=authentication)
 data = (database.get("restaurants/" + uid, "/"))
-squareToken = database.get("/tokens/",estNameStr.upper())
+squareToken = database.get("/tokens/", estNameStr.upper())
 items = []
 config = {
     "apiKey": "AIzaSyB2it4zPzPdn_bW9OAglTHUtclidAw307o",
@@ -48,7 +46,7 @@ config = {
     "databaseURL": "https://cedarchatbot.firebaseio.com",
     "storageBucket": "cedarchatbot.appspot.com",
 }
-pyreBase= pyrebase.initialize_app(config)
+pyreBase = pyrebase.initialize_app(config)
 auth = pyreBase.auth()
 storage = pyreBase.storage()
 promoPass = "promo-" + str(estName)
@@ -64,7 +62,7 @@ squareClient = Client(
     access_token=squareToken,
     environment='production',
 )
-dayNames = ["MON","TUE","WED","THURS","FRI","SAT","SUN"]
+dayNames = ["MON", "TUE", "WED", "THURS", "FRI", "SAT", "SUN"]
 global locationsPaths
 locationsPaths = {}
 app = Flask(__name__)
@@ -76,14 +74,16 @@ api_locations = squareClient.locations
 mobile_authorization_api = squareClient.mobile_authorization
 result = api_locations.list_locations()
 locationsPaths = {}
+
+
 # Call the success method to see if the call succeeded
 def getSquare():
     if result.is_success():
-    	# The body property is a list of locations
+        # The body property is a list of locations
         locations = result.body['locations']
-    	# Iterate over the list
+        # Iterate over the list
         for location in locations:
-            if((dict(location.items())["status"]) == "ACTIVE"):
+            if ((dict(location.items())["status"]) == "ACTIVE"):
                 # print((dict(location.items())))
                 addrNumber = ""
                 street = ""
@@ -93,39 +93,44 @@ def getSquare():
                         int(currentLtr)
                         addrNumber += currentLtr
                     except Exception as e:
-                        street = dict(location.items())["address"]['address_line_1'][ltrAddr+1:len(dict(location.items())["address"]['address_line_1'])]
+                        street = dict(location.items())["address"]['address_line_1'][
+                                 ltrAddr + 1:len(dict(location.items())["address"]['address_line_1'])]
                         break
 
-                addrP = str(addrNumber+ ","+ street+","+dict(location.items())["address"]['locality'] + "," + dict(location.items())["address"]['administrative_district_level_1'] + "," + dict(location.items())["address"]['postal_code'][:5])
+                addrP = str(addrNumber + "," + street + "," + dict(location.items())["address"]['locality'] + "," +
+                            dict(location.items())["address"]['administrative_district_level_1'] + "," +
+                            dict(location.items())["address"]['postal_code'][:5])
                 timez = dict(location.items())["timezone"]
                 tz = pytz.timezone(timez)
-                locationName = (dict(location.items())["name"]).replace(" ","-")
+                locationName = (dict(location.items())["name"]).replace(" ", "-")
                 locationId = dict(location.items())["id"]
                 numb = dict(location.items())['phone_number']
-                numb = numb.replace("-","")
-                numb = numb.replace(" ","")
-                numb = numb.replace("+","")
+                numb = numb.replace("-", "")
+                numb = numb.replace(" ", "")
+                numb = numb.replace("+", "")
                 locationsPaths.update(
-                     {locationName:{
-                    "id":locationId,"OCtimes":dict(location.items())["business_hours"]["periods"],
-                    "sqEmail": dict(location.items())['business_email'],
-                    "sqNumber": numb,"name":locationName}} )
+                    {locationName: {
+                        "id": locationId, "OCtimes": dict(location.items())["business_hours"]["periods"],
+                        "sqEmail": dict(location.items())['business_email'],
+                        "sqNumber": numb, "name": locationName}})
 
 
-def checkLocation(location,custFlag):
+def checkLocation(location, custFlag):
     try:
         locationsPaths[location]
-        return [0,0]
+        return [0, 0]
     except Exception as e:
-        if(custFlag == 0):
-            return [1,"pickLocation"]
-        elif(custFlag == 1):
-            return [1,"MobileStart"]
-        elif(custFlag == 1):
+        if (custFlag == 0):
+            return [1, "pickLocation"]
+        elif (custFlag == 1):
+            return [1, "MobileStart"]
+        elif (custFlag == 1):
             return [1, "EmployeeLocation"]
 
+
 def checkAdminToken(location):
-    if((idToken == database.get("restaurants/" + uid+"/"+location+"/", "LoginToken")) and (time.time() - database.get("restaurants/" + uid+"/"+location+"/", "LoginTime") < adminSessTime)):
+    if ((idToken == database.get("restaurants/" + uid + "/" + location + "/", "LoginToken")) and (
+            time.time() - database.get("restaurants/" + uid + "/" + location + "/", "LoginTime") < adminSessTime)):
         return 0
     else:
         return 1
@@ -140,12 +145,12 @@ def getReply(msg, number):
     closeTimeMin = int(SMSTimes["end"][3:5])
     openTimeHr = int(SMSTimes["start"][0:2])
     openTimeMin = int(SMSTimes["start"][3:5])
-    closeCheck = float(closeTimeHr) + float(closeTimeMin/100.0)
-    openCheck = float(openTimeHr) + float(openTimeMin/100.0)
+    closeCheck = float(closeTimeHr) + float(closeTimeMin / 100.0)
+    openCheck = float(openTimeHr) + float(openTimeMin / 100.0)
     currentHour = float(datetime.datetime.now(tz).strftime("%H"))
-    currentMin = float(datetime.datetime.now(tz).strftime("%M"))/100.0
+    currentMin = float(datetime.datetime.now(tz).strftime("%M")) / 100.0
     currentTime = currentHour + currentMin
-    if(openCheck <= currentTime <= closeCheck):
+    if (openCheck <= currentTime <= closeCheck):
         msg = msg.lower()
         msg.replace("\n", "")
         msg.replace(".", "")
@@ -154,7 +159,8 @@ def getReply(msg, number):
 
         if (msg == "order" or msg == "ordew" or msg == "ord" or msg == "ordet" or msg == "oderr" or msg == "ordee" or (
                 "ord" in msg)):
-            reply = "Hi welcome to "+estNameStr+"! click the link below to order \n" + str(mainLink)+"/smsinit/"+str(number)
+            reply = "Hi welcome to " + estNameStr + "! click the link below to order \n" + str(
+                mainLink) + "/smsinit/" + str(number)
             return reply
         else:
             return ("no msg")
@@ -162,7 +168,7 @@ def getReply(msg, number):
         return ("no msg")
 
 
-@app.route('/admin',methods=["GET"])
+@app.route('/admin', methods=["GET"])
 def login():
     return render_template("login.html", btn=str("admin2"), restName=estNameStr)
 
@@ -185,9 +191,9 @@ def loginPageCheck():
             database = firebase.FirebaseApplication("https://cedarchatbot.firebaseio.com/",
                                                     authentication=authentication)
 
-            LoginToken = str((uuid.uuid4())) +"-"+str((uuid.uuid4()))
-            database.put("/restaurants/" + estName + "/", "LoginToken",LoginToken)
-            database.put("/restaurants/" + estName + "/", "LoginTime",time.time())
+            LoginToken = str((uuid.uuid4())) + "-" + str((uuid.uuid4()))
+            database.put("/restaurants/" + estName + "/", "LoginToken", LoginToken)
+            database.put("/restaurants/" + estName + "/", "LoginTime", time.time())
             session['fbToken'] = user['idToken']
             session['token'] = LoginToken
             return redirect(url_for('panel'))
@@ -215,15 +221,17 @@ def panel():
                                                      'cajohn0205@gmail.com', extra={'id': dbid})
     database = firebase.FirebaseApplication("https://cedarchatbot.firebaseio.com/",
                                             authentication=authentication)
-    if((idToken == database.get("restaurants/" + uid+"/", "LoginToken")) and (time.time() - database.get("restaurants/" + uid+"/", "LoginTime") < adminSessTime)):
+    if ((idToken == database.get("restaurants/" + uid + "/", "LoginToken")) and (
+            time.time() - database.get("restaurants/" + uid + "/", "LoginTime") < adminSessTime)):
         getSquare()
         LocName = list(locationsPaths.keys())
         return render_template("AdminPanel.html",
                                restName=estNameStr,
                                LocName=LocName,
-                               lenLocName = len(LocName))
+                               lenLocName=len(LocName))
     else:
         return redirect(url_for('.login'))
+
 
 @app.route('/admin-location/<location>')
 def locPanel(location):
@@ -233,7 +241,8 @@ def locPanel(location):
                                                      'cajohn0205@gmail.com', extra={'id': dbid})
     database = firebase.FirebaseApplication("https://cedarchatbot.firebaseio.com/",
                                             authentication=authentication)
-    if((idToken == database.get("restaurants/" + uid+"/", "LoginToken")) and (time.time() - database.get("restaurants/" + uid+"/", "LoginTime") < adminSessTime)):
+    if ((idToken == database.get("restaurants/" + uid + "/", "LoginToken")) and (
+            time.time() - database.get("restaurants/" + uid + "/", "LoginTime") < adminSessTime)):
         getSquare()
         LocName = list(locationsPaths.keys())
         return render_template("locationAdmin.html",
@@ -244,6 +253,7 @@ def locPanel(location):
     else:
         return redirect(url_for('.login'))
 
+
 @app.route('/<location>/createMenu', methods=["POST"])
 def meun1(location):
     idToken = session.get('token', None)
@@ -252,12 +262,14 @@ def meun1(location):
                                                      'cajohn0205@gmail.com', extra={'id': dbid})
     database = firebase.FirebaseApplication("https://cedarchatbot.firebaseio.com/",
                                             authentication=authentication)
-    if((idToken == database.get("restaurants/" + uid+"/"+location+"/", "LoginToken")) and (time.time() - database.get("restaurants/" + uid+"/"+location+"/", "LoginTime") < adminSessTime)):
+    if ((idToken == database.get("restaurants/" + uid + "/" + location + "/", "LoginToken")) and (
+            time.time() - database.get("restaurants/" + uid + "/" + location + "/", "LoginTime") < adminSessTime)):
         return render_template("createMenu1.html",
-                               next=location+"/createMenu2",
-                               back=location+"/adminpanel")
+                               next=location + "/createMenu2",
+                               back=location + "/adminpanel")
     else:
         return redirect(url_for('.login', location=location))
+
 
 @app.route('/<location>/createMenu', methods=["POST"])
 def createMenu(location):
@@ -267,11 +279,12 @@ def createMenu(location):
                                                      'cajohn0205@gmail.com', extra={'id': dbid})
     database = firebase.FirebaseApplication("https://cedarchatbot.firebaseio.com/",
                                             authentication=authentication)
-    if(checkAdminToken(location) == 1):
+    if (checkAdminToken(location) == 1):
         return redirect(url_for('.login', location=location))
     return render_template("createMenu1.html",
-                           next=location+"/createMenu2",
-                           back=location+"/adminpanel")
+                           next=location + "/createMenu2",
+                           back=location + "/adminpanel")
+
 
 @app.route('/<location>/createMenu2', methods=["POST"])
 def createMenu2(location):
@@ -285,16 +298,11 @@ def createMenu2(location):
                                                      'cajohn0205@gmail.com', extra={'id': dbid})
     database = firebase.FirebaseApplication("https://cedarchatbot.firebaseio.com/",
                                             authentication=authentication)
-    if(checkAdminToken(location) == 1):
+    if (checkAdminToken(location) == 1):
         return redirect(url_for('.login', location=location))
     return render_template("createMenu1.html",
-                           next=location+"/createMenu3",
-                           back=location+"/adminpanel")
-
-
-
-
-
+                           next=location + "/createMenu3",
+                           back=location + "/adminpanel")
 
 
 @app.route('/admin', methods=["GET"])
@@ -307,7 +315,8 @@ def pickLocation():
     locs = []
     for lc in locationsPaths:
         locs.append(locationsPaths[lc]["name"])
-    return (render_template("pickLocation.html", btn="uid", locs=locs,len=len(locs)))
+    return (render_template("pickLocation.html", btn="uid", locs=locs, len=len(locs)))
+
 
 @app.route('/uid', methods=["POST"])
 def pickLocation2():
@@ -319,6 +328,7 @@ def pickLocation2():
     database = firebase.FirebaseApplication("https://cedarchatbot.firebaseio.com/",
                                             authentication=authentication)
     return redirect(url_for('.login', location=locationPick))
+
 
 @app.route('/sms')
 def inbound_sms():

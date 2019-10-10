@@ -151,7 +151,6 @@
             <h6 class="collapse-header">View Customers</h6>
             <a class="collapse-item" href="/admin-viewCustomers">View Your Customers</a>
             <a class="collapse-item" href="/admin-findCustomers">Find New Customers</a>
-
           </div>
         </div>
       </li>
@@ -202,6 +201,7 @@
           </div>
         </div>
       </li>
+
 
       <!-- Divider -->
       <hr class="sidebar-divider d-none d-md-block">
@@ -283,159 +283,66 @@
         <div class="container-fluid">
           <br>
           <!-- CODEHERE -->
-          <div class="row">
-            <div class="col-xl-4 col-md-6 mb-4">
-              <div class="card border-left-success shadow h-100 py-2" onclick="">
-                <div class="card-body">
-                  <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Menu Efficiency</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">85% of items were ordered more than 5 times</div>
-                    </div>
-                    <div class="col-auto">
-                      <i class="fas fa-money-check-alt fa-2x text-gray-300"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-xl-4 col-md-6 mb-4">
-              <div class="card border-left-success shadow h-100 py-2" onclick="">
-                <div class="card-body">
-                  <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Most Popular Category</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">Pizzas</div>
-                    </div>
-                    <div class="col-auto">
-                      <i class="fas fa-money-check-alt fa-2x text-gray-300"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-xl-4 col-md-6 mb-4">
-              <div class="card border-left-success shadow h-100 py-2" onclick="">
-                <div class="card-body">
-                  <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Most Popular Menu</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">Lunch</div>
-                    </div>
-                    <div class="col-auto">
-                      <i class="fas fa-money-check-alt fa-2x text-gray-300"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-                </div>
-
-                <!-- DataTales Example -->
-
                 <div class="card shadow mb-4">
                   <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Base Items Data from last 30 days</h6>
+                    <h6 class="m-0 font-weight-bold text-primary">Customers From Nearby Restaurants That Haven't Tried You're Restaurant</h6>
                   </div>
                   <div class="card-body">
                     <div class="table-responsive">
-                      <table class="table table-bordered" id="dataTableItm" width="100%" cellspacing="0">
+                      <table class="table table-bordered" id="dataTableCust1" width="100%" cellspacing="0">
                         <thead>
                           <tr>
-                            <th>Item Name</th>
-                            <th>Menus</th>
-                            <th>Categories</th>
-                            <th>30 day change</th>
-                            <th>Modifiers</th>
-                            <th>Sizes</th>
-                            <th>Price $</th>
-                            <th>Number Sold</th>
-                            <th>% of Revenue</th>
+                            <th>Name</th>
+                            <th>Number of Orders</th>
+                            <th>Life Time Value</th>
+                            <th>Average Ticket Value</th>
+                            <th>Average Ticket Size</th>
+                            <th>Number of Items ordered</th>
+                            <th>Last Visit</th>
+                            <th>Zip Code</th>
+                            <th>Points Earned</th>
+                            <th>Points Used</th>
+                            <th>Store Card Value Purchased</th>
+                            <th>Store Card Used</th>
+                            <th>Store Card Expired</th>
+                            <th>Restaurants Visited</th>
+                            <th>% of Total Revenue</th>
                           </tr>
                         </thead>
                         <tbody>
                           <tr>
-                            <td>Pizza</td>
-                            <td>Lunch, Dinner</td>
-                            <td>Pizzas</td>
-                            <td>6.5</td>
-                            <td>3 - Extra Cheese, Stuffed Crust, Gluten Free Crust</td>
-                            <td>2 - 11 in, 17 in</td>
-                            <td>11.99, 17.99</td>
-                            <td>225</td>
-                            <td>6</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
-                </div>
-                <div class="card shadow mb-4">
-                  <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Total SKU Data from last 30 days</h6>
-                  </div>
-                  <div class="card-body">
-                    <div class="table-responsive">
-                      <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
-                          <tr>
-                            <th>Item Name</th>
-                            <th>SKU</th>
-                            <th>Ingredients</th>
-                            <th>Type</th>
-                            <th>Menus</th>
-                            <th>Categories</th>
-                            <th>30 day % change</th>
-                            <th>Number Sold</th>
-                            <th>Price $</th>
-                            <th>% of Revenue</th>
-                            <th>Margin %</th>
-                            <th>Current Inventory</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>11 in Pizza</td>
-                            <td>122099</td>
-                            <td>3 cups flour, 8 oz Tomato Sauce, 6 oz cheese</td>
-                            <td>Base Item</td>
-                            <td>Lunch, Dinner</td>
-                            <td>Pizzas</td>
-                            <td>30</td>
-                            <td>125</td>
-                            <td>11.99</td>
-                            <td>6</td>
-                            <td>15</td>
-                            <td>4</td>
-                          </tr>
-                          <tr>
-                            <td>17 in Pizza</td>
-                            <td>122098</td>
-                            <td>4 cups flour, 10 oz Tomato Sauce, 8 oz cheese</td>
-                            <td>Base Item</td>
-                            <td>Lunch, Dinner</td>
-                            <td>Pizzas</td>
-                            <td>20</td>
-                            <td>100</td>
-                            <td>17.99</td>
+                            <td>John Doe</td>
                             <td>2</td>
-                            <td>17</td>
+                            <td>$24.90</td>
+                            <td>$12.45</td>
+                            <td>4</td>
+                            <td>8</td>
+                            <td>10/2/2019</td>
+                            <td>98075</td>
+                            <td>50</td>
+                            <td>0</td>
+                            <td>5</td>
+                            <td>0</td>
+                            <td>5</td>
+                            <td>Rest2</td>
                             <td>5</td>
                           </tr>
                         </tbody>
+
                       </table>
                     </div>
                   </div>
                 </div>
-
 
 
 
 
 
     </div>
+  </div>
+</div>
+</div>
+
     <!-- End of Content Wrapper -->
 
   </div>
@@ -472,6 +379,7 @@
       </div>
     </div>
   </div>
+
 
   <!-- Bootstrap core JavaScript-->
   <script src="../../../static/vendor/jquery/jquery.min.js"></script>

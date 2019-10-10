@@ -162,10 +162,11 @@
         <div id="collapseInv" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Promotions</h6>
-            <a class="collapse-item" href="utilities-color.html">Create New Promo</a>
-            <a class="collapse-item" href="utilities-color.html">Deactivate Promo</a>
-            <a class="collapse-item" href="utilities-color.html">Edit Promo</a>
-            <a class="collapse-item" href="forgot-password.html">Create Gift Card</a>
+            <a class="collapse-item" href="/admin-createPromo">Create New Promo</a>
+            <a class="collapse-item" href="/admin-remPromo">Deactivate Promo</a>
+            <a class="collapse-item" href="/admin-editPromo">Edit Promo</a>
+            <a class="collapse-item" href="/admin-createGC">Create Points Card</a>
+            <a class="collapse-item" href="/admin-editGC">Edit Points Card Balance</a>
           </div>
         </div>
       </li>
@@ -180,6 +181,22 @@
             <h6 class="collapse-header">Inventory</h6>
             <a class="collapse-item" href="/admin-viewInvRaw">View Ingredient Inventory</a>
             <a class="collapse-item" href="/admin-viewInvSku">View SKU Inventory</a>
+          </div>
+        </div>
+      </li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseEmp" aria-expanded="true" aria-controls="collapseEmp">
+          <i class="fas fa-user-cog"></i>
+          <span>Employees</span>
+        </a>
+        <div id="collapseEmp" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Employees</h6>
+            <a class="collapse-item" href="/admin-viewEmployees">View Employees</a>
+            <a class="collapse-item" href="/admin-editEmployees">Edit Emplyee info</a>
+            <a class="collapse-item" href="/admin-addEmployees">Add New Employee</a>
+            <a class="collapse-item" href="/admin-remEmployees">Remove Employee</a>
           </div>
         </div>
       </li>
@@ -323,9 +340,9 @@
           <div class="card-header py-3">
             <h6 class="m-0 font-weight-bold text-primary">Where Your Customers are</h6>
           </div>
-            <div class="mapouter"><div class="gmap_canvas"><iframe width="100%" height="500" id="gmap_canvas" src="https://maps.google.com/maps?q=98074&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe></div><style>.mapouter{position:relative;text-align:center;height:500px;width:100%;}.gmap_canvas {overflow:hidden;background:none!important}</style></div>
-            <div class="mapouter"><div class="gmap_canvas"><iframe width="100%" height="500" id="gmap_canvas" src="https://maps.google.com/maps?q=98053&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe></div><style>.mapouter{position:relative;text-align:center;height:500px;width:100%;}.gmap_canvas {overflow:hidden;background:none!important}</style></div>
-            <div class="mapouter"><div class="gmap_canvas"><iframe width="100%" height="500" id="gmap_canvas" src="https://maps.google.com/maps?q=98075&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe></div><style>.mapouter{position:relative;text-align:center;height:500px;width:100%;}.gmap_canvas {overflow:hidden;background:none!important}</style></div>
+            <div class="mapouter"><div class="gmap_canvas"><iframe width="100%" height="500" id="gmap_canvas0" src="https://maps.google.com/maps?q=98074&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe></div><style>.mapouter{position:relative;text-align:center;height:500px;width:100%;}.gmap_canvas {overflow:hidden;background:none!important}</style></div>
+            <div class="mapouter"><div class="gmap_canvas"><iframe width="100%" height="500" id="gmap_canvas1" src="https://maps.google.com/maps?q=98053&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe></div><style>.mapouter{position:relative;text-align:center;height:500px;width:100%;}.gmap_canvas {overflow:hidden;background:none!important}</style></div>
+            <div class="mapouter"><div class="gmap_canvas"><iframe width="100%" height="500" id="gmap_canvas2" src="https://maps.google.com/maps?q=98075&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe></div><style>.mapouter{position:relative;text-align:center;height:500px;width:100%;}.gmap_canvas {overflow:hidden;background:none!important}</style></div>
           </div>
         </div>
         </div>
@@ -418,6 +435,8 @@
       </div>
     </div>
   </div>
+      </div>
+
 
   <!-- Bootstrap core JavaScript-->
   <script src="../../../static/vendor/jquery/jquery.min.js"></script>
@@ -436,6 +455,8 @@
   <script src="../../../static/js/demo/chart-area-demo.js"></script>
   <script src="../../../static/js/demo/chart-pie-demo.js"></script>
 
+    </div>
+  </div>
 
 </body>
 

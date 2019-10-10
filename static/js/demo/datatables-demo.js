@@ -8,3 +8,6 @@ $(document).ready(function() {
 $(document).ready(function() {
   $('#dataTableLoc').DataTable();
 });
+$(document).ready(function() {
+  $('#dataTableCust1').DataTable();
+});
