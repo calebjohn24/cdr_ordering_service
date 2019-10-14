@@ -12,5 +12,8 @@ $(document).ready(function() {
   $('#dataTableCust1').DataTable();
 });
 $(document).ready(function() {
-  $('#dataTableEmp').DataTable();
+  $('#dataTableOpenOrd').DataTable();
+});
+$(document).ready(function() {
+  $('#dataTableAllOrd').DataTable();
 });

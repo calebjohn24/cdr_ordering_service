@@ -33,7 +33,8 @@
 
   <!-- Custom styles for this template-->
   <link href="../../../static/css/sb-admin-2.min.css" rel="stylesheet">
-    <link href="../../../static/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+      <link href="../../../static/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+
 
 </head>
 
@@ -84,11 +85,9 @@
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Analytics</h6>
-            <a class="collapse-item" href="/admin-CustAnalytics">Customers</a>
-            <a class="collapse-item" href="/admin-OrdAnalytics">Orders</a>
-            <a class="collapse-item" href="/admin-MenuAnalytics">Menus</a>
-            <a class="collapse-item" href="/admin-LocAnalytics">Location Comparison</a>
-            <a class="collapse-item" href="/SpreadsheetLink">View Quickbooks</a>
+            <a class="collapse-item" href="/{{LocName}}/admin-CustAnalytics">Customers</a>
+            <a class="collapse-item" href="/{{LocName}}/admin-OrdAnalytics">Orders</a>
+            <a class="collapse-item" href="/{{LocName}}/admin-MenuAnalytics">Menus</a>
           </div>
         </div>
       </li>
@@ -101,10 +100,10 @@
         <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Edit Menus</h6>
-            <a class="collapse-item" href="/admin-CreateMenu">Create/Activate Menu</a>
-            <a class="collapse-item" href="/admin-EditMenu">Edit Menu</a>
-            <a class="collapse-item" href="/admin-DeleteMenu">Delete/Deactivate Menu</a>
-            <a class="collapse-item" href="/admin-SetInOut">Set Items In/Out of Stock</a>
+            <a class="collapse-item" href="/{{LocName}}/admin-CreateMenu">Create/Activate Menu</a>
+            <a class="collapse-item" href="/{{LocName}}/admin-EditMenu">Edit Menu</a>
+            <a class="collapse-item" href="/{{LocName}}/admin-DeleteMenu">Delete/Deactivate Menu</a>
+            <a class="collapse-item" href="/{{LocName}}/admin-SetInOut">Set Items In/Out of Stock</a>
           </div>
         </div>
       </li>
@@ -118,25 +117,8 @@
         <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Orders</h6>
-            <a class="collapse-item" href="/admin-OpenOrders">View Open Orders</a>
-            <a class="collapse-item" href="/admin-ClosedOrders">View Closed Orders</a>
-            <a class="collapse-item" href="/admin-AllOrders">View All Orders</a>
-            <div class="collapse-divider"></div>
-            <a class="collapse-item" href="/admin-Refund">Refund Order</a>
-          </div>
-        </div>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseX" aria-expanded="true" aria-controls="collapseX">
-          <i class="fas fa-gift"></i>
-          <span>Loyalty Program</span>
-        </a>
-        <div id="collapseX" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Loyalty Program</h6>
-            <a class="collapse-item" href="/admin-rewards">Set Rewards</a>
-            <a class="collapse-item" href="/admin-points">Reward Points</a>
+            <a class="collapse-item" href="/{{LocName}}/admin-OpenOrders">View Open Orders</a>
+            <a class="collapse-item" href="/{{LocName}}/admin-AllOrders">View All Orders</a>
           </div>
         </div>
       </li>
@@ -149,61 +131,10 @@
         <div id="collapseCust" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">View Customers</h6>
-            <a class="collapse-item" href="/admin-viewCustomers">View Your Customers</a>
-            <a class="collapse-item" href="/admin-findCustomers">Find New Customers</a>
+            <a class="collapse-item" href="/{{LocName}}/admin-viewCustomers">View Your Customers</a>
           </div>
         </div>
       </li>
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseInv" aria-expanded="true" aria-controls="collapseInv">
-          <i class="fas fa-tags"></i>
-          <span>Promotions</span>
-        </a>
-        <div id="collapseInv" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Promotions</h6>
-            <a class="collapse-item" href="/admin-createPromo">Create New Promo</a>
-            <a class="collapse-item" href="/admin-remPromo">Deactivate Promo</a>
-            <a class="collapse-item" href="/admin-editPromo">Edit Promo</a>
-            <a class="collapse-item" href="/admin-createGC">Create Points Card</a>
-            <a class="collapse-item" href="/admin-editGC">Edit Points Card Balance</a>
-          </div>
-        </div>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseInventory" aria-expanded="true" aria-controls="collapseInventory">
-          <i class="fas fa-tasks"></i>
-          <span>Inventory</span>
-        </a>
-        <div id="collapseInventory" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Inventory</h6>
-            <a class="collapse-item" href="/admin-viewInvRaw">View Ingredient Inventory</a>
-            <a class="collapse-item" href="/admin-viewInvSku">View SKU Inventory</a>
-            <a class="collapse-item" href="/admin-viewInvSku">View Ingredient Waste</a>
-            <a class="collapse-item" href="/admin-viewInvSku">View SKU Waste</a>
-          </div>
-        </div>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseEmp" aria-expanded="true" aria-controls="collapseEmp">
-          <i class="fas fa-user-cog"></i>
-          <span>Employees</span>
-        </a>
-        <div id="collapseEmp" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Employees</h6>
-            <a class="collapse-item" href="/admin-viewEmployees">View Employees</a>
-            <a class="collapse-item" href="/admin-editEmployees">Edit Emplyee info</a>
-            <a class="collapse-item" href="/admin-addEmployees">Add New Employee</a>
-            <a class="collapse-item" href="/admin-remEmployees">Remove Employee</a>
-          </div>
-        </div>
-      </li>
-
 
       <!-- Divider -->
       <hr class="sidebar-divider d-none d-md-block">
@@ -232,7 +163,7 @@
 
           <!-- Topbar Search -->
             <div class="input-group">
-              <h3 class="h3 mb-0 text-gray-800">{{restName}} Dashboard</h3>
+              <h3 class="h3 mb-0 text-gray-800">{{LocName}} {{restName}} Dashboard</h3>
             </div>
 
           <!-- Topbar Navbar -->
@@ -282,68 +213,45 @@
         <!-- End of Topbar -->
 
         <!-- Begin Page Content -->
-        <div class="container-fluid">
-          <br>
-          <!-- CODEHERE -->
-                <div class="card shadow mb-4">
-                  <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Customers From Nearby Restaurants That Haven't Tried You're Restaurant</h6>
-                  </div>
-                  <div class="card-body">
-                    <div class="table-responsive">
-                      <table class="table table-bordered" id="dataTableCust1" width="100%" cellspacing="0">
-                        <thead>
-                          <tr>
-                            <th>Name</th>
-                            <th>Number of Orders</th>
-                            <th>Life Time Value</th>
-                            <th>Average Ticket Value</th>
-                            <th>Average Ticket Size</th>
-                            <th>Number of Items ordered</th>
-                            <th>Last Visit</th>
-                            <th>Zip Code</th>
-                            <th>Points Earned</th>
-                            <th>Points Used</th>
-                            <th>Store Card Value Purchased</th>
-                            <th>Store Card Used</th>
-                            <th>Store Card Expired</th>
-                            <th>Restaurants Visited</th>
-                            <th>% of Total Revenue</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>John Doe</td>
-                            <td>2</td>
-                            <td>$24.90</td>
-                            <td>$12.45</td>
-                            <td>4</td>
-                            <td>8</td>
-                            <td>10/2/2019</td>
-                            <td>98075</td>
-                            <td>50</td>
-                            <td>0</td>
-                            <td>5</td>
-                            <td>0</td>
-                            <td>5</td>
-                            <td>Rest2</td>
-                            <td>5</td>
-                          </tr>
-                        </tbody>
-
-                      </table>
-                    </div>
-                  </div>
-                </div>
-
-
+    <div class="container-fluid">
+      <br>
+      <div class="card shadow mb-4">
+        <div class="card-header py-3">
+          <h6 class="m-0 font-weight-bold text-primary">Location Data from last 30 days</h6>
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered" id="dataTableOpenOrd" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Phone Number</th>
+                  <th>For Here/Togo</th>
+                  <th>Time</th>
+                  <th>Items</th>
+                  <th>Done</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>John Doe</td>
+                  <td>15555555555</td>
+                  <td>To Go</td>
+                  <td>14:45 10-11</td>
+                  <td>11 in Cheese Pizza</td>
+                  <td><a href="#" class="btn btn-success btn-circle">
+                    <i class="fas fa-check"></i>
+                  </a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
 
 
 
     </div>
-  </div>
-</div>
-</div>
 
     <!-- End of Content Wrapper -->
 
@@ -382,7 +290,6 @@
     </div>
   </div>
 
-
   <!-- Bootstrap core JavaScript-->
   <script src="../../../static/vendor/jquery/jquery.min.js"></script>
   <script src="../../../static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -406,6 +313,7 @@
   <script src="../../../static/vendor/datatables/dataTables.bootstrap4.min.js"></script>
   <!-- Page level custom scripts -->
   <script src="../../../static/js/demo/datatables-demo.js"></script>
+
 
 
 </body>

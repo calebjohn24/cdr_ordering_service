@@ -33,7 +33,6 @@
 
   <!-- Custom styles for this template-->
   <link href="../../../static/css/sb-admin-2.min.css" rel="stylesheet">
-    <link href="../../../static/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
 </head>
 
@@ -87,6 +86,7 @@
             <a class="collapse-item" href="/admin-CustAnalytics">Customers</a>
             <a class="collapse-item" href="/admin-OrdAnalytics">Orders</a>
             <a class="collapse-item" href="/admin-MenuAnalytics">Menus</a>
+            <a class="collapse-item" href="/admin-InvAnalytics">Inventory</a>
             <a class="collapse-item" href="/admin-LocAnalytics">Location Comparison</a>
             <a class="collapse-item" href="/SpreadsheetLink">View Quickbooks</a>
           </div>
@@ -110,22 +110,6 @@
       </li>
       <!-- Nav Item - Pages Collapse Menu -->
 
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
-          <i class="fas fa-utensils"></i>
-          <span>Orders</span>
-        </a>
-        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Orders</h6>
-            <a class="collapse-item" href="/admin-OpenOrders">View Open Orders</a>
-            <a class="collapse-item" href="/admin-ClosedOrders">View Closed Orders</a>
-            <a class="collapse-item" href="/admin-AllOrders">View All Orders</a>
-            <div class="collapse-divider"></div>
-            <a class="collapse-item" href="/admin-Refund">Refund Order</a>
-          </div>
-        </div>
-      </li>
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseX" aria-expanded="true" aria-controls="collapseX">
@@ -173,37 +157,6 @@
         </div>
       </li>
 
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseInventory" aria-expanded="true" aria-controls="collapseInventory">
-          <i class="fas fa-tasks"></i>
-          <span>Inventory</span>
-        </a>
-        <div id="collapseInventory" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Inventory</h6>
-            <a class="collapse-item" href="/admin-viewInvRaw">View Ingredient Inventory</a>
-            <a class="collapse-item" href="/admin-viewInvSku">View SKU Inventory</a>
-            <a class="collapse-item" href="/admin-viewInvSku">View Ingredient Waste</a>
-            <a class="collapse-item" href="/admin-viewInvSku">View SKU Waste</a>
-          </div>
-        </div>
-      </li>
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseEmp" aria-expanded="true" aria-controls="collapseEmp">
-          <i class="fas fa-user-cog"></i>
-          <span>Employees</span>
-        </a>
-        <div id="collapseEmp" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Employees</h6>
-            <a class="collapse-item" href="/admin-viewEmployees">View Employees</a>
-            <a class="collapse-item" href="/admin-editEmployees">Edit Emplyee info</a>
-            <a class="collapse-item" href="/admin-addEmployees">Add New Employee</a>
-            <a class="collapse-item" href="/admin-remEmployees">Remove Employee</a>
-          </div>
-        </div>
-      </li>
 
       <!-- Divider -->
       <hr class="sidebar-divider d-none d-md-block">
@@ -285,92 +238,6 @@
         <div class="container-fluid">
           <br>
           <!-- CODEHERE -->
-          <div class="row">
-            <div class="col-xl-6 col-md-6 mb-4">
-              <div class="card border-left-info shadow h-100 py-2" onclick="">
-                <div class="card-body">
-                  <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Revenue</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">$500,000</div>
-                    </div>
-                    <div class="col-auto">
-                      <i class="fas fa-money-check-alt fa-2x text-gray-300"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-
-            <div class="col-xl-6 col-md-6 mb-4">
-              <div class="card border-left-success shadow h-100 py-2" onclick="">
-                <div class="card-body">
-                  <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Total Food Cost</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
-                    </div>
-                    <div class="col-auto">
-                      <i class="fas fa-money-check-alt fa-2x text-gray-300"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-                </div>
-
-                <div class="card shadow mb-4">
-                  <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Location Data from last 30 days</h6>
-                  </div>
-                  <div class="card-body">
-                    <div class="table-responsive">
-                      <table class="table table-bordered" id="dataTableLoc" width="100%" cellspacing="0">
-                        <thead>
-                          <tr>
-                            <th>Location Name</th>
-                            <th>Number of Orders</th>
-                            <th>New Customers</th>
-                            <th>Returning Customers</th>
-                            <th>30 Day New Customer Change %</th>
-                            <th>Orders/Hour</th>
-                            <th>Orders/Day</th>
-                            <th>30 Day Revenue Change %</th>
-                            <th>Revenue $</th>
-                            <th>% of Total Revenue</th>
-                            <th>Food Cost $</th>
-                            <th>Food Cost %</th>
-                            <th>Labor Hours</th>
-                            <th>Ingredient Waste %</th>
-                            <th>Ingredient Waste $</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>Location 1</td>
-                            <td>150</td>
-                            <td>30</td>
-                            <td>20</td>
-                            <td>10</td>
-                            <td>4</td>
-                            <td>48</td>
-                            <td>25</td>
-                            <td>250</td>
-                            <td>90</td>
-                            <td>24</td>
-                            <td>10</td>
-                            <td>100</td>
-                            <td>24</td>
-                            <td>25</td>
-                          </tr>
-                        </tbody>
-
-                      </table>
-                    </div>
-                  </div>
-                </div>
-
 
 
 
@@ -413,9 +280,6 @@
       </div>
     </div>
   </div>
-    </div>
-  </div>
-
 
   <!-- Bootstrap core JavaScript-->
   <script src="../../../static/vendor/jquery/jquery.min.js"></script>
@@ -434,10 +298,10 @@
   <script src="../../../static/js/demo/chart-area-demo.js"></script>
   <script src="../../../static/js/demo/chart-pie-demo.js"></script>
     <script src="../../../static/js/demo/chart-bar-demo.js"></script>
-
   <script src = "../../../static/js/demo/datatables-demo.js"></script>
   <script src="../../../static/vendor/datatables/jquery.dataTables.min.js"></script>
   <script src="../../../static/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+
   <!-- Page level custom scripts -->
   <script src="../../../static/js/demo/datatables-demo.js"></script>
 

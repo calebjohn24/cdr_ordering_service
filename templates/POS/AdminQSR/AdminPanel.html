@@ -33,7 +33,6 @@
 
   <!-- Custom styles for this template-->
   <link href="../../../static/css/sb-admin-2.min.css" rel="stylesheet">
-    <link href="../../../static/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
 
 </head>
 
@@ -88,7 +87,6 @@
             <a class="collapse-item" href="/admin-OrdAnalytics">Orders</a>
             <a class="collapse-item" href="/admin-MenuAnalytics">Menus</a>
             <a class="collapse-item" href="/admin-LocAnalytics">Location Comparison</a>
-            <a class="collapse-item" href="/SpreadsheetLink">View Quickbooks</a>
           </div>
         </div>
       </li>
@@ -111,23 +109,6 @@
       <!-- Nav Item - Pages Collapse Menu -->
 
       <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapsePages" aria-expanded="true" aria-controls="collapsePages">
-          <i class="fas fa-utensils"></i>
-          <span>Orders</span>
-        </a>
-        <div id="collapsePages" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Orders</h6>
-            <a class="collapse-item" href="/admin-OpenOrders">View Open Orders</a>
-            <a class="collapse-item" href="/admin-ClosedOrders">View Closed Orders</a>
-            <a class="collapse-item" href="/admin-AllOrders">View All Orders</a>
-            <div class="collapse-divider"></div>
-            <a class="collapse-item" href="/admin-Refund">Refund Order</a>
-          </div>
-        </div>
-      </li>
-
-      <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseX" aria-expanded="true" aria-controls="collapseX">
           <i class="fas fa-gift"></i>
           <span>Loyalty Program</span>
@@ -137,6 +118,9 @@
             <h6 class="collapse-header">Loyalty Program</h6>
             <a class="collapse-item" href="/admin-rewards">Set Rewards</a>
             <a class="collapse-item" href="/admin-points">Reward Points</a>
+            <a class="collapse-item" href="/admin-createGC">Create Gift Card</a>
+            <a class="collapse-item" href="/admin-createPC">Create Points Card</a>
+            <a class="collapse-item" href="/admin-editPC">Edit Points Card Balance</a>
           </div>
         </div>
       </li>
@@ -167,43 +151,13 @@
             <a class="collapse-item" href="/admin-createPromo">Create New Promo</a>
             <a class="collapse-item" href="/admin-remPromo">Deactivate Promo</a>
             <a class="collapse-item" href="/admin-editPromo">Edit Promo</a>
-            <a class="collapse-item" href="/admin-createGC">Create Points Card</a>
-            <a class="collapse-item" href="/admin-editGC">Edit Points Card Balance</a>
           </div>
         </div>
       </li>
 
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseInventory" aria-expanded="true" aria-controls="collapseInventory">
-          <i class="fas fa-tasks"></i>
-          <span>Inventory</span>
-        </a>
-        <div id="collapseInventory" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Inventory</h6>
-            <a class="collapse-item" href="/admin-viewInvRaw">View Ingredient Inventory</a>
-            <a class="collapse-item" href="/admin-viewInvSku">View SKU Inventory</a>
-            <a class="collapse-item" href="/admin-viewInvSku">View Ingredient Waste</a>
-            <a class="collapse-item" href="/admin-viewInvSku">View SKU Waste</a>
-          </div>
-        </div>
-      </li>
 
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseEmp" aria-expanded="true" aria-controls="collapseEmp">
-          <i class="fas fa-user-cog"></i>
-          <span>Employees</span>
-        </a>
-        <div id="collapseEmp" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Employees</h6>
-            <a class="collapse-item" href="/admin-viewEmployees">View Employees</a>
-            <a class="collapse-item" href="/admin-editEmployees">Edit Emplyee info</a>
-            <a class="collapse-item" href="/admin-addEmployees">Add New Employee</a>
-            <a class="collapse-item" href="/admin-remEmployees">Remove Employee</a>
-          </div>
-        </div>
-      </li>
+
+
 
       <!-- Divider -->
       <hr class="sidebar-divider d-none d-md-block">
@@ -284,15 +238,17 @@
         <!-- Begin Page Content -->
         <div class="container-fluid">
           <br>
-          <!-- CODEHERE -->
+          <!-- Page Heading -->
           <div class="row">
+            <!-- Earnings (Monthly) Card Example -->
+
             <div class="col-xl-4 col-md-6 mb-4">
               <div class="card border-left-success shadow h-100 py-2" onclick="">
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Menu Efficiency</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">85% of items were ordered more than 5 times</div>
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Monthly Revenue</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-money-check-alt fa-2x text-gray-300"></i>
@@ -307,8 +263,8 @@
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Most Popular Category</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">Pizzas</div>
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Daily Average Revenue</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">$5,714.29</div>
                     </div>
                     <div class="col-auto">
                       <i class="fas fa-money-check-alt fa-2x text-gray-300"></i>
@@ -323,121 +279,177 @@
                 <div class="card-body">
                   <div class="row no-gutters align-items-center">
                     <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Most Popular Menu</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">Lunch</div>
+                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Best Selling Item</div>
+                      <div class="h5 mb-0 font-weight-bold text-gray-800">11 in Cheese Pizza</div>
                     </div>
                     <div class="col-auto">
-                      <i class="fas fa-money-check-alt fa-2x text-gray-300"></i>
+                      <i class="fas fa-utensils fa-2x text-gray-300"></i>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-                </div>
 
-                <!-- DataTales Example -->
+        </div>
+        <br>
+        <br>
+        <div class="row">
+          <!-- Area Chart -->
+          <div class="col-xl-8 col-lg-7">
+            <div class="card shadow mb-4">
+              <!-- Card Header - Dropdown -->
+              <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Weekly Overview</h6>
+                <div class="dropdown no-arrow">
+                  <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 
-                <div class="card shadow mb-4">
-                  <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Base Items Data from last 30 days</h6>
-                  </div>
-                  <div class="card-body">
-                    <div class="table-responsive">
-                      <table class="table table-bordered" id="dataTableItm" width="100%" cellspacing="0">
-                        <thead>
-                          <tr>
-                            <th>Item Name</th>
-                            <th>Menus</th>
-                            <th>Categories</th>
-                            <th>30 day change</th>
-                            <th>Modifiers</th>
-                            <th>Sizes</th>
-                            <th>Price $</th>
-                            <th>Number Sold</th>
-                            <th>% of Revenue</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>Pizza</td>
-                            <td>Lunch, Dinner</td>
-                            <td>Pizzas</td>
-                            <td>6.5</td>
-                            <td>3 - Extra Cheese, Stuffed Crust, Gluten Free Crust</td>
-                            <td>2 - 11 in, 17 in</td>
-                            <td>11.99, 17.99</td>
-                            <td>225</td>
-                            <td>6</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
+                  </a>
                 </div>
-                <div class="card shadow mb-4">
-                  <div class="card-header py-3">
-                    <h6 class="m-0 font-weight-bold text-primary">Total SKU Data from last 30 days</h6>
-                  </div>
-                  <div class="card-body">
-                    <div class="table-responsive">
-                      <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
-                          <tr>
-                            <th>Item Name</th>
-                            <th>SKU</th>
-                            <th>Ingredients</th>
-                            <th>Type</th>
-                            <th>Menus</th>
-                            <th>Categories</th>
-                            <th>30 day % change</th>
-                            <th>Number Sold</th>
-                            <th>Price $</th>
-                            <th>% of Revenue</th>
-                            <th>Margin %</th>
-                            <th>Current Inventory</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>11 in Pizza</td>
-                            <td>122099</td>
-                            <td>3 cups flour, 8 oz Tomato Sauce, 6 oz cheese</td>
-                            <td>Base Item</td>
-                            <td>Lunch, Dinner</td>
-                            <td>Pizzas</td>
-                            <td>30</td>
-                            <td>125</td>
-                            <td>11.99</td>
-                            <td>6</td>
-                            <td>15</td>
-                            <td>4</td>
-                          </tr>
-                          <tr>
-                            <td>17 in Pizza</td>
-                            <td>122098</td>
-                            <td>4 cups flour, 10 oz Tomato Sauce, 8 oz cheese</td>
-                            <td>Base Item</td>
-                            <td>Lunch, Dinner</td>
-                            <td>Pizzas</td>
-                            <td>20</td>
-                            <td>100</td>
-                            <td>17.99</td>
-                            <td>2</td>
-                            <td>17</td>
-                            <td>5</td>
-                          </tr>
-                        </tbody>
-                      </table>
-                    </div>
-                  </div>
+              </div>
+              <!-- Card Body -->
+              <div class="card-body">
+                <div class="chart-area">
+                  <canvas id="myAreaChart"></canvas>
                 </div>
+              </div>
+            </div>
+          </div>
 
+          <!-- Pie Chart -->
+          <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+              <!-- Card Header - Dropdown -->
+              <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h6 class="m-0 font-weight-bold text-primary">Order Breakdown</h6>
+                <div class="dropdown no-arrow">
+                  <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+                  </a>
+                </div>
+              </div>
+
+              <!-- Card Body -->
+              <div class="card-body">
+                <div class="chart-pie pt-4 pb-2">
+                  <canvas id="myPieChart"></canvas>
+                </div>
+                <div class="mt-4 text-center small">
+                  <span class="mr-2">
+                    <i class="fas fa-circle text-primary"></i> To Go
+                  </span>
+                  <span class="mr-2">
+                    <i class="fas fa-circle text-success"></i> Dine In
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <br>
+        <br>
+
+        <!-- /.container-fluid -->
+
+
+      <!-- End of Main Content -->
+<div class="row">
+  <br>
+  <br>
+  <div class="col-xl-4 col-lg-5">
+    <div class="card shadow mb-4">
+      <!-- Card Header - Dropdown -->
+      <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+        <h6 class="m-0 font-weight-bold text-primary">Customer Breakdown</h6>
+        <div class="dropdown no-arrow">
+          <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+          </a>
+
+        </div>
+      </div>
+
+      <!-- Card Body -->
+      <div class="card-body">
+        <div class="chart-pie pt-4 pb-2">
+          <canvas id="CustBreakdown"></canvas>
+        </div>
+        <div class="mt-4 text-center small">
+          <span class="mr-2">
+            <i class="fas fa-circle text-info"></i> Returning
+          </span>
+          <span class="mr-2">
+            <i class="fas fa-circle text-success"></i> New
+          </span>
+        </div>
+      </div>
+    </div>
+    </div>
+    <br>
+    <div class="col-xl-3 col-md-6 mb-4">
+      <div class="card border-left-info shadow h-10 py-2" onclick="">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Average Ticket Size</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">6 items</div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fas fa-receipt fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br>
+      <br>
+      <div class="card border-left-info shadow h-10 py-2" onclick="">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Average Ticket Price</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">$5.67</div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-money-check-alt fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+      <br>
+      <br>
+      <div class="card border-left-info shadow h-10 py-2" onclick="">
+        <div class="card-body">
+          <div class="row no-gutters align-items-center">
+            <div class="col mr-2">
+              <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Most Common Zip Code</div>
+              <div class="h5 mb-0 font-weight-bold text-gray-800">98075</div>
+            </div>
+            <div class="col-auto">
+              <i class="fas fa-map-marker-alt fa-2x text-gray-300"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-xl-5 col-md-6 mb-4">
+      
+    <div class="card shadow mb-4">
+      <div class="card-header py-3">
+        <h6 class="m-0 font-weight-bold text-primary">Orders Per Day</h6>
+      </div>
+      <div class="card-body">
+        <div class="chart-bar">
+          <canvas id="myBarChart"></canvas>
+        </div>
+      </div>
+    </div>
+</div>
 
 
 
 
 
     </div>
+
     <!-- End of Content Wrapper -->
 
   </div>
@@ -492,12 +504,6 @@
   <script src="../../../static/js/demo/chart-area-demo.js"></script>
   <script src="../../../static/js/demo/chart-pie-demo.js"></script>
     <script src="../../../static/js/demo/chart-bar-demo.js"></script>
-
-  <script src = "../../../static/js/demo/datatables-demo.js"></script>
-  <script src="../../../static/vendor/datatables/jquery.dataTables.min.js"></script>
-  <script src="../../../static/vendor/datatables/dataTables.bootstrap4.min.js"></script>
-  <!-- Page level custom scripts -->
-  <script src="../../../static/js/demo/datatables-demo.js"></script>
 
 
 </body>
