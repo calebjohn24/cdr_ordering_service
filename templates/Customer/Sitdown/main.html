@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="57x57" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="72x72" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="76x76" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="114x114" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="120x120" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="144x144" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="152x152" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="180x180" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="icon" type="image/png" sizes="192x192"  href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="icon" type="image/png" sizes="32x32" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="icon" type="image/png" sizes="96x96" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="icon" type="image/png" sizes="16x16" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="manifest" href="/manifest.json">
+ <meta name="msapplication-TileColor" content="#000000">
+ <meta name="msapplication-TileImage" content="../../../static/img/CedarRoboticsLogo.jpg">
+ <meta name="theme-color" content="#000000">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Caleb John">
+
+  <title>Menu</title>
+
+  <!-- Custom fonts for this template-->
+  <link href="../../../static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+  <!-- Custom styles for this template-->
+  <link href="../../../static/css/tab.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+
+</head>
+
+<body>
+  <div class="container-fluid">
+  <br>
+  <div class="input-group">
+    <h3 class="h3 mb-0 text-gray-800">{{restName}}</h3>
+  </div>
+  <hr>
+
+<div class="center">
+<div class="tab">
+<button class="tablinks" onclick="openTab(event, 'Menu')">Menu</button>
+<button class="tablinks" onclick="openTab(event, 'Requests')">View Requests</button>
+<button class="tablinks" onclick="openTab(event, 'Help')">Contact Staff</button>
+<button class="tablinks" onclick="openTab(event, 'Bill')">Pay Bill</button>
+<hr>
+</div>
+</div>
+
+<div id="Menu" class="tabcontent">
+  <div class="panel-group" id="accordion">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h4 class="panel-title">
+          <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+          Category</a>
+          </h4>
+          </div>
+          <div id="collapse1" class="panel-collapse collapse">
+            <div class="panel-body">
+            <div class="panel panel-default">
+
+            <div class="panel-heading">
+            <h4 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion2" href="#collapse2">Base Item</a>
+            </h4>
+            </div>
+            <div id="collapse2" class="panel-collapse collapse">
+            <div class="panel-body">
+            <h4 class="card-title">description</h4>
+            <h6 class="card-title">more info</h6>
+            <hr>
+            <div class="card">
+            <h4 class="card-header">Size</h4>
+            <div class="card-body">
+              <div class="form-check">
+                <label class="form-check-label" for="exampleRadios1">
+                  Size 1
+                </label>
+              <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1">
+            </div>
+            <br>
+            <div class="form-check">
+              <label class="form-check-label" for="exampleRadios2">
+                Size 2
+              </label>
+              <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
+            </div>
+            </div>
+            </div>
+            <hr>
+
+            <div class="card">
+            <h4 class="card-header">Modifier</h4>
+            <div class="card-body">
+              <h5 class="card-title">(min 1, max 2)</h5>
+                <div class="form-check">
+                  <label class="form-check-label" for="defaultCheck1">
+                    Option 1
+                  </label>
+                <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+                </div>
+                <br>
+                <div class="form-check">
+                  <label class="form-check-label" for="defaultCheck1">
+                    Option 2
+                  </label>
+                <input class="form-check-input" type="checkbox" value="" id="defaultCheck2">
+                </div>
+            </div>
+            </div>
+            <hr>
+
+  <div class="form-group">
+      <label for="exampleFormControlSelect0">Notes</label>
+    <input class="form-control" type="text" placeholder="Notes" id="exampleFormControlSelect1">
+    <br>
+    <label for="validationDefault05">Quantity</label>
+    <input type="number" class="form-control" id="validationDefault05" placeholder="1">
+  </div>
+            <div class="row">
+                <div class="col-lg-12">
+              <strong> Add Item </strong>
+              <a href="#" class="btn btn-success btn-circle btn-sm">
+              <i class="fas fa-check"></i>
+              </a>
+                </div>
+            </div>
+            </div>
+
+    </div>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+
+
+      </div>
+    </div>
+
+
+<div id="Help" class="tabcontent">
+
+  <div class="container">
+    <hr>
+  <div class="row">
+    <div class="col-sm-6">
+      <button type="button" class="btn btn-primary btn-lg" data-toggle="collapse" data-target="#drink">Refill Drink</button>
+      <div id="drink" class="collapse">
+        <br>
+        <h5>Enter Drinks to Refill</h5>
+
+      <div class="row">
+        <div class="col-sm-8">
+        <input type="text" class="form-control" placeholder="Drinks" required>
+        </div>
+        <div class="col-sm-1">
+        <button class="btn btn-success" type="submit">Request</button>
+       </div>
+      </div>
+
+      </div>
+    </div>
+    <div class="col-sm-6">
+      <button type="button" class="btn btn-primary btn-lg">Extra Napkins</button>
+    </div>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-sm-6">
+      <button type="button" class="btn btn-primary btn-lg">Extra Cutlery</button>
+    </div>
+    <div class="col-sm-6">
+      <button type="button" class="btn btn-primary btn-lg">Clear Table</button>
+    </div>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-sm-6">
+      <button type="button" class="btn btn-primary btn-lg" data-toggle="collapse" data-target="#iss">Issue With Food</button>
+      <div id="iss" class="collapse">
+      <br>
+      <h5>Enter Issue</h5>
+
+    <div class="row">
+      <div class="col-sm-8">
+      <input type="text" class="form-control" required>
+      </div>
+      <div class="col-sm-1">
+      <button class="btn btn-success" type="submit">Send</button>
+     </div>
+    </div>
+    </div>
+    </div>
+
+    <div class="col-sm-6">
+      <button type="button" class="btn btn-primary btn-lg" data-toggle="collapse" data-target="#boxFood">Box Food</button>
+      <div id="boxFood" class="collapse">
+      <br>
+      <h5>Number of Boxes</h5>
+
+    <div class="row">
+      <div class="col-sm-8">
+      <input type="number" class="form-control" placeholder="1" step="1" required>
+      </div>
+      <div class="col-sm-1">
+      <button class="btn btn-success" type="submit">Request</button>
+     </div>
+    </div>
+
+    </div>
+  </div>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-sm-6">
+
+    <button type="button" class="btn btn-primary btn-lg" data-toggle="collapse" data-target="#cond">Request Condiments</button>
+    <div id="cond" class="collapse">
+    <br>
+    <h5>Enter Condiments</h5>
+
+  <div class="row">
+    <div class="col-sm-8">
+    <input type="text" class="form-control" placeholder="Condiments">
+    </div>
+    <div class="col-sm-1">
+    <button class="btn btn-success" type="submit">Request</button>
+   </div>
+  </div>
+
+    </div>
+    </div>
+
+
+    <div class="col-sm-6">
+      <button type="button" class="btn btn-primary btn-lg" data-toggle="collapse" data-target="#othr">Other</button>
+      <div id="othr" class="collapse">
+        <br>
+        <h5>Enter Request</h5>
+
+      <div class="row">
+        <div class="col-sm-8">
+        <input type="text" class="form-control" required>
+        </div>
+        <div class="col-sm-1">
+        <button class="btn btn-success" type="submit">Request</button>
+       </div>
+      </div>
+
+      </div>
+    </div>
+  </div>
+  </div>
+
+
+</div>
+
+
+
+<script>
+function openTab(evt, cityName) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  document.getElementById(cityName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+</script>
+
+
+</body>
+
+</html>
