@@ -59,6 +59,76 @@
 </div>
 </div>
 
+<div id="Bill" class="tabcontent">
+  <div class="card">
+      <br>
+      <div class="row">
+          <div class="col-lg-12">
+
+        <button class="btn btn-circle btn-sm" ondblclick="data-toggle" data-toggle="modal" data-target="#myModal">
+          <i class="fas fa-edit"></i>
+        </button>
+        <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">Enter Staff code</h4>
+        </div>
+        <div class="modal-body">
+          <form class="form-inline">
+          <label class="sr-only" for="inlineFormInputGroupUsername2">Enter Code</label>
+          <div class="input-group mb-2 mr-sm-2">
+            <input type="password" class="form-control" id="inlineFormInputGroupUsername2" placeholder="Enter Code">
+          </div>
+          <button type="submit" class="btn btn-primary mb-2">Submit</button>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+      </div>
+      </div>
+      </div>
+      </div>
+      <hr>
+      <!--for loop here-->
+      <div class="card">
+      <div class="card-header">
+        <h4>Base Item</h4>
+      </div>
+      <div class="card-body">
+
+        <h4 class="card-title">Modifiers</h4>
+
+        <h4 class="card-title">Notes</h4>
+        <h4 class="card-title">Quantity</h4>
+        <h4 class="card-title">Price</h4>
+      </div>
+      </div>
+      <hr>
+
+
+
+
+
+
+      <form class="form-inline">
+        <h6>subtotal ${{subtotal}}</h6>
+        <h6>Taxes ${{taxes}}</h6>
+        <h6>Security Fee $0.10</h6>
+        <h5>Total ${{total}}</h5>
+        <hr>
+      <button type="submit" class="btn btn-primary mb-2">Pay Now</button>
+      <!--JS webview script here-->
+      </form>
+      </div>
+      </div>
+
+
 
 <div id="Cart" class="tabcontent">
 
@@ -87,18 +157,18 @@
   <div class="row">
       <div class="col-lg-12">
 
-    <button class="btn btn-success btn-circle btn-sm" data-toggle="popover" data-content="Items Sent To Kitchen">
+    <button class="btn btn-success btn-circle btn-sm" data-toggle="popover" data-placement="bottom" data-content="Items Sent To Kitchen">
       <strong>Order Items </strong><i class="fas fa-arrow-right"></i>
     </button>
       </div>
   </div>
   </div>
-  </div>
+
 
 
 <div id="Requests" class="tabcontent">
-
   <div class="card">
+
     <div class="card-header">
       <h4>11:38</h4>
     </div>
@@ -108,9 +178,20 @@
       <h5 class="card-text">Food Item - Price</h5>
 
     </div>
-  </div>
   <hr>
 
+  <div class="card-header">
+    <h4>11:38</h4>
+  </div>
+  <div class="card-body">
+    <h4 class="card-title">Food</h4>
+
+    <h5 class="card-text">Food Item - Price</h5>
+
+  </div>
+<hr>
+
+</div>
 
 </div>
 
@@ -158,7 +239,6 @@
             </div>
             </div>
             <hr>
-
             <div class="card">
             <h4 class="card-header">Modifier</h4>
             <div class="card-body">
@@ -204,8 +284,8 @@
 
 <div id="Help" class="tabcontent">
 
-  <div class="container">
-    <hr>
+  <div class="card">
+    <br>
   <div class="row">
     <div class="col-sm-6">
       <button type="button" class="btn btn-primary btn-lg" data-toggle="collapse" data-target="#drink">Refill Drink</button>
@@ -218,12 +298,13 @@
         <input type="text" class="form-control" placeholder="Drinks" required>
         </div>
         <div class="col-sm-1">
-        <button class="btn btn-success" type="submit">Request</button>
+        <button class="btn btn-success" data-toggle="popover" data-content="Request Sent" type="submit">Request</button>
        </div>
       </div>
 
       </div>
     </div>
+    <br>
     <div class="col-sm-6">
       <button type="button" class="btn btn-primary btn-lg">Extra Napkins</button>
     </div>
@@ -233,14 +314,16 @@
     <div class="col-sm-6">
       <button type="button" class="btn btn-primary btn-lg">Extra Cutlery</button>
     </div>
+    <br>
     <div class="col-sm-6">
       <button type="button" class="btn btn-primary btn-lg">Clear Table</button>
     </div>
+    <br>
   </div>
   <br>
   <div class="row">
     <div class="col-sm-6">
-      <button type="button" class="btn btn-primary btn-lg" data-toggle="collapse" data-target="#iss">Issue With Food</button>
+      <button type="button" class="btn btn-primary btn-lg" data-toggle="collapse" data-target="#iss">Issue With Food/Bill</button>
       <div id="iss" class="collapse">
       <br>
       <h5>Enter Issue</h5>
@@ -250,11 +333,12 @@
       <input type="text" class="form-control" required>
       </div>
       <div class="col-sm-1">
-      <button class="btn btn-success" type="submit">Send</button>
+      <button class="btn btn-success" data-toggle="popover" data-content="Request Sent" type="submit">Send</button>
      </div>
     </div>
     </div>
     </div>
+    <br>
 
     <div class="col-sm-6">
       <button type="button" class="btn btn-primary btn-lg" data-toggle="collapse" data-target="#boxFood">Box Food</button>
@@ -267,12 +351,13 @@
       <input type="number" class="form-control" placeholder="1" step="1" required>
       </div>
       <div class="col-sm-1">
-      <button class="btn btn-success" type="submit">Request</button>
+      <button class="btn btn-success" data-toggle="popover" data-content="Request Sent" type="submit">Request</button>
      </div>
     </div>
 
     </div>
   </div>
+  <br>
   </div>
   <br>
   <div class="row">
@@ -288,12 +373,13 @@
     <input type="text" class="form-control" placeholder="Condiments">
     </div>
     <div class="col-sm-1">
-    <button class="btn btn-success" type="submit">Request</button>
+    <button class="btn btn-success" data-toggle="popover" data-content="Request Sent" type="submit">Request</button>
    </div>
   </div>
 
     </div>
     </div>
+    <br>
 
 
     <div class="col-sm-6">
@@ -307,21 +393,14 @@
         <input type="text" class="form-control" required>
         </div>
         <div class="col-sm-1">
-        <button class="btn btn-success" type="submit">Request</button>
+        <button class="btn btn-success" data-toggle="popover" data-content="Request Sent" type="submit">Request</button>
        </div>
       </div>
-
       </div>
     </div>
   </div>
   </div>
-
-
 </div>
-
-
-
-
 
 
 <script>
@@ -339,6 +418,7 @@ function openTab(evt, cityName) {
   evt.currentTarget.className += " active";
 }
 </script>
+
 <script>
 $(document).ready(function(){
 $('[data-toggle="popover"]').popover();
