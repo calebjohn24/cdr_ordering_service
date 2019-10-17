@@ -26,6 +26,10 @@
   <meta name="author" content="">
 
   <title>Admin Panel</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
   <!-- Custom fonts for this template-->
   <link href="../../../static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -33,7 +37,6 @@
 
   <!-- Custom styles for this template-->
   <link href="../../../static/css/sb-admin-2.min.css" rel="stylesheet">
-
 
 </head>
 
@@ -64,8 +67,6 @@
           <i class="fas fa-store-alt"></i>
             <span>{{LocName[j]}}</span></a>
             {%endfor%}
-
-
       </li>
 
       <!-- Divider -->
@@ -84,9 +85,10 @@
         <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Analytics</h6>
-            <a class="collapse-item" href="/{{LocName}}/admin-CustAnalytics">Customers</a>
-            <a class="collapse-item" href="/{{LocName}}/admin-OrdAnalytics">Orders</a>
-            <a class="collapse-item" href="/{{LocName}}/admin-MenuAnalytics">Menus</a>
+            <a class="collapse-item" href="/admin-CustAnalytics">Customers</a>
+            <a class="collapse-item" href="/admin-OrdAnalytics">Orders</a>
+            <a class="collapse-item" href="/admin-MenuAnalytics">Menus</a>
+            <a class="collapse-item" href="/admin-LocAnalytics">Location Comparison</a>
           </div>
         </div>
       </li>
@@ -99,15 +101,31 @@
         <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Edit Menus</h6>
-            <a class="collapse-item" href="/{{LocName}}/admin-CreateMenu">Create/Activate Menu</a>
-            <a class="collapse-item" href="/{{LocName}}/admin-EditMenu">Edit Menu</a>
-            <a class="collapse-item" href="/{{LocName}}/admin-DeleteMenu">Delete/Deactivate Menu</a>
-            <a class="collapse-item" href="/{{LocName}}/admin-SetInOut">Set Items In/Out of Stock</a>
+            <a class="collapse-item" href="/admin-CreateMenu">Create/Activate Menu</a>
+            <a class="collapse-item" href="/admin-EditMenu">Edit Menu</a>
+            <a class="collapse-item" href="/admin-DeleteMenu">Delete/Deactivate Menu</a>
+            <a class="collapse-item" href="/admin-SetInOut">Set Items In/Out of Stock</a>
           </div>
         </div>
       </li>
       <!-- Nav Item - Pages Collapse Menu -->
 
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseX" aria-expanded="true" aria-controls="collapseX">
+          <i class="fas fa-gift"></i>
+          <span>Loyalty Program</span>
+        </a>
+        <div id="collapseX" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Loyalty Program</h6>
+            <a class="collapse-item" href="/admin-rewards">Set Rewards</a>
+            <a class="collapse-item" href="/admin-points">Reward Points</a>
+            <a class="collapse-item" href="/admin-createGC">Create Gift Card</a>
+            <a class="collapse-item" href="/admin-createPC">Create Points Card</a>
+            <a class="collapse-item" href="/admin-editPC">Edit Points Card Balance</a>
+          </div>
+        </div>
+      </li>
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCust" aria-expanded="true" aria-controls="collapseCust">
@@ -117,10 +135,31 @@
         <div id="collapseCust" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">View Customers</h6>
-            <a class="collapse-item" href="/{{LocName}}/admin-viewCustomers">View Your Customers</a>
+            <a class="collapse-item" href="/admin-viewCustomers">View Your Customers</a>
+            <a class="collapse-item" href="/admin-findCustomers">Find New Customers</a>
+
           </div>
         </div>
       </li>
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseInv" aria-expanded="true" aria-controls="collapseInv">
+          <i class="fas fa-tags"></i>
+          <span>Promotions</span>
+        </a>
+        <div id="collapseInv" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
+          <div class="bg-white py-2 collapse-inner rounded">
+            <h6 class="collapse-header">Promotions</h6>
+            <a class="collapse-item" href="/admin-createPromo">Create New Promo</a>
+            <a class="collapse-item" href="/admin-remPromo">Deactivate Promo</a>
+            <a class="collapse-item" href="/admin-editPromo">Edit Promo</a>
+          </div>
+        </div>
+      </li>
+
+
+
+
 
       <!-- Divider -->
       <hr class="sidebar-divider d-none d-md-block">
@@ -149,7 +188,7 @@
 
           <!-- Topbar Search -->
             <div class="input-group">
-              <h3 class="h3 mb-0 text-gray-800">{{LocName}} {{restName}} Dashboard</h3>
+              <h3 class="h3 mb-0 text-gray-800">{{restName}} Dashboard</h3>
             </div>
 
           <!-- Topbar Navbar -->
@@ -201,224 +240,49 @@
         <!-- Begin Page Content -->
         <div class="container-fluid">
           <br>
-          <div class="row">
-            <!-- Earnings (Monthly) Card Example -->
-
-            <div class="col-xl-4 col-md-6 mb-4">
-              <div class="card border-left-success shadow h-100 py-2" onclick="">
-                <div class="card-body">
-                  <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Monthly Revenue</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">$40,000</div>
-                    </div>
-                    <div class="col-auto">
-                      <i class="fas fa-money-check-alt fa-2x text-gray-300"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-xl-4 col-md-6 mb-4">
-              <div class="card border-left-success shadow h-100 py-2" onclick="">
-                <div class="card-body">
-                  <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Daily Average Revenue</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">$5,714.29</div>
-                    </div>
-                    <div class="col-auto">
-                      <i class="fas fa-money-check-alt fa-2x text-gray-300"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-xl-4 col-md-6 mb-4">
-              <div class="card border-left-success shadow h-100 py-2" onclick="">
-                <div class="card-body">
-                  <div class="row no-gutters align-items-center">
-                    <div class="col mr-2">
-                      <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Best Selling Item</div>
-                      <div class="h5 mb-0 font-weight-bold text-gray-800">11 in Cheese Pizza</div>
-                    </div>
-                    <div class="col-auto">
-                      <i class="fas fa-utensils fa-2x text-gray-300"></i>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-        </div>
-        <br>
-        <br>
-        <div class="row">
-          <!-- Area Chart -->
-          <div class="col-xl-8 col-lg-7">
-            <div class="card shadow mb-4">
-              <!-- Card Header - Dropdown -->
-              <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Weekly Overview</h6>
-                <div class="dropdown no-arrow">
-                  <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-
-                  </a>
-                </div>
-              </div>
-              <!-- Card Body -->
-              <div class="card-body">
-                <div class="chart-area">
-                  <canvas id="myAreaChart"></canvas>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Pie Chart -->
-          <div class="col-xl-4 col-lg-5">
-            <div class="card shadow mb-4">
-              <!-- Card Header - Dropdown -->
-              <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">Order Breakdown</h6>
-                <div class="dropdown no-arrow">
-                  <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-
-                  </a>
-                </div>
-              </div>
-
-              <!-- Card Body -->
-              <div class="card-body">
-                <div class="chart-pie pt-4 pb-2">
-                  <canvas id="myPieChart"></canvas>
-                </div>
-                <div class="mt-4 text-center small">
-                  <span class="mr-2">
-                    <i class="fas fa-circle text-primary"></i> To Go
-                  </span>
-                  <span class="mr-2">
-                    <i class="fas fa-circle text-success"></i> Dine In
-                  </span>
-                </div>
-              </div>
-
-            </div>
-          </div>
-        </div>
-        <br>
-        <br>
-
-    <div class="row">
-      <br>
-      <br>
-      <div class="col-xl-4 col-lg-5">
-        <div class="card shadow mb-4">
-          <!-- Card Header - Dropdown -->
-          <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-            <h6 class="m-0 font-weight-bold text-primary">Customer Breakdown</h6>
-            <div class="dropdown no-arrow">
-              <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-
-              </a>
-
-            </div>
-          </div>
-
-          <!-- Card Body -->
-          <div class="card-body">
-            <div class="chart-pie pt-4 pb-2">
-              <canvas id="CustBreakdown"></canvas>
-            </div>
-            <div class="mt-4 text-center small">
-              <span class="mr-2">
-                <i class="fas fa-circle text-info"></i> Returning
-              </span>
-              <span class="mr-2">
-                <i class="fas fa-circle text-success"></i> New
-              </span>
-            </div>
-          </div>
-        </div>
-        </div>
-        <br>
-        <div class="col-xl-3 col-md-6 mb-4">
-          <div class="card border-left-info shadow h-10 py-2" onclick="">
-            <div class="card-body">
-              <div class="row no-gutters align-items-center">
-                <div class="col mr-2">
-                  <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Average Ticket Size</div>
-                  <div class="h5 mb-0 font-weight-bold text-gray-800">6 items</div>
-                </div>
-                <div class="col-auto">
-                  <i class="fas fas fa-receipt fa-2x text-gray-300"></i>
-                </div>
-              </div>
-            </div>
-          </div>
+          <h4 class="m-0 font-weight-bold text-primary">Add Modifiers</h4>
           <br>
+          <form>
+          <h6 class="m-0 font-weight-bold text-primary">Enter Number of Modifiers</h6>
+            <!-- For Loop Here -->
+          <input type="number" name="numMods" class="form-control" placeholder="" required>
           <br>
-          <div class="card border-left-info shadow h-10 py-2" onclick="">
-            <div class="card-body">
-              <div class="row no-gutters align-items-center">
-                <div class="col mr-2">
-                  <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Average Ticket Price</div>
-                  <div class="h5 mb-0 font-weight-bold text-gray-800">$5.67</div>
-                </div>
-                <div class="col-auto">
-                  <i class="fas fa-money-check-alt fa-2x text-gray-300"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-          <br>
-          <br>
-          <div class="card border-left-info shadow h-10 py-2" onclick="">
-            <div class="card-body">
-              <div class="row no-gutters align-items-center">
-                <div class="col mr-2">
-                  <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Most Common Zip Code</div>
-                  <div class="h5 mb-0 font-weight-bold text-gray-800">98075</div>
-                </div>
-                <div class="col-auto">
-                  <i class="fas fa-map-marker-alt fa-2x text-gray-300"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-xl-5 col-md-6 mb-4">
 
-        <div class="card shadow mb-4">
-          <div class="card-header py-3">
-            <h6 class="m-0 font-weight-bold text-primary">Orders Per Day</h6>
-          </div>
-          <div class="card-body">
-            <div class="chart-bar">
-              <canvas id="myBarChart"></canvas>
-            </div>
-          </div>
+          <button type="submit" class="btn btn-primary mb-2">Next</button>
+          </form>
+
+
+
+
+
+          <!-- Page Heading -->
+
         </div>
+
+
+
+
+
     </div>
-    </div>
+
+    <!-- End of Content Wrapper -->
+    <!-- Footer -->
+    <footer class="sticky-footer bg-white">
+      <div class="container my-auto">
+        <div class="copyright text-center my-auto">
+          <span>Copyright &copy; Cedar Robotics 2019</span>
+        </div>
+      </div>
+    </footer>
+        <!-- End of Footer -->
 
   </div>
   <!-- End of Page Wrapper -->
-  <!-- Footer -->
-  <footer class="sticky-footer bg-white">
-    <div class="container my-auto">
-      <div class="copyright text-center my-auto">
-        <span>Copyright &copy; Cedar Robotics 2019</span>
-      </div>
-    </div>
-  </footer>
-      <!-- End of Footer -->
   <!-- Scroll to Top Button-->
   <a class="scroll-to-top rounded" href="#page-top">
     <i class="fas fa-angle-up"></i>
   </a>
+
   <!-- Logout Modal-->
   <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -437,15 +301,20 @@
       </div>
     </div>
   </div>
+
   <!-- Bootstrap core JavaScript-->
   <script src="../../../static/vendor/jquery/jquery.min.js"></script>
   <script src="../../../static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
   <!-- Core plugin JavaScript-->
   <script src="../../../static/vendor/jquery-easing/jquery.easing.min.js"></script>
+
   <!-- Custom scripts for all pages-->
   <script src="../../../static/js/sb-admin-2.min.js"></script>
+
   <!-- Page level plugins -->
   <script src="../../../static/vendor/chart.js/Chart.min.js"></script>
+
   <!-- Page level custom scripts -->
   <script src="../../../static/js/demo/chart-area-demo.js"></script>
   <script src="../../../static/js/demo/chart-pie-demo.js"></script>

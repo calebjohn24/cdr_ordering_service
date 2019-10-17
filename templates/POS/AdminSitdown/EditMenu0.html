@@ -67,8 +67,6 @@
           <i class="fas fa-store-alt"></i>
             <span>{{LocName[j]}}</span></a>
             {%endfor%}
-
-
       </li>
 
       <!-- Divider -->
@@ -103,31 +101,14 @@
         <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
           <div class="bg-white py-2 collapse-inner rounded">
             <h6 class="collapse-header">Edit Menus</h6>
-            <a class="collapse-item" href="/admin-CreateMenu">Create/Activate Menu</a>
-            <a class="collapse-item" href="/admin-EditMenu">Edit Menu</a>
-            <a class="collapse-item" href="/admin-DeleteMenu">Delete/Deactivate Menu</a>
+            <a class="collapse-item" href="/admin-CreateMenu">Activate Menu</a>
+            <a class="collapse-item" href="/admin-EditMenu">Create/Edit Menu</a>
+            <a class="collapse-item" href="/admin-DeleteMenu">Deactivate Menu</a>
             <a class="collapse-item" href="/admin-SetInOut">Set Items In/Out of Stock</a>
           </div>
         </div>
       </li>
       <!-- Nav Item - Pages Collapse Menu -->
-
-      <li class="nav-item">
-        <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseX" aria-expanded="true" aria-controls="collapseX">
-          <i class="fas fa-gift"></i>
-          <span>Loyalty Program</span>
-        </a>
-        <div id="collapseX" class="collapse" aria-labelledby="headingPages" data-parent="#accordionSidebar">
-          <div class="bg-white py-2 collapse-inner rounded">
-            <h6 class="collapse-header">Loyalty Program</h6>
-            <a class="collapse-item" href="/admin-rewards">Set Rewards</a>
-            <a class="collapse-item" href="/admin-points">Reward Points</a>
-            <a class="collapse-item" href="/admin-createGC">Create Gift Card</a>
-            <a class="collapse-item" href="/admin-createPC">Create Points Card</a>
-            <a class="collapse-item" href="/admin-editPC">Edit Points Card Balance</a>
-          </div>
-        </div>
-      </li>
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#collapseCust" aria-expanded="true" aria-controls="collapseCust">
@@ -163,13 +144,12 @@
 
 
 
+
       <!-- Divider -->
       <hr class="sidebar-divider d-none d-md-block">
 
+
       <!-- Sidebar Toggler (Sidebar) -->
-      <div class="text-center d-none d-md-inline">
-        <button class="rounded-circle border-0" id="sidebarToggle"></button>
-      </div>
 
     </ul>
     <!-- End of Sidebar -->
@@ -194,47 +174,7 @@
             </div>
 
           <!-- Topbar Navbar -->
-          <ul class="navbar-nav ml-auto">
 
-            <!-- Nav Item - Search Dropdown (Visible Only XS) -->
-            <li class="nav-item dropdown no-arrow d-sm-none">
-              <a class="nav-link dropdown-toggle" href="#" id="searchDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="fas fa-search fa-fw"></i>
-              </a>
-              <!-- Dropdown - Messages -->
-              <div class="dropdown-menu dropdown-menu-right p-3 shadow animated--grow-in" aria-labelledby="searchDropdown">
-                <form class="form-inline mr-auto w-100 navbar-search">
-                  <div class="input-group">
-                    <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..." aria-label="Search" aria-describedby="basic-addon2">
-                    <div class="input-group-append">
-                      <button class="btn btn-primary" type="button">
-                        <i class="fas fa-search fa-sm"></i>
-                      </button>
-                    </div>
-                  </div>
-                </form>
-              </div>
-            </li>
-            <!-- Nav Item - User Information -->
-            <li class="nav-item dropdown no-arrow">
-              <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span class="mr-2 d-none d-lg-inline text-gray-600 small">{{restName}}</span>
-              </a>
-              <!-- Dropdown - User Information -->
-              <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="#">
-                  <i class="fas fa-info fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Account Info
-                </a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">
-                  <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                  Logout
-                </a>
-              </div>
-            </li>
-
-          </ul>
 
         </nav>
         <!-- End of Topbar -->
@@ -242,24 +182,38 @@
         <!-- Begin Page Content -->
         <div class="container-fluid">
           <br>
-          <h6 class="m-0 font-weight-bold text-primary">New Menu</h6>
+          <h4 class="m-0 font-weight-bold text-primary">Add Menu</h4>
           <br>
           <form>
           <div class="input-group mb-3">
             <div class="input-group-prepend">
-              <span class="input-group-text" id="inputGroup-sizing-default">Menu Name</span>
+              <span class="input-group-text" id="inputGroup-sizing-default">Enter Menu name</span>
             </div>
-            <input type="text" name="menName" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+            <input type="text" name="newCat" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" required>
           </div>
-          <button type="submit" class="btn btn-primary mb-2">Create</button>
+          <br>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="inputGroup-sizing-default">Enter Menu Start Time</span>
+            </div>
+            <input type="text" placeholder="14:25 for 2:25 pm"name="newCat" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" required>
+          </div>
+          <br>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="inputGroup-sizing-default">Enter Menu edit Time</span>
+            </div>
+            <input type="text" placeholder="18:35 for 6:35 pm"name="newCat" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" required>
+          </div>
+          <button type="submit" class="btn btn-primary mb-2">Add</button>
           </form>
           <hr>
-          <h6 class="m-0 font-weight-bold text-primary">Existing Menu</h6>
+          <h6 class="m-0 font-weight-bold text-primary">Add Item to Existing Menu</h6>
           <br>
 
           <form>
 
-          <button type="submit" name="currMen" value="{{i}}" class="btn btn-primary mb-2">Menu Name</button>
+          <button type="submit" name="exCat" value="{{i}}" class="btn btn-primary mb-2">Menu Name</button>
 
           </form>
 
@@ -289,35 +243,10 @@
   </div>
   <!-- End of Page Wrapper -->
   <!-- Scroll to Top Button-->
-  <a class="scroll-to-top rounded" href="#page-top">
-    <i class="fas fa-angle-up"></i>
-  </a>
 
-  <!-- Logout Modal-->
-  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">×</span>
-          </button>
-        </div>
-        <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-        <div class="modal-footer">
-          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-          <a class="btn btn-primary" href="login.html">Logout</a>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <!-- Bootstrap core JavaScript-->
-  <script src="../../../static/vendor/jquery/jquery.min.js"></script>
-  <script src="../../../static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-  <!-- Core plugin JavaScript-->
-  <script src="../../../static/vendor/jquery-easing/jquery.easing.min.js"></script>
 
   <!-- Custom scripts for all pages-->
   <script src="../../../static/js/sb-admin-2.min.js"></script>
@@ -330,32 +259,6 @@
   <script src="../../../static/js/demo/chart-pie-demo.js"></script>
     <script src="../../../static/js/demo/chart-bar-demo.js"></script>
 
-
 </body>
 
 </html>
-
-
-<!--
-
-
-<h1 id="heading1" style="text-align:center; height:auto; width:auto; font-family:'Arial Black', Gadget, sans-serif">Determinant of a nxn matrix</h1>
-<p id="paragraph1" style="font-family:'Arial Black', Gadget, sans-serif"> This program allows you to compute the determinant of a nxn matrix</p>
-
-<p>
-    Input the order of the matrix
-    <br />
-     <i id='val2' value="tet"></i>
-    <input type="button" value="submit" onclick="verifyorder()" />
-<p id="error"></p>
-<p id="detspace"></p>
-
-
-
-<script>
-  function verifyorder() {
-var ctx = document.getElementById("val2").getAttribute("value");
-     alert(ctx);
-}
-</script>
--->
