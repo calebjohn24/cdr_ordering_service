@@ -184,20 +184,60 @@
         <!-- Begin Page Content -->
         <div class="container-fluid">
           <br>
-          <h4 class="m-0 font-weight-bold text-primary">Share Promo Promotion</h4>
+          <h4 class="m-0 font-weight-bold text-primary">Set Rewards</h4>
           <br>
+          <h5 class="m-0 font-weight-bold text-primary">Customers earn 2 points for every dollar the spend</h5>
+          <hr>
           <form>
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="inputGroup-sizing-default">Enter Point Threshold</span>
+            </div>
+            <input type="number" name="name" placeholder="20" name="pointVal" class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" required>
+          </div>
+        </form><br>
+        <button type="submit" name="share" value="sms" class="btn btn-primary mb-2">Next</button>
+        <hr>
+        <div id="MenuIn">
 
-          <button type="submit" name="share" value="email" class="btn btn-primary mb-2">Email</button>
-          <br>
-          <hr>
-          <br>
-          <button type="submit" name="share" value="sms" class="btn btn-primary mb-2">SMS</button>
-          <br>
-          <hr>
-          <br>
-          <button type="submit" name="share" value="both" class="btn btn-primary mb-2">Both</button>
-          </form>
+            <h5 class="m-0 font-weight-bold text-primary">Current Rewards</h5>
+            <br>
+            <input class="form-control" id="myInput2" type="text" placeholder="Search..">
+            <br>
+            <table class="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th>Reward</th>
+                  <th>Threshold</th>
+                </tr>
+              </thead>
+              <tbody id="myTable2">
+                <tr>
+                  <td>50% dicount 11 in Pizza     <button href="#" type="submit" class="btn btn-danger btn-circle btn-lg">
+                      <i class="fas fa-times-circle"></i>
+                      </button></td>
+                  <td>100 points</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+
+          <script>
+          $(document).ready(function(){
+            $("#myInput2").on("keyup", function() {
+              var value = $(this).val().toLowerCase();
+              $("#myTable2 tr").filter(function() {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+              });
+            });
+          });
+          </script>
+
+
+        </form>
+        <hr>
+        <br>
 
 
 
