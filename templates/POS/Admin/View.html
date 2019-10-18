@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="57x57" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="72x72" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="76x76" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="114x114" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="120x120" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="144x144" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="152x152" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="180x180" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="icon" type="image/png" sizes="192x192"  href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="icon" type="image/png" sizes="32x32" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="icon" type="image/png" sizes="96x96" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="icon" type="image/png" sizes="16x16" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="manifest" href="/manifest.json">
+ <meta name="msapplication-TileColor" content="#000000">
+ <meta name="msapplication-TileImage" content="../../../static/img/CedarRoboticsLogo.jpg">
+ <meta name="theme-color" content="#000000">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Caleb John">
+
+  <title>Employee Panel</title>
+
+  <!-- Custom fonts for this template-->
+  <link href="../../../static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  <!-- Custom styles for this template-->
+  <link href="../../../static/css/tab.css" rel="stylesheet">
+    <link href="../../../static/css/sb-admin-2.min.css" rel="stylesheet">
+
+</head>
+
+<body>
+  <div class="container-fluid">
+  <br>
+  <div class="input-group">
+    <h3 class="h3 mb-0 text-gray-800">{{LocName}} {{restName}} </h3>
+  </div>
+  <hr>
+
+<div class="center">
+<div class="tab">
+  <button class="tablinks" onclick="openTab(event, 'Request')">Requests</button>
+    <button class="tablinks" onclick="openTab(event, 'MenuOut')">Deactivate Item</button>
+      <button class="tablinks" onclick="openTab(event, 'MenuIn')">Activate Item</button>
+
+</div>
+</div>
+
+<div id="MenuIn" class="tabcontent">
+
+    <p>Type something in the input field to search the table for first names, last names or emails:</p>
+    <input class="form-control" id="myInput2" type="text" placeholder="Search..">
+    <br>
+    <table class="table table-bordered table-striped">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+        </tr>
+      </thead>
+      <tbody id="myTable2">
+        <tr>
+          <td>11 in Pizza     <a href="#" class="btn btn-success btn-circle btn-lg">
+              <i class="fas fa-check"></i>
+              </a></td>
+          <td>Base Item</td>
+
+        </tr>
+        <tr>
+          <td>17 in Pizza    <a href="#" class="btn btn-success btn-circle btn-lg">
+              <i class="fas fa-check"></i>
+              </a></td>
+          <td>Base Item</td>
+
+        </tr>
+        <tr>
+          <td>Bacon  <a href="#" class="btn btn-success btn-circle btn-lg">
+              <i class="fas fa-check"></i>
+              </a></td>
+          <td>Modifier</td>
+
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script>
+  $(document).ready(function(){
+    $("#myInput2").on("keyup", function() {
+      var value = $(this).val().toLowerCase();
+      $("#myTable2 tr").filter(function() {
+        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+      });
+    });
+  });
+  </script>
+
+</div>
+
+
+<div id="MenuOut" class="tabcontent">
+  <input class="form-control" id="myInput" type="text" placeholder="Search..">
+  <br>
+  <table class="table table-bordered table-striped">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Type</th>
+      </tr>
+    </thead>
+    <tbody id="myTable">
+      <tr>
+        <td>11 in Pizza   <a href="#" class="btn btn-danger btn-circle btn-lg">
+          <i class="fas fa-times-circle"></i>
+          </a></td>
+        <td>Base Item</td>
+
+      </tr>
+      <tr>
+        <td>17 in Pizza   <a href="#" class="btn btn-danger btn-circle btn-lg">
+          <i class="fas fa-times-circle"></i>
+          </a></td>
+        <td>Base Item</td>
+
+      </tr>
+      <tr>
+        <td>Bacon   <a href="#" class="btn btn-danger btn-circle btn-lg">
+          <i class="fas fa-times-circle"></i>
+          </a></td>
+        <td>Modifier</td>
+
+      </tr>
+    </tbody>
+  </table>
+
+<script>
+$(document).ready(function(){
+  $("#myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#myTable tr").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+</script>
+
+</div>
+
+<div id="Request" class="tabcontent">
+  <div class="card shadow mb-4">
+    <!-- Card Header - Accordion -->
+     <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
+       <h6 class="m-0 font-weight-bold text-primary">Table #12</h6>
+     </a>
+     <!-- Card Content - Collapse -->
+     <div class="collapse show" id="collapseCardExample">
+       <div class="card-body">
+
+
+         <div class="row">
+        <div class="col-lg-12">
+          <div class="form-group row">
+          <div class="col-sm-2"><strong>Item</strong></div>
+          <div class="col-sm-10">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="gridCheck1">
+              <label class="form-check-label" for="gridCheck1">
+                add to ticket
+              </label>
+            </div>
+          </div>
+        </div>
+        </div>
+         </div>
+
+
+        <br>
+         <div class="row">
+        <div class="col-lg-12">
+         <a href="#" class="btn btn-success btn-circle btn-lg">
+         <i class="fas fa-check"></i>
+         </a>
+         <a href="#" class="btn btn-warning btn-circle btn-lg">
+           <i class="fas fa-exclamation-triangle"></i>
+         </a>
+         <a href="#" class="btn btn-danger btn-circle btn-lg">
+           <i class="fas fa-times-circle"></i>
+         </a>
+            </div>
+         </div>
+         <br>
+
+
+       </div>
+     </div>
+   </div>
+  </div>
+
+
+
+
+
+
+<script>
+function openTab(evt, cityName) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  document.getElementById(cityName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+</script>
+
+<!-- Bootstrap core JavaScript-->
+<script src="../../../static/vendor/jquery/jquery.min.js"></script>
+<script src="../../../static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
+
+<!-- Custom scripts for all pages-->
+<script src="../../../static/js/sb-admin-2.min.js"></script>
+
+<!-- Page level plugins -->
+<script src="../../../static/vendor/chart.js/Chart.min.js"></script>
+
+<!-- Page level custom scripts -->
+<script src="../../../static/js/demo/chart-area-demo.js"></script>
+<script src="../../../static/js/demo/chart-pie-demo.js"></script>
+  <script src="../../../static/js/demo/chart-bar-demo.js"></script>
+</body>
+
+</html>
