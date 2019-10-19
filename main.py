@@ -172,6 +172,11 @@ def getReply(msg, number):
 def login():
     return render_template("POS/Admin/login.html", btn=str("admin2"), restName=estNameStr)
 
+@app.route('/forgot-password', methods=["GET"])
+def pwReset():
+    return render_template("POS/Admin/forgot-password.html", btn=str("admin2"), restName=estNameStr)
+
+
 
 @app.route('/admin2', methods=["POST"])
 def loginPageCheck():
