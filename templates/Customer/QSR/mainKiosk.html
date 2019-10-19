@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <link rel="manifest" href="/manifest.json">
+    <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" sizes="60x60" href="../../../static/img/CedarRoboticsLogo.jpg">
  <link rel="apple-touch-icon" sizes="57x57" href="../../../static/img/CedarRoboticsLogo.jpg">
  <link rel="apple-touch-icon" sizes="72x72" href="../../../static/img/CedarRoboticsLogo.jpg">
@@ -25,6 +25,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="Caleb John">
+  <link rel="manifest" href="/manifest.json" >
 
   <title>Menu</title>
 
@@ -53,81 +54,9 @@
 <div class="tab">
 <button class="tablinks" onclick="openTab(event, 'Menu')">Menu</button>
 <button class="tablinks" onclick="openTab(event, 'Cart')">Cart</button>
-<button class="tablinks" onclick="openTab(event, 'Requests')">View Requests</button>
-<button class="tablinks" onclick="openTab(event, 'Help')">Contact Staff</button>
-<button class="tablinks" onclick="openTab(event, 'Bill')">Pay Bill</button>
 <hr>
 </div>
 </div>
-
-<div id="Bill" class="tabcontent">
-  <div class="card">
-      <br>
-      <div class="row">
-          <div class="col-lg-12">
-
-        <button class="btn btn-circle btn-sm" ondblclick="data-toggle" data-toggle="modal" data-target="#myModal">
-          <i class="fas fa-edit"></i>
-        </button>
-        <div class="modal fade" id="myModal" role="dialog">
-    <div class="modal-dialog">
-
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Enter Staff code</h4>
-        </div>
-        <div class="modal-body">
-          <form class="form-inline">
-          <label class="sr-only" for="inlineFormInputGroupUsername2">Enter Code</label>
-          <div class="input-group mb-2 mr-sm-2">
-            <input type="password" class="form-control" id="inlineFormInputGroupUsername2" placeholder="Enter Code">
-          </div>
-          <button type="submit" class="btn btn-primary mb-2">Submit</button>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-      </div>
-      </div>
-      </div>
-      </div>
-      <hr>
-      <!--for loop here-->
-      <div class="card">
-      <div class="card-header">
-        <h4>Base Item</h4>
-      </div>
-      <div class="card-body">
-
-        <h4 class="card-title">Modifiers</h4>
-
-        <h4 class="card-title">Notes</h4>
-        <h4 class="card-title">Quantity</h4>
-        <h4 class="card-title">Price</h4>
-      </div>
-      </div>
-      <hr>
-
-
-
-
-
-
-      <form class="form-inline">
-        <h6>subtotal ${{subtotal}}</h6>
-        <h6>Taxes ${{taxes}}</h6>
-        <h6>Security Fee $0.10</h6>
-        <h5>Total ${{total}}</h5>
-        <hr>
-      <button type="submit" class="btn btn-primary mb-2">Pay Now</button>
-      <!--JS webview script here-->
-      </form>
-      </div>
-      </div>
 
 
 
@@ -153,16 +82,15 @@
 
     </div>
   <hr>
-
-  <hr>
-  <div class="row">
-      <div class="col-lg-12">
-
-    <button class="btn btn-success btn-circle btn-sm" data-toggle="popover" data-placement="bottom" data-content="Items Sent To Kitchen">
-      <strong>Order Items </strong><i class="fas fa-arrow-right"></i>
-    </button>
-      </div>
-  </div>
+  <form class="form-inline">
+    <h6>subtotal ${{subtotal}}</h6>
+    <h6>Taxes ${{taxes}}</h6>
+    <h6>Security Fee $0.10</h6>
+    <h5>Total ${{total}}</h5>
+    <hr>
+  <button type="submit" class="btn btn-primary mb-2">Pay Now</button>
+  <!--JS webview script here-->
+  </form>
   </div>
 
 

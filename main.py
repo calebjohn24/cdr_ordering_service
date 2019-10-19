@@ -170,7 +170,7 @@ def getReply(msg, number):
 
 @app.route('/admin', methods=["GET"])
 def login():
-    return render_template("login.html", btn=str("admin2"), restName=estNameStr)
+    return render_template("POS/Admin/login.html", btn=str("admin2"), restName=estNameStr)
 
 
 @app.route('/admin2', methods=["POST"])
@@ -210,7 +210,7 @@ def loginPageCheck():
                                                          'cajohn0205@gmail.com', extra={'id': dbid})
         database = firebase.FirebaseApplication("https://cedarchatbot.firebaseio.com/",
                                                 authentication=authentication)
-        return render_template("login2.html", btn=str("admin2"), restName=estNameStr)
+        return render_template("POS/Admin/login2.html", btn=str("admin2"), restName=estNameStr)
 
 
 @app.route('/admin-panel', methods=["GET"])
@@ -225,7 +225,7 @@ def panel():
             time.time() - database.get("restaurants/" + uid + "/", "LoginTime") < adminSessTime)):
         getSquare()
         LocName = list(locationsPaths.keys())
-        return render_template("AdminPanel.html",
+        return render_template("POS/Admin/AdminPanel.html",
                                restName=estNameStr,
                                LocName=LocName,
                                lenLocName=len(LocName))
@@ -245,7 +245,7 @@ def locPanel(location):
             time.time() - database.get("restaurants/" + uid + "/", "LoginTime") < adminSessTime)):
         getSquare()
         LocName = list(locationsPaths.keys())
-        return render_template("locationAdmin.html",
+        return render_template("POS/Admin/locationAdmin.html",
                                restName=estNameStr,
                                LocName=LocName,
                                lenLocName=len(LocName),
@@ -360,6 +360,6 @@ if __name__ == '__main__':
         sess = Session()
         sess.init_app(app)
         app.permanent_session_lifetime = datetime.timedelta(minutes=200)
-        app.run(host="0.0.0.0", port=5000)
+        app.run(host="0.0.0.0", port=8888)
     except KeyboardInterrupt:
         sys.exit()

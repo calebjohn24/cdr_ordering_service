@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <link rel="manifest" href="/manifest.json" >
+  <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" sizes="60x60" href="../../../static/img/CedarRoboticsLogo.jpg">
  <link rel="apple-touch-icon" sizes="57x57" href="../../../static/img/CedarRoboticsLogo.jpg">
  <link rel="apple-touch-icon" sizes="72x72" href="../../../static/img/CedarRoboticsLogo.jpg">
@@ -40,48 +40,29 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
 
-
 </head>
 
-<body class="bg-gradient-primary">
-
-  <div class="container">
-    <br>
-    <br>
-
-    <!-- Outer Row -->
-    <div class="row justify-content-center">
-      <div class="text-center">
-        <h1 class="h4 text-gray-900 mb-2">Forgot Your Password?</h1>
-        <hr>
-
-      <form class="user">
-        <div class="form-group">
-          <input type="email" class="form-control form-control-user" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Email Address...">
-        </div>
-        <a href="login.html" class="btn btn-primary btn-user btn-block">
-          Reset Password
-        </a>
-      </form>
-      <hr>
-    </div>
-    </div>
-
-
-    </div>
-
+<body>
+  <div class="input-group">
+    <h3 class="h3 mb-0 text-gray-800">Welcome to {{restName}} - {{locName}}</h3>
   </div>
-
-  <!-- Bootstrap core JavaScript-->
-  <script src="vendor/jquery/jquery.min.js"></script>
-  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-  <!-- Core plugin JavaScript-->
-  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
-
-  <!-- Custom scripts for all pages-->
-  <script src="js/sb-admin-2.min.js"></script>
-
+  <hr>
+  <form>
+  <div class="input-group mb-3">
+    <div class="input-group-prepend">
+      <span class="input-group-text" id="inputGroup-sizing-default">Phone Number</span>
+    </div>
+    <input type="number" placeholder="1 555 555 5555" size="11" maxlength=11 class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+  </div>
+  <hr>
+  <div class="input-group mb-3">
+    <div class="input-group-prepend">
+      <span class="input-group-text" id="inputGroup-sizing-default">Table Number</span>
+    </div>
+    <input type="number" size="11" maxlength=11 class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+  </div>
+  <div class="d-inline-flex p-2">
+    <button type="submit" class="btn btn-primary mb-2">Start</button>
+  </div>
+  </form>
 </body>
-
-</html>

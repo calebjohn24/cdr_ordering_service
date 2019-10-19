@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-  <link rel="manifest" href="/manifest.json" >
   <link rel="apple-touch-icon" sizes="60x60" href="../../../static/img/CedarRoboticsLogo.jpg">
  <link rel="apple-touch-icon" sizes="57x57" href="../../../static/img/CedarRoboticsLogo.jpg">
  <link rel="apple-touch-icon" sizes="72x72" href="../../../static/img/CedarRoboticsLogo.jpg">
@@ -34,53 +33,37 @@
   <!-- Custom styles for this template-->
   <link href="../../../static/css/tab.css" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
 
 </head>
 
-<body class="bg-gradient-primary">
-
-  <div class="container">
-    <br>
-    <br>
-
-    <!-- Outer Row -->
-    <div class="row justify-content-center">
-      <div class="text-center">
-        <h1 class="h4 text-gray-900 mb-2">Forgot Your Password?</h1>
-        <hr>
-
-      <form class="user">
-        <div class="form-group">
-          <input type="email" class="form-control form-control-user" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Email Address...">
-        </div>
-        <a href="login.html" class="btn btn-primary btn-user btn-block">
-          Reset Password
-        </a>
-      </form>
-      <hr>
-    </div>
-    </div>
-
-
-    </div>
-
+<body>
+  <div class="container-fluid">
+  <br>
+  <div class="input-group">
+    <h3 class="h3 mb-0 text-gray-800">{{restName}}</h3>
   </div>
+  <hr>
 
-  <!-- Bootstrap core JavaScript-->
-  <script src="vendor/jquery/jquery.min.js"></script>
-  <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
-  <!-- Core plugin JavaScript-->
-  <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+<div class="center">
+<form>
+<button type="submit" name="pay" value="CC" class="btn btn-primary mb-2 btn-lg">Credit/Debit</button>
+</form>
+</div>
+<br>
+<div class="center">
+<form>
+<button type="submit" name="pay" value="GC" class="btn btn-primary mb-2 btn-lg">Gift Card</button>
+</form>
+</div>
 
-  <!-- Custom scripts for all pages-->
-  <script src="js/sb-admin-2.min.js"></script>
+
+
+
 
 </body>
 
