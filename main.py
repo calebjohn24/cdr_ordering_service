@@ -5,10 +5,12 @@ import smtplib
 import sys
 import time
 import uuid
-
 import plivo
 import pygsheets
-import pyrebase
+import firebase_admin
+from passlib.hash import pbkdf2_sha256
+from firebase_admin import credentials
+from firebase_admin import firestore
 import pytz
 from flask import Flask, request, session
 from flask import redirect, url_for
@@ -18,9 +20,6 @@ from flask_sslify import SSLify
 from square.client import Client
 from werkzeug.datastructures import ImmutableOrderedMultiDict
 
-from firebase import firebase
-
-dbid = "d1ab1a95-ddb5-4ee4-83db-9179d37f8e78"
 infoFile = open("info.json")
 info = json.load(infoFile)
 uid = info['uid']
@@ -32,23 +31,11 @@ botNumber = info["number"]
 gsheetsLink = info["gsheets"]
 adminSessTime = 3599
 client = plivo.RestClient(auth_id='MAYTVHN2E1ZDY4ZDA2YZ', auth_token='ODgzZDA1OTFiMjE2ZTRjY2U4ZTVhYzNiODNjNDll')
-mainLink = ""
-authentication = firebase.FirebaseAuthentication('if7swrlQM4k9cBvm0dmWqO3QsI5zjbcdbstSgq1W', 'cajohn0205@gmail.com',
-                                                 extra={'id': dbid})
-
-database = firebase.FirebaseApplication("https://cedarchatbot.firebaseio.com/", authentication=authentication)
-data = (database.get("restaurants/" + uid, "/"))
-squareToken = database.get("/tokens/", estNameStr.upper())
-items = []
-config = {
-    "apiKey": "AIzaSyB2it4zPzPdn_bW9OAglTHUtclidAw307o",
-    "authDomain": "cedarchatbot.firebaseapp.com",
-    "databaseURL": "https://cedarchatbot.firebaseio.com",
-    "storageBucket": "cedarchatbot.appspot.com",
-}
-pyreBase = pyrebase.initialize_app(config)
-auth = pyreBase.auth()
-storage = pyreBase.storage()
+cred = credentials.Certificate('CedarChatbot-b443efe11b73.json')
+firebase_admin.initialize_app(cred)
+db = firestore.client()
+sqRef = db.collection('restaurants').document('testraunt').collection('info').document("sqtoken")
+squareToken = sqRef.get().to_dict()["token"]
 promoPass = "promo-" + str(estName)
 addPass = "add-" + str(estName)
 remPass = "remove-" + str(estName)
@@ -128,23 +115,26 @@ def checkLocation(location, custFlag):
             return [1, "EmployeeLocation"]
 
 
-def checkAdminToken(location):
-    if ((idToken == database.get("restaurants/" + uid + "/" + location + "/", "LoginToken")) and (
-            time.time() - database.get("restaurants/" + uid + "/" + location + "/", "LoginTime") < adminSessTime)):
+def checkAdminToken(idToken):
+    doc_ref = db.collection('restaurants').document('info')
+    doc = doc_ref.get().to_dict()
+    loginToken = doc["adminlogintoken"]
+    loginTime = doc["adminlogintime"]
+    if ((idToken == loginToken) and ((time.time() - loginTime) < adminSessTime)):
         return 0
     else:
         return 1
 
 
 def getReply(msg, number):
-    authentication = firebase.FirebaseAuthentication('if7swrlQM4k9cBvm0dmWqO3QsI5zjbcdbstSgq1W',
-                                                     'cajohn0205@gmail.com', extra={'id': dbid})
-    database = firebase.FirebaseApplication("https://cedarchatbot.firebaseio.com/", authentication=authentication)
-    SMSTimes = database.get("restaurants/" + uid + "/", "SMSTime")
-    closeTimeHr = int(SMSTimes["end"][0:2])
-    closeTimeMin = int(SMSTimes["end"][3:5])
-    openTimeHr = int(SMSTimes["start"][0:2])
-    openTimeMin = int(SMSTimes["start"][3:5])
+    doc_ref = db.collection('restaurants').document('info')
+    doc = doc_ref.get().to_dict()
+    smsopen = doc["smsopen"]
+    smsclosed  = doc["smsclosed"]
+    closeTimeHr = int(smsclosed[0:2])
+    closeTimeMin = int(smsclosed[3:5])
+    openTimeHr = int(smsopen[0:2])
+    openTimeMin = int(smsopen[3:5])
     closeCheck = float(closeTimeHr) + float(closeTimeMin / 100.0)
     openCheck = float(openTimeHr) + float(openTimeMin / 100.0)
     currentHour = float(datetime.datetime.now(tz).strftime("%H"))
