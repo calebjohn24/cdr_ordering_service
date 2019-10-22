@@ -10,7 +10,7 @@ import pygsheets
 import firebase_admin
 from passlib.hash import pbkdf2_sha256
 from firebase_admin import credentials
-from firebase_admin import firestore
+from firebase_admin import db
 import pytz
 from flask import Flask, request, session
 from flask import redirect, url_for
@@ -32,10 +32,11 @@ gsheetsLink = info["gsheets"]
 adminSessTime = 3599
 client = plivo.RestClient(auth_id='MAYTVHN2E1ZDY4ZDA2YZ', auth_token='ODgzZDA1OTFiMjE2ZTRjY2U4ZTVhYzNiODNjNDll')
 cred = credentials.Certificate('CedarChatbot-b443efe11b73.json')
-firebase_admin.initialize_app(cred)
-db = firestore.client()
-sqRef = db.collection('restaurants').document('testraunt').collection('info').document("sqtoken")
-squareToken = sqRef.get().to_dict()["token"]
+firebase_admin.initialize_app(cred, {
+    'databaseURL': 'https://cedarchatbot.firebaseio.com/'
+})
+sqRef = db.reference(str('/restaurants/' + estNameStr))
+squareToken = sqRef.get()["sq-token"]
 promoPass = "promo-" + str(estName)
 addPass = "add-" + str(estName)
 remPass = "remove-" + str(estName)
@@ -64,6 +65,7 @@ locationsPaths = {}
 
 
 # Call the success method to see if the call succeeded
+##########Restaurant END END###########
 def getSquare():
     if result.is_success():
         # The body property is a list of locations
@@ -115,47 +117,19 @@ def checkLocation(location, custFlag):
             return [1, "EmployeeLocation"]
 
 
-def checkAdminToken(idToken):
-    doc_ref = db.collection('restaurants').document('info')
+def checkAdminToken(idToken, email):
+    doc_ref = db.collection('restaurants/' + estNameStr + '/info/admininfo/admininfo').document(email)
     doc = doc_ref.get().to_dict()
-    loginToken = doc["adminlogintoken"]
-    loginTime = doc["adminlogintime"]
+    loginToken = doc["token"]
+    loginTime = doc["time"]
     if ((idToken == loginToken) and ((time.time() - loginTime) < adminSessTime)):
         return 0
+
     else:
         return 1
 
 
-def getReply(msg, number):
-    doc_ref = db.collection('restaurants').document('info')
-    doc = doc_ref.get().to_dict()
-    smsopen = doc["smsopen"]
-    smsclosed  = doc["smsclosed"]
-    closeTimeHr = int(smsclosed[0:2])
-    closeTimeMin = int(smsclosed[3:5])
-    openTimeHr = int(smsopen[0:2])
-    openTimeMin = int(smsopen[3:5])
-    closeCheck = float(closeTimeHr) + float(closeTimeMin / 100.0)
-    openCheck = float(openTimeHr) + float(openTimeMin / 100.0)
-    currentHour = float(datetime.datetime.now(tz).strftime("%H"))
-    currentMin = float(datetime.datetime.now(tz).strftime("%M")) / 100.0
-    currentTime = currentHour + currentMin
-    if (openCheck <= currentTime <= closeCheck):
-        msg = msg.lower()
-        msg.replace("\n", "")
-        msg.replace(".", "")
-        msg.replace(" ", "")
-        msg = ''.join(msg.split())
 
-        if (msg == "order" or msg == "ordew" or msg == "ord" or msg == "ordet" or msg == "oderr" or msg == "ordee" or (
-                "ord" in msg)):
-            reply = "Hi welcome to " + estNameStr + "! click the link below to order \n" + str(
-                mainLink) + "/smsinit/" + str(number)
-            return reply
-        else:
-            return ("no msg")
-    else:
-        return ("no msg")
 
 
 @app.route('/admin', methods=["GET"])
@@ -174,79 +148,71 @@ def loginPageCheck():
     rsp = ((request.form))
     email = str(rsp["emailAddr"])
     pw = str(rsp["pw"])
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    email = str(email).replace(".","-")
+    print(email,pw)
     try:
-        user = auth.sign_in_with_email_and_password(email, pw)
-        # print(user['localId'])
-        authentication = firebase.FirebaseAuthentication('if7swrlQM4k9cBvm0dmWqO3QsI5zjbcdbstSgq1W',
-                                                         'cajohn0205@gmail.com', extra={'id': dbid})
-        fireapp = firebase.FirebaseApplication('https://cedarchatbot.firebaseio.com/', authentication=authentication)
-        testDB = (fireapp.get("/restaurants/", user["localId"]))
-        if (str(user["localId"]) == str(uid) and testDB != None):
+        user = ref.get()[str(email)]
+        print((pbkdf2_sha256.verify(pw, user["password"])))
+        if ((pbkdf2_sha256.verify(pw, user["password"])) == True):
             print("found")
-            database = firebase.FirebaseApplication("https://cedarchatbot.firebaseio.com/",
-                                                    authentication=authentication)
-
             LoginToken = str((uuid.uuid4())) + "-" + str((uuid.uuid4()))
-            database.put("/restaurants/" + estName + "/", "LoginToken", LoginToken)
-            database.put("/restaurants/" + estName + "/", "LoginTime", time.time())
-            session['fbToken'] = user['idToken']
+            user_ref = ref.child(str(email))
+            user_ref.update({
+                'token': LoginToken,
+                'time': time.time()
+            })
+            session['user'] = email
             session['token'] = LoginToken
             return redirect(url_for('panel'))
         else:
-            authentication = firebase.FirebaseAuthentication('if7swrlQM4k9cBvm0dmWqO3QsI5zjbcdbstSgq1W',
-                                                             'cajohn0205@gmail.com', extra={'id': dbid})
             print("incorrect password")
-            database = firebase.FirebaseApplication("https://cedarchatbot.firebaseio.com/",
-                                                    authentication=authentication)
             return render_template("login2.html", btn=str("admin2"), restName=estNameStr)
-    except Exception:
-        print("exec")
-        authentication = firebase.FirebaseAuthentication('if7swrlQM4k9cBvm0dmWqO3QsI5zjbcdbstSgq1W',
-                                                         'cajohn0205@gmail.com', extra={'id': dbid})
-        database = firebase.FirebaseApplication("https://cedarchatbot.firebaseio.com/",
-                                                authentication=authentication)
+    except Exception as e:
+        print(e)
         return render_template("POS/Admin/login2.html", btn=str("admin2"), restName=estNameStr)
 
 
 @app.route('/admin-panel', methods=["GET"])
 def panel():
     idToken = session.get('token', None)
-    fbToken = session.get('fbToken', None)
-    authentication = firebase.FirebaseAuthentication('if7swrlQM4k9cBvm0dmWqO3QsI5zjbcdbstSgq1W',
-                                                     'cajohn0205@gmail.com', extra={'id': dbid})
-    database = firebase.FirebaseApplication("https://cedarchatbot.firebaseio.com/",
-                                            authentication=authentication)
-    if ((idToken == database.get("restaurants/" + uid + "/", "LoginToken")) and (
-            time.time() - database.get("restaurants/" + uid + "/", "LoginTime") < adminSessTime)):
-        getSquare()
-        LocName = list(locationsPaths.keys())
-        return render_template("POS/Admin/AdminPanel.html",
-                               restName=estNameStr,
-                               LocName=LocName,
-                               lenLocName=len(LocName))
-    else:
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    user_ref = ref.get()[str(username)]
+    try:
+        if ((idToken == user_ref["token"]) and (time.time() - user_ref["time"] < adminSessTime)):
+            getSquare()
+            LocName = list(locationsPaths.keys())
+            return render_template("POS/Admin/AdminPanel.html",
+                                   restName=estNameStr,
+                                   LocName=LocName,
+                                   lenLocName=len(LocName))
+        else:
+            return redirect(url_for('.login'))
+    except Exception as e:
         return redirect(url_for('.login'))
 
 
 @app.route('/admin-location/<location>')
 def locPanel(location):
     idToken = session.get('token', None)
-    fbToken = session.get('fbToken', None)
-    authentication = firebase.FirebaseAuthentication('if7swrlQM4k9cBvm0dmWqO3QsI5zjbcdbstSgq1W',
-                                                     'cajohn0205@gmail.com', extra={'id': dbid})
-    database = firebase.FirebaseApplication("https://cedarchatbot.firebaseio.com/",
-                                            authentication=authentication)
-    if ((idToken == database.get("restaurants/" + uid + "/", "LoginToken")) and (
-            time.time() - database.get("restaurants/" + uid + "/", "LoginTime") < adminSessTime)):
-        getSquare()
-        LocName = list(locationsPaths.keys())
-        return render_template("POS/Admin/locationAdmin.html",
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    doc = ref.get()[str(username)]
+    try:
+        if ((idToken == doc["token"]) and (time.time() - doc["time"] < adminSessTime)):
+            getSquare()
+            LocName = list(locationsPaths.keys())
+            return render_template("POS/Admin/locationAdmin.html",
                                restName=estNameStr,
                                LocName=LocName,
                                lenLocName=len(LocName),
                                currentLoc=location)
-    else:
+        else:
+            return redirect(url_for('.login'))
+    except Exception as e:
         return redirect(url_for('.login'))
+
 
 
 @app.route('/<location>/createMenu', methods=["POST"])
@@ -325,6 +291,39 @@ def pickLocation2():
     return redirect(url_for('.login', location=locationPick))
 
 
+##########CUSTOMER END###########
+
+def getReply(msg, number):
+    doc_ref = db.collection('restaurants').document('info')
+    doc = doc_ref.get().to_dict()
+    smsopen = doc["smsopen"]
+    smsclosed  = doc["smsclosed"]
+    closeTimeHr = int(smsclosed[0:2])
+    closeTimeMin = int(smsclosed[3:5])
+    openTimeHr = int(smsopen[0:2])
+    openTimeMin = int(smsopen[3:5])
+    closeCheck = float(closeTimeHr) + float(closeTimeMin / 100.0)
+    openCheck = float(openTimeHr) + float(openTimeMin / 100.0)
+    currentHour = float(datetime.datetime.now(tz).strftime("%H"))
+    currentMin = float(datetime.datetime.now(tz).strftime("%M")) / 100.0
+    currentTime = currentHour + currentMin
+    if (openCheck <= currentTime <= closeCheck):
+        msg = msg.lower()
+        msg.replace("\n", "")
+        msg.replace(".", "")
+        msg.replace(" ", "")
+        msg = ''.join(msg.split())
+
+        if (msg == "order" or msg == "ordew" or msg == "ord" or msg == "ordet" or msg == "oderr" or msg == "ordee" or (
+                "ord" in msg)):
+            reply = "Hi welcome to " + estNameStr + "! click the link below to order \n" + str(
+                mainLink) + "/smsinit/" + str(number)
+            return reply
+        else:
+            return ("no msg")
+    else:
+        return ("no msg")
+
 @app.route('/sms')
 def inbound_sms():
     # Sender's phone number
@@ -343,6 +342,37 @@ def inbound_sms():
             text=resp
         )
     return '200'
+
+###Kiosk###
+@app.route('/<location>/sitdown-startKiosk', methods=["GET"])
+def startKiosk2(location):
+    return(render_template("Customer/Sitdown/startKiosk.html",btn="startKiosk"))
+
+
+@app.route('/<location>/sitdown-startKiosk', methods=["POST"])
+def startKiosk(location):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    phone = rsp["number"]
+    name = rsp["name"]
+    table = rsp["table"]
+    session['table'] = table
+    session['name'] = name
+    session['phone'] = phone
+    path = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/"
+    ref = db.reference(path)
+    ref.set({
+        str(uuid.uuid4) : {
+            "name":name,
+            "phone":phone,
+            "table":table,
+            "timestamp":time.time()
+        }
+        })
+
+    return(render_template("Customer/Sitdown/mainKiosk.html"))
+
+
 
 
 if __name__ == '__main__':
