@@ -36,6 +36,7 @@ firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://cedarchatbot.firebaseio.com/'
 })
 sqRef = db.reference(str('/restaurants/' + estNameStr))
+print(sqRef.get())
 squareToken = sqRef.get()["sq-token"]
 promoPass = "promo-" + str(estName)
 addPass = "add-" + str(estName)
@@ -62,6 +63,7 @@ api_locations = squareClient.locations
 mobile_authorization_api = squareClient.mobile_authorization
 result = api_locations.list_locations()
 locationsPaths = {}
+tzGl = []
 
 
 # Call the success method to see if the call succeeded
@@ -91,6 +93,7 @@ def getSquare():
                             dict(location.items())["address"]['postal_code'][:5])
                 timez = dict(location.items())["timezone"]
                 tz = pytz.timezone(timez)
+                tzGl.append(pytz.timezone(timez))
                 locationName = (dict(location.items())["name"]).replace(" ", "-")
                 locationId = dict(location.items())["id"]
                 numb = dict(location.items())['phone_number']
@@ -107,7 +110,7 @@ def getSquare():
 def checkLocation(location, custFlag):
     try:
         locationsPaths[location]
-        return [0, 0]
+        return [0,0]
     except Exception as e:
         if (custFlag == 0):
             return [1, "pickLocation"]
@@ -117,14 +120,11 @@ def checkLocation(location, custFlag):
             return [1, "EmployeeLocation"]
 
 
-def checkAdminToken(idToken, email):
-    doc_ref = db.collection('restaurants/' + estNameStr + '/info/admininfo/admininfo').document(email)
-    doc = doc_ref.get().to_dict()
-    loginToken = doc["token"]
-    loginTime = doc["time"]
-    if ((idToken == loginToken) and ((time.time() - loginTime) < adminSessTime)):
+def checkAdminToken(idToken, username):
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    user_ref = ref.get()[str(username)]
+    if ((idToken == user_ref["token"]) and (time.time() - user_ref["time"] < adminSessTime)):
         return 0
-
     else:
         return 1
 
@@ -150,10 +150,8 @@ def loginPageCheck():
     pw = str(rsp["pw"])
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     email = str(email).replace(".","-")
-    print(email,pw)
     try:
         user = ref.get()[str(email)]
-        print((pbkdf2_sha256.verify(pw, user["password"])))
         if ((pbkdf2_sha256.verify(pw, user["password"])) == True):
             print("found")
             LoginToken = str((uuid.uuid4())) + "-" + str((uuid.uuid4()))
@@ -179,18 +177,15 @@ def panel():
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.get()[str(username)]
-    try:
-        if ((idToken == user_ref["token"]) and (time.time() - user_ref["time"] < adminSessTime)):
-            getSquare()
-            LocName = list(locationsPaths.keys())
-            return render_template("POS/Admin/AdminPanel.html",
-                                   restName=estNameStr,
-                                   LocName=LocName,
-                                   lenLocName=len(LocName))
-        else:
-            return redirect(url_for('.login'))
-    except Exception as e:
-        return redirect(url_for('.login'))
+    if (checkAdminToken(idToken, username) == 1):
+        return redirect(url_for('.login', location=location))
+    getSquare()
+    LocName = list(locationsPaths.keys())
+    return render_template("POS/Admin/AdminPanel.html",
+                           restName=estNameStr,
+                           LocName=LocName,
+                           lenLocName=len(LocName))
+
 
 
 @app.route('/admin-location/<location>')
@@ -199,19 +194,18 @@ def locPanel(location):
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     doc = ref.get()[str(username)]
-    try:
-        if ((idToken == doc["token"]) and (time.time() - doc["time"] < adminSessTime)):
-            getSquare()
-            LocName = list(locationsPaths.keys())
-            return render_template("POS/Admin/locationAdmin.html",
-                               restName=estNameStr,
-                               LocName=LocName,
-                               lenLocName=len(LocName),
-                               currentLoc=location)
-        else:
-            return redirect(url_for('.login'))
-    except Exception as e:
-        return redirect(url_for('.login'))
+    if (checkAdminToken(idToken, username) == 1):
+        return redirect(url_for('.login', location=location))
+    print(checkLocation(location,1))
+    if(checkLocation(location,1)[0] == 1):
+        return redirect(url_for('.login', location=location))
+    getSquare()
+    LocName = list(locationsPaths.keys())
+    return render_template("POS/Admin/locationAdmin.html",
+                       restName=estNameStr,
+                       LocName=LocName,
+                       lenLocName=len(LocName),
+                       currentLoc=location)
 
 
 
@@ -304,8 +298,8 @@ def getReply(msg, number):
     openTimeMin = int(smsopen[3:5])
     closeCheck = float(closeTimeHr) + float(closeTimeMin / 100.0)
     openCheck = float(openTimeHr) + float(openTimeMin / 100.0)
-    currentHour = float(datetime.datetime.now(tz).strftime("%H"))
-    currentMin = float(datetime.datetime.now(tz).strftime("%M")) / 100.0
+    currentHour = float(datetime.datetime.now(tzGl[0]).strftime("%H"))
+    currentMin = float(datetime.datetime.now(tzGl[0]).strftime("%M")) / 100.0
     currentTime = currentHour + currentMin
     if (openCheck <= currentTime <= closeCheck):
         msg = msg.lower()
@@ -344,9 +338,67 @@ def inbound_sms():
     return '200'
 
 ###Kiosk###
+def findMenu(location):
+    day = dayNames[int(datetime.datetime.now(tzGl[0]).weekday())]
+    curMin = float(datetime.datetime.now(tzGl[0]).minute) / 100.0
+    curHr = float(datetime.datetime.now(tzGl[0]).hour)
+    curTime = curHr + curMin
+    pathTime = '/restaurants/' + estNameStr + '/' + str(location) + "/schedule/" + day
+
+    schedule = db.reference(pathTime).get()
+    schedlist = list(schedule)
+    start = 24
+    sortedHr = [0]
+    for scheds in schedlist:
+        sortedHr.append(schedule[scheds])
+
+    sortedHr.sort()
+    sortedHr.append(24)
+    for sh in range(len(sortedHr) - 1):
+        if((sortedHr[sh]< curTime < sortedHr[sh+1])== True):
+            menuKey = sh
+            break
+
+
+    for sh2 in range(len(schedlist)):
+        if(sortedHr[menuKey] == schedule[schedlist[sh2]]):
+            menu = (schedlist[sh2])
+            break
+
+    menuItems = []
+    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu
+    menuInfo = db.reference(pathMenu).get()
+    categories = list(menuInfo["categories"])
+    for itms in categories:
+        #print(list(menuInfo["categories"][itms]))
+        currArr = [itms]
+        for ll in range(len(list(menuInfo["categories"][itms]))):
+            itmArr = []
+            itx = (list(menuInfo["categories"][itms])[ll])
+            descrip = (menuInfo["categories"][itms][itx]["descrip"])
+            exinfo = (menuInfo["categories"][itms][itx]["extra-info"])
+            print(itms)
+            itmArr.append(itx)
+            itmArr.append(descrip)
+            itmArr.append(exinfo)
+            modNames = (list(menuInfo["categories"][itms][itx])[2:])
+            for mods in modNames:
+                modArr = [mods,menuInfo["categories"][itms][itx][mods]["min"],menuInfo["categories"][itms][itx][mods]["max"]]
+                opt = list(menuInfo["categories"][itms][itx][mods]["info"])
+                for oo in opt:
+                    modArr.append([oo,menuInfo["categories"][itms][itx][mods]["info"][oo]])
+
+                itmArr.append(modArr)
+                modArr = []
+
+            currArr.append(itmArr)
+            itmArr = []
+        menuItems.append(currArr)
+    return(menuItems)
+
 @app.route('/<location>/sitdown-startKiosk', methods=["GET"])
 def startKiosk2(location):
-    return(render_template("Customer/Sitdown/startKiosk.html",btn="startKiosk"))
+    return(render_template("Customer/Sitdown/startKiosk.html",btn="startKiosk",restName=estNameStr,locName=location))
 
 
 @app.route('/<location>/sitdown-startKiosk', methods=["POST"])
@@ -360,17 +412,41 @@ def startKiosk(location):
     session['name'] = name
     session['phone'] = phone
     path = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/"
+    orderToken = str(uuid.uuid4())
     ref = db.reference(path)
     ref.set({
-        str(uuid.uuid4) : {
+        orderToken : {
             "name":name,
             "phone":phone,
             "table":table,
-            "timestamp":time.time()
+             "timestamp":time.time()
         }
         })
+    session['orderToken'] = orderToken
+    #menu = findMenu(location)
+    #print(menu)
+    cats = ['burgers','pizzas']
+    baseItms = [[['cheese-burger','cheese burger'],['chicken-sandwich','chicken sandwich']],[['combo-pizza','combo pizza']]]
+    descrips = [['kobe beef patty','grilled chicken'],['sausage, vegetables, and pepperoni']]
+    exInfo = [['contains meat',' '],['contains dairy']]
+    mods = [ [[["sizes",1,0,[['standard',6.55]]],["sides",1,0,[["bacon fries",1],["fries",0]]]] , [["sizes", 1,0,[["standard",6]]], ["toppings",0,2,[["bacon",1],["cheese",1]]]]], [ [["sizes",1,0,[["11 in", 9],["17 in", 11.25]]],["toppings", 0,2,[["extra cheese", 0.56],["extra pepperoni", 1]]]] ] ]
 
-    return(render_template("Customer/Sitdown/mainKiosk.html"))
+    return(render_template("Customer/Sitdown/mainKiosk.html",cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,mods=mods,btn=str("sitdown-additms")))
+
+
+@app.route('/<location>/sitdown-additms', methods=["POST"])
+def kiosk2(location):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    print(rsp)
+    print("resp")
+    cats = ['burgers','pizzas']
+    baseItms = [[['cheese-burger','cheese burger'],['chicken-sandwich','chicken sandwich']],[['combo-pizza','combo pizza']]]
+    descrips = [['kobe beef patty','grilled chicken'],['sausage, vegetables, and pepperoni']]
+    exInfo = [['contains meat',' '],['contains dairy']]
+    mods = [ [[["sizes",1,0,[['standard',6.55]]],["sides",1,0,[["bacon fries",1],["fries",0]]]] , [["sizes", 1,0,[["standard",6]]], ["toppings",0,2,[["bacon",1],["cheese",1]]]]], [ [["sizes",1,0,[["11 in", 9],["17 in", 11.25]]],["toppings", 0,2,[["extra cheese", 0.56],["extra pepperoni", 1]]]] ] ]
+
+    return(render_template("Customer/Sitdown/mainKiosk.html",cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,mods=mods,btn=str("sitdown-additms")))
 
 
 
@@ -385,6 +461,6 @@ if __name__ == '__main__':
         sess = Session()
         sess.init_app(app)
         app.permanent_session_lifetime = datetime.timedelta(minutes=200)
-        app.run(host="0.0.0.0", port=8888)
+        app.run(host="0.0.0.0",port=5000)
     except KeyboardInterrupt:
         sys.exit()

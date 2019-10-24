@@ -37,8 +37,6 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-
-
 </head>
 
 <body>
@@ -200,83 +198,92 @@
 
 <div id="Menu" class="tabcontent">
   <div class="panel-group" id="accordion">
+
     <div class="panel panel-default">
+      {% for i in range(cats|count) %}
       <div class="panel-heading">
-        <h4 class="panel-title">
-          <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
-          Category</a>
-          </h4>
-          </div>
-          <div id="collapse1" class="panel-collapse collapse">
-            <div class="panel-body">
-            <div class="panel panel-default">
-
-            <div class="panel-heading">
-            <h4 class="panel-title">
-            <a data-toggle="collapse" data-parent="#accordion2" href="#collapse2">Base Item</a>
-            </h4>
-            </div>
-            <div id="collapse2" class="panel-collapse collapse">
-            <div class="panel-body">
-            <h4 class="card-title">description</h4>
-            <h6 class="card-title">more info</h6>
-            <hr>
-            <div class="card">
-            <h4 class="card-header">Size</h4>
-            <div class="card-body">
-              <div class="form-check">
-                <label class="form-check-label" for="exampleRadios1">
-                  Size 1
-                </label>
-              <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1">
-            </div>
+        <h2 class="panel-title">
+          <a data-toggle="collapse" data-parent="#accordion" href="#{{cats[i]}}">
+          {{cats[i]}}</a>
+        </h2>
             <br>
-            <div class="form-check">
-              <label class="form-check-label" for="exampleRadios2">
-                Size 2
-              </label>
-              <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
+          </div>
+          <div id="{{cats[i]}}" class="panel-collapse collapse">
+            <div class="panel-body">
+            {% for j in range(baseItms[i]|count) %}
+            <div class="panel panel-default">
+            <form method="POST" action="{{btn}}">
+                                <div class="form-group">
+            <div class="panel-heading">
+            <h3 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion2" href="#{{baseItms[i][j][0]}}">{{baseItms[i][j][1]}}</a>
+            </h3>
             </div>
-            </div>
-            </div>
+            <div id="{{baseItms[i][j][0]}}" class="panel-collapse collapse">
+            <div class="panel-body">
+              <h5 class="card-title">{{descrips[i][j]}}</h5>
+            <h6 class="card-title">{{exInfo[i][j]}}</h6>
             <hr>
+            {% for x in range(mods[i][j]|count) %}
             <div class="card">
-            <h4 class="card-header">Modifier</h4>
+            <h4 class="card-header">{{mods[i][j][x][0]}}</h4>
+              <br>
             <div class="card-body">
-              <h5 class="card-title">(min 1, max 2)</h5>
-                <div class="form-check">
-                  <label class="form-check-label" for="defaultCheck1">
-                    Option 1
-                  </label>
-                <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                </div>
-                <br>
-                <div class="form-check">
-                  <label class="form-check-label" for="defaultCheck1">
-                    Option 2
-                  </label>
-                <input class="form-check-input" type="checkbox" value="" id="defaultCheck2">
-                </div>
-            </div>
-            </div>
-            <hr>
-
-      <div class="form-group">
-          <label for="exampleFormControlSelect0">Notes</label>
-        <input class="form-control" type="text" placeholder="Notes" id="exampleFormControlSelect1">
+              <x id='min' value="{{mods[i][j][x][1]}}"></x>
+              <x id='max' value="{{mods[i][j][x][2]}}"></x>
+              {% for yy in range(mods[i][j][x][1]) %}
+            <div class="form-group">
+            <h6 class="card-header"><select class="custom-select" required>
+              {% for y in range(mods[i][j][x][3]|count) %}
+            <option name="mod" value="{{mods[i][j][x][3][y][0]}}">{{mods[i][j][x][3][y][0]}} ${{mods[i][j][x][3][y][1]}}</option>
+            {% endfor %}
+            <br>
+          </select></h6>
+          <br>
+        </div>
+          {% endfor %}
+          {% for yy in range(mods[i][j][x][2]) %}
+                <div class="form-group">
+        <h6 class="card-header">  <select class="custom-select">
+          {% for y in range(mods[i][j][x][3]|count) %}
+          <option name="mod" value="{{mods[i][j][x][3][y][0]}}">{{mods[i][j][x][3][y][0]}} ${{mods[i][j][x][3][y][1]}}</option>
+          {% endfor %}
+          <br>
+          <option value="None">None</option>
+        </select> </h6>
         <br>
-        <label for="validationDefault05">Quantity</label>
-        <input type="number" class="form-control" id="validationDefault05" placeholder="1">
       </div>
+          {% endfor %}
+            <br>
 
-        <button class="btn btn-success btn-circle btn-sm" data-toggle="popover" data-content="Added to Cart">
+            </div>
+
+            </div>
+
+            <hr>
+            {% endfor %}
+
+            <label for="exampleFormControlSelect0">Notes</label>
+            <input class="form-control" name="notes" type="text" placeholder="Notes" id="exampleFormControlSelect1">
+            <br>
+            <label for="validationDefault05">Quantity</label>
+            <input type="number" name="qty" class="form-control" id="validationDefault05" placeholder="1">
+          </div>
+            </div>
+
+        <button class="btn btn-success btn-circle btn-sm" type="submit" value="{{baseItms[i]}}" data-toggle="popover" data-content="Added to Cart">
         <strong>Add Item </strong><i class="fas fa-check"></i>
         </button>
+      </form>
       </div>
-      </div>
+
+
     </div>
+    {%endfor%}
   </div>
   </div>
+
+    {%endfor%}
   </div>
   </div>
   </div>
