@@ -37,6 +37,28 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+<script>
+function openTab(evt, cityName) {
+  var i, tabcontent, tablinks;
+  tabcontent = document.getElementsByClassName("tabcontent");
+  for (i = 0; i < tabcontent.length; i++) {
+    tabcontent[i].style.display = "none";
+  }
+  tablinks = document.getElementsByClassName("tablinks");
+  for (i = 0; i < tablinks.length; i++) {
+    tablinks[i].className = tablinks[i].className.replace(" active", "");
+  }
+  document.getElementById(cityName).style.display = "block";
+  evt.currentTarget.className += " active";
+}
+
+</script>
+
+<script>
+$(document).ready(function(){
+$('[data-toggle="popover"]').popover();
+});
+</script>
 </head>
 
 <body>
@@ -51,79 +73,21 @@
 <div class="tab">
 <button class="tablinks" onclick="openTab(event, 'Menu')">Menu</button>
 <button class="tablinks" onclick="openTab(event, 'Cart')">Cart</button>
-<button class="tablinks" onclick="openTab(event, 'Requests')">View Requests</button>
-<button class="tablinks" onclick="openTab(event, 'Help')">Contact Staff</button>
+<button class="tablinks" onclick="openTab(event, 'Requests')">Contact Staff</button>
 <button class="tablinks" onclick="openTab(event, 'Bill')">Pay Bill</button>
 <hr>
 </div>
 </div>
 
 <div id="Bill" class="tabcontent">
+
   <div class="card">
-      <br>
-      <div class="row">
-          <div class="col-lg-12">
-
-        <button class="btn btn-circle btn-sm" ondblclick="data-toggle" data-toggle="modal" data-target="#myModal">
-          <i class="fas fa-edit"></i>
-        </button>
-        <div class="modal fade" id="myModal" role="dialog">
-    <div class="modal-dialog">
-
-      <!-- Modal content-->
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal">&times;</button>
-          <h4 class="modal-title">Enter Staff code</h4>
-        </div>
-        <div class="modal-body">
-          <form class="form-inline">
-          <label class="sr-only" for="inlineFormInputGroupUsername2">Enter Code</label>
-          <div class="input-group mb-2 mr-sm-2">
-            <input type="password" class="form-control" id="inlineFormInputGroupUsername2" placeholder="Enter Code">
-          </div>
-          <button type="submit" class="btn btn-primary mb-2">Submit</button>
-          </form>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-      </div>
-      </div>
-      </div>
-      </div>
-      <hr>
-      <!--for loop here-->
-      <div class="card">
-      <div class="card-header">
-        <h4>Base Item</h4>
-      </div>
-      <div class="card-body">
-
-        <h4 class="card-title">Modifiers</h4>
-
-        <h4 class="card-title">Notes</h4>
-        <h4 class="card-title">Quantity</h4>
-        <h4 class="card-title">Price</h4>
-      </div>
-      </div>
-      <hr>
-
-
-
-
-
-
-      <form class="form-inline">
-        <h6>subtotal ${{subtotal}}</h6>
-        <h6>Taxes ${{taxes}}</h6>
-        <h6>Security Fee $0.10</h6>
-        <h5>Total ${{total}}</h5>
-        <hr>
-      <button type="submit" class="btn btn-primary mb-2">Pay Now</button>
+    <br>
+      <form class="form-inline" method="POST" action="payKiosk">
+      <button type="submit" class="btn btn-lg btn-primary mb-2">Pay Now</button>
       <!--JS webview script here-->
       </form>
+      <br>
       </div>
       </div>
 
@@ -150,13 +114,12 @@
 
 
     </div>
-  <hr>
 
   <hr>
   <div class="row">
       <div class="col-lg-12">
 
-    <button class="btn btn-success btn-circle btn-sm" data-toggle="popover" data-placement="bottom" data-content="Items Sent To Kitchen">
+    <button class="btn btn-success btn-circle btn-md" data-toggle="popover" data-placement="bottom" data-content="Items Sent To Kitchen">
       <strong>Order Items </strong><i class="fas fa-arrow-right"></i>
     </button>
       </div>
@@ -166,132 +129,6 @@
 
 
 <div id="Requests" class="tabcontent">
-  <div class="card">
-
-    <div class="card-header">
-      <h4>11:38</h4>
-    </div>
-    <div class="card-body">
-      <h4 class="card-title">Food</h4>
-
-      <h5 class="card-text">Food Item - Price</h5>
-
-    </div>
-  <hr>
-
-  <div class="card-header">
-    <h4>11:38</h4>
-  </div>
-  <div class="card-body">
-    <h4 class="card-title">Food</h4>
-
-    <h5 class="card-text">Food Item - Price</h5>
-
-  </div>
-<hr>
-
-</div>
-
-</div>
-
-
-
-<div id="Menu" class="tabcontent">
-  <div class="panel-group" id="accordion">
-
-    <div class="panel panel-default">
-      {% for i in range(cats|count) %}
-      <div class="panel-heading">
-        <h2 class="panel-title">
-          <a data-toggle="collapse" data-parent="#accordion" href="#{{cats[i]}}">
-          {{cats[i]}}</a>
-        </h2>
-            <br>
-          </div>
-          <div id="{{cats[i]}}" class="panel-collapse collapse">
-            <div class="panel-body">
-            {% for j in range(baseItms[i]|count) %}
-            <div class="panel panel-default">
-            <form method="POST" action="{{btn}}">
-                                <div class="form-group">
-            <div class="panel-heading">
-            <h3 class="panel-title">
-            <a data-toggle="collapse" data-parent="#accordion2" href="#{{baseItms[i][j][0]}}">{{baseItms[i][j][1]}}</a>
-            </h3>
-            </div>
-            <div id="{{baseItms[i][j][0]}}" class="panel-collapse collapse">
-            <div class="panel-body">
-              <h5 class="card-title">{{descrips[i][j]}}</h5>
-            <h6 class="card-title">{{exInfo[i][j]}}</h6>
-            <hr>
-            {% for x in range(mods[i][j]|count) %}
-            <div class="card">
-            <h4 class="card-header">{{mods[i][j][x][0]}}</h4>
-              <br>
-            <div class="card-body">
-              <x id='min' value="{{mods[i][j][x][1]}}"></x>
-              <x id='max' value="{{mods[i][j][x][2]}}"></x>
-              {% for yy in range(mods[i][j][x][1]) %}
-            <div class="form-group">
-            <h6 class="card-header"><select class="custom-select" required>
-              {% for y in range(mods[i][j][x][3]|count) %}
-            <option name="mod" value="{{mods[i][j][x][3][y][0]}}">{{mods[i][j][x][3][y][0]}} ${{mods[i][j][x][3][y][1]}}</option>
-            {% endfor %}
-            <br>
-          </select></h6>
-          <br>
-        </div>
-          {% endfor %}
-          {% for yy in range(mods[i][j][x][2]) %}
-                <div class="form-group">
-        <h6 class="card-header">  <select class="custom-select">
-          {% for y in range(mods[i][j][x][3]|count) %}
-          <option name="mod" value="{{mods[i][j][x][3][y][0]}}">{{mods[i][j][x][3][y][0]}} ${{mods[i][j][x][3][y][1]}}</option>
-          {% endfor %}
-          <br>
-          <option value="None">None</option>
-        </select> </h6>
-        <br>
-      </div>
-          {% endfor %}
-            <br>
-
-            </div>
-
-            </div>
-
-            <hr>
-            {% endfor %}
-
-            <label for="exampleFormControlSelect0">Notes</label>
-            <input class="form-control" name="notes" type="text" placeholder="Notes" id="exampleFormControlSelect1">
-            <br>
-            <label for="validationDefault05">Quantity</label>
-            <input type="number" name="qty" class="form-control" id="validationDefault05" placeholder="1">
-          </div>
-            </div>
-
-        <button class="btn btn-success btn-circle btn-sm" type="submit" value="{{baseItms[i]}}" data-toggle="popover" data-content="Added to Cart">
-        <strong>Add Item </strong><i class="fas fa-check"></i>
-        </button>
-      </form>
-      </div>
-
-
-    </div>
-    {%endfor%}
-  </div>
-  </div>
-
-    {%endfor%}
-  </div>
-  </div>
-  </div>
-
-
-
-<div id="Help" class="tabcontent">
-
   <div class="card">
     <br>
   <div class="row">
@@ -411,27 +248,125 @@
 </div>
 
 
-<script>
-function openTab(evt, cityName) {
-  var i, tabcontent, tablinks;
-  tabcontent = document.getElementsByClassName("tabcontent");
-  for (i = 0; i < tabcontent.length; i++) {
-    tabcontent[i].style.display = "none";
-  }
-  tablinks = document.getElementsByClassName("tablinks");
-  for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(" active", "");
-  }
-  document.getElementById(cityName).style.display = "block";
-  evt.currentTarget.className += " active";
-}
-</script>
+<div id="Menu" class="tabcontent">
+      {% for i in range(cats|count) %}
+  <div class="panel-group" id="accordion">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h2 class="panel-title">
+          <a data-toggle="collapse" data-parent="#accordion" href="#{{cats[i]}}">
+          {{cats[i]}} </a><br>
+        </h2>
+            <br>
+          </div>
+          <div id="{{cats[i]}}" class="panel-collapse collapse">
+                        {% for j in range(baseItms[i]|count) %}
+            <div class="panel-body">
+            <div class="panel panel-default">
+            <div class="panel-heading">
+            <h3 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion2" href="#{{baseItms[i][j][0]}}">{{baseItms[i][j][1]}}</a>
+            </h3>
+            </div>
+            <div id="{{baseItms[i][j][0]}}" class="panel-collapse collapse">
+            <div class="panel-body">
+              <h5 class="card-title">{{descrips[i][j]}}</h5>
+            <h6 class="card-title">{{exInfo[i][j]}}</h6>
+            <hr>
+            <!--
+            <button class="btn btn-success btn-circle btn-sm" type="submit" name = "item" value="{{baseItms[i][j][0]}},{{cats[i]}}" data-toggle="popover" data-content="Added to Cart">
+            <strong>Add Item </strong><i class="fas fa-check"></i>
+            </button>
+            -->
+            <button class="btn btn-success btn-circle btn-sm" data-toggle="modal" data-target="#{{baseItms[i][j][0]}}-modal">
+            <strong>Add Item </strong><i class="fas fa-check"></i>
+            </button>
+          </div>
+        </div>
 
-<script>
-$(document).ready(function(){
-$('[data-toggle="popover"]').popover();
-});
-</script>
+
+            <div class="modal fade" id="{{baseItms[i][j][0]}}-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+
+            <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="exampleModalLabel">{{baseItms[i][j][1]}}</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+            </button>
+            </div>
+            <div class="modal-body">
+
+              {% for x in range(mods[i][j]|count) %}
+              <div class="card">
+              <h4 class="card-header">{{mods[i][j][x][0]}}</h4>
+                <br>
+              <div class="card-body">
+                <form method="POST" action="{{btn}}" id="itm-form-{{baseItms[i][j][1]}}">
+                <x id='min' value="{{mods[i][j][x][1]}}"></x>
+                <x id='max' value="{{mods[i][j][x][2]}}"></x>
+                {% for yy in range(mods[i][j][x][1]) %}
+                <h6 class="card-header"><select class="custom-select" name="mod" form="itm-form-{{baseItms[i][j][1]}}" required>
+                  {% for y in range(mods[i][j][x][3]|count) %}
+                <option value="{{mods[i][j][x][0]}}~{{mods[i][j][x][3][y][0]}}">{{mods[i][j][x][3][y][0]}} ${{mods[i][j][x][3][y][1]}}</option>
+                {% endfor %}
+                <br>
+              </select></h6>
+              <hr>
+
+              {% endfor %}
+              {% for yy in range(mods[i][j][x][2]) %}
+                    <div class="form-group">
+            <h6 class="card-header">  <select class="custom-select" name="mod" form="itm-form-{{baseItms[i][j][1]}}">
+              {% for y in range(mods[i][j][x][3]|count) %}
+              <option value="{{mods[i][j][x][0]}}~{{mods[i][j][x][3][y][0]}}">{{mods[i][j][x][3][y][0]}} ${{mods[i][j][x][3][y][1]}}</option>
+              {% endfor %}
+              <br>
+              <option value="{{mods[i][j][x][0]}}~NaN">None</option>
+            </select> </h6>
+            <br>
+              {% endfor %}
+          </div>
+              {% endfor %}
+              <label for="exampleFormControlSelect0">Notes</label>
+              <input class="form-control" name="notes" type="text" placeholder="Notes" id="exampleFormControlSelect1">
+              <br>
+              <label for="validationDefault05">Quantity</label>
+              <input type="number" name="qty" class="form-control" id="validationDefault05" placeholder="1">
+
+            <div class="modal-footer">
+            <button class="btn btn-success btn-circle btn-sm" type="submit" name="itm" value="{{cats[i]}}~{{baseItms[i][j][1]}}" data-toggle="modal" data-target="#exampleModal">
+            <strong>Add To Cart </strong><i class="fas fa-check"></i>
+            </button>
+            </div>
+            </div>
+          </form>
+            </div>
+          </form>
+        </div>
+            </div>
+            </div>
+          </div>
+        </div>
+
+  </div>
+          {%endfor%}
+  </div>
+  </div>
+  </div>
+
+            {%endfor%}
+  </div>
+
+
+
+<div id="Help" class="tabcontent">
+
+
+</div>
+
+
+</div>
 
 
 

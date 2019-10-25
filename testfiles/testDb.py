@@ -53,7 +53,6 @@ for itms in categories:
         itx = (list(menuInfo["categories"][itms])[ll])
         descrip = (menuInfo["categories"][itms][itx]["descrip"])
         exinfo = (menuInfo["categories"][itms][itx]["extra-info"])
-        print(itms)
         itmArr.append(itx)
         itmArr.append(descrip)
         itmArr.append(exinfo)

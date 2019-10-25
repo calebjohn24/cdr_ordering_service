@@ -23,7 +23,7 @@ from werkzeug.datastructures import ImmutableOrderedMultiDict
 infoFile = open("info.json")
 info = json.load(infoFile)
 uid = info['uid']
-gc = pygsheets.authorize(service_file='static/CedarChatbot-70ec2d781527.json')
+#gc = pygsheets.authorize(service_file='static/CedarChatbot-70ec2d781527.json')
 email = "cedarchatbot@appspot.gserviceaccount.com"
 estName = info['uid']
 estNameStr = info['name']
@@ -41,7 +41,7 @@ squareToken = sqRef.get()["sq-token"]
 promoPass = "promo-" + str(estName)
 addPass = "add-" + str(estName)
 remPass = "remove-" + str(estName)
-sh = gc.open('TestRaunt')
+#sh = gc.open('TestRaunt')
 webLink = "sms:+" + botNumber + "?body=order"
 sender = 'receipts@cedarrobots.com'
 emailPass = "Cedar2421!"
@@ -424,6 +424,8 @@ def startKiosk(location):
         })
     session['orderToken'] = orderToken
     #menu = findMenu(location)
+    menu = "lunch"
+    session["menu"] = menu
     #print(menu)
     cats = ['burgers','pizzas']
     baseItms = [[['cheese-burger','cheese burger'],['chicken-sandwich','chicken sandwich']],[['combo-pizza','combo pizza']]]
@@ -431,23 +433,21 @@ def startKiosk(location):
     exInfo = [['contains meat',' '],['contains dairy']]
     mods = [ [[["sizes",1,0,[['standard',6.55]]],["sides",1,0,[["bacon fries",1],["fries",0]]]] , [["sizes", 1,0,[["standard",6]]], ["toppings",0,2,[["bacon",1],["cheese",1]]]]], [ [["sizes",1,0,[["11 in", 9],["17 in", 11.25]]],["toppings", 0,2,[["extra cheese", 0.56],["extra pepperoni", 1]]]] ] ]
 
-    return(render_template("Customer/Sitdown/mainKiosk.html",cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,mods=mods,btn=str("sitdown-additms")))
+    return(render_template("Customer/Sitdown/mainKiosk.html",cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,mods=mods,btn=str("sitdown-additms"),restName=estNameStr))
 
 
 @app.route('/<location>/sitdown-additms', methods=["POST"])
 def kiosk2(location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
-    print(rsp)
-    print("resp")
+    print((rsp))
+    return(str(rsp))
     cats = ['burgers','pizzas']
     baseItms = [[['cheese-burger','cheese burger'],['chicken-sandwich','chicken sandwich']],[['combo-pizza','combo pizza']]]
     descrips = [['kobe beef patty','grilled chicken'],['sausage, vegetables, and pepperoni']]
     exInfo = [['contains meat',' '],['contains dairy']]
     mods = [ [[["sizes",1,0,[['standard',6.55]]],["sides",1,0,[["bacon fries",1],["fries",0]]]] , [["sizes", 1,0,[["standard",6]]], ["toppings",0,2,[["bacon",1],["cheese",1]]]]], [ [["sizes",1,0,[["11 in", 9],["17 in", 11.25]]],["toppings", 0,2,[["extra cheese", 0.56],["extra pepperoni", 1]]]] ] ]
-
-    return(render_template("Customer/Sitdown/mainKiosk.html",cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,mods=mods,btn=str("sitdown-additms")))
-
+    return(render_template("Customer/Sitdown/mainKiosk.html",cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,mods=mods,btn=str("sitdown-additms"),restName=estNameStr))
 
 
 
@@ -461,6 +461,8 @@ if __name__ == '__main__':
         sess = Session()
         sess.init_app(app)
         app.permanent_session_lifetime = datetime.timedelta(minutes=200)
+        app.debug = True
         app.run(host="0.0.0.0",port=5000)
+
     except KeyboardInterrupt:
         sys.exit()
