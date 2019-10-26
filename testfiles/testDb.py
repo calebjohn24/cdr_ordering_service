@@ -15,10 +15,12 @@ cred = credentials.Certificate('/Users/caleb/Documents/GitHub/CedarFlask/CedarCh
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://cedarchatbot.firebaseio.com/'
 })
+
 curMin = float(datetime.datetime.now(tz).minute) / 100.0
 curHr = float(datetime.datetime.now(tz).hour)
 curTime = curHr + curMin
 #print(curTime)
+#print(day)
 pathTime = '/restaurants/' + estNameStr + '/' + str(location) + "/schedule/" + day
 
 schedule = db.reference(pathTime).get()
@@ -41,38 +43,62 @@ for sh2 in range(len(schedlist)):
         menu = (schedlist[sh2])
         break
 
-menuItems = []
+print(menu)
+
 pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu
 menuInfo = db.reference(pathMenu).get()
+#print(menuInfo)
 categories = list(menuInfo["categories"])
+baseItms = []
+descrips = []
+exInfo = []
+modsArr = []
 for itms in categories:
     #print(list(menuInfo["categories"][itms]))
-    currArr = [itms]
+    currArr = []
+    currArr2 = []
+    currArr3 = []
+    currArr4 = []
+    currArr5 = []
     for ll in range(len(list(menuInfo["categories"][itms]))):
         itmArr = []
         itx = (list(menuInfo["categories"][itms])[ll])
+        itx2 = itx.replace(" ","-")
+        currArr2.append([itx,itx2])
         descrip = (menuInfo["categories"][itms][itx]["descrip"])
         exinfo = (menuInfo["categories"][itms][itx]["extra-info"])
-        itmArr.append(itx)
-        itmArr.append(descrip)
-        itmArr.append(exinfo)
+        currArr4.append(exinfo)
+        currArr3.append(descrip)
         modNames = (list(menuInfo["categories"][itms][itx])[2:])
         for mods in modNames:
-            modArr = [mods,menuInfo["categories"][itms][itx][mods]["min"],menuInfo["categories"][itms][itx][mods]["max"]]
+            max = int(menuInfo["categories"][itms][itx][mods]["max"]) - int(menuInfo["categories"][itms][itx][mods]["min"])
+            modArr = [mods,menuInfo["categories"][itms][itx][mods]["min"],max]
             opt = list(menuInfo["categories"][itms][itx][mods]["info"])
+            modArr2 = []
             for oo in opt:
-                modArr.append([oo,menuInfo["categories"][itms][itx][mods]["info"][oo]])
-
-            itmArr.append(modArr)
-            modArr = []
-
-        currArr.append(itmArr)
+                modArr2.append([oo,menuInfo["categories"][itms][itx][mods]["info"][oo]])
+            modArr.append(modArr2)
+        currArr5.append(modArr)
+        modArr = []
         itmArr = []
-    menuItems.append(currArr)
+    baseItms.append(currArr2)
+    descrips.append(currArr3)
+    exInfo.append(currArr4)
+    modsArr.append([currArr5])
+    currArr2 = []
+    currArr3 = []
+    currArr4 = []
+    currArr5 = []
 
 
+prinArr = [ [[["sizes",1,0,[['standard',6.55]]],["sides",1,0,[["bacon fries",1],["fries",0]]]] , [["sizes", 1,0,[["standard",6]]], ["toppings",0,2,[["bacon",1],["cheese",1]]]]], [ [["sizes",1,0,[["11 in", 9],["17 in", 11.25]]],["toppings", 0,2,[["extra cheese", 0.56],["extra pepperoni", 1]]]] ] ]
 
-print(menuItems)
-print(len(menuItems))
+print(baseItms)
+print(categories)
+print(descrips)
+print(exInfo)
+print(modsArr)
+print(prinArr)
+
 print(" ")
 print("\n")
