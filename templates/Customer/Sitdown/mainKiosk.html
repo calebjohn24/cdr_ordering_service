@@ -79,16 +79,15 @@ $('[data-toggle="popover"]').popover();
 </div>
 
 <div id="Bill" class="tabcontent">
-
-  <div class="card">
-    <br>
-      <form class="form-inline" method="POST" action="payKiosk">
-      <button type="submit" class="btn btn-lg btn-primary mb-2">Pay Now</button>
-      <!--JS webview script here-->
-      </form>
-      <br>
-      </div>
-      </div>
+<div class="card">
+<br>
+<form class="form-inline" method="POST" action="payKiosk">
+<button type="submit" class="btn btn-lg btn-primary mb-2">Pay Now</button>
+<!--JS webview script here-->
+</form>
+<br>
+</div>
+</div>
 
 
 
@@ -272,11 +271,7 @@ $('[data-toggle="popover"]').popover();
               <h5 class="card-title">{{descrips[i][j]}}</h5>
             <h6 class="card-title">{{exInfo[i][j]}}</h6>
             <hr>
-            <!--
-            <button class="btn btn-success btn-circle btn-sm" type="submit" name = "item" value="{{baseItms[i][j][0]}},{{cats[i]}}" data-toggle="popover" data-content="Added to Cart">
-            <strong>Add Item </strong><i class="fas fa-check"></i>
-            </button>
-            -->
+
             <button class="btn btn-success btn-circle btn-sm" data-toggle="modal" data-target="#{{baseItms[i][j][0]}}-modal">
             <strong>Add Item </strong><i class="fas fa-check"></i>
             </button>
@@ -342,20 +337,18 @@ $('[data-toggle="popover"]').popover();
           </form>
             </div>
           </form>
-        </div>
-            </div>
-            </div>
           </div>
+          </div>
+          </div>
+          </div>
+          </div>
+          </div>
+        {%endfor%}
         </div>
-
-  </div>
-          {%endfor%}
-  </div>
-  </div>
-  </div>
-
-            {%endfor%}
-  </div>
+        </div>
+        </div>
+        {%endfor%}
+        </div>
 
 
 

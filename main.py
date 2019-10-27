@@ -486,20 +486,19 @@ def startKiosk(location):
     menuInfo = db.reference(pathMenu).get()
     print(menuInfo)
     categories = list(menuInfo["categories"])
-    cats = ['burgers','pizzas']
-    baseItms = [[['cheese-burger','cheese burger'],['chicken-sandwich','chicken sandwich']],[['combo-pizza','combo pizza']]]
-    descrips = [['kobe beef patty','grilled chicken'],['sausage, vegetables, and pepperoni']]
-    exInfo = [['contains meat',' '],['contains dairy']]
+    #cats = ['burgers','pizzas']
+    #baseItms = [[['cheese-burger','cheese burger'],['chicken-sandwich','chicken sandwich']],[['combo-pizza','combo pizza']]]
+    #descrips = [['kobe beef patty','grilled chicken'],['sausage, vegetables, and pepperoni']]
+    #exInfo = [['contains meat',' '],['contains dairy']]
     mods = [[[["sizes",1,0,[['standard',6.55]]],["sides",1,0,[["bacon fries",1],["fries",0]]]] , [["sizes", 1,0,[["standard",6]]], ["toppings",0,2,[["bacon",1],["cheese",1]]]]], [ [["sizes",1,0,[["11 in", 9],["17 in", 11.25]]],["toppings", 0,2,[["extra cheese", 0.56],["extra pepperoni", 1]]]] ] ]
-    '''
     menuData = genMenuData(location,menu)
     baseItms = menuData[0]
     cats = menuData[1]
     descrips = menuData[2]
     exInfo = menuData[3]
-    mods = menuData[4]
+    #mods = menuData[4]
     print(baseItms)
-    '''
+
     return(render_template("Customer/Sitdown/mainKiosk.html",cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,mods=mods,btn=str("sitdown-additms"),restName=estNameStr))
 
 
