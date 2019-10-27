@@ -100,8 +100,6 @@ for itms in categories:
 for itms2 in categories:
     catArr = []
     for mx2 in list(menuInfo["categories"][itms2]):
-        #print(mx)
-        print("\n")
         tmpArr = []
         for tt2 in list(menuInfo["categories"][itms2][mx2])[2:]:
             tmpArr2 = []
@@ -127,7 +125,7 @@ print(baseItms)
 print(categories)
 print(descrips)
 print(exInfo)
-print(modsName[0][0][0][0])
+print(modsName[0][0][0])
 print(modsItm[0][0][0])
 
 

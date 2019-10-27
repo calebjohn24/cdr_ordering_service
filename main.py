@@ -26,7 +26,7 @@ uid = info['uid']
 #gc = pygsheets.authorize(service_file='static/CedarChatbot-70ec2d781527.json')
 email = "cedarchatbot@appspot.gserviceaccount.com"
 estName = info['uid']
-estNameStr = info['name']
+estNameStr = str(info['name'])
 botNumber = info["number"]
 gsheetsLink = info["gsheets"]
 adminSessTime = 3599
@@ -521,7 +521,7 @@ def startKiosk(location):
     exInfo = menuData[3]
     modsName = menuData[4]
     modsItm = menuData[5]
-    return(render_template("Customer/Sitdown/mainKiosk.html",cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),restName=estNameStr))
+    return(render_template("Customer/Sitdown/mainKiosk.html",cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),restName=str(estNameStr.capitalize())))
 
 
 @app.route('/<location>/sitdown-additms', methods=["POST"])
@@ -535,7 +535,7 @@ def kiosk2(location):
     descrips = [['kobe beef patty','grilled chicken'],['sausage, vegetables, and pepperoni']]
     exInfo = [['contains meat',' '],['contains dairy']]
     mods = [ [[["sizes",1,0,[['standard',6.55]]],["sides",1,0,[["bacon fries",1],["fries",0]]]] , [["sizes", 1,0,[["standard",6]]], ["toppings",0,2,[["bacon",1],["cheese",1]]]]], [ [["sizes",1,0,[["11 in", 9],["17 in", 11.25]]],["toppings", 0,2,[["extra cheese", 0.56],["extra pepperoni", 1]]]] ] ]
-    return(render_template("Customer/Sitdown/mainKiosk.html",cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,mods=mods,btn=str("sitdown-additms"),restName=estNameStr))
+    return(render_template("Customer/Sitdown/mainKiosk.html",cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,mods=mods,btn=str("sitdown-additms"),restName=str(estNameStr.capitalize())))
 
 
 
