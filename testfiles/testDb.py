@@ -54,7 +54,6 @@ baseItms = []
 descrips = []
 exInfo = []
 
-modsArr = []
 
 for itms in categories:
     #print(list(menuInfo["categories"][itms]))
@@ -124,12 +123,13 @@ for itms2 in categories:
 #mods =    [ [ [ ['sizes', 1, 0, [['standard', 6.55]]], ['toppings', 0, 3, [['avaocado', 0.85], ['bacon', 0.65], ['cheese', 0.15] ] ] ] ], [[['sizes', 1, 0, [['11 in', 8.9], ['17 in', 11.5]]]]]]
 
 print("\n")
-print(baseItms[0][0][0])
+print(baseItms)
 print(categories)
 print(descrips)
 print(exInfo)
-print(modsName[0][0][0])
+print(modsName[0][0][0][0])
 print(modsItm[0][0][0])
+
 
 
 

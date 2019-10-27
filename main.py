@@ -347,14 +347,13 @@ def genMenuData(location,menu):
     baseItms = []
     descrips = []
     exInfo = []
-    modsArr = []
+
+
     for itms in categories:
         #print(list(menuInfo["categories"][itms]))
-        currArr = []
         currArr2 = []
         currArr3 = []
         currArr4 = []
-        currArr5 = []
         for ll in range(len(list(menuInfo["categories"][itms]))):
             itmArr = []
             itx = (list(menuInfo["categories"][itms])[ll])
@@ -362,35 +361,59 @@ def genMenuData(location,menu):
             currArr2.append([itx2,itx])
             descrip = (menuInfo["categories"][itms][itx]["descrip"])
             exinfo = (menuInfo["categories"][itms][itx]["extra-info"])
-            currArr4.append(exinfo)
+            mN = (list(menuInfo["categories"][itms][itx])[2:])
             currArr3.append(descrip)
-            modNames = (list(menuInfo["categories"][itms][itx])[2:])
-            for mods in modNames:
+            currArr4.append(exinfo)
+            #print(mN)
+            for mods in mN:
                 max = int(menuInfo["categories"][itms][itx][mods]["max"]) - int(menuInfo["categories"][itms][itx][mods]["min"])
-                modArr = [mods,menuInfo["categories"][itms][itx][mods]["min"],max]
+                min = int(menuInfo["categories"][itms][itx][mods]["min"])
                 opt = list(menuInfo["categories"][itms][itx][mods]["info"])
-                modArr2 = []
-                for oo in opt:
-                    modArr2.append([oo,menuInfo["categories"][itms][itx][mods]["info"][oo]])
-                modArr.append(modArr2)
-            currArr5.append(modArr)
-            modArr = []
-            itmArr = []
         baseItms.append(currArr2)
         descrips.append(currArr3)
         exInfo.append(currArr4)
-        modsArr.append([currArr5])
         currArr2 = []
         currArr3 = []
         currArr4 = []
-        currArr5 = []
 
-    #print(baseItms)
-    #print(categories)
-    #print(descrips)
-    #print(exInfo)
-    #print(modsArr)
-    itmArr = [baseItms,categories,descrips,exInfo,modsArr]
+    modsName = []
+    modsItm = []
+    for itms in categories:
+        catArr = []
+        catArr2 = []
+        for mx in list(menuInfo["categories"][itms]):
+            tmpArr = []
+            for tt in list(menuInfo["categories"][itms][mx])[2:]:
+                max = int(menuInfo["categories"][itms][mx][tt]["max"]) - int(menuInfo["categories"][itms][mx][tt]["min"])
+                min = menuInfo["categories"][itms][mx][tt]["min"]
+                tmpArr.append([tt,min,max])
+            catArr.append(tmpArr)
+        modsName.append(catArr)
+
+
+    for itms2 in categories:
+        catArr = []
+        for mx2 in list(menuInfo["categories"][itms2]):
+            #print(mx)
+            print("\n")
+            tmpArr = []
+            for tt2 in list(menuInfo["categories"][itms2][mx2])[2:]:
+                tmpArr2 = []
+                for hnn in list(menuInfo["categories"][itms2][mx2][tt2]["info"]):
+                    print([hnn,menuInfo["categories"][itms2][mx2][tt2]["info"][hnn]])
+                    tmpArr2.append([hnn,menuInfo["categories"][itms2][mx2][tt2]["info"][hnn]])
+                tmpArr.append(tmpArr2)
+            catArr.append(tmpArr)
+        modsItm.append(catArr)
+    '''
+    print(baseItms[0][0][0])
+    print(categories[0])
+    print(descrips[0][0])
+    print(exInfo[0][0])
+    print(modsName[0][0][0][0])
+    print(modsItm[0][0][0][0][1])
+    '''
+    itmArr = [baseItms,categories,descrips,exInfo,modsName,modsItm]
     return itmArr
 
 def findMenu(location):
@@ -485,21 +508,20 @@ def startKiosk(location):
     pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu
     menuInfo = db.reference(pathMenu).get()
     print(menuInfo)
-    categories = list(menuInfo["categories"])
+    #categories = list(menuInfo["categories"])
     #cats = ['burgers','pizzas']
     #baseItms = [[['cheese-burger','cheese burger'],['chicken-sandwich','chicken sandwich']],[['combo-pizza','combo pizza']]]
     #descrips = [['kobe beef patty','grilled chicken'],['sausage, vegetables, and pepperoni']]
     #exInfo = [['contains meat',' '],['contains dairy']]
-    mods = [[[["sizes",1,0,[['standard',6.55]]],["sides",1,0,[["bacon fries",1],["fries",0]]]] , [["sizes", 1,0,[["standard",6]]], ["toppings",0,2,[["bacon",1],["cheese",1]]]]], [ [["sizes",1,0,[["11 in", 9],["17 in", 11.25]]],["toppings", 0,2,[["extra cheese", 0.56],["extra pepperoni", 1]]]] ] ]
+    #mods = [[[["sizes",1,0,[['standard',6.55]]],["sides",1,0,[["bacon fries",1],["fries",0]]]] , [["sizes", 1,0,[["standard",6]]], ["toppings",0,2,[["bacon",1],["cheese",1]]]]], [ [["sizes",1,0,[["11 in", 9],["17 in", 11.25]]],["toppings", 0,2,[["extra cheese", 0.56],["extra pepperoni", 1]]]] ] ]
     menuData = genMenuData(location,menu)
     baseItms = menuData[0]
     cats = menuData[1]
     descrips = menuData[2]
     exInfo = menuData[3]
-    #mods = menuData[4]
-    print(baseItms)
-
-    return(render_template("Customer/Sitdown/mainKiosk.html",cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,mods=mods,btn=str("sitdown-additms"),restName=estNameStr))
+    modsName = menuData[4]
+    modsItm = menuData[5]
+    return(render_template("Customer/Sitdown/mainKiosk.html",cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),restName=estNameStr))
 
 
 @app.route('/<location>/sitdown-additms', methods=["POST"])
