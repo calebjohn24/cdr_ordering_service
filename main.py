@@ -394,8 +394,6 @@ def genMenuData(location,menu):
     for itms2 in categories:
         catArr = []
         for mx2 in list(menuInfo["categories"][itms2]):
-            #print(mx)
-            print("\n")
             tmpArr = []
             for tt2 in list(menuInfo["categories"][itms2][mx2])[2:]:
                 tmpArr2 = []
@@ -488,15 +486,15 @@ def startKiosk(location):
     path = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/"
     orderToken = str(uuid.uuid4())
     ref = db.reference(path)
-    ref.set({
-        orderToken : {
-            "name":name,
-            "phone":phone,
-            "table":table,
-             "timestamp":time.time()
-        }
+    newOrd = ref.push({
+        "name":name,
+        "phone":phone,
+        "table":table,
+        "timestamp":time.time(),
+        "subtotal":0.0
         })
-    session['orderToken'] = orderToken
+    print(newOrd.key)
+    session['orderToken'] = newOrd.key
     #menu = findMenu(location)
     menu = "lunch"
     session["menu"] = menu
@@ -552,17 +550,18 @@ def kiosk2(location):
     print(price,itm,cat,unitPrice,qty,mods,notes)
     menu = session.get('menu', None)
     orderToken = session.get('orderToken',None)
-    cartUUID = uuid.uuid4()
-    pathCartitm = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken +"/cart/"+orderToken
+    print(orderToken)
+    pathCartitm = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken +"/cart/"
     pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu
-    cartRefItm = db.reference(pathCartItm)
-    ref.set({
+    cartRefItm = db.reference(pathCartitm)
+    cartRefItm.push({
         'cat':cat,
         'itm':itm,
         'qty':qty,
         'notes':notes,
         'price':price,
-        'mods':mods
+        'mods':mods,
+        'unitPrice':unitPrice
     })
     menuInfo = db.reference(pathMenu).get()
     menuData = genMenuData(location,menu)
