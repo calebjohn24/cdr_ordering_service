@@ -516,27 +516,54 @@ def startKiosk(location):
 @app.route('/<location>/sitdown-additms', methods=["POST"])
 def kiosk2(location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
-    print((request.form))
+    #print((request.form))
     rsp = dict((request.form))
-    print(rsp)
+    #print(rsp)
     itmKeys = list(rsp.keys())
     cat = ""
     itm = ""
     mods = []
     notes = ""
     qty = 1
+    price = 0.0
+    unitPrice = 0.0
     for itx in itmKeys:
-        print(itx)
-        print(itx[:3])
         if((itx[:3]) == "mod"):
-            print(itmKeys)
-            tr = []
-            spt = list(str(rsp[itx]).split("~"))
-            mods.append(spt)
+            try:
+                spt = list(str(rsp[itx]).split("~"))
+                unitPrice += float(spt[1])
+                mods.append(spt)
+            except:
+                pass
+        elif((itx) == "itm"):
+            cat = list(str(rsp[itx]).split("~"))[0]
+            itm = list(str(rsp[itx]).split("~"))[1]
+        if(itx == "notes"):
+            notes = rsp[itx]
+        if(itx == "qty"):
+            if(rsp[itx] == ""):
+                qty = 1
+            else:
+                qty = int(rsp[itx])
 
-    print(mods)
+    price = unitPrice*qty
+    price = round(price,2)
+    unitPrice = round(unitPrice,2)
+    print(price,itm,cat,unitPrice,qty,mods,notes)
     menu = session.get('menu', None)
+    orderToken = session.get('orderToken',None)
+    cartUUID = uuid.uuid4()
+    pathCartitm = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken +"/cart/"+orderToken
     pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu
+    cartRefItm = db.reference(pathCartItm)
+    ref.set({
+        'cat':cat,
+        'itm':itm,
+        'qty':qty,
+        'notes':notes,
+        'price':price,
+        'mods':mods
+    })
     menuInfo = db.reference(pathMenu).get()
     menuData = genMenuData(location,menu)
     baseItms = menuData[0]
@@ -545,7 +572,9 @@ def kiosk2(location):
     exInfo = menuData[3]
     modsName = menuData[4]
     modsItm = menuData[5]
-    return(render_template("Customer/Sitdown/mainKiosk.html",cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),restName=str(estNameStr.capitalize())))
+    return(render_template("Customer/Sitdown/mainKiosk.html",
+                           cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),
+                           restName=str(estNameStr.capitalize())))
 
 
 if __name__ == '__main__':
