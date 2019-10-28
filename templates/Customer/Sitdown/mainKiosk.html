@@ -281,7 +281,7 @@ $('[data-toggle="popover"]').popover();
               </div>
               </div>
 
-                          <div class="modal fade" id="{{baseItms[i][j][0]}}-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+              <div class="modal fade" id="{{baseItms[i][j][0]}}-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
               <div class="modal-dialog modal-dialog-centered" role="document">
               <div class="modal-content">
               <div class="modal-header">
@@ -290,25 +290,26 @@ $('[data-toggle="popover"]').popover();
               <span aria-hidden="true">&times;</span>
               </button>
               </div>
+              <form method="POST" action="{{btn}}" id="itm-form-{{baseItms[i][j][1]}}">
               <div class="modal-body">
-
               {% for x in range(modsName[i][j]|count) %}
               <div class="card">
               <h4 class="card-header">{{modsName[i][j][x][0]}}</h4>
               <div class="card-body">
-                <form method="POST" action="{{btn}}" id="itm-form-{{baseItms[i][j][1]}}">
+
                 {% for yy in range(modsName[i][j][x][1]) %}
-                <h6 class="card-header"><select class="custom-select" name="mod" form="itm-form-{{baseItms[i][j][1]}}" required>
+                <h6 class="card-header"><select class="custom-select" name="mod-{{i}}-{{j}}-{{x}}-{{yy}}-0" form="itm-form-{{baseItms[i][j][1]}}" required>
                   {% for y in range(modsItm[i][j][x]|count) %}
-                    <option value="{{modsItm[i][j][x][y][0]}}~{{modsItm[i][j][x][y][1]}}">{{modsItm[i][j][x][y][0]}} ${{modsItm[i][j][x][y][1]}}</option>
+                    <option name="mod-{{i}}-{{j}}-{{x}}-{{yy}}-{{y}}-0" value="{{modsItm[i][j][x][y][0]}}~{{modsItm[i][j][x][y][1]}}">{{modsItm[i][j][x][y][0]}} ${{modsItm[i][j][x][y][1]}}</option>
                 {% endfor %}
                 <br>
               </select></h6>
               {% endfor %}
               {% for yyx in range(modsName[i][j][x][2]) %}
-              <h6 class="card-header"><select class="custom-select" name="mod" form="itm-form-{{baseItms[i][j][1]}}" required>
-                {% for y in range(modsItm[i][j][x]|count) %}
-                  <option value="{{modsItm[i][j][x][y][0]}}~{{modsItm[i][j][x][y][1]}}">{{modsItm[i][j][x][y][0]}} ${{modsItm[i][j][x][y][1]}}</option>
+              <h6 class="card-header"><select class="custom-select" name="mod-{{i}}-{{j}}-{{x}}-{{yyx}}-1" form="itm-form-{{baseItms[i][j][1]}}">
+                {% for yz in range(modsItm[i][j][x]|count) %}
+                  <option name="mod-{{i}}-{{j}}-{{x}}-{{yy}}-{{yz}}-1" value="{{modsItm[i][j][x][yz][0]}}~{{modsItm[i][j][x][yz][1]}}">{{modsItm[i][j][x][yz][0]}} ${{modsItm[i][j][x][yz][1]}}</option>
+                  <br>
               {% endfor %}
               <option value="NaN">None</option>
               <br>
@@ -319,94 +320,26 @@ $('[data-toggle="popover"]').popover();
               </div>
               {% endfor %}
               <hr>
-            </div>
+
             <label for="exampleFormControlSelect0">Notes</label>
-            <input class="form-control" name="notes" type="text" placeholder="Notes" id="exampleFormControlSelect1">
+            <input class="form-control" name="notes" form="itm-form-{{baseItms[i][j][1]}}" type="text" placeholder="Notes" id="exampleFormControlSelect1">
             <br>
             <label for="validationDefault05">Quantity</label>
-            <input type="number" name="qty" class="form-control" id="validationDefault05" placeholder="1">
-
+            <input type="number" name="qty" class="form-control" form="itm-form-{{baseItms[i][j][1]}}" id="validationDefault05" placeholder="1">
+              </div>
+            </form>
           </div>
-
-
-
-
-
-
+        </form>
 
               </div>
               <div class="modal-footer">
-              <button class="btn btn-success btn-circle btn-sm" type="submit" name="itm" value="{{cats[i]}}~{{baseItms[i][j][1]}}" data-toggle="modal" data-target="#exampleModal">
+              <button class="btn btn-success btn-circle btn-sm" type="submit" form="itm-form-{{baseItms[i][j][1]}}" name="itm" value="{{cats[i]}}~{{baseItms[i][j][1]}}" data-toggle="modal" data-target="#exampleModal">
               <strong>Add To Cart </strong><i class="fas fa-check"></i>
               </button>
             </div>
               </div>
               </div>
               </div>
-
-
-
-<!--
-              <div class="modal fade" id="{{baseItms[i][j][0]}}-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-
-              <div class="modal-dialog modal-dialog-centered" role="document">
-              <div class="modal-content">
-              <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">{{baseItms[i][j][1]}}</h5>
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-              </button>
-              </div>
-              <div class="modal-body">
-
-                {% for x in range(modsName[i][j]|count) %}
-                <div class="card">
-                <h4 class="card-header">{{modsName[i][j][x][0]}}</h4>
-                  <br>
-                <div class="card-body">
-                  <form method="POST" action="{{btn}}" id="itm-form-{{baseItms[i][j][1]}}">
-                  {% for yy in range(modsName[i][j][x][1]) %}
-                  <h6 class="card-header"><select class="custom-select" name="mod" form="itm-form-{{baseItms[i][j][1]}}" required>
-                    {% for y in range(modsItm[i][j][x]|count) %}
-                      <option value="{{modsItm[i][j][x][y][0]}}~{{modsItm[i][j][x][y][1]}}">{{modsItm[i][j][x][y][0]}} ${{modsItm[i][j][x][y][1]}}</option>
-                  {% endfor %}
-                  <br>
-                </select></h6>
-                <hr>
-                {% endfor %}
-                {% for yyx in range(modsName[i][j][x][2]) %}
-                      <div class="card-body">
-              <h6 class="card-header">  <select class="custom-select" name="mod" form="itm-form-{{baseItms[i][j][1]}}">
-                {% for yz in range(modsItm[i][j][x][yyx]|count) %}
-                <option value="{{modsItm[i][j][x][yz][0]}}~{{modsItm[i][j][x][yz][1]}}">{{modsItm[i][j][x][yz][0]}} ${{modsItm[i][j][x][yz][1]}}</option>
-                {% endfor %}
-                <br>
-                <option value="NaN">None</option>
-              </select> </h6>
-              <br>
-                {% endfor %}
-            </div>
-                {% endfor %}
-                <label for="exampleFormControlSelect0">Notes</label>
-                <input class="form-control" name="notes" type="text" placeholder="Notes" id="exampleFormControlSelect1">
-                <br>
-                <label for="validationDefault05">Quantity</label>
-                <input type="number" name="qty" class="form-control" id="validationDefault05" placeholder="1">
-
-              <div class="modal-footer">
-              <button class="btn btn-success btn-circle btn-sm" type="submit" name="itm" value="{{cats[i]}}~{{baseItms[i][j][1]}}" data-toggle="modal" data-target="#exampleModal">
-              <strong>Add To Cart </strong><i class="fas fa-check"></i>
-              </button>
-              </div>
-                  </form>
-              </div>
-              </div>
-            </div>
-            </div>
-            </div>
-            </div>
-
-          -->
               </div>
                       {%endfor%}
             </div>

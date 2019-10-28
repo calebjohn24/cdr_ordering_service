@@ -36,7 +36,7 @@ firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://cedarchatbot.firebaseio.com/'
 })
 sqRef = db.reference(str('/restaurants/' + estNameStr))
-print(sqRef.get())
+#print(sqRef.get())
 squareToken = sqRef.get()["sq-token"]
 promoPass = "promo-" + str(estName)
 addPass = "add-" + str(estName)
@@ -153,7 +153,7 @@ def loginPageCheck():
     try:
         user = ref.get()[str(email)]
         if ((pbkdf2_sha256.verify(pw, user["password"])) == True):
-            print("found")
+            #print("found")
             LoginToken = str((uuid.uuid4())) + "-" + str((uuid.uuid4()))
             user_ref = ref.child(str(email))
             user_ref.update({
@@ -164,10 +164,10 @@ def loginPageCheck():
             session['token'] = LoginToken
             return redirect(url_for('panel'))
         else:
-            print("incorrect password")
+            #print("incorrect password")
             return render_template("login2.html", btn=str("admin2"), restName=estNameStr)
     except Exception as e:
-        print(e)
+        #print(e)
         return render_template("POS/Admin/login2.html", btn=str("admin2"), restName=estNameStr)
 
 
@@ -196,7 +196,7 @@ def locPanel(location):
     doc = ref.get()[str(username)]
     if (checkAdminToken(idToken, username) == 1):
         return redirect(url_for('.login', location=location))
-    print(checkLocation(location,1))
+    #print(checkLocation(location,1))
     if(checkLocation(location,1)[0] == 1):
         return redirect(url_for('.login', location=location))
     getSquare()
@@ -328,7 +328,7 @@ def inbound_sms():
     text = request.values.get('Text')
     print('Message received - From: %s, To: %s, Text: %s' % (from_number, to_number, text))
     resp = getReply(text, from_number)
-    print(str(resp))
+    #print(str(resp))
     if (resp != "no msg"):
         client.messages.create(
             src=botNumber,
@@ -400,7 +400,6 @@ def genMenuData(location,menu):
             for tt2 in list(menuInfo["categories"][itms2][mx2])[2:]:
                 tmpArr2 = []
                 for hnn in list(menuInfo["categories"][itms2][mx2][tt2]["info"]):
-                    print([hnn,menuInfo["categories"][itms2][mx2][tt2]["info"][hnn]])
                     tmpArr2.append([hnn,menuInfo["categories"][itms2][mx2][tt2]["info"][hnn]])
                 tmpArr.append(tmpArr2)
             catArr.append(tmpArr)
@@ -455,7 +454,6 @@ def findMenu(location):
             itx = (list(menuInfo["categories"][itms])[ll])
             descrip = (menuInfo["categories"][itms][itx]["descrip"])
             exinfo = (menuInfo["categories"][itms][itx]["extra-info"])
-            print(itms)
             itmArr.append(itx)
             itmArr.append(descrip)
             itmArr.append(exinfo)
@@ -465,10 +463,8 @@ def findMenu(location):
                 opt = list(menuInfo["categories"][itms][itx][mods]["info"])
                 for oo in opt:
                     modArr.append([oo,menuInfo["categories"][itms][itx][mods]["info"][oo]])
-
                 itmArr.append(modArr)
                 modArr = []
-
             currArr.append(itmArr)
             itmArr = []
         menuItems.append(currArr)
@@ -507,13 +503,6 @@ def startKiosk(location):
     #print(menu)
     pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu
     menuInfo = db.reference(pathMenu).get()
-    print(menuInfo)
-    #categories = list(menuInfo["categories"])
-    #cats = ['burgers','pizzas']
-    #baseItms = [[['cheese-burger','cheese burger'],['chicken-sandwich','chicken sandwich']],[['combo-pizza','combo pizza']]]
-    #descrips = [['kobe beef patty','grilled chicken'],['sausage, vegetables, and pepperoni']]
-    #exInfo = [['contains meat',' '],['contains dairy']]
-    #mods = [[[["sizes",1,0,[['standard',6.55]]],["sides",1,0,[["bacon fries",1],["fries",0]]]] , [["sizes", 1,0,[["standard",6]]], ["toppings",0,2,[["bacon",1],["cheese",1]]]]], [ [["sizes",1,0,[["11 in", 9],["17 in", 11.25]]],["toppings", 0,2,[["extra cheese", 0.56],["extra pepperoni", 1]]]] ] ]
     menuData = genMenuData(location,menu)
     baseItms = menuData[0]
     cats = menuData[1]
@@ -527,16 +516,36 @@ def startKiosk(location):
 @app.route('/<location>/sitdown-additms', methods=["POST"])
 def kiosk2(location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
-    rsp = ((request.form))
-    print((rsp))
-    return(str(rsp))
-    cats = ['burgers','pizzas']
-    baseItms = [[['cheese-burger','cheese burger'],['chicken-sandwich','chicken sandwich']],[['combo-pizza','combo pizza']]]
-    descrips = [['kobe beef patty','grilled chicken'],['sausage, vegetables, and pepperoni']]
-    exInfo = [['contains meat',' '],['contains dairy']]
-    mods = [ [[["sizes",1,0,[['standard',6.55]]],["sides",1,0,[["bacon fries",1],["fries",0]]]] , [["sizes", 1,0,[["standard",6]]], ["toppings",0,2,[["bacon",1],["cheese",1]]]]], [ [["sizes",1,0,[["11 in", 9],["17 in", 11.25]]],["toppings", 0,2,[["extra cheese", 0.56],["extra pepperoni", 1]]]] ] ]
-    return(render_template("Customer/Sitdown/mainKiosk.html",cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,mods=mods,btn=str("sitdown-additms"),restName=str(estNameStr.capitalize())))
+    print((request.form))
+    rsp = dict((request.form))
+    print(rsp)
+    itmKeys = list(rsp.keys())
+    cat = ""
+    itm = ""
+    mods = []
+    notes = ""
+    qty = 1
+    for itx in itmKeys:
+        print(itx)
+        print(itx[:3])
+        if((itx[:3]) == "mod"):
+            print(itmKeys)
+            tr = []
+            spt = list(str(rsp[itx]).split("~"))
+            mods.append(spt)
 
+    print(mods)
+    menu = session.get('menu', None)
+    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu
+    menuInfo = db.reference(pathMenu).get()
+    menuData = genMenuData(location,menu)
+    baseItms = menuData[0]
+    cats = menuData[1]
+    descrips = menuData[2]
+    exInfo = menuData[3]
+    modsName = menuData[4]
+    modsItm = menuData[5]
+    return(render_template("Customer/Sitdown/mainKiosk.html",cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),restName=str(estNameStr.capitalize())))
 
 
 if __name__ == '__main__':
@@ -549,7 +558,7 @@ if __name__ == '__main__':
         sess = Session()
         sess.init_app(app)
         app.permanent_session_lifetime = datetime.timedelta(minutes=200)
-        app.debug = True
+        #app.debug = True
         app.run(host="0.0.0.0",port=5000)
 
     except KeyboardInterrupt:
