@@ -508,7 +508,16 @@ def startKiosk(location):
     exInfo = menuData[3]
     modsName = menuData[4]
     modsItm = menuData[5]
-    return(render_template("Customer/Sitdown/mainKiosk.html",cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),restName=str(estNameStr.capitalize())))
+    baseitmCart = ["Add Items to Your Cart"]
+    modsCart = [" "]
+    notesCart = [" "]
+    qtysCart = [" "]
+    cartKeys = ["-ig"]
+    return(render_template("Customer/Sitdown/mainKiosk.html",
+                           cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,
+                           modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),restName=str(estNameStr.capitalize()),
+                           baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,
+                           cartKeys=cartKeys,btn2="itmRemove",btn3="sendReq"))
 
 
 @app.route('/<location>/sitdown-additms', methods=["POST"])
@@ -571,9 +580,59 @@ def kiosk2(location):
     exInfo = menuData[3]
     modsName = menuData[4]
     modsItm = menuData[5]
+    cartData = db.reference(pathCartitm).get()
+    print(cartData)
+    cartKeys = list(cartData.keys())
+    baseitmCart = []
+    modsCart = []
+    notesCart = []
+    qtysCart = []
+    for cc in range(len(cartKeys)):
+        baseitmCart.append(cartData[cartKeys[cc]]["itm"])
+        notesCart.append(cartData[cartKeys[cc]]["notes"])
+        qtysCart.append(cartData[cartKeys[cc]]["qty"])
+        modStr = ""
+        for mds in range(len(cartData[cartKeys[cc]]["mods"])):
+            modStr += cartData[cartKeys[cc]]["mods"][mds][0]
+            modStr += " "
+    modsCart.append(modStr)
+    print(baseitmCart,modsCart,notesCart,notesCart,qtysCart)
+    #print("exec")
     return(render_template("Customer/Sitdown/mainKiosk.html",
-                           cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),
-                           restName=str(estNameStr.capitalize())))
+                           cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,
+                           modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),restName=str(estNameStr.capitalize()),
+                           baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,
+                           cartKeys=cartKeys,btn2="itmRemove",btn3="cartAdd"))
+
+
+@app.route('/<location>/cartAdd', methods=["POST"])
+def kioskRem(location):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    orderToken = session.get('orderToken',None)
+    menu = session.get('menu',None)
+    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu
+    pathCart = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken +"/cart/"
+    
+    menuInfo = db.reference(pathMenu).get()
+    menuData = genMenuData(location,menu)
+    baseItms = menuData[0]
+    cats = menuData[1]
+    descrips = menuData[2]
+    exInfo = menuData[3]
+    modsName = menuData[4]
+    modsItm = menuData[5]
+    baseitmCart = ["Add Items to Your Cart"]
+    modsCart = [" "]
+    notesCart = [" "]
+    qtysCart = [" "]
+    cartKeys = ["-ig"]
+    return(render_template("Customer/Sitdown/mainKiosk.html",
+                           cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,
+                           modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),restName=str(estNameStr.capitalize()),
+                           baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,
+                           cartKeys=cartKeys,btn2="itmRemove"))
+
+
 
 
 if __name__ == '__main__':

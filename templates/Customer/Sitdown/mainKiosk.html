@@ -92,35 +92,35 @@ $('[data-toggle="popover"]').popover();
 
 
 <div id="Cart" class="tabcontent">
-
   <div class="card">
+    <form method="POST" action="{{btn2}}">
+    {% for bb in range(baseitmCart|count) %}
     <div class="card-header">
-      <h4>Base Item</h4>
+      <h4>{{baseitmCart[bb]}}</h4>
     </div>
     <div class="card-body">
+      <h4 class="card-title">{{modsCart[bb]}}</h4>
 
-      <h4 class="card-title">Modifiers</h4>
-
-      <h4 class="card-title">Notes</h4>
-      <h4 class="card-title">Quantity</h4>
-        <h4 class="card-title">Price</h4>
+      <h4 class="card-title">Notes: {{notesCart[bb]}}</h4>
+      <h4 class="card-title">QTY: {{qtysCart[bb]}}</h4>
         <br>
-        <button class="btn btn-danger btn-circle btn-sm" data-toggle="popover" data-content="Item Removed">
+        <button class="btn btn-danger btn-circle btn-sm" type="submit" name="remove", value="{{cartKeys[bb]}}" data-toggle="popover" data-content="Item Removed">
           <strong>Remove </strong><i class="fas fa-times-circle"></i>
         </button>
-          </div>
-
-
+      </div>
+{% endfor %}
+</form>
     </div>
-
   <hr>
   <div class="row">
+    <form method="POST" action="{{btn3}}">
       <div class="col-lg-12">
 
-    <button class="btn btn-success btn-circle btn-md" data-toggle="popover" data-placement="bottom" data-content="Items Sent To Kitchen">
+    <button class="btn btn-success btn-circle btn-md" name="add", value="cart" data-toggle="popover" data-placement="bottom" data-content="Items Sent To Kitchen">
       <strong>Order Items </strong><i class="fas fa-arrow-right"></i>
     </button>
       </div>
+    </form>
   </div>
   </div>
 
@@ -329,7 +329,6 @@ $('[data-toggle="popover"]').popover();
               </div>
             </form>
           </div>
-        </form>
 
               </div>
               <div class="modal-footer">
