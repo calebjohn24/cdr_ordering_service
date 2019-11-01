@@ -131,44 +131,65 @@ $('[data-toggle="popover"]').popover();
     <br>
 
   <div class="row">
-    <div class="col-sm-6">
+  <div class="col-sm-6">
 
-    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#drink-modal">
-    Refill Drinks
-    </button>
+  <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#drink-modal">
+  Refill Drinks
+  </button>
 
-    <div class="modal fade" id="drink-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="drink-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Refill Drinks</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-            <form method="POST" action="sendReq">
-              <div class="form-group">
-        <label for="exampleInputEmail1">Enter Drinks To Refill</label>
-        <input type="text" class="form-control" name="drinks" placeholder="Enter Drinks" required>
-      </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
-        <br>
-      </div>
-    </div>
+  <div class="modal-content">
+  <div class="modal-header">
+  <h5 class="modal-title" id="exampleModalLabel">Refill Drinks</h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+  <span aria-hidden="true">&times;</span>
+  </button>
   </div>
-</div>
-    </div>
+  <div class="modal-body">
+  <form method="POST" action="sendReq">
+  <div class="form-group">
+  <br>
+  <input type="text" class="form-control" name="drinks" placeholder="Enter Drink Names" required>
+  </div>
+  <hr>
+  <button type="submit" class="btn btn-lg btn-success">Next</button>
+  </form>
+  <br>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
 
 
     <br>
     <div class="col-sm-6">
-      <div>
-      <form method="POST" action="sendReq" id="req-napkins">
-      <a type="button" class="btn btn-primary btn-lg" href="sendReqX-reqNapkins" value="Extra Napkins"  name="req-napkins">Extra Napkins</a>
+
+    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#napkin-modal">
+    Extra Napkins
+    </button>
+
+    <div class="modal fade" id="napkin-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">Request Napkins</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    <div class="modal-body">
+    <form method="POST" action="sendReq">
+    <div class="form-group">
+    </div>
+    <button type="submit" name="napkins" value="ex" class="btn btn-lg btn-success">Next</button>
     </form>
-  </div>
+    <br>
+    </div>
+    </div>
+    </div>
+    </div>
     </div>
 
   </div>
