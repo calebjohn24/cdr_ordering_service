@@ -701,7 +701,105 @@ def kioskCart(location):
                            cartKeys=cartKeys,btn2="itmRemove"))
 
 
+@app.route('/<location>/sendReq', methods=["POST"])
+def kioskSendReq(location):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    rspKey = list(rsp.keys())
+    return(str(rsp))
+    pathRequest = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/"
+    newReq = reqRef.push({"help":requestId})
+    pathRequestkey = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/" + newReq.key + "/info"
+    reqRefkey = db.reference(pathRequestkey)
+    reqRefkey.set({"table":tableNum})
+    cartRefItm = db.reference(pathCartitm)
+    menuInfo = db.reference(pathMenu).get()
+    menuData = genMenuData(location,menu)
+    baseItms = menuData[0]
+    cats = menuData[1]
+    descrips = menuData[2]
+    exInfo = menuData[3]
+    modsName = menuData[4]
+    modsItm = menuData[5]
+    cartData = db.reference(pathCartitm).get()
+    print(cartData)
+    try:
+        cartKeys = list(cartData.keys())
+        baseitmCart = []
+        modsCart = []
+        notesCart = []
+        qtysCart = []
+        for cc in range(len(cartKeys)):
+            baseitmCart.append(cartData[cartKeys[cc]]["itm"])
+            notesCart.append(cartData[cartKeys[cc]]["notes"])
+            qtysCart.append(cartData[cartKeys[cc]]["qty"])
+            modStr = ""
+            for mds in range(len(cartData[cartKeys[cc]]["mods"])):
+                modStr += cartData[cartKeys[cc]]["mods"][mds][0]
+                modStr += " "
+        modsCart.append(modStr)
+        print(baseitmCart,modsCart,notesCart,notesCart,qtysCart)
+    except:
+        baseitmCart = ["Add Items to Your Cart"]
+        modsCart = [" "]
+        notesCart = [" "]
+        qtysCart = [" "]
+        cartKeys = ["-ig"]
 
+    return(render_template("Customer/Sitdown/mainKiosk.html",
+                           cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,
+                           modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),restName=str(estNameStr.capitalize()),
+                           baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,
+                           cartKeys=cartKeys,btn2="itmRemove",btn3="cartAdd"))
+
+@app.route('/<location>/sendReqX-<req>')
+def kioskSendReqX(location, req):
+    return str(req)
+    pathRequest = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/"
+    newReq = reqRef.push({"help":requestId})
+    pathRequestkey = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/" + newReq.key + "/info"
+    reqRefkey = db.reference(pathRequestkey)
+    reqRefkey.set({"table":tableNum})
+    cartRefItm = db.reference(pathCartitm)
+    menuInfo = db.reference(pathMenu).get()
+    menuData = genMenuData(location,menu)
+    baseItms = menuData[0]
+    cats = menuData[1]
+    descrips = menuData[2]
+    exInfo = menuData[3]
+    modsName = menuData[4]
+    modsItm = menuData[5]
+    cartData = db.reference(pathCartitm).get()
+    print(cartData)
+    try:
+        cartKeys = list(cartData.keys())
+        baseitmCart = []
+        modsCart = []
+        notesCart = []
+        qtysCart = []
+        for cc in range(len(cartKeys)):
+            baseitmCart.append(cartData[cartKeys[cc]]["itm"])
+            notesCart.append(cartData[cartKeys[cc]]["notes"])
+            qtysCart.append(cartData[cartKeys[cc]]["qty"])
+            modStr = ""
+            for mds in range(len(cartData[cartKeys[cc]]["mods"])):
+                modStr += cartData[cartKeys[cc]]["mods"][mds][0]
+                modStr += " "
+        modsCart.append(modStr)
+        print(baseitmCart,modsCart,notesCart,notesCart,qtysCart)
+    except:
+        baseitmCart = ["Add Items to Your Cart"]
+        modsCart = [" "]
+        notesCart = [" "]
+        qtysCart = [" "]
+        cartKeys = ["-ig"]
+
+
+    return(render_template("Customer/Sitdown/mainKiosk.html",
+                           cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,
+                           modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),restName=str(estNameStr.capitalize()),
+                           baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,
+                           cartKeys=cartKeys,btn2="itmRemove",btn3="cartAdd"))
 
 if __name__ == '__main__':
     try:
@@ -713,7 +811,7 @@ if __name__ == '__main__':
         sess = Session()
         sess.init_app(app)
         app.permanent_session_lifetime = datetime.timedelta(minutes=200)
-        #app.debug = True
+        app.debug = True
         app.run(host="0.0.0.0",port=5000)
 
     except KeyboardInterrupt:
