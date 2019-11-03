@@ -175,7 +175,10 @@ def panel():
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
-    user_ref = ref.get()[str(username)]
+    try:
+        user_ref = ref.get()[str(username)]
+    except Exception:
+        return redirect(url_for('.login', location=location))
     if (checkAdminToken(idToken, username) == 1):
         return redirect(url_for('.login', location=location))
     getSquare()
@@ -192,7 +195,10 @@ def locPanel(location):
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
-    doc = ref.get()[str(username)]
+    try:
+        doc = ref.get()[str(username)]
+    except Exception:
+        return redirect(url_for('.login', location=location))
     if (checkAdminToken(idToken, username) == 1):
         return redirect(url_for('.login', location=location))
     #print(checkLocation(location,1))
@@ -201,11 +207,10 @@ def locPanel(location):
     getSquare()
     LocName = list(locationsPaths.keys())
     return render_template("POS/Admin/locationAdmin.html",
-                       restName=estNameStr,
-                       LocName=LocName,
-                       lenLocName=len(LocName),
-                       currentLoc=location)
-
+                            restName=estNameStr,
+                            LocName=LocName,
+                            lenLocName=len(LocName),
+                            currentLoc=location)
 
 
 @app.route('/<location>/createMenu', methods=["POST"])
@@ -559,7 +564,7 @@ def kiosk2(location):
     menu = session.get('menu', None)
     orderToken = session.get('orderToken',None)
     #print(orderToken)
-    pathCartitm = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken +"/cart/"
+    pathCartitm = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/cart/"
     pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu
     cartRefItm = db.reference(pathCartitm)
     cartRefItm.push({
@@ -615,8 +620,11 @@ def kioskRem(location):
     pathCartitm = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken +"/cart/"
     pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu
     remPath = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken +"/cart/" + remItm
-    remRef = db.reference(remPath)
-    remRef.delete()
+    try:
+        remRef = db.reference(remPath)
+        remRef.delete()
+    except Exception as e:
+        pass
     cartRefItm = db.reference(pathCartitm)
     menuInfo = db.reference(pathMenu).get()
     menuData = genMenuData(location,menu)
@@ -651,7 +659,7 @@ def kioskRem(location):
         notesCart = [" "]
         qtysCart = [" "]
         cartKeys = ["-ig"]
-    #print("exec")
+
     return(render_template("Customer/Sitdown/mainKiosk.html",
                            cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,
                            modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),restName=str(estNameStr.capitalize()),
@@ -783,7 +791,7 @@ def kioskSendReq(location):
 if __name__ == '__main__':
     try:
         getSquare()
-        print(locationsPaths.keys())
+        #print(locationsPaths.keys())
         app.secret_key = scKey
         sslify = SSLify(app)
         app.config['SESSION_TYPE'] = 'filesystem'
