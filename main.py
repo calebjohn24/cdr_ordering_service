@@ -494,6 +494,8 @@ def startKiosk(location):
         "name":name,
         "phone":phone,
         "table":table,
+        "alert":"null",
+        "alertTime":0,
         "timestamp":time.time(),
         "subtotal":0.0
         })
@@ -672,7 +674,12 @@ def kioskRem(location):
 @app.route('/<location>/SDupdate')
 def kioskUpdate(location):
     orderToken = session.get('orderToken',None)
+    setPath = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
+    alertTimePath = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/alertTime"
     alertPath = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/alert"
+    currentTime = db.reference(alertTimePath).get()
+    if( (time.time() - currentTime >= 40) ):
+            db.reference(setPath).update({"alert":"null"})
     alert = db.reference(alertPath).get()
     info = {
            "alert" : alert,
