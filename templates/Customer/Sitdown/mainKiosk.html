@@ -38,6 +38,34 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 <script>
+$(document).ready(function(e) {
+    var refresher = setInterval("update_content();",15000); // 30 seconds
+    $('#alert').hide();
+})
+
+function update_content(){
+  $.ajax({
+         url: 'SDupdate',
+         success: function(data) {
+             console.log('get info');
+             $('#info').html(JSON.stringify(data, null, '   '));
+             if(data['alert'] != "null"){
+               document.getElementById("alertData").innerHTML = data['alert'];
+               $('#alert').show();
+             }
+             else{
+                $('#alert').hide();
+             }
+
+
+         }
+     });
+
+
+}
+</script>
+
+<script>
 function openTab(evt, cityName) {
   var i, tabcontent, tablinks;
   tabcontent = document.getElementsByClassName("tabcontent");
@@ -66,7 +94,11 @@ $('[data-toggle="popover"]').popover();
   <div class="input-group">
     <h3 class="h3 mb-0 text-gray-800">{{restName}}</h3>
   </div>
+
   <hr>
+    <div id="alert" class="alert alert-warning" role="alert">
+  <h6 id="alertData"></h6>
+ </div>
 
 <div class="center">
 <div class="tab">

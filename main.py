@@ -11,7 +11,7 @@ from passlib.hash import pbkdf2_sha256
 from firebase_admin import credentials
 from firebase_admin import db
 import pytz
-from flask import Flask, request, session
+from flask import Flask, request, session, jsonify
 from flask import redirect, url_for
 from flask import render_template
 from flask_session import Session
@@ -636,6 +636,7 @@ def kioskRem(location):
     modsItm = menuData[5]
     cartData = db.reference(pathCartitm).get()
     #print(cartData)
+
     try:
         cartKeys = list(cartData.keys())
         baseitmCart = []
@@ -659,7 +660,7 @@ def kioskRem(location):
         notesCart = [" "]
         qtysCart = [" "]
         cartKeys = ["-ig"]
-
+    testData = "testAlert"
     return(render_template("Customer/Sitdown/mainKiosk.html",
                            cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,
                            modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),restName=str(estNameStr.capitalize()),
@@ -668,6 +669,15 @@ def kioskRem(location):
 
 
 
+@app.route('/<location>/SDupdate')
+def kioskUpdate(location):
+    orderToken = session.get('orderToken',None)
+    alertPath = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/alert"
+    alert = db.reference(alertPath).get()
+    info = {
+           "alert" : alert,
+        }
+    return jsonify(info)
 
 
 @app.route('/<location>/cartAdd', methods=["POST"])
