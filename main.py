@@ -709,7 +709,7 @@ def kioskCart(location):
         newReq = reqRef.push(cart)
         pathRequestkey = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/" + newReq.key + "/info"
         reqRefkey = db.reference(pathRequestkey)
-        reqRefkey.set({"table":tableNum})
+        reqRefkey.set({"table":tableNum,"type":"order","token":orderToken})
         cartRef.delete()
         print(cart)
     except Exception:
@@ -741,9 +741,9 @@ def kioskSendReq(location):
     tableNum = session.get('table',None)
     rspKey = list(rsp.keys())[0]
     if(rspKey == "condiments"):
-        requestId = "condiment-" + rsp["condiments"]
+        requestId = "extra condiments-" + rsp["condiments"]
     elif(rspKey == "drinks"):
-        requestId = "drinks-" + rsp["drinks"]
+        requestId = "refill drinks-" + rsp["drinks"]
     elif(rspKey == "napkins"):
         requestId = "more napkins"
     elif(rspKey == "cutlery"):
@@ -753,7 +753,7 @@ def kioskSendReq(location):
     elif(rspKey == "issue"):
         requestId = "issue-"+rsp["issue"]
     elif(rspKey == "box"):
-        requestId = "box-"+rsp["box"]
+        requestId = "box food-"+rsp["box"]
     elif(rspKey == "other"):
         requestId = "other-"+rsp["other"]
 
@@ -763,7 +763,7 @@ def kioskSendReq(location):
     newReq = reqRef.push({"help":requestId})
     pathRequestkey = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/" + newReq.key + "/info"
     reqRefkey = db.reference(pathRequestkey)
-    reqRefkey.set({"table":tableNum})
+    reqRefkey.set({"table":tableNum,"type":"help","token":orderToken})
     pathCartitm = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken +"/cart/"
     cartRefItm = db.reference(pathCartitm)
     menuInfo = db.reference(pathMenu).get()
@@ -807,7 +807,7 @@ def kioskSendReq(location):
                            cartKeys=cartKeys,btn2="itmRemove",btn3="cartAdd"))
 
 
-######Employee#########
+##########Employee###########
 @app.route('/<location>/view')
 def EmployeePanel(location):
     pathRequest = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/"
@@ -844,7 +844,23 @@ def EmployeePanel(location):
             requests.append(req)
 
     #return(str(reqTypes))
-    return(render_template("POS/StaffSitdown/View.html",reqKeys=reqKeys,type=reqTypes,tables=tables,requests=requests))
+    return(render_template("POS/StaffSitdown/View.html",success="view-success",reject="view-reject",warning="view-warning",reqKeys=reqKeys,type=reqTypes,tables=tables,requests=requests))
+
+@app.route('/<location>/view-success', methods=["POST"])
+def EmployeeSuccess(location):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    reqToken = rsp["req"]
+    pathRequest = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/" + reqToken
+    reqRef = db.reference(pathRequest)
+    reqData = dict(reqRef.get())
+    orderToken = reqData["info"]["token"]
+    pathTicket = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken +"/ticket"
+    tickRef = db.reference(pathTicket)
+    del reqData["info"]
+    tickRef.push(reqData)
+    reqRef.delete()
+    return(redirect(url_for("EmployeePanel",location=location)))
 
 
 

@@ -74,21 +74,21 @@
       <div class="row">
       <div class="col-lg-1">
       <form method="POST" action="{{success}}">
-      <button type="submit" value="{{reqKeys[x]}}" class="btn btn-success btn-circle btn-lg">
+      <button type="submit" name="req" value="{{reqKeys[x]}}" class="btn btn-success btn-circle btn-lg">
       <i class="fas fa-check"></i>
       </button>
       </form>
       </div>
       <div class="col-lg-1">
       <form method="POST" action="{{warning}}">
-      <button type="submit" value="" class="btn btn-warning btn-circle btn-lg">
+      <button type="submit" name="req" value="{{reqKeys[x]}}" class="btn btn-warning btn-circle btn-lg">
       <i class="fas fa-exclamation-triangle"></i>
       </button>
       </form>
       </div>
       <div class="col-lg-1">
-      <form method="POST" action="{{failure}}">
-      <button type="submit" class="btn btn-danger btn-circle btn-lg">
+      <form method="POST" action="{{reject}}">
+      <button type="submit" name="req" value="{{reqKeys[x]}}" class="btn btn-danger btn-circle btn-lg">
       <i class="fas fa-times-circle"></i>
       </button>
       </form>
@@ -164,12 +164,12 @@
       <div class="panel panel-default">
       <div class="panel-heading">
       <h4 class="panel-title">
-      <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">Table #3</a>
+      <a data-toggle="collapse" data-parent="#accordion" href="#collapse2">ticketTables[y]</a>
       </h4>
       </div>
       <div id="collapse2" class="panel-collapse collapse">
       <div class="panel-body">
-        subtotal ${{tickets[y][0]}}
+        subtotal ${{ticketTotals[y][0]}}
         <hr>
         {% for yy in range(tickets[y][1]|count) %}
 
@@ -188,7 +188,7 @@
 
       </div>
       {% endfor %}
-          -->
+    -->
       </div>
 
     </div>
