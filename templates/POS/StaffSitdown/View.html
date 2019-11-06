@@ -37,7 +37,7 @@
 <br>
 
 <div class="container">
-  <h2>Employee Panel</h2>
+  <h2>Employee Panel <button class="btn-lg btn-light" onClick="window.location.reload()"><i class="fas fa-sync"></i></button></h2>
   <br>
   <!-- Nav tabs -->
   <ul class="nav nav-tabs" role="tablist">
@@ -60,56 +60,51 @@
     <div id="home" class="container tab-pane active"><br>
 
       <div class="container">
-      <div class="panel-group" id="accordion">
-      <div class="panel panel-default">
-    <!-- Card Header - Accordion -->
-    <div class="panel-heading">
-    <h4 class="panel-title">
-    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-uid">Table #12</a>
-    </h4>
-    </div>
-
-    <div id="collapse-uid" class="panel-collapse collapse">
-    <div class="panel-body">
+      {% for x in range(requests|count) %}
+      <div class="card">
       <div class="card-body">
+      <h5 class="card-title">Table #{{tables[x]}}</h5>
+      <h6 class="card-subtitle mb-2 text-muted">{{type[x]}}</h6>
+      {% for xx in range(requests[x]|count) %}
+      <p class="card-text">{{requests[x][xx]}}</p>
+      <br>
+      {% endfor %}
 
 
-        <div class="row">
-       <div class="col-lg-12">
-         <div class="form-group row">
-         <div class="col-sm-2"><strong>Item</strong></div>
-
-       </div>
-       </div>
-        </div>
-
-
-       <br>
-        <div class="row">
-       <div class="col-lg-12">
-        <a href="#" class="btn btn-success btn-circle btn-lg">
-        <i class="fas fa-check"></i>
-        </a>
-        <a href="#" class="btn btn-warning btn-circle btn-lg">
-          <i class="fas fa-exclamation-triangle"></i>
-        </a>
-        <a href="#" class="btn btn-danger btn-circle btn-lg">
-          <i class="fas fa-times-circle"></i>
-        </a>
-           </div>
-        </div>
-        <br>
-
-
+      <div class="row">
+      <div class="col-lg-1">
+      <form method="POST" action="{{success}}">
+      <button type="submit" value="{{reqKeys[x]}}" class="btn btn-success btn-circle btn-lg">
+      <i class="fas fa-check"></i>
+      </button>
+      </form>
       </div>
-    </div>
-    </div>
-    </div>
+      <div class="col-lg-1">
+      <form method="POST" action="{{warning}}">
+      <button type="submit" value="" class="btn btn-warning btn-circle btn-lg">
+      <i class="fas fa-exclamation-triangle"></i>
+      </button>
+      </form>
       </div>
+      <div class="col-lg-1">
+      <form method="POST" action="{{failure}}">
+      <button type="submit" class="btn btn-danger btn-circle btn-lg">
+      <i class="fas fa-times-circle"></i>
+      </button>
+      </form>
+      </div>
+      </div>
+      <br>
+      </div>
+      </div>
+      <hr>
+      {% endfor %}
+
 
 
 
    </div>
+
 
 
 
@@ -163,7 +158,9 @@
     </div>
     <div id="menu2" class="container tab-pane fade"><br>
       <div class="container">
-      <div class="panel-group" id="accordion">
+        <!--
+      {% for y in range(tickets|count) %}
+      <div class="panel-group">
       <div class="panel panel-default">
       <div class="panel-heading">
       <h4 class="panel-title">
@@ -172,9 +169,14 @@
       </div>
       <div id="collapse2" class="panel-collapse collapse">
       <div class="panel-body">
-        Total - $
+        subtotal ${{tickets[y][0]}}
         <hr>
-        Items
+        {% for yy in range(tickets[y][1]|count) %}
+
+        tickets[y][1][yy]
+        <br>
+        {% endfor %}
+
         <hr>
         <a href="#" class="btn btn-info btn-circle btn-sm">
             <i class="fas fa-edit"></i>
@@ -185,7 +187,10 @@
       </div>
 
       </div>
+      {% endfor %}
+          -->
       </div>
+
     </div>
 
     <div id="menu3" class="container tab-pane fade"><br>

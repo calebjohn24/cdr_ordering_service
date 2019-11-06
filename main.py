@@ -673,18 +673,21 @@ def kioskRem(location):
 
 @app.route('/<location>/SDupdate')
 def kioskUpdate(location):
-    orderToken = session.get('orderToken',None)
-    setPath = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
-    alertTimePath = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/alertTime"
-    alertPath = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/alert"
-    currentTime = db.reference(alertTimePath).get()
-    if( (time.time() - currentTime >= 40) ):
-            db.reference(setPath).update({"alert":"null"})
-    alert = db.reference(alertPath).get()
-    info = {
-           "alert" : alert,
-        }
-    return jsonify(info)
+    try:
+        orderToken = session.get('orderToken',None)
+        setPath = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
+        alertTimePath = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/alertTime"
+        alertPath = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/alert"
+        currentTime = db.reference(alertTimePath).get()
+        if( (time.time() - currentTime >= 40) ):
+                db.reference(setPath).update({"alert":"null"})
+        alert = db.reference(alertPath).get()
+        info = {
+               "alert" : alert,
+            }
+        return jsonify(info)
+    except Exception as e:
+        return("200")
 
 
 @app.route('/<location>/cartAdd', methods=["POST"])
@@ -802,6 +805,46 @@ def kioskSendReq(location):
                            modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),restName=str(estNameStr.capitalize()),
                            baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,
                            cartKeys=cartKeys,btn2="itmRemove",btn3="cartAdd"))
+
+
+######Employee#########
+@app.route('/<location>/view')
+def EmployeePanel(location):
+    pathRequest = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/"
+    reqRef = db.reference(pathRequest)
+    reqData = reqRef.get()
+    reqKeys = list(reqData.keys())
+    reqTypes = []
+    requests = []
+    tables = []
+    for rr in reqKeys:
+        reqTypes.append(reqData[rr]["info"]["type"])
+        tables.append(reqData[rr]["info"]["table"])
+        if(reqData[rr]["info"]["type"] == "help"):
+            requests.append([reqData[rr]["help"]])
+        else:
+            cartData = reqData[rr]
+            cartKeys = list(cartData.keys())
+            cartKeys.remove("info")
+            # return(str(cartKeys))
+            req = []
+            for cc in range(len(cartKeys)):
+                modStr = ""
+                modStr += str(cartData[cartKeys[cc]]["qty"])
+                modStr += "x "
+                modStr += cartData[cartKeys[cc]]["itm"]
+                modStr += "-"
+                modStr += cartData[cartKeys[cc]]["notes"]
+                modStr += "-"
+                for mds in range(len(cartData[cartKeys[cc]]["mods"])):
+                    modStr += cartData[cartKeys[cc]]["mods"][mds][0]
+                    modStr += " - "
+                req.append(modStr)
+                modStr = ""
+            requests.append(req)
+
+    #return(str(reqTypes))
+    return(render_template("POS/StaffSitdown/View.html",reqKeys=reqKeys,type=reqTypes,tables=tables,requests=requests))
 
 
 
