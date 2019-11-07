@@ -39,7 +39,7 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 <script>
 $(document).ready(function(e) {
-    var refresher = setInterval("update_content();",20000); // 30 seconds
+    var refresher = setInterval("update_content();",15000); // 1 seconds
     $('#alert').hide();
 })
 
@@ -98,6 +98,7 @@ $('[data-toggle="popover"]').popover();
   <hr>
   <div id="alert" class="alert alert-warning" role="alert">
   <h4 id="alertData"></h4>
+  <a class="btn btn-warning" href="close-alert">&times;</a>
  </div>
 
 <div class="center">

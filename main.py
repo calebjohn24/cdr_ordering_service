@@ -678,9 +678,6 @@ def kioskUpdate(location):
         setPath = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
         alertTimePath = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/alertTime"
         alertPath = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/alert"
-        currentTime = db.reference(alertTimePath).get()
-        if( (time.time() - currentTime >= 40) ):
-                db.reference(setPath).update({"alert":"null"})
         alert = db.reference(alertPath).get()
         info = {
                "alert" : alert,
@@ -730,6 +727,57 @@ def kioskCart(location):
                            modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),restName=str(estNameStr.capitalize()),
                            baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,
                            cartKeys=cartKeys,btn2="itmRemove"))
+
+@app.route('/<location>/close-alert')
+def kioskClear(location):
+    orderToken = session.get('orderToken',None)
+    alertPath = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
+    clearAlert = db.reference(alertPath).update({"alert":"null"})
+    orderToken = session.get('orderToken',None)
+    menu = session.get('menu',None)
+    pathCartitm = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken +"/cart/"
+    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu
+    cartRefItm = db.reference(pathCartitm)
+    menuInfo = db.reference(pathMenu).get()
+    menuData = genMenuData(location,menu)
+    baseItms = menuData[0]
+    cats = menuData[1]
+    descrips = menuData[2]
+    exInfo = menuData[3]
+    modsName = menuData[4]
+    modsItm = menuData[5]
+    cartData = db.reference(pathCartitm).get()
+    #print(cartData)
+
+    try:
+        cartKeys = list(cartData.keys())
+        baseitmCart = []
+        modsCart = []
+        notesCart = []
+        qtysCart = []
+        for cc in range(len(cartKeys)):
+            baseitmCart.append(cartData[cartKeys[cc]]["itm"])
+            notesCart.append(cartData[cartKeys[cc]]["notes"])
+            qtysCart.append(cartData[cartKeys[cc]]["qty"])
+            modStr = ""
+            for mds in range(len(cartData[cartKeys[cc]]["mods"])):
+                modStr += cartData[cartKeys[cc]]["mods"][mds][0]
+                modStr += " - "
+            modsCart.append(modStr)
+            modStr = ""
+        #print("INFO--",baseitmCart,modsCart,notesCart,notesCart,qtysCart)
+    except:
+        baseitmCart = ["Add Items to Your Cart"]
+        modsCart = [" "]
+        notesCart = [" "]
+        qtysCart = [" "]
+        cartKeys = ["-ig"]
+    testData = "testAlert"
+    return(render_template("Customer/Sitdown/mainKiosk.html",
+                           cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,
+                           modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),restName=str(estNameStr.capitalize()),
+                           baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,
+                           cartKeys=cartKeys,btn2="itmRemove",btn3="cartAdd"))
 
 
 @app.route('/<location>/sendReq', methods=["POST"])
@@ -810,41 +858,90 @@ def kioskSendReq(location):
 ##########Employee###########
 @app.route('/<location>/view')
 def EmployeePanel(location):
-    pathRequest = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/"
-    reqRef = db.reference(pathRequest)
-    reqData = reqRef.get()
-    reqKeys = list(reqData.keys())
-    reqTypes = []
-    requests = []
-    tables = []
-    for rr in reqKeys:
-        reqTypes.append(reqData[rr]["info"]["type"])
-        tables.append(reqData[rr]["info"]["table"])
-        if(reqData[rr]["info"]["type"] == "help"):
-            requests.append([reqData[rr]["help"]])
-        else:
-            cartData = reqData[rr]
-            cartKeys = list(cartData.keys())
-            cartKeys.remove("info")
-            # return(str(cartKeys))
-            req = []
-            for cc in range(len(cartKeys)):
-                modStr = ""
-                modStr += str(cartData[cartKeys[cc]]["qty"])
-                modStr += "x "
-                modStr += cartData[cartKeys[cc]]["itm"]
-                modStr += "-"
-                modStr += cartData[cartKeys[cc]]["notes"]
-                modStr += "-"
-                for mds in range(len(cartData[cartKeys[cc]]["mods"])):
-                    modStr += cartData[cartKeys[cc]]["mods"][mds][0]
-                    modStr += " - "
-                req.append(modStr)
-                modStr = ""
-            requests.append(req)
+    try:
+        ordPath = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/"
+        ordsRef = db.reference(ordPath)
+        ordsGet = dict(ordsRef.get())
+        tokens = list(ordsGet)
+        subTotals = []
+        tableTotals = []
+        ticketDisp = []
+        for tt in tokens:
+            subTotals.append(round(float(ordsGet[tt]["subtotal"]),2))
+            tableTotals.append(ordsGet[tt]["table"])
+            try:
+                tickList = []
+                ticket = dict(ordsGet[tt]["ticket"])
+                for tickItms in list(ticket.keys()):
+                    tickItmX = []
+                    for tts in list(ordsGet[tt]["ticket"][tickItms].keys()):
 
-    #return(str(reqTypes))
-    return(render_template("POS/StaffSitdown/View.html",success="view-success",reject="view-reject",warning="view-warning",reqKeys=reqKeys,type=reqTypes,tables=tables,requests=requests))
+                        modStr = ""
+                        modStr += str(ordsGet[tt]["ticket"][tickItms][tts]["qty"])
+                        modStr += "x $"
+                        modStr += str(ordsGet[tt]["ticket"][tickItms][tts]["unitPrice"])
+                        modStr += " "
+                        modStr += ordsGet[tt]["ticket"][tickItms][tts]["itm"]
+                        modStr += "-"
+                        modStr += ordsGet[tt]["ticket"][tickItms][tts]["notes"]
+                        modStr += "-"
+                        for mds in range(len(ordsGet[tt]["ticket"][tickItms][tts]["mods"])):
+                            modStr += ordsGet[tt]["ticket"][tickItms][tts]["mods"][mds][0]
+                            modStr += " - "
+                        modStr += "$"
+                        modStr += str(ordsGet[tt]["ticket"][tickItms][tts]["price"])
+                        tickItmX.append(modStr)
+                        modStr = ""
+                    tickList.append(tickItmX)
+                ticketDisp.append(tickList)
+            except Exception as e:
+                ticketDisp.append([["No Items"]])
+    except Exception as e:
+        subtotals = []
+        tokens = []
+        tableTotals = []
+        ticketDisp = []
+    try:
+        pathRequest = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/"
+        reqRef = db.reference(pathRequest)
+        reqData = reqRef.get()
+        reqKeys = list(reqData.keys())
+        reqTypes = []
+        requests = []
+        tables = []
+        for rr in reqKeys:
+            reqTypes.append(reqData[rr]["info"]["type"])
+            tables.append(reqData[rr]["info"]["table"])
+            if(reqData[rr]["info"]["type"] == "help"):
+                requests.append([reqData[rr]["help"]])
+            else:
+                totalAdd = 0
+                cartData = reqData[rr]
+                cartKeys = list(cartData.keys())
+                cartKeys.remove("info")
+                # return(str(cartKeys))
+                req = []
+                for cc in range(len(cartKeys)):
+                    modStr = ""
+                    modStr += str(cartData[cartKeys[cc]]["qty"])
+                    modStr += "x "
+                    modStr += cartData[cartKeys[cc]]["itm"]
+                    modStr += "-"
+                    modStr += cartData[cartKeys[cc]]["notes"]
+                    modStr += "-"
+                    for mds in range(len(cartData[cartKeys[cc]]["mods"])):
+                        modStr += cartData[cartKeys[cc]]["mods"][mds][0]
+                        modStr += " - "
+                    req.append(modStr)
+                    modStr = ""
+                requests.append(req)
+    except Exception as e:
+        reqKeys = []
+        reqTypes = []
+        requests = []
+        tables = []
+    return(render_template("POS/StaffSitdown/View.html",ticketDisp=ticketDisp,tickets=tokens,subTotals=subTotals,
+    tableTotals=tableTotals,success="view-success",reject="view-reject",warning="view-warning",reqKeys=reqKeys,type=reqTypes,tables=tables,requests=requests))
 
 @app.route('/<location>/view-success', methods=["POST"])
 def EmployeeSuccess(location):
@@ -855,13 +952,91 @@ def EmployeeSuccess(location):
     reqRef = db.reference(pathRequest)
     reqData = dict(reqRef.get())
     orderToken = reqData["info"]["token"]
-    pathTicket = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken +"/ticket"
-    tickRef = db.reference(pathTicket)
-    del reqData["info"]
-    tickRef.push(reqData)
+    if(reqData["info"]["type"] == "order"):
+        pathTicket = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken +"/ticket"
+        pathTotal = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
+        del reqData["info"]
+        tickRef = db.reference(pathTicket)
+        cartData = reqData
+        cartKeys = list(cartData.keys())
+        # return(str(cartKeys))
+        addTotal = 0
+        req = []
+        for ccx in range(len(cartKeys)):
+            addTotal += float(cartData[cartKeys[ccx]]["price"])
+        tickRef.push(reqData)
+        currTotal = float(dict(db.reference(pathTotal).get())["subtotal"])
+        tickTotal = db.reference(pathTotal).update({"subtotal":float(currTotal+addTotal)})
     reqRef.delete()
     return(redirect(url_for("EmployeePanel",location=location)))
 
+@app.route('/<location>/view-warning', methods=["POST"])
+def EmployeeWarn(location):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    reqToken = rsp["req"]
+    alert = rsp["reason"]
+    pathRequest = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/" + reqToken
+    reqRef = db.reference(pathRequest)
+    reqData = dict(reqRef.get())
+    orderToken = reqData["info"]["token"]
+    pathRequest = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/" + reqToken
+    pathUser = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
+    reqRef = db.reference(pathRequest)
+    reqData = dict(reqRef.get())
+    orderToken = reqData["info"]["token"]
+    if(reqData["info"]["type"] == "order"):
+        pathTicket = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken +"/ticket"
+        pathTotal = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
+        del reqData["info"]
+        tickRef = db.reference(pathTicket)
+        cartData = reqData
+        cartKeys = list(cartData.keys())
+        # return(str(cartKeys))
+        addTotal = 0
+        req = []
+        for ccx in range(len(cartKeys)):
+            addTotal += float(cartData[cartKeys[ccx]]["price"])
+        tickRef.push(reqData)
+        currTotal = float(dict(db.reference(pathTotal).get())["subtotal"])
+        tickTotal = db.reference(pathTotal).update({"subtotal":float(currTotal+addTotal)})
+    AlertSend = db.reference(pathUser).update({"alert":str("Warning: "+alert)})
+    AlertTime = db.reference(pathUser).update({"alertTime":time.time()})
+    reqRef.delete()
+    return(redirect(url_for("EmployeePanel",location=location)))
+
+@app.route('/<location>/view-reject', methods=["POST"])
+def EmployeeReject(location):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    reqToken = rsp["req"]
+    alert = rsp["reason"]
+    pathRequest = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/" + reqToken
+    reqRef = db.reference(pathRequest)
+    reqData = dict(reqRef.get())
+    orderToken = reqData["info"]["token"]
+    pathUser = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
+    AlertSend = db.reference(pathUser).update({"alert":str("Request Cancelled: "+alert)})
+    AlertTime = db.reference(pathUser).update({"alertTime":time.time()})
+    reqRef.delete()
+    return(redirect(url_for("EmployeePanel",location=location)))
+
+
+@app.route('/<location>/view-editBill', methods=["POST"])
+def EditBill(location):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    orderToken = rsp["req"]
+    amt = (rsp["amt"])
+    pathUser = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
+    currentAmt = dict(db.reference(pathUser).get())["subtotal"]
+    try:
+        currentAmt += float(amt)
+        round(float(currentAmt),2)
+    except Exception as e:
+        pass
+    newAmt = db.reference(pathUser).update({"subtotal":currentAmt})
+    return(redirect(url_for("EmployeePanel",location=location)))
 
 
 if __name__ == '__main__':
