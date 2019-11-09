@@ -37,7 +37,7 @@
 <br>
 
 <div class="container">
-  <h2>Employee Panel <button class="btn-lg btn-light" onClick="window.location.reload()"><i class="fas fa-sync"></i></button></h2>
+  <h2>{{restName}} {{location}} Employee Panel <button class="btn-lg btn-light" onClick="window.location.reload()"><i class="fas fa-sync"></i></button></h2>
   <br>
   <!-- Nav tabs -->
   <ul class="nav nav-tabs" role="tablist">
@@ -240,6 +240,8 @@
           <div class="modal-body">
             <label>Enter Amount To Add to Bill</label>
             <input class="form-control" name="amt" type="number" step="0.01" placeholder="To deduct from bill enter a negative number" id="exampleFormControlSelect1">
+            <br>
+            <input class="form-control" name="itm" type="text"  placeholder="enter reason for bill change" id="exampleFormControlSelect2">
           </div>
           <div class="modal-footer">
           <button type="submit" name="req" value="{{tickets[ym]}}" class="btn btn-info btn-circle">

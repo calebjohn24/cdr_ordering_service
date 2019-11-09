@@ -131,18 +131,18 @@ def checkAdminToken(idToken, username):
 
 
 
-@app.route('/admin', methods=["GET"])
-def login():
-    return render_template("POS/Admin/login.html", btn=str("admin2"), restName=estNameStr)
+@app.route('/<location>/menu', methods=["GET"])
+def login(location):
+    return render_template("POS/AdminMini/login.html", btn=str("menu-build"), restName=estNameStr,locName=location)
 
-@app.route('/forgot-password', methods=["GET"])
+@app.route('/<location>/forgot-password', methods=["GET"])
 def pwReset():
-    return render_template("POS/Admin/forgot-password.html", btn=str("admin2"), restName=estNameStr)
+    return render_template("POS/AdminMini/forgot-password.html", btn=str("menu-build"), restName=estNameStr)
 
 
 
-@app.route('/admin2', methods=["POST"])
-def loginPageCheck():
+@app.route('/<location>/menu-build', methods=["POST"])
+def loginPageCheck(location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     email = str(rsp["emailAddr"])
@@ -152,7 +152,7 @@ def loginPageCheck():
     try:
         user = ref.get()[str(email)]
         if ((pbkdf2_sha256.verify(pw, user["password"])) == True):
-            #print("found")
+
             LoginToken = str((uuid.uuid4())) + "-" + str((uuid.uuid4()))
             user_ref = ref.child(str(email))
             user_ref.update({
@@ -161,17 +161,16 @@ def loginPageCheck():
             })
             session['user'] = email
             session['token'] = LoginToken
-            return redirect(url_for('panel'))
+            return redirect(url_for('panel',location=location))
         else:
-            #print("incorrect password")
-            return render_template("login2.html", btn=str("admin2"), restName=estNameStr)
+            return render_template("POS/AdminMini/login2.html", btn=str("menu-build"), restName=estNameStr, locName=location)
     except Exception as e:
         #print(e)
-        return render_template("POS/Admin/login2.html", btn=str("admin2"), restName=estNameStr)
+        return render_template("POS/AdminMini/login2.html", btn=str("menu-build"), restName=estNameStr, locName=location)
 
 
-@app.route('/admin-panel', methods=["GET"])
-def panel():
+@app.route('/<location>/admin-panel', methods=["GET"])
+def panel(location):
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -183,10 +182,9 @@ def panel():
         return redirect(url_for('.login', location=location))
     getSquare()
     LocName = list(locationsPaths.keys())
-    return render_template("POS/Admin/AdminPanel.html",
-                           restName=estNameStr,
-                           LocName=LocName,
-                           lenLocName=len(LocName))
+    return render_template("POS/AdminMini/mainAdmin.html",
+                           restName=str(estNameStr).capitalize(),
+                           locName=str(location).capitalize())
 
 
 
@@ -351,8 +349,6 @@ def genMenuData(location,menu):
     baseItms = []
     descrips = []
     exInfo = []
-
-
     for itms in categories:
         #print(list(menuInfo["categories"][itms]))
         currArr2 = []
@@ -603,11 +599,10 @@ def kiosk2(location):
             modStr += " - "
         modsCart.append(modStr)
         modStr = ""
-    #print("INFO---",baseitmCart,modsCart,notesCart,notesCart,qtysCart)
-    #print("exec")
-    return(render_template("Customer/Sitdown/mainKiosk.html",
+
+    return(render_template("Customer/Sitdown/mainKiosk.html",location=location,
                            cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,
-                           modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),restName=str(estNameStr.capitalize()),
+                           modsName=modsName,modsItm=modsItm,btn="sitdown-additms",restName=str(estNameStr.capitalize()),
                            baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,
                            cartKeys=cartKeys,btn2="itmRemove",btn3="cartAdd"))
 
@@ -663,9 +658,9 @@ def kioskRem(location):
         qtysCart = [" "]
         cartKeys = ["-ig"]
     testData = "testAlert"
-    return(render_template("Customer/Sitdown/mainKiosk.html",
+    return(render_template("Customer/Sitdown/mainKiosk.html",location=location,
                            cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,
-                           modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),restName=str(estNameStr.capitalize()),
+                           modsName=modsName,modsItm=modsItm,btn="sitdown-additms",restName=str(estNameStr.capitalize()),
                            baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,
                            cartKeys=cartKeys,btn2="itmRemove",btn3="cartAdd"))
 
@@ -722,7 +717,7 @@ def kioskCart(location):
     notesCart = [" "]
     qtysCart = [" "]
     cartKeys = ["-ig"]
-    return(render_template("Customer/Sitdown/mainKiosk.html",
+    return(render_template("Customer/Sitdown/mainKiosk.html",location=location,
                            cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,
                            modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),restName=str(estNameStr.capitalize()),
                            baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,
@@ -747,8 +742,6 @@ def kioskClear(location):
     modsName = menuData[4]
     modsItm = menuData[5]
     cartData = db.reference(pathCartitm).get()
-    #print(cartData)
-
     try:
         cartKeys = list(cartData.keys())
         baseitmCart = []
@@ -772,8 +765,7 @@ def kioskClear(location):
         notesCart = [" "]
         qtysCart = [" "]
         cartKeys = ["-ig"]
-    testData = "testAlert"
-    return(render_template("Customer/Sitdown/mainKiosk.html",
+    return(render_template("Customer/Sitdown/mainKiosk.html",location=location,
                            cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,
                            modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),restName=str(estNameStr.capitalize()),
                            baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,
@@ -847,8 +839,7 @@ def kioskSendReq(location):
         notesCart = [" "]
         qtysCart = [" "]
         cartKeys = ["-ig"]
-
-    return(render_template("Customer/Sitdown/mainKiosk.html",
+    return(render_template("Customer/Sitdown/mainKiosk.html",location=location,
                            cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,
                            modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),restName=str(estNameStr.capitalize()),
                            baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,
@@ -940,7 +931,7 @@ def EmployeePanel(location):
         reqTypes = []
         requests = []
         tables = []
-    return(render_template("POS/StaffSitdown/View.html",ticketDisp=ticketDisp,tickets=tokens,subTotals=subTotals,
+    return(render_template("POS/StaffSitdown/View.html",location=str(location).capitalize(),restName=str(estNameStr.capitalize()),ticketDisp=ticketDisp,tickets=tokens,subTotals=subTotals,
     tableTotals=tableTotals,success="view-success",reject="view-reject",warning="view-warning",reqKeys=reqKeys,type=reqTypes,tables=tables,requests=requests))
 
 @app.route('/<location>/view-success', methods=["POST"])
@@ -1027,16 +1018,32 @@ def EditBill(location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     orderToken = rsp["req"]
-    amt = (rsp["amt"])
-    pathUser = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
-    currentAmt = dict(db.reference(pathUser).get())["subtotal"]
-    try:
-        currentAmt += float(amt)
-        round(float(currentAmt),2)
-    except Exception as e:
-        pass
-    newAmt = db.reference(pathUser).update({"subtotal":currentAmt})
+    amt = float(rsp["amt"])
+    itm = str(rsp["itm"])
+    pathUserX = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
+    pathUser = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/ticket"
+    cartRefItm = db.reference(pathUser)
+    subtotal = float(db.reference(pathUserX).get()["subtotal"])
+    subtotal += amt
+    db.reference(pathUserX).update({"subtotal":subtotal})
+    cartRefItm.push({str(uuid.uuid4()):{
+        'cat':"",
+        'itm':itm,
+        'qty':1,
+        'notes':"added by staff",
+        'price':amt,
+        'mods':[["",str(amt)]],
+        'unitPrice':amt
+    }})
     return(redirect(url_for("EmployeePanel",location=location)))
+
+
+
+
+
+
+
+
 
 
 if __name__ == '__main__':
@@ -1051,6 +1058,7 @@ if __name__ == '__main__':
         app.permanent_session_lifetime = datetime.timedelta(minutes=200)
         app.debug = True
         app.run(host="0.0.0.0",port=5000)
+
 
     except KeyboardInterrupt:
         sys.exit()

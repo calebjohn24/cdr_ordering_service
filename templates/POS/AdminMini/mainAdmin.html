@@ -30,7 +30,7 @@
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-  <title>Employee Panel</title>
+  <title>Menu Builder</title>
 
 </head>
 
@@ -38,7 +38,7 @@
 <br>
 
 <div class="container">
-  <h2>Admin Panel</h2>
+  <h2>{{restName}} {{locName}} Admin Panel</h2>
   <br>
   <!-- Nav tabs -->
   <ul class="nav nav-tabs" role="tablist">
@@ -49,71 +49,20 @@
       <a class="nav-link" data-toggle="tab" href="#menu1">Schedule</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" data-toggle="tab" href="#menu3">Activate Item</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" data-toggle="tab" href="#menu2">Tickets</a>
+      <a class="nav-link" data-toggle="tab" href="#menu2">Schedule</a>
     </li>
   </ul>
 
   <!-- Tab panes -->
-  <div class="tab-content">
+    <div class="tab-content">
     <div id="home" class="container tab-pane active"><br>
+    <div class="container">
 
-      <div class="container">
-      <div class="panel-group" id="accordion">
-      <div class="panel panel-default">
-    <!-- Card Header - Accordion -->
-    <div class="panel-heading">
-    <h4 class="panel-title">
-    <a data-toggle="collapse" data-parent="#accordion" href="#collapse-uid">Table #12</a>
-    </h4>
+
+
+
+
     </div>
-
-    <div id="collapse-uid" class="panel-collapse collapse">
-    <div class="panel-body">
-      <div class="card-body">
-
-
-        <div class="row">
-       <div class="col-lg-12">
-         <div class="form-group row">
-         <div class="col-sm-2"><strong>Item</strong></div>
-
-       </div>
-       </div>
-        </div>
-
-
-       <br>
-        <div class="row">
-       <div class="col-lg-12">
-        <a href="#" class="btn btn-success btn-circle btn-lg">
-        <i class="fas fa-check"></i>
-        </a>
-        <a href="#" class="btn btn-warning btn-circle btn-lg">
-          <i class="fas fa-exclamation-triangle"></i>
-        </a>
-        <a href="#" class="btn btn-danger btn-circle btn-lg">
-          <i class="fas fa-times-circle"></i>
-        </a>
-           </div>
-        </div>
-        <br>
-
-
-      </div>
-    </div>
-    </div>
-    </div>
-      </div>
-
-
-
-   </div>
-
-
-
     </div>
     <div id="menu1" class="container tab-pane fade"><br>
       <input class="form-control" id="myInput" type="text" placeholder="Search..">
@@ -236,6 +185,7 @@
       });
     });
     </script>
+
 
     </div>
 
