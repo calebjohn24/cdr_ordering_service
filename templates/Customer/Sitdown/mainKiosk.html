@@ -130,6 +130,8 @@ $('[data-toggle="popover"]').popover();
     {% for bb in range(cartKeys|count) %}
     <div class="card-header">
       <h4>{{baseitmCart[bb]}}</h4>
+      <br>
+      <img src="{{imgCart[bb]}}" class="img-rounded" alt="Cinque Terre" width="200">
     </div>
     <div class="card-body">
       <h4 class="card-title">{{modsCart[bb]}}</h4>
@@ -146,7 +148,7 @@ $('[data-toggle="popover"]').popover();
     </div>
   <hr>
   <div class="row">
-    <form method="POST" action="{{btn3}}">
+    <form method="POST" action="cartAdd">
       <div class="col-lg-12">
 
     <button class="btn btn-success btn-circle btn-md" name="add", value="cart" data-toggle="popover" data-placement="bottom" data-content="Items Sent To Kitchen">
@@ -448,13 +450,17 @@ $('[data-toggle="popover"]').popover();
               <div class="panel panel-default">
               <div class="panel-heading">
               <h3 class="panel-title">
-              <a data-toggle="collapse" data-parent="#accordion2" href="#{{baseItms[i][j][0]}}">{{baseItms[i][j][1]}}</a>
+              <a data-toggle="collapse" data-parent="#accordion2" href="#{{baseItms[i][j][0]}}">{{baseItms[i][j][1]}}
+              <img src="{{imgData[i][j]}}" class="img-rounded" alt="Cinque Terre" width="40">
+              </a>
               </h3>
               </div>
               <div id="{{baseItms[i][j][0]}}" class="panel-collapse collapse">
               <div class="panel-body">
                 <h5 class="card-title">{{descrips[i][j]}}</h5>
               <h6 class="card-title">{{exInfo[i][j]}}</h6>
+              <br>
+              <img src="{{imgData[i][j]}}" class="img-rounded" alt="Cinque Terre" width="200">
               <hr>
 
               <button class="btn btn-success btn-circle btn-sm" data-toggle="modal" data-target="#{{baseItms[i][j][0]}}-modal">
@@ -515,7 +521,7 @@ $('[data-toggle="popover"]').popover();
 
               </div>
               <div class="modal-footer">
-              <button class="btn btn-success btn-circle btn-sm" type="submit" form="itm-form-{{baseItms[i][j][1]}}" name="itm" value="{{cats[i]}}~{{baseItms[i][j][1]}}" data-toggle="modal" data-target="#exampleModal">
+              <button class="btn btn-success btn-circle btn-sm" type="submit" form="itm-form-{{baseItms[i][j][1]}}" name="itm" value="{{cats[i]}}~{{baseItms[i][j][1]}}~{{imgData[i][j]}}" data-toggle="modal" data-target="#exampleModal">
               <strong>Add To Cart </strong><i class="fas fa-check"></i>
               </button>
             </div>

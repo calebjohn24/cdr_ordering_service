@@ -10,6 +10,7 @@ import firebase_admin
 from passlib.hash import pbkdf2_sha256
 from firebase_admin import credentials
 from firebase_admin import db
+from google.cloud import storage
 import pytz
 from flask import Flask, request, session, jsonify
 from flask import redirect, url_for
@@ -32,8 +33,13 @@ adminSessTime = 3599
 client = plivo.RestClient(auth_id='MAYTVHN2E1ZDY4ZDA2YZ', auth_token='ODgzZDA1OTFiMjE2ZTRjY2U4ZTVhYzNiODNjNDll')
 cred = credentials.Certificate('CedarChatbot-b443efe11b73.json')
 firebase_admin.initialize_app(cred, {
-    'databaseURL': 'https://cedarchatbot.firebaseio.com/'
+    'databaseURL': 'https://cedarchatbot.firebaseio.com/',
+    'storageBucket': 'cedarchatbot.appspot.com'
 })
+storage_client = storage.Client.from_service_account_json(
+        'CedarChatbot-b443efe11b73.json')
+bucket = storage_client.get_bucket("cedarchatbot.appspot.com")
+
 sqRef = db.reference(str('/restaurants/' + estNameStr))
 #print(sqRef.get())
 squareToken = sqRef.get()["sq-token"]
@@ -349,11 +355,13 @@ def genMenuData(location,menu):
     baseItms = []
     descrips = []
     exInfo = []
+    imgLink = []
     for itms in categories:
         #print(list(menuInfo["categories"][itms]))
         currArr2 = []
         currArr3 = []
         currArr4 = []
+        currArr5 = []
         for ll in range(len(list(menuInfo["categories"][itms]))):
             itmArr = []
             itx = (list(menuInfo["categories"][itms])[ll])
@@ -361,20 +369,27 @@ def genMenuData(location,menu):
             currArr2.append([itx2,itx])
             descrip = (menuInfo["categories"][itms][itx]["descrip"])
             exinfo = (menuInfo["categories"][itms][itx]["extra-info"])
-            mN = (list(menuInfo["categories"][itms][itx])[2:])
+            img = (menuInfo["categories"][itms][itx]["img"])
+            mN = (list(menuInfo["categories"][itms][itx]))
+            mN.remove("img")
+            mN.remove("descrip")
+            mN.remove("extra-info")
             currArr3.append(descrip)
             currArr4.append(exinfo)
-            #print(mN)
+            currArr5.append(img)
             for mods in mN:
+                print(mods)
                 max = int(menuInfo["categories"][itms][itx][mods]["max"]) - int(menuInfo["categories"][itms][itx][mods]["min"])
                 min = int(menuInfo["categories"][itms][itx][mods]["min"])
                 opt = list(menuInfo["categories"][itms][itx][mods]["info"])
         baseItms.append(currArr2)
         descrips.append(currArr3)
         exInfo.append(currArr4)
+        imgLink.append(currArr5)
         currArr2 = []
         currArr3 = []
         currArr4 = []
+        currArr5 = []
 
     modsName = []
     modsItm = []
@@ -383,7 +398,11 @@ def genMenuData(location,menu):
         catArr2 = []
         for mx in list(menuInfo["categories"][itms]):
             tmpArr = []
-            for tt in list(menuInfo["categories"][itms][mx])[2:]:
+            mNX = list(menuInfo["categories"][itms][mx])
+            mNX.remove("img")
+            mNX.remove("descrip")
+            mNX.remove("extra-info")
+            for tt in mNX:
                 max = int(menuInfo["categories"][itms][mx][tt]["max"]) - int(menuInfo["categories"][itms][mx][tt]["min"])
                 min = menuInfo["categories"][itms][mx][tt]["min"]
                 tmpArr.append([tt,min,max])
@@ -395,7 +414,11 @@ def genMenuData(location,menu):
         catArr = []
         for mx2 in list(menuInfo["categories"][itms2]):
             tmpArr = []
-            for tt2 in list(menuInfo["categories"][itms2][mx2])[2:]:
+            mNX2 = list(menuInfo["categories"][itms2][mx2])
+            mNX2.remove("img")
+            mNX2.remove("descrip")
+            mNX2.remove("extra-info")
+            for tt2 in mNX2:
                 tmpArr2 = []
                 for hnn in list(menuInfo["categories"][itms2][mx2][tt2]["info"]):
                     tmpArr2.append([hnn,menuInfo["categories"][itms2][mx2][tt2]["info"][hnn]])
@@ -410,7 +433,7 @@ def genMenuData(location,menu):
     print(modsName[0][0][0][0])
     print(modsItm[0][0][0][0][1])
     '''
-    itmArr = [baseItms,categories,descrips,exInfo,modsName,modsItm]
+    itmArr = [baseItms,categories,descrips,exInfo,modsName,modsItm,imgLink]
     return itmArr
 
 def findMenu(location):
@@ -510,15 +533,17 @@ def startKiosk(location):
     exInfo = menuData[3]
     modsName = menuData[4]
     modsItm = menuData[5]
+    imgData = menuData[6]
     baseitmCart = ["Add Items to Your Cart"]
     modsCart = [" "]
     notesCart = [" "]
     qtysCart = [" "]
+    imgCart = [" "]
     cartKeys = ["-ig"]
     return(render_template("Customer/Sitdown/mainKiosk.html",
-                           cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,
+                           cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,imgData=imgData,
                            modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),restName=str(estNameStr.capitalize()),
-                           baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,
+                           baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,imgCart=imgCart,
                            cartKeys=cartKeys,btn2="itmRemove",btn3="sendReq"))
 
 
@@ -532,6 +557,7 @@ def kiosk2(location):
     cat = ""
     itm = ""
     mods = []
+    img = ""
     notes = ""
     qty = 1
     price = 0.0
@@ -547,6 +573,7 @@ def kiosk2(location):
         elif((itx) == "itm"):
             cat = list(str(rsp[itx]).split("~"))[0]
             itm = list(str(rsp[itx]).split("~"))[1]
+            img = list(str(rsp[itx]).split("~"))[2]
         if(itx == "notes"):
             notes = rsp[itx]
         if(itx == "qty"):
@@ -569,6 +596,7 @@ def kiosk2(location):
         'cat':cat,
         'itm':itm,
         'qty':qty,
+        'img':img,
         'notes':notes,
         'price':price,
         'mods':mods,
@@ -582,6 +610,7 @@ def kiosk2(location):
     exInfo = menuData[3]
     modsName = menuData[4]
     modsItm = menuData[5]
+    imgData  = menuData[6]
     cartData = db.reference(pathCartitm).get()
     #print(cartData)
     cartKeys = list(cartData.keys())
@@ -589,10 +618,12 @@ def kiosk2(location):
     modsCart = []
     notesCart = []
     qtysCart = []
+    imgCart = []
     for cc in range(len(cartKeys)):
         baseitmCart.append(cartData[cartKeys[cc]]["itm"])
         notesCart.append(cartData[cartKeys[cc]]["notes"])
         qtysCart.append(cartData[cartKeys[cc]]["qty"])
+        imgCart.append(cartData[cartKeys[cc]]["img"])
         modStr = ""
         for mds in range(len(cartData[cartKeys[cc]]["mods"])):
             modStr += cartData[cartKeys[cc]]["mods"][mds][0]
@@ -601,9 +632,9 @@ def kiosk2(location):
         modStr = ""
 
     return(render_template("Customer/Sitdown/mainKiosk.html",location=location,
-                           cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,
+                           cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,imgData=imgData,
                            modsName=modsName,modsItm=modsItm,btn="sitdown-additms",restName=str(estNameStr.capitalize()),
-                           baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,
+                           baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,imgCart=imgCart,
                            cartKeys=cartKeys,btn2="itmRemove",btn3="cartAdd"))
 
 
@@ -631,6 +662,7 @@ def kioskRem(location):
     exInfo = menuData[3]
     modsName = menuData[4]
     modsItm = menuData[5]
+    imgData = menuData[6]
     cartData = db.reference(pathCartitm).get()
     #print(cartData)
 
@@ -640,10 +672,12 @@ def kioskRem(location):
         modsCart = []
         notesCart = []
         qtysCart = []
+        imgCart = []
         for cc in range(len(cartKeys)):
             baseitmCart.append(cartData[cartKeys[cc]]["itm"])
             notesCart.append(cartData[cartKeys[cc]]["notes"])
             qtysCart.append(cartData[cartKeys[cc]]["qty"])
+            imgCart.append(cartData[cartKeys[cc]]["img"])
             modStr = ""
             for mds in range(len(cartData[cartKeys[cc]]["mods"])):
                 modStr += cartData[cartKeys[cc]]["mods"][mds][0]
@@ -657,11 +691,12 @@ def kioskRem(location):
         notesCart = [" "]
         qtysCart = [" "]
         cartKeys = ["-ig"]
+        imgCart = [" "]
     testData = "testAlert"
     return(render_template("Customer/Sitdown/mainKiosk.html",location=location,
-                           cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,
+                           cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,imgData=imgData,
                            modsName=modsName,modsItm=modsItm,btn="sitdown-additms",restName=str(estNameStr.capitalize()),
-                           baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,
+                           baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,imgCart=imgCart,
                            cartKeys=cartKeys,btn2="itmRemove",btn3="cartAdd"))
 
 
@@ -712,15 +747,17 @@ def kioskCart(location):
     exInfo = menuData[3]
     modsName = menuData[4]
     modsItm = menuData[5]
+    imgData = menuData[6]
     baseitmCart = ["Add Items to Your Cart"]
     modsCart = [" "]
     notesCart = [" "]
     qtysCart = [" "]
     cartKeys = ["-ig"]
+    imgCart = [" "]
     return(render_template("Customer/Sitdown/mainKiosk.html",location=location,
-                           cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,
+                           cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,imgData=imgData,
                            modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),restName=str(estNameStr.capitalize()),
-                           baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,
+                           baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,imgCart=imgCart,
                            cartKeys=cartKeys,btn2="itmRemove"))
 
 @app.route('/<location>/close-alert')
@@ -741,6 +778,7 @@ def kioskClear(location):
     exInfo = menuData[3]
     modsName = menuData[4]
     modsItm = menuData[5]
+    imgData = menuData[6]
     cartData = db.reference(pathCartitm).get()
     try:
         cartKeys = list(cartData.keys())
@@ -748,10 +786,12 @@ def kioskClear(location):
         modsCart = []
         notesCart = []
         qtysCart = []
+        imgCart = []
         for cc in range(len(cartKeys)):
             baseitmCart.append(cartData[cartKeys[cc]]["itm"])
             notesCart.append(cartData[cartKeys[cc]]["notes"])
             qtysCart.append(cartData[cartKeys[cc]]["qty"])
+            imgCart.append(cartData[cartKeys[cc]]["img"])
             modStr = ""
             for mds in range(len(cartData[cartKeys[cc]]["mods"])):
                 modStr += cartData[cartKeys[cc]]["mods"][mds][0]
@@ -765,10 +805,11 @@ def kioskClear(location):
         notesCart = [" "]
         qtysCart = [" "]
         cartKeys = ["-ig"]
+        imgCart = [" "]
     return(render_template("Customer/Sitdown/mainKiosk.html",location=location,
-                           cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,
+                           cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,imgData=imgData,
                            modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),restName=str(estNameStr.capitalize()),
-                           baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,
+                           baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,imgCart=imgCart,
                            cartKeys=cartKeys,btn2="itmRemove",btn3="cartAdd"))
 
 
@@ -814,6 +855,7 @@ def kioskSendReq(location):
     exInfo = menuData[3]
     modsName = menuData[4]
     modsItm = menuData[5]
+    imgData = menuData[6]
     cartData = db.reference(pathCartitm).get()
     print(cartData)
     try:
@@ -840,7 +882,7 @@ def kioskSendReq(location):
         qtysCart = [" "]
         cartKeys = ["-ig"]
     return(render_template("Customer/Sitdown/mainKiosk.html",location=location,
-                           cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,
+                           cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,imgData=imgData,
                            modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),restName=str(estNameStr.capitalize()),
                            baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,
                            cartKeys=cartKeys,btn2="itmRemove",btn3="cartAdd"))
@@ -1028,6 +1070,7 @@ def EditBill(location):
     db.reference(pathUserX).update({"subtotal":subtotal})
     cartRefItm.push({str(uuid.uuid4()):{
         'cat':"",
+        'img':"",
         'itm':itm,
         'qty':1,
         'notes':"added by staff",

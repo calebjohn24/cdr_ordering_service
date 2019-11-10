@@ -21,6 +21,6 @@ firebase_admin.initialize_app(cred, {
 storage_client = storage.Client.from_service_account_json(
         'CedarChatbot-b443efe11b73.json')
 bucket = storage_client.get_bucket("cedarchatbot.appspot.com")
-upName = estNameStr + "/" + "manifestt.json"
+upName = estNameStr + "/" + "manifest.json"
 blob = bucket.blob(upName)
 blob.upload_from_filename("manifest.json")
