@@ -879,7 +879,7 @@ def EmployeePanel(location):
                         for mds in range(len(ordsGet[tt]["ticket"][tickItms][tts]["mods"])):
                             modStr += ordsGet[tt]["ticket"][tickItms][tts]["mods"][mds][0]
                             modStr += " - "
-                        modStr += "$"
+                        modStr += "||$"
                         modStr += str(ordsGet[tt]["ticket"][tickItms][tts]["price"])
                         tickItmX.append(modStr)
                         modStr = ""
