@@ -213,16 +213,29 @@
       <div class="panel-body">
         {% for ymm in range(ticketDisp[ym]|count) %}
           {% for ymnn in range(ticketDisp[ym][ymm]|count) %}
+          <h4>
         {{ticketDisp[ym][ymm][ymnn]}}
+      </h4>
         <br>
         {% endfor %}
         {% endfor %}
         <hr>
+        <h4>
         subtotal ${{subTotals[ym]}}
+      </h4>
         <hr>
-        <a href="#" data-toggle="modal" data-target="#edit-{{tickets[ym]}}" class="btn btn-info btn-circle btn-sm">
+
+        <a href="#" data-toggle="modal" data-target="#edit-{{tickets[ym]}}" class="btn-lg btn-info btn-circle">
         <i class="fas fa-edit"></i>
         </a>
+        <br>
+        <br>
+        <form method="POST" action="view-clearTicket">
+        <button href="#" type="submit" name="req" value="{{tickets[ym]}}" class="btn-lg btn-info btn-circle">
+        <i class="fas fa-times-circle"></i>
+      </button>
+        </form>
+
 
         <!-- Modal -->
         <div class="modal fade" id="edit-{{tickets[ym]}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

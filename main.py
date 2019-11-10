@@ -864,10 +864,12 @@ def kioskSendReq(location):
         modsCart = []
         notesCart = []
         qtysCart = []
+        imgCart = []
         for cc in range(len(cartKeys)):
             baseitmCart.append(cartData[cartKeys[cc]]["itm"])
             notesCart.append(cartData[cartKeys[cc]]["notes"])
             qtysCart.append(cartData[cartKeys[cc]]["qty"])
+            imgCart.append(cartData[cartKeys[cc]]["img"])
             modStr = ""
             for mds in range(len(cartData[cartKeys[cc]]["mods"])):
                 modStr += cartData[cartKeys[cc]]["mods"][mds][0]
@@ -884,7 +886,7 @@ def kioskSendReq(location):
     return(render_template("Customer/Sitdown/mainKiosk.html",location=location,
                            cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,imgData=imgData,
                            modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),restName=str(estNameStr.capitalize()),
-                           baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,
+                           baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,imgCart=imgCart,
                            cartKeys=cartKeys,btn2="itmRemove",btn3="cartAdd"))
 
 
@@ -1080,6 +1082,16 @@ def EditBill(location):
     }})
     return(redirect(url_for("EmployeePanel",location=location)))
 
+
+@app.route('/<location>/view-clearTicket', methods=["POST"])
+def RemBill(location):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    orderToken = rsp["req"]
+    pathUserX = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
+    remRef = db.reference(pathUserX)
+    remRef.delete()
+    return(redirect(url_for("EmployeePanel",location=location)))
 
 
 
