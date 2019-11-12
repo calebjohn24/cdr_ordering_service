@@ -487,22 +487,25 @@ $('[data-toggle="popover"]').popover();
               <div class="card-body">
 
                 {% for yy in range(modsName[i][j][x][1]) %}
-                <h6 class="card-header"><select class="custom-select" name="mod-{{i}}-{{j}}-{{x}}-{{yy}}-0" form="itm-form-{{baseItms[i][j][1]}}" required>
+                <h6 class="card-header">
                   {% for y in range(modsItm[i][j][x]|count) %}
-                    <option name="mod-{{i}}-{{j}}-{{x}}-{{yy}}-{{y}}-0" value="{{modsItm[i][j][x][y][0]}}~{{modsItm[i][j][x][y][1]}}">{{modsItm[i][j][x][y][0]}} ${{modsItm[i][j][x][y][1]}}</option>
+                      <input type="radio" name="mod-{{i}}-{{j}}-{{x}}-{{yy}}-0" value="{{modsItm[i][j][x][y][0]}}~{{modsItm[i][j][x][y][1]}}" required> {{modsItm[i][j][x][y][0]}} ${{modsItm[i][j][x][y][1]}}</input>
+                      <br>
                 {% endfor %}
                 <br>
-              </select></h6>
+                <br>
+            </h6>
               {% endfor %}
               {% for yyx in range(modsName[i][j][x][2]) %}
-              <h6 class="card-header"><select class="custom-select" name="mod-{{i}}-{{j}}-{{x}}-{{yyx}}-1" form="itm-form-{{baseItms[i][j][1]}}">
+              <h6 class="card-header">
                 {% for yz in range(modsItm[i][j][x]|count) %}
-                  <option name="mod-{{i}}-{{j}}-{{x}}-{{yy}}-{{yz}}-1" value="{{modsItm[i][j][x][yz][0]}}~{{modsItm[i][j][x][yz][1]}}">{{modsItm[i][j][x][yz][0]}} ${{modsItm[i][j][x][yz][1]}}</option>
+                  <input type="radio" name="mod-{{i}}-{{j}}-{{x}}-{{yyx}}-1" value="{{modsItm[i][j][x][yz][0]}}~{{modsItm[i][j][x][yz][1]}}"> {{modsItm[i][j][x][yz][0]}} ${{modsItm[i][j][x][yz][1]}}</option>
                   <br>
               {% endfor %}
-              <option value="NaN">None</option>
+              <input type="radio" name="mod-{{i}}-{{j}}-{{x}}-{{yyx}}-1" value="NaN"> None</option>
               <br>
-              </select></h6>
+              </h6>
+              <br>
 
               {% endfor %}
 
