@@ -137,17 +137,17 @@ def checkAdminToken(idToken, username):
 
 
 
-@app.route('/<location>/menu', methods=["GET"])
+@app.route('/<location>/admin-login', methods=["GET"])
 def login(location):
-    return render_template("POS/AdminMini/login.html", btn=str("menu-build"), restName=estNameStr,locName=location)
+    return render_template("POS/AdminMini/login.html", btn=str("admin"), restName=estNameStr,locName=location)
 
 @app.route('/<location>/forgot-password', methods=["GET"])
 def pwReset():
-    return render_template("POS/AdminMini/forgot-password.html", btn=str("menu-build"), restName=estNameStr)
+    return render_template("POS/AdminMini/forgot-password.html", btn=str("admin"), restName=estNameStr)
 
 
 
-@app.route('/<location>/menu-build', methods=["POST"])
+@app.route('/<location>/admin', methods=["POST"])
 def loginPageCheck(location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
@@ -169,10 +169,10 @@ def loginPageCheck(location):
             session['token'] = LoginToken
             return redirect(url_for('panel',location=location))
         else:
-            return render_template("POS/AdminMini/login2.html", btn=str("menu-build"), restName=estNameStr, locName=location)
+            return render_template("POS/AdminMini/login2.html", btn=str("admin"), restName=estNameStr, locName=location)
     except Exception as e:
         #print(e)
-        return render_template("POS/AdminMini/login2.html", btn=str("menu-build"), restName=estNameStr, locName=location)
+        return render_template("POS/AdminMini/login2.html", btn=str("admin"), restName=estNameStr, locName=location)
 
 
 @app.route('/<location>/admin-panel', methods=["GET"])
@@ -187,110 +187,154 @@ def panel(location):
     if (checkAdminToken(idToken, username) == 1):
         return redirect(url_for('.login', location=location))
     getSquare()
-    LocName = list(locationsPaths.keys())
     return render_template("POS/AdminMini/mainAdmin.html",
                            restName=str(estNameStr).capitalize(),
                            locName=str(location).capitalize())
 
 
-
-@app.route('/admin-location/<location>')
-def locPanel(location):
+@app.route('/<location>/schedule-<day>', methods=["GET"])
+def scheduleSet(location,day):
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     try:
-        doc = ref.get()[str(username)]
+        user_ref = ref.get()[str(username)]
     except Exception:
         return redirect(url_for('.login', location=location))
     if (checkAdminToken(idToken, username) == 1):
         return redirect(url_for('.login', location=location))
-    #print(checkLocation(location,1))
-    if(checkLocation(location,1)[0] == 1):
-        return redirect(url_for('.login', location=location))
-    getSquare()
-    LocName = list(locationsPaths.keys())
-    return render_template("POS/Admin/locationAdmin.html",
-                            restName=estNameStr,
-                            LocName=LocName,
-                            lenLocName=len(LocName),
-                            currentLoc=location)
+    sched_ref = db.reference('/restaurants/' + estNameStr + '/'+location+"/schedule")
+    current_schedule = sched_ref.get()[day]
+    return(str(current_schedule))
 
-
-@app.route('/<location>/createMenu', methods=["POST"])
-def meun1(location):
-    idToken = session.get('token', None)
-    fbToken = session.get('fbToken', None)
-    authentication = firebase.FirebaseAuthentication('if7swrlQM4k9cBvm0dmWqO3QsI5zjbcdbstSgq1W',
-                                                     'cajohn0205@gmail.com', extra={'id': dbid})
-    database = firebase.FirebaseApplication("https://cedarchatbot.firebaseio.com/",
-                                            authentication=authentication)
-    if ((idToken == database.get("restaurants/" + uid + "/" + location + "/", "LoginToken")) and (
-            time.time() - database.get("restaurants/" + uid + "/" + location + "/", "LoginTime") < adminSessTime)):
-        return render_template("createMenu1.html",
-                               next=location + "/createMenu2",
-                               back=location + "/adminpanel")
-    else:
-        return redirect(url_for('.login', location=location))
-
-
-@app.route('/<location>/createMenu', methods=["POST"])
+@app.route('/<location>/create-menu', methods=["GET"])
 def createMenu(location):
     idToken = session.get('token', None)
-    fbToken = session.get('fbToken', None)
-    authentication = firebase.FirebaseAuthentication('if7swrlQM4k9cBvm0dmWqO3QsI5zjbcdbstSgq1W',
-                                                     'cajohn0205@gmail.com', extra={'id': dbid})
-    database = firebase.FirebaseApplication("https://cedarchatbot.firebaseio.com/",
-                                            authentication=authentication)
-    if (checkAdminToken(location) == 1):
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    try:
+        user_ref = ref.get()[str(username)]
+    except Exception:
         return redirect(url_for('.login', location=location))
-    return render_template("createMenu1.html",
-                           next=location + "/createMenu2",
-                           back=location + "/adminpanel")
+    if (checkAdminToken(idToken, username) == 1):
+        return redirect(url_for('.login', location=location))
+    return(render_template("POS/AdminMini/createMenu.html"))
 
+@app.route('/<location>/add-menu', methods=["POST"])
+def addMenu(location):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = dict((request.form))
+    new_menu = rsp["name"]
+    menu_ref = db.reference('/restaurants/' + estNameStr + '/'+location+"/menu")
+    menu_ref.update({str(new_menu):{"active":True}})
+    return(redirect(url_for("viewMenu",location=location)))
 
-@app.route('/<location>/createMenu2', methods=["POST"])
-def createMenu2(location):
+@app.route('/<location>/view-menu')
+def viewMenu(location):
     idToken = session.get('token', None)
-    fbToken = session.get('fbToken', None)
-    request.parameter_storage_class = ImmutableOrderedMultiDict
-    rsp = ((request.form))
-    menuName = rsp["Name"]
-    menuDays = rsp["Days"]
-    authentication = firebase.FirebaseAuthentication('if7swrlQM4k9cBvm0dmWqO3QsI5zjbcdbstSgq1W',
-                                                     'cajohn0205@gmail.com', extra={'id': dbid})
-    database = firebase.FirebaseApplication("https://cedarchatbot.firebaseio.com/",
-                                            authentication=authentication)
-    if (checkAdminToken(location) == 1):
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    try:
+        user_ref = ref.get()[str(username)]
+    except Exception:
         return redirect(url_for('.login', location=location))
-    return render_template("createMenu1.html",
-                           next=location + "/createMenu3",
-                           back=location + "/adminpanel")
+    if (checkAdminToken(idToken, username) == 1):
+        return redirect(url_for('.login', location=location))
+    menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu')
+    menu_keys = list((menu_ref.get()).keys())
+    return(render_template("POS/AdminMini/dispMenu.html",menus=menu_keys))
+
+@app.route('/<location>/edit-menu-<menu>')
+def editMenu(location,menu):
+    idToken = session.get('token', None)
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    try:
+        user_ref = ref.get()[str(username)]
+    except Exception:
+        return redirect(url_for('.login', location=location))
+    if (checkAdminToken(idToken, username) == 1):
+        return redirect(url_for('.login', location=location))
+    menu_data = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)).get()
+    try:
+        cats = list(dict(menu_data["categories"]).keys())
+    except Exception as e:
+        cats = []
+    return(render_template("POS/AdminMini/menuDetails.html",cats=cats,menu=menu))
+
+@app.route('/<location>/view-cat-<menu>-<category>')
+def viewCategories(location,menu,category):
+    idToken = session.get('token', None)
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    try:
+        user_ref = ref.get()[str(username)]
+    except Exception:
+        return redirect(url_for('.login', location=location))
+    if (checkAdminToken(idToken, username) == 1):
+        return redirect(url_for('.login', location=location))
+    menu_data = dict(db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)).get())
+    items = []
+    for itx in list(dict(menu_data["categories"][category]).keys()):
+        itx2 = str(itx).replace(" ","-")
+        items.append(itx2)
+    return(render_template("POS/AdminMini/catDetails.html",items=items,menu=menu,cat=category))
 
 
-@app.route('/admin', methods=["GET"])
-def pickLocation():
-    authentication = firebase.FirebaseAuthentication('if7swrlQM4k9cBvm0dmWqO3QsI5zjbcdbstSgq1W',
-                                                     'cajohn0205@gmail.com', extra={'id': dbid})
-    database = firebase.FirebaseApplication("https://cedarchatbot.firebaseio.com/",
-                                            authentication=authentication)
-    getSquare()
-    locs = []
-    for lc in locationsPaths:
-        locs.append(locationsPaths[lc]["name"])
-    return (render_template("pickLocation.html", btn="uid", locs=locs, len=len(locs)))
+@app.route('/<location>/act-menu')
+def chooseMenu(location):
+    idToken = session.get('token', None)
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    try:
+        user_ref = ref.get()[str(username)]
+    except Exception:
+        return redirect(url_for('.login', location=location))
+    if (checkAdminToken(idToken, username) == 1):
+        return redirect(url_for('.login', location=location))
+    menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu')
+    menu_keys = list((menu_ref.get()).keys())
+    menu_data = menu_ref.get()
+    active = []
+    inactive = []
+    for keys in menu_keys:
+        if(menu_data[keys]["active"] == True):
+            active.append(keys)
+        else:
+            inactive.append(keys)
+    return(render_template("POS/AdminMini/removeMenu.html",menusActive=active,menusInactive=inactive))
 
 
-@app.route('/uid', methods=["POST"])
-def pickLocation2():
-    request.parameter_storage_class = ImmutableOrderedMultiDict
-    rsp = ((request.form))
-    locationPick = rsp["location"]
-    authentication = firebase.FirebaseAuthentication('if7swrlQM4k9cBvm0dmWqO3QsI5zjbcdbstSgq1W',
-                                                     'cajohn0205@gmail.com', extra={'id': dbid})
-    database = firebase.FirebaseApplication("https://cedarchatbot.firebaseio.com/",
-                                            authentication=authentication)
-    return redirect(url_for('.login', location=locationPick))
+
+@app.route('/<location>/activate-menu-<menu>')
+def enableMenu(location,menu):
+    idToken = session.get('token', None)
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    try:
+        user_ref = ref.get()[str(username)]
+    except Exception:
+        return redirect(url_for('.login', location=location))
+    if (checkAdminToken(idToken, username) == 1):
+        return redirect(url_for('.login', location=location))
+    menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu))
+    menu_ref.update({"active":True})
+    return(redirect(url_for("panel",location=location)))
+
+@app.route('/<location>/deactivate-menu-<menu>')
+def disableMenu(location,menu):
+    idToken = session.get('token', None)
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    try:
+        user_ref = ref.get()[str(username)]
+    except Exception:
+        return redirect(url_for('.login', location=location))
+    if (checkAdminToken(idToken, username) == 1):
+        return redirect(url_for('.login', location=location))
+    menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu))
+    menu_ref.update({"active":False})
+    return(redirect(url_for("panel",location=location)))
 
 
 ##########CUSTOMER END###########
@@ -1096,11 +1140,6 @@ def RemBill(location):
 
 
 
-
-
-
-
-
 if __name__ == '__main__':
     try:
         getSquare()
@@ -1113,7 +1152,5 @@ if __name__ == '__main__':
         app.permanent_session_lifetime = datetime.timedelta(minutes=200)
         app.debug = True
         app.run(host="0.0.0.0",port=5000)
-
-
     except KeyboardInterrupt:
         sys.exit()
