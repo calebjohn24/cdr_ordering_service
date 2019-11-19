@@ -31,58 +31,34 @@
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-<title>Create Menu</title>
+<title>Schedule</title>
 </head>
 <body>
 <div class="container">
 <br>
-<h3>Menus <a href="admin-panel" class="button btn-lg"><i class="fas fa-home"></i></a></h3>
+<br>
+<h3>Schedule <a href="admin-panel" class="button btn-lg"><i class="fas fa-home"></i></a></h3>
 <hr>
 <br>
-<form action="addModX2~{{menu}}~{{cat}}~{{item}}" method="POST" enctype="multipart/form-data">
-<br>
-<h4>Enter Modifier Name</h4>
-<hr>
-<input type="text" name="name" id="name" required>
-<br>
-<br>
-<h4>Enter Maximum Number of Selections</h4>
-<hr>
-<input type="number" name="max" id="max" required>
-<br>
-<br>
-<h4>Enter Minimum Number of Selections</h4>
-<hr>
-<input type="number" name="min"id="min" required>
-<br>
-<br>
-<h4>Enter Number of Options for Modifier</h4>
-<input type="number" id="myText" required>
-<br>
-<br>
-<button class="btn-lg btn-info" onclick="myFunction()">Next</button>
-<br>
-<hr>
-<h4 id="demo"></h4>
-<script>
-function myFunction() {
-  document.getElementById("demo").innerHTML = "";
-  var x = parseInt(document.getElementById("myText").value);
-  var val = ""
+<div class="row">
+  <div class="col-4">
+    <div class="list-group" id="list-tab" role="tablist">
+      <a class="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="home">Home</a>
+      <a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-controls="profile">Profile</a>
+      <a class="list-group-item list-group-item-action" id="list-messages-list" data-toggle="list" href="#list-messages" role="tab" aria-controls="messages">Messages</a>
+      <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="#list-settings" role="tab" aria-controls="settings">Settings</a>
+    </div>
+  </div>
+  <div class="col-8">
+    <div class="tab-content" id="nav-tabContent">
+      <div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">...</div>
+      <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">...</div>
+      <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">...</div>
+      <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">...</div>
+    </div>
+  </div>
+</div>
 
-  if (x >= 1) {
-  var val = ""
-  for (i = 1; i < (x+1); i++) {
-  val += '<h4>Enter Option '+i+' Name <h6>(If Only Option Enter "Standard")</h6></h4><input type="text" name=name-'+i+' required>' + "</h4><br><br>"
-  val += '<h4>Enter Option '+i+' Price</h4><input type="number" min=0 step="0.01" name=prce-'+i+' required>' + "</h4><br><hr>"
-  }
-  val += '<br><button type="submit" class="btn-lg btn-success">Done</button>'
-  document.getElementById("demo").innerHTML = val;
-}
-
-}
-</script>
-</form>
 <br>
 <br>
 <br>

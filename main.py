@@ -675,7 +675,7 @@ def addItem2(location,menu,cat):
         if file.filename == '':
             menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+str(cat))
             menu_ref.update({str(name):{ "descrip":str(descrip), "extra-info":str(exinfo),"img":""}})
-            return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=name)))
+            return(render_template("POS/AdminMini/addMod.html",location=location,menu=menu,cat=cat,item=name))
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
             file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
