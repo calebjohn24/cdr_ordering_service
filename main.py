@@ -624,6 +624,11 @@ def addModX(location,menu,cat,item):
     '''
     return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
 
+@app.route("/<location>/remMod~<menu>~<cat>~<item>~<mod>")
+def remMod(location,menu,cat,item,mod):
+    item_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+str(cat)+"/"+str(item)+"/"+str(mod))
+    item_ref.delete()
+    return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
 
 @app.route("/<location>/addItm~<menu>~<cat>")
 def addItem(location,menu,cat):
@@ -863,7 +868,6 @@ def genMenuData(location,menu):
         currArr3 = []
         currArr4 = []
         currArr5 = []
-
     modsName = []
     modsItm = []
     for itms in categories:
