@@ -37,11 +37,11 @@
   <br>
   <h3>Menus <a href="admin-panel" class="button btn-lg"><i class="fas fa-home"></i></a></h3>
   <hr>
-  <h4><a href="additm-{{menu}}-{{cat}}" class="button btn-lg btn-success"><i class="fas fa-plus-square"></i></a></h4>
+  <h4><a href="addItm~{{menu}}~{{cat}}" class="button btn-lg btn-success"><i class="fas fa-plus-square"></i></a></h4>
   <hr>
   <div class="list-group">
     {% for i in range(items|count) %}
-<a href="viewitm-{{menu}}-{{cat}}-{{items[i]}}" class="list-group-item list-group-item-action">{{items[i]}} <a href="remitm-{{menu}}-{{cat}}-{{itm}}" class="btn-danger btn-sm">Remove <i class="fas fa-times-circle"></i></a>  </a>
+<a href="viewitm~{{menu}}~{{cat}}~{{items[i]}}" class="list-group-item list-group-item-action">{{items[i]}} <a href="remitm~{{menu}}~{{cat}}~{{items[i]}}" class="btn-danger btn-sm">Remove <i class="fas fa-times-circle"></i></a>  </a>
 {% endfor %}
 </div>
 

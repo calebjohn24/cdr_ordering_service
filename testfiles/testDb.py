@@ -18,9 +18,11 @@ firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://cedarchatbot.firebaseio.com/',
     'storageBucket': 'cedarchatbot.appspot.com'
 })
-storage_client = storage.Client.from_service_account_json(
-        'CedarChatbot-b443efe11b73.json')
+storage_client = storage.Client.from_service_account_json('CedarChatbot-b443efe11b73.json')
 bucket = storage_client.get_bucket("cedarchatbot.appspot.com")
-upName = estNameStr + "/" + "manifest.json"
-blob = bucket.blob(upName)
-blob.upload_from_filename("manifest.json")
+d = estNameStr + "/" + "coffee.jpg"
+d = bucket.blob(d)
+d.upload_from_filename(str('testfiles/coffee.jpg'),content_type='image/jpeg')
+url = str(d.public_url)
+url = url.replace("googleapis","cloud.google")
+print(url)

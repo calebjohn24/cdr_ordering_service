@@ -34,17 +34,59 @@
 </head>
 <body>
 <div class="container">
-  <br>
-  <h3>Menus <a href="admin-panel" class="button btn-lg"><i class="fas fa-home"></i></a></h3>
-  <hr>
-  <h4><a href="addcat~{{menu}}" class="button btn-lg btn-success"><i class="fas fa-plus-square"></i></a></h4>
-  <hr>
-  <div class="list-group">
-    {% for i in range(cats|count) %}
-<a href="view-cat-{{menu}}~{{cats[i]}}" class="list-group-item list-group-item-action">{{cats[i]}} <a href="rem-cat-{{menu}}~{{cats[i]}}" class="btn-danger btn-sm">Remove <i class="fas fa-times-circle"></i></a>  </a>
-{% endfor %}
-</div>
+<br>
+<h3>Menus <a href="admin-panel" class="button btn-lg"><i class="fas fa-home"></i></a></h3>
+<hr>
+<br>
+<form action="addModX2~{{menu}}~{{cat}}~{{item}}" method="POST" enctype="multipart/form-data">
+<br>
+<h4>Enter Modifier Name</h4>
+<hr>
+<input type="text" name="name" id="name" required>
+<br>
+<br>
+<h4>Enter Maximum Number of Selections</h4>
+<hr>
+<input type="number" name="max" id="max" required>
+<br>
+<br>
+<h4>Enter Minimum Number of Selections</h4>
+<hr>
+<input type="number" name="min"id="min" required>
+<br>
+<br>
+<h4>Enter Number of Options for Modifier</h4>
+<input type="number" id="myText" required>
+<br>
+<br>
+<button class="btn-lg btn-info" onclick="myFunction()">Next</button>
+<br>
+<hr>
+<h4 id="demo"></h4>
+<script>
+function myFunction() {
+  document.getElementById("demo").innerHTML = "";
+  var x = parseInt(document.getElementById("myText").value);
+  var val = ""
 
+  if (x >= 1) {
+  var val = ""
+  for (i = 1; i < (x+1); i++) {
+  val += '<h4>Enter Option '+i+' Name <h6>(If Only Option Enter "Standard")</h6></h4><input type="text" name=name-'+i+' required>' + "</h4><br><br>"
+  val += '<h4>Enter Option '+i+' Price</h4><input type="number" min=0 step="0.01" name=prce-'+i+' required>' + "</h4><br><hr>"
+  }
+  val += '<br><button type="submit" class="btn-lg btn-success">Done</button>'
+  document.getElementById("demo").innerHTML = val;
+}
+
+}
+</script>
+</form>
+<br>
+<br>
+<br>
+<br>
+<br>
 </div>
 </body>
 </html>

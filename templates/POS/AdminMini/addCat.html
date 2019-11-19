@@ -34,16 +34,46 @@
 </head>
 <body>
 <div class="container">
-  <br>
-  <h3>Menus <a href="admin-panel" class="button btn-lg"><i class="fas fa-home"></i></a></h3>
-  <hr>
-  <h4><a href="addcat~{{menu}}" class="button btn-lg btn-success"><i class="fas fa-plus-square"></i></a></h4>
-  <hr>
-  <div class="list-group">
-    {% for i in range(cats|count) %}
-<a href="view-cat-{{menu}}~{{cats[i]}}" class="list-group-item list-group-item-action">{{cats[i]}} <a href="rem-cat-{{menu}}~{{cats[i]}}" class="btn-danger btn-sm">Remove <i class="fas fa-times-circle"></i></a>  </a>
-{% endfor %}
-</div>
+<br>
+<h3>Menus <a href="admin-panel" class="button btn-lg"><i class="fas fa-home"></i></a></h3>
+<hr>
+<form action="addcatSubmit" id="f" method="POST" enctype="multipart/form-data">
+<br>
+<h4>Enter New Category Name</h4>
+<input type="text" name="cat" required>
+<br>
+<br>
+<hr>
+<h3>Add First Item<h3>
+<br>
+<h4>Enter Item Name</h4>
+<hr>
+<input type="text" name="name" required>
+<br>
+<br>
+<h4>Enter Item Description</h4>
+<hr>
+<input type="text" name="descrip" required>
+<br>
+<br>
+<h4>Enter Extra Info</h4>
+<hr>
+<input type="text" name="exinfo" required>
+<br>
+<br>
+<label for="avatar">Upload Image</label>
+<hr>
+<input type="file"
+       name="img"
+       accept="image/png, image/jpeg">
+<br>
+<br>
+</form>
+<button type="submit" form="f" name="menu" value="{{menu}}" class="btn-lg btn-success">Add</button>
+<hr>
+<br>
+<br>
+<br>
 
 </div>
 </body>

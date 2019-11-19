@@ -6,13 +6,15 @@ import time
 import uuid
 import plivo
 import pygsheets
+import os
 import firebase_admin
 from passlib.hash import pbkdf2_sha256
 from firebase_admin import credentials
 from firebase_admin import db
 from google.cloud import storage
 import pytz
-from flask import Flask, request, session, jsonify
+from flask import Flask, flash, request, session, jsonify
+from werkzeug.utils import secure_filename
 from flask import redirect, url_for
 from flask import render_template
 from flask_session import Session
@@ -36,8 +38,7 @@ firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://cedarchatbot.firebaseio.com/',
     'storageBucket': 'cedarchatbot.appspot.com'
 })
-storage_client = storage.Client.from_service_account_json(
-        'CedarChatbot-b443efe11b73.json')
+storage_client = storage.Client.from_service_account_json('CedarChatbot-b443efe11b73.json')
 bucket = storage_client.get_bucket("cedarchatbot.appspot.com")
 
 sqRef = db.reference(str('/restaurants/' + estNameStr))
@@ -59,8 +60,11 @@ squareClient = Client(
 dayNames = ["MON", "TUE", "WED", "THURS", "FRI", "SAT", "SUN"]
 global locationsPaths
 locationsPaths = {}
+UPLOAD_FOLDER = estNameStr+"/imgs/"
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 app = Flask(__name__)
 sslify = SSLify(app)
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 scKey = uuid.uuid4()
 app.secret_key = scKey
 
@@ -73,6 +77,10 @@ tzGl = []
 
 # Call the success method to see if the call succeeded
 ##########Restaurant END END###########
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
 def getSquare():
     if result.is_success():
         # The body property is a list of locations
@@ -158,8 +166,8 @@ def loginPageCheck(location):
     try:
         user = ref.get()[str(email)]
         if ((pbkdf2_sha256.verify(pw, user["password"])) == True):
-
             LoginToken = str((uuid.uuid4())) + "-" + str((uuid.uuid4()))
+            # ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
             user_ref = ref.child(str(email))
             user_ref.update({
                 'token': LoginToken,
@@ -186,6 +194,11 @@ def panel(location):
         return redirect(url_for('.login', location=location))
     if (checkAdminToken(idToken, username) == 1):
         return redirect(url_for('.login', location=location))
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    user_ref = ref.child(str(username))
+    user_ref.update({
+        'time': time.time()
+    })
     getSquare()
     return render_template("POS/AdminMini/mainAdmin.html",
                            restName=str(estNameStr).capitalize(),
@@ -203,6 +216,11 @@ def scheduleSet(location,day):
         return redirect(url_for('.login', location=location))
     if (checkAdminToken(idToken, username) == 1):
         return redirect(url_for('.login', location=location))
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    user_ref = ref.child(str(username))
+    user_ref.update({
+        'time': time.time()
+    })
     sched_ref = db.reference('/restaurants/' + estNameStr + '/'+location+"/schedule")
     current_schedule = sched_ref.get()[day]
     return(str(current_schedule))
@@ -218,6 +236,11 @@ def createMenu(location):
         return redirect(url_for('.login', location=location))
     if (checkAdminToken(idToken, username) == 1):
         return redirect(url_for('.login', location=location))
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    user_ref = ref.child(str(username))
+    user_ref.update({
+        'time': time.time()
+    })
     return(render_template("POS/AdminMini/createMenu.html"))
 
 @app.route('/<location>/add-menu', methods=["POST"])
@@ -226,7 +249,7 @@ def addMenu(location):
     rsp = dict((request.form))
     new_menu = rsp["name"]
     menu_ref = db.reference('/restaurants/' + estNameStr + '/'+location+"/menu")
-    menu_ref.update({str(new_menu):{"active":True}})
+    menu_ref.update({str(new_menu):{"active":False}})
     return(redirect(url_for("viewMenu",location=location)))
 
 @app.route('/<location>/view-menu')
@@ -240,6 +263,11 @@ def viewMenu(location):
         return redirect(url_for('.login', location=location))
     if (checkAdminToken(idToken, username) == 1):
         return redirect(url_for('.login', location=location))
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    user_ref = ref.child(str(username))
+    user_ref.update({
+        'time': time.time()
+    })
     menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu')
     menu_keys = list((menu_ref.get()).keys())
     return(render_template("POS/AdminMini/dispMenu.html",menus=menu_keys))
@@ -255,6 +283,11 @@ def editMenu(location,menu):
         return redirect(url_for('.login', location=location))
     if (checkAdminToken(idToken, username) == 1):
         return redirect(url_for('.login', location=location))
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    user_ref = ref.child(str(username))
+    user_ref.update({
+        'time': time.time()
+    })
     menu_data = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)).get()
     try:
         cats = list(dict(menu_data["categories"]).keys())
@@ -262,7 +295,28 @@ def editMenu(location,menu):
         cats = []
     return(render_template("POS/AdminMini/menuDetails.html",cats=cats,menu=menu))
 
-@app.route('/<location>/view-cat-<menu>-<category>')
+
+@app.route('/<location>/rem-cat-<menu>~<category>')
+def remCategories(location,menu,category):
+    idToken = session.get('token', None)
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    try:
+        user_ref = ref.get()[str(username)]
+    except Exception:
+        return redirect(url_for('.login', location=location))
+    if (checkAdminToken(idToken, username) == 1):
+        return redirect(url_for('.login', location=location))
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    user_ref = ref.child(str(username))
+    user_ref.update({
+        'time': time.time()
+    })
+    menu_data = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+category).delete()
+    # return(render_template("POS/AdminMini/catDetails.html",items=items,menu=menu,cat=category))
+    return(redirect(url_for("viewMenu",location=location)))
+
+@app.route('/<location>/view-cat-<menu>~<category>')
 def viewCategories(location,menu,category):
     idToken = session.get('token', None)
     username = session.get('user', None)
@@ -273,13 +327,127 @@ def viewCategories(location,menu,category):
         return redirect(url_for('.login', location=location))
     if (checkAdminToken(idToken, username) == 1):
         return redirect(url_for('.login', location=location))
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    user_ref = ref.child(str(username))
+    user_ref.update({
+        'time': time.time()
+    })
     menu_data = dict(db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)).get())
     items = []
-    for itx in list(dict(menu_data["categories"][category]).keys()):
-        itx2 = str(itx).replace(" ","-")
-        items.append(itx2)
-    return(render_template("POS/AdminMini/catDetails.html",items=items,menu=menu,cat=category))
+    try:
+        for itx in list(dict(menu_data["categories"][category]).keys()):
+            itx2 = str(itx).replace(" ","-")
+            items.append(itx2)
+        return(render_template("POS/AdminMini/catDetails.html",items=items,menu=menu,cat=category))
+    except Exception as e:
+        return(redirect(url_for("viewMenu",location=location)))
 
+@app.route('/<location>/remOpt~<menu>~<cat>~<item>~<mods>~<opt>')
+def remOpt(location,menu,cat,item,mods,opt):
+    opt_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+cat+"/"+item+"/"+mods+"/info/"+opt)
+    opt_ref.delete()
+    return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
+
+@app.route('/<location>/addOpt~<menu>~<cat>~<item>~<mods>')
+def addOpt(location,menu,cat,item,mods):
+    idToken = session.get('token', None)
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    try:
+        user_ref = ref.get()[str(username)]
+    except Exception:
+        return redirect(url_for('.login', location=location))
+    if (checkAdminToken(idToken, username) == 1):
+        return redirect(url_for('.login', location=location))
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    user_ref = ref.child(str(username))
+    user_ref.update({
+        'time': time.time()
+    })
+    return(render_template("POS/AdminMini/addOpt.html",menu=menu,cat=cat,item=item,mods=mods))
+
+
+@app.route('/<location>/addOptX~<menu>~<cat>~<item>~<mods>', methods=["POST"])
+def addOptX(location,menu,cat,item,mods):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    name = str(rsp["name"])
+    price = float(rsp["price"])
+    opt_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+cat+"/"+item+"/"+mods+"/info")
+    opt_ref.update({name:price})
+    return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
+
+@app.route('/<location>/editMax~<menu>~<cat>~<item>~<mods>', methods=["POST"])
+def editMax(location,menu,cat,item,mods):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    max = int(rsp["max"])
+    opt_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+cat+"/"+item+"/"+mods)
+    opt_ref.update({"max":max})
+    return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
+
+@app.route('/<location>/editMin~<menu>~<cat>~<item>~<mods>', methods=["POST"])
+def editMin(location,menu,cat,item,mods):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    min = int(rsp["min"])
+    opt_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+cat+"/"+str(item)+"/"+str(mods))
+    opt_ref.update({"min":min})
+    return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
+
+@app.route('/<location>/editDescrip~<menu>~<cat>~<item>', methods=["POST"])
+def editDescrip(location,menu,cat,item):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    descrip = str(rsp["descrip"])
+    opt_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+cat+"/"+str(item))
+    opt_ref.update({"descrip":descrip})
+    return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
+
+@app.route('/<location>/editExtras~<menu>~<cat>~<item>', methods=["POST"])
+def editExtra(location,menu,cat,item):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    extra = str(rsp["extra"])
+    opt_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+cat+"/"+str(item))
+    opt_ref.update({"extra-info": extra})
+    return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
+
+@app.route('/<location>/editImg~<menu>~<cat>~<item>')
+def editImg(location,menu,cat,item):
+    idToken = session.get('token', None)
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    try:
+        user_ref = ref.get()[str(username)]
+    except Exception:
+        return redirect(url_for('.login', location=location))
+    if (checkAdminToken(idToken, username) == 1):
+        return redirect(url_for('.login', location=location))
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    user_ref = ref.child(str(username))
+    user_ref.update({
+        'time': time.time()
+    })
+    return(render_template("POS/AdminMini/editImg.html",menu=menu,cat=cat,item=item))
+
+@app.route('/<location>/addImgX~<menu>~<cat>~<item>', methods=["POST"])
+def editImgX(location,menu,cat,item):
+    file = request.files['img']
+    filename = secure_filename(file.filename)
+    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    upName = "/"+estNameStr+"/imgs/"+file.filename
+    blob = bucket.blob(upName)
+    fileId = str(uuid.uuid4())
+    d = estNameStr + "/" + fileId
+    d = bucket.blob(d)
+    d.upload_from_filename(str(str(UPLOAD_FOLDER)+"/"+str(file.filename)),content_type='image/jpeg')
+    url = str(d.public_url)
+    url = url.replace("googleapis","cloud.google")
+    opt_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+cat+"/"+str(item))
+    opt_ref.update({"img":url})
+    os.remove(estNameStr + "/imgs/" + filename)
+    return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
 
 @app.route('/<location>/act-menu')
 def chooseMenu(location):
@@ -292,6 +460,11 @@ def chooseMenu(location):
         return redirect(url_for('.login', location=location))
     if (checkAdminToken(idToken, username) == 1):
         return redirect(url_for('.login', location=location))
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    user_ref = ref.child(str(username))
+    user_ref.update({
+        'time': time.time()
+    })
     menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu')
     menu_keys = list((menu_ref.get()).keys())
     menu_data = menu_ref.get()
@@ -317,6 +490,11 @@ def enableMenu(location,menu):
         return redirect(url_for('.login', location=location))
     if (checkAdminToken(idToken, username) == 1):
         return redirect(url_for('.login', location=location))
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    user_ref = ref.child(str(username))
+    user_ref.update({
+        'time': time.time()
+    })
     menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu))
     menu_ref.update({"active":True})
     return(redirect(url_for("panel",location=location)))
@@ -332,9 +510,260 @@ def disableMenu(location,menu):
         return redirect(url_for('.login', location=location))
     if (checkAdminToken(idToken, username) == 1):
         return redirect(url_for('.login', location=location))
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    user_ref = ref.child(str(username))
+    user_ref.update({
+        'time': time.time()
+    })
     menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu))
     menu_ref.update({"active":False})
     return(redirect(url_for("panel",location=location)))
+
+@app.route("/<location>/remitm~<menu>~<cat>~<item>")
+def removeItem(location,menu,cat,item):
+    idToken = session.get('token', None)
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    item = str(item).replace("-"," ")
+    print(item)
+    try:
+        user_ref = ref.get()[str(username)]
+    except Exception:
+        return redirect(url_for('.login', location=location))
+    if (checkAdminToken(idToken, username) == 1):
+        return redirect(url_for('.login', location=location))
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    user_ref = ref.child(str(username))
+    user_ref.update({
+        'time': time.time()
+    })
+    item_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+str(cat)+"/"+str(item))
+    item_ref.delete()
+    return(redirect(url_for("viewCategories",location=location,menu=menu,category=cat)))
+
+@app.route("/<location>/viewitm~<menu>~<cat>~<item>")
+def viewItem(location,menu,cat,item):
+    print(menu,cat,item)
+    idToken = session.get('token', None)
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    try:
+        user_ref = ref.get()[str(username)]
+    except Exception:
+        return redirect(url_for('.login', location=location))
+    if (checkAdminToken(idToken, username) == 1):
+        return redirect(url_for('.login', location=location))
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    user_ref = ref.child(str(username))
+    user_ref.update({
+        'time': time.time()
+    })
+    item_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/"+str(cat)+"/"+str(item)).get()
+    if(item_ref == None):
+        item = str(item).replace("-"," ")
+        print(item)
+        item_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+str(cat)+"/"+str(item)).get()
+    descrip = item_ref["descrip"]
+    extra_info = item_ref["extra-info"]
+    img = item_ref["img"]
+    mods = []
+    for item_keys in list(item_ref.keys()):
+        if(str(item_keys) != "descrip" and str(item_keys) != "extra-info" and str(item_keys) != "img"):
+            tmp_arr = [item_keys, item_ref[item_keys]["max"],item_ref[item_keys]["min"]]
+            tmp_arr2 = []
+            for info_keys in list(dict(item_ref[item_keys]["info"]).keys()):
+                tmp_arr2.append([info_keys,item_ref[item_keys]["info"][info_keys]])
+            tmp_arr.append(tmp_arr2)
+            mods.append(tmp_arr)
+            tmp_arr = []
+    # return(str(mods))
+    return(render_template("POS/AdminMini/editItem.html",mods=mods,img=img,extra_info=extra_info,descrip=descrip,menu=menu,cat=cat,item=item))
+
+@app.route("/<location>/addMod-<menu>~<cat>~<item>")
+def addMod(location,menu,cat,item):
+    idToken = session.get('token', None)
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    try:
+        user_ref = ref.get()[str(username)]
+    except Exception:
+        return redirect(url_for('.login', location=location))
+    if (checkAdminToken(idToken, username) == 1):
+        return redirect(url_for('.login', location=location))
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    user_ref = ref.child(str(username))
+    user_ref.update({
+        'time': time.time()
+    })
+    return(render_template("POS/AdminMini/addMod2.html",location=location,menu=menu,cat=cat,item=item))
+
+
+@app.route("/<location>/addModX2~<menu>~<cat>~<item>", methods=["POST"])
+def addModX(location,menu,cat,item):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    # return(str(rsp))
+    name = rsp["name"]
+    # try:
+    max = int(rsp["max"])
+    min = int(rsp["min"])
+    item_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+str(cat)+"/"+str(item)+"/"+str(name))
+    item_ref.update({"max":max,"min":min})
+    mods = []
+    prices = []
+    rsp = dict((request.form))
+    for keys in range((int((int(len(list(rsp.keys())))-3)/2))):
+        prices.append(rsp[str("prce-")+str(keys+1)])
+        mods.append(rsp[str("name-")+str(keys+1)])
+    for m in range(len(mods)):
+        item_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+str(cat)+"/"+str(item)+"/"+str(name)+"/info")
+        item_ref.update({str(mods[m]):float(prices[m])})
+    '''
+    except Exception:
+        return(render_template("POS/AdminMini/addMod.html",location=location,menu=menu,cat=cat,item=name))
+    '''
+    return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
+
+
+@app.route("/<location>/addItm~<menu>~<cat>")
+def addItem(location,menu,cat):
+    idToken = session.get('token', None)
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    try:
+        user_ref = ref.get()[str(username)]
+    except Exception:
+        return redirect(url_for('.login', location=location))
+    if (checkAdminToken(idToken, username) == 1):
+        return redirect(url_for('.login', location=location))
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    user_ref = ref.child(str(username))
+    user_ref.update({
+        'time': time.time()
+    })
+    return(render_template("POS/AdminMini/addItm.html",location=location,menu=menu,cat=cat))
+
+@app.route("/<location>/addItmX~<menu>~<cat>" , methods=["POST","GET"])
+def addItem2(location,menu,cat):
+    idToken = session.get('token', None)
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    try:
+        user_ref = ref.get()[str(username)]
+    except Exception:
+        return redirect(url_for('.login', location=location))
+    if (checkAdminToken(idToken, username) == 1):
+        return redirect(url_for('.login', location=location))
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    user_ref = ref.child(str(username))
+    user_ref.update({
+        'time': time.time()
+    })
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    menu = rsp["menu"]
+    name = rsp["name"]
+    descrip = rsp["descrip"]
+    exinfo = rsp["exinfo"]
+    try:
+        file = request.files['img']
+        if file.filename == '':
+            menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+str(cat))
+            menu_ref.update({str(name):{ "descrip":str(descrip), "extra-info":str(exinfo),"img":""}})
+            return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=name)))
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            upName = "/"+estNameStr+"/imgs/"+file.filename
+            blob = bucket.blob(upName)
+            fileId = str(uuid.uuid4())
+            d = estNameStr + "/" + fileId
+            d = bucket.blob(d)
+            d.upload_from_filename(str(str(UPLOAD_FOLDER)+"/"+str(file.filename)),content_type='image/jpeg')
+            url = str(d.public_url)
+            url = url.replace("googleapis","cloud.google")
+            menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+str(cat))
+            menu_ref.update({str(name):{ "descrip":str(descrip), "extra-info":str(exinfo),"img":url}})
+            os.remove(estNameStr + "/imgs/" + filename)
+        else:
+            menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+str(cat))
+            menu_ref.update({str(name):{ "descrip":str(descrip), "extra-info":str(exinfo),"img":""}})
+    except Exception:
+        menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+str(cat))
+        menu_ref.update({str(name):{ "descrip":str(descrip), "extra-info":str(exinfo),"img":""}})
+    return(render_template("POS/AdminMini/addMod.html",location=location,menu=menu,cat=cat,item=name))
+
+@app.route("/<location>/addcat~<menu>")
+def addCat(location,menu):
+    idToken = session.get('token', None)
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    try:
+        user_ref = ref.get()[str(username)]
+    except Exception:
+        return redirect(url_for('.login', location=location))
+    if (checkAdminToken(idToken, username) == 1):
+        return redirect(url_for('.login', location=location))
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    user_ref = ref.child(str(username))
+    user_ref.update({
+        'time': time.time()
+    })
+    return(render_template("POS/AdminMini/addCat.html",location=location,menu=menu))
+
+
+@app.route("/<location>/addcatSubmit", methods=["POST","GET"])
+def addCatX(location):
+    idToken = session.get('token', None)
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    try:
+        user_ref = ref.get()[str(username)]
+    except Exception:
+        return redirect(url_for('.login', location=location))
+    if (checkAdminToken(idToken, username) == 1):
+        return redirect(url_for('.login', location=location))
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    user_ref = ref.child(str(username))
+    user_ref.update({
+        'time': time.time()
+    })
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    cat = rsp["cat"]
+    menu = rsp["menu"]
+    name = rsp["name"]
+    descrip = rsp["descrip"]
+    exinfo = rsp["exinfo"]
+    try:
+        file = request.files['img']
+        if file.filename == '':
+            menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories")
+            menu_ref.update({str(cat):{str(name):{ "descrip":str(descrip), "extra-info":str(exinfo),"img":""}}})
+            return(render_template("POS/AdminMini/addMod.html",location=location,menu=menu,cat=cat,item=name))
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            upName = "/"+estNameStr+"/imgs/"+file.filename
+            blob = bucket.blob(upName)
+            fileId = str(uuid.uuid4())
+            d = estNameStr + "/" + fileId
+            d = bucket.blob(d)
+            d.upload_from_filename(str(str(UPLOAD_FOLDER)+"/"+str(file.filename)),content_type='image/jpeg')
+            url = str(d.public_url)
+            url = url.replace("googleapis","cloud.google")
+            menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories")
+            menu_ref.update({str(cat):{str(name):{ "descrip":str(descrip), "extra-info":str(exinfo),"img":url}}})
+            os.remove(estNameStr + "/imgs/" + filename)
+        else:
+            menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories")
+            menu_ref.update({str(cat):{str(name):{ "descrip":str(descrip), "extra-info":str(exinfo),"img":""}}})
+    except Exception:
+        menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories")
+        menu_ref.update({str(cat):{str(name):{ "descrip":str(descrip), "extra-info":str(exinfo),"img":""}}})
+    return(render_template("POS/AdminMini/addMod.html",location=location,menu=menu,cat=cat,item=name))
+    # return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=name)))
+
 
 
 ##########CUSTOMER END###########
