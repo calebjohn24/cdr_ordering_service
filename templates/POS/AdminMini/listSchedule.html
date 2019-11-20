@@ -40,24 +40,45 @@
 <h3>Schedule <a href="admin-panel" class="button btn-lg"><i class="fas fa-home"></i></a></h3>
 <hr>
 <br>
+<h4>{{day}} Schedule</h4>
+<br>
+<a href="addTs~{{day}}" class="button btn-lg btn-success">Add Time Slot <i class="fas fa-plus-square"></i></a><br>
+<br>
 <div class="row">
+
   <div class="col-4">
-    <div class="list-group" id="list-tab" role="tablist">
-      <a class="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list" href="#list-home" role="tab" aria-controls="home">Home</a>
-      <a class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list" href="#list-profile" role="tab" aria-controls="profile">Profile</a>
-      <a class="list-group-item list-group-item-action" id="list-messages-list" data-toggle="list" href="#list-messages" role="tab" aria-controls="messages">Messages</a>
-      <a class="list-group-item list-group-item-action" id="list-settings-list" data-toggle="list" href="#list-settings" role="tab" aria-controls="settings">Settings</a>
-    </div>
-  </div>
-  <div class="col-8">
-    <div class="tab-content" id="nav-tabContent">
-      <div class="tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">...</div>
-      <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">...</div>
-      <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">...</div>
-      <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">...</div>
-    </div>
-  </div>
+<div class="list-group" id="myList" role="tablist">
+  {% for j in range(menuTimesStr|count) %}
+
+  <a class="list-group-item list-group-item-action" data-toggle="list" href="#{{menus[j]}}" role="tab">{{menuTimesStr[j]}}</a>
+
+  {% endfor %}
+
 </div>
+  </div>
+
+<!-- Tab panes -->
+<div class="col-8">
+<div class="tab-content">
+  {% for i in range(menuTimesStr|count) %}
+  {% if menus[i] == "End-of-Day" or menus[i] == "Start-of-Day"  %}
+  <div class="tab-pane" id="{{menus[i]}}" role="tabpanel">{{menus[i]}}</div>
+  {% else %}
+  <div class="tab-pane" id="{{menus[i]}}" role="tabpanel">
+
+    <h4>Menu: {{menus[i]}} <hr><br>
+    <a href="editTsMenu~{{day}}~{{menus[i]}}" class="button btn-lg btn-primary">Edit Menu</a><br><br>
+    <a href="editTs~{{day}}~{{menus[i]}}" class="button btn-lg btn-secondary">Edit Time Slot</a><br><br>
+    <a href="remTs~{{day}}~{{menus[i]}}" class="button btn-lg btn-danger">Remove Time Slot</a>
+    </h4>
+  </div>
+  {% endif %}
+  {% endfor %}
+
+</div>
+</div>
+</div>
+
 
 <br>
 <br>

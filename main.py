@@ -222,8 +222,38 @@ def scheduleSet(location,day):
         'time': time.time()
     })
     sched_ref = db.reference('/restaurants/' + estNameStr + '/'+location+"/schedule")
-    current_schedule = sched_ref.get()[day]
-    return(str(current_schedule))
+    currentSchedule = dict(sched_ref.get()[day])
+    schedList = list(currentSchedule.keys())
+    timeDict = {"Start-of-Day":'0:00'}
+    timeContainers = []
+    menus = ["Start-of-Day"]
+    menuTimes = [0.0]
+    menuTimesStr = ['0:00']
+    for s in schedList:
+        timeContainers.append(currentSchedule[s])
+    timeContainers.sort()
+    for tc in range(len(timeContainers)):
+        for schedKeys in schedList:
+            if(timeContainers[tc] == currentSchedule[schedKeys]):
+                sch = str(schedKeys).replace(" ","-")
+                menus.append(sch)
+                timeStr = "{:.2f}".format(currentSchedule[schedKeys])
+                timeStr = str(timeStr).replace(".",":")
+                menuTimes.append(currentSchedule[schedKeys])
+                menuTimesStr.append(timeStr)
+                timeDict.update({sch:timeStr})
+    menus.append("End-of-Day")
+    menuTimes.append(23.59)
+    menuTimesStr.append("23:59")
+    timeDict.update({"End-of-Day":"23:59"})
+    return(render_template("POS/AdminMini/listSchedule.html",day=day,timeDict=timeDict,menuTimes=menuTimes,menus=menus,menuTimesStr=menuTimesStr))
+    #return(str(menuTimes) + "mt" + str(menus)+ "mn"+str(menuTimesStr) +"dict"+str(timeDict))
+
+@app.route('/<location>/remTs~<day>~<menu>')
+def remTimeSlot(location,day,menu):
+    menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/schedule/'+str(day)+"/"+str(menu))
+    menu_ref.delete()
+    return(redirect(url_for("scheduleSet",location=location,day=day)))
 
 @app.route('/<location>/create-menu', methods=["GET"])
 def createMenu(location):
@@ -768,7 +798,6 @@ def addCatX(location):
         menu_ref.update({str(cat):{str(name):{ "descrip":str(descrip), "extra-info":str(exinfo),"img":""}}})
     return(render_template("POS/AdminMini/addMod.html",location=location,menu=menu,cat=cat,item=name))
     # return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=name)))
-
 
 
 ##########CUSTOMER END###########
