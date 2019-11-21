@@ -1012,35 +1012,9 @@ def findMenu(location):
     for sh2 in range(len(schedlist)):
         if(sortedHr[menuKey] == schedule[schedlist[sh2]]):
             menu = (schedlist[sh2])
-            break
+            # break
+            return(str(menu))
 
-    menuItems = []
-    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu
-    menuInfo = db.reference(pathMenu).get()
-    categories = list(menuInfo["categories"])
-    for itms in categories:
-        #print(list(menuInfo["categories"][itms]))
-        currArr = [itms]
-        for ll in range(len(list(menuInfo["categories"][itms]))):
-            itmArr = []
-            itx = (list(menuInfo["categories"][itms])[ll])
-            descrip = (menuInfo["categories"][itms][itx]["descrip"])
-            exinfo = (menuInfo["categories"][itms][itx]["extra-info"])
-            itmArr.append(itx)
-            itmArr.append(descrip)
-            itmArr.append(exinfo)
-            modNames = (list(menuInfo["categories"][itms][itx])[2:])
-            for mods in modNames:
-                modArr = [mods,menuInfo["categories"][itms][itx][mods]["min"],menuInfo["categories"][itms][itx][mods]["max"]]
-                opt = list(menuInfo["categories"][itms][itx][mods]["info"])
-                for oo in opt:
-                    modArr.append([oo,menuInfo["categories"][itms][itx][mods]["info"][oo]])
-                itmArr.append(modArr)
-                modArr = []
-            currArr.append(itmArr)
-            itmArr = []
-        menuItems.append(currArr)
-    return(menuItems)
 
 @app.route('/<location>/sitdown-startKiosk', methods=["GET"])
 def startKiosk2(location):
@@ -1071,8 +1045,8 @@ def startKiosk(location):
         })
     print(newOrd.key)
     session['orderToken'] = newOrd.key
-    #menu = findMenu(location)
-    menu = "lunch"
+    menu = findMenu(location)
+    # menu = "lunch"
     session["menu"] = menu
     #print(menu)
     pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu
