@@ -27,9 +27,10 @@
 <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 <link href="../../../static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <title>Create Menu</title>
 </head>
 <body>
@@ -40,17 +41,16 @@
   <h3>{{item}}</h3>
   <br>
   <h4><img src="{{img}}" class="img-rounded" alt="" width="200"></h4>
-  <a href="editImg~{{menu}}~{{cat}}~{{item}}" class="button"><i class="fas fa-edit"></i></a>
+  <a href="editImg~{{menu}}~{{cat}}~{{item}}" class="button btn-sm btn-light"> Edit Image <i class="fas fa-edit"></i></a>
   <br>
   <br>
-  <h4>Description: {{descrip}} <a data-toggle="modal" data-target="#descripModal" class="button"><i class="fas fa-edit"></i></a></h4>
+  <h4>Description: {{descrip}} <a data-toggle="modal" data-target="#descripModal" class="button btn-lg btn-light"><i class="fas fa-edit"></i></a></h4>
   <!-- Modal -->
   <div class="modal fade" id="descripModal" role="dialog">
   <div class="modal-dialog modal-lg">
   <div class="modal-content">
   <div class="modal-header">
-  <button type="button" class="close" data-dismiss="modal">&times;</button>
-  <h4 class="modal-title">Edit Description</h4>
+  <h4 class="modal-title">Edit Description <button type="button" class="close" data-dismiss="modal">&times;</button></h4>
   </div>
   <form method="POST" action="editDescrip~{{menu}}~{{cat}}~{{item}}">
   <div class="modal-body">
@@ -65,14 +65,13 @@
   </div>
   <!-- Modal -->
   <br>
-  <h4>Extra Info: {{extra_info}} <a data-toggle="modal" data-target="#extra_infoModal" class="button"><i class="fas fa-edit"></i></a></h4>
+  <h4>Extra Info: {{extra_info}} <a data-toggle="modal" data-target="#extra_infoModal" class="button btn-lg btn-light"><i class="fas fa-edit"></i></a></h4>
   <!-- Modal -->
   <div class="modal fade" id="extra_infoModal" role="dialog">
   <div class="modal-dialog modal-lg">
   <div class="modal-content">
   <div class="modal-header">
-  <button type="button" class="close" data-dismiss="modal">&times;</button>
-  <h4 class="modal-title">Edit Extra Info</h4>
+  <h4 class="modal-title">Edit Extra Info <button type="button" class="close" data-dismiss="modal">&times;</button></h4>
   </div>
   <form method="POST" action="editExtras~{{menu}}~{{cat}}~{{item}}">
   <div class="modal-body">
@@ -88,8 +87,7 @@
   <!-- Modal -->
   <br>
   <br>
-  <h2>Modifiers</h2>
-  <br>
+
   <h4>Add Modifier <a href="addMod-{{menu}}~{{cat}}~{{item}}" class="button btn-lg btn-success"><i class="fas fa-plus-square"></i></a></h4>
   <hr>
   <h3>
@@ -101,14 +99,13 @@
   {% for i in range(mods|count) %}
   <h3>{{mods[i][0]}} <a href="remMod~{{menu}}~{{cat}}~{{item}}~{{mods[i][0]}}" class="btn-danger btn-sm"> <i class="fas fa-times-circle"></i></a></h3>
   <br>
-  <h4>Max {{mods[i][1]}} <a data-toggle="modal" data-target="#max_Modal" class="button"><i class="fas fa-edit"></i></a></h4>
+  <h4>Max {{mods[i][1]}} <a data-toggle="modal" data-target="#max_Modal" class="button btn-lg btn-light"><i class="fas fa-edit"></i></a></h4>
   <!-- Modal -->
   <div class="modal fade" id="max_Modal" role="dialog">
   <div class="modal-dialog modal-lg">
   <div class="modal-content">
   <div class="modal-header">
-  <button type="button" class="close" data-dismiss="modal">&times;</button>
-  <h4 class="modal-title">Edit Max Value</h4>
+  <h4 class="modal-title">Edit Max Value <button type="button" class="close" data-dismiss="modal">&times;</button></h4>
   </div>
   <form method="POST" action="editMax~{{menu}}~{{cat}}~{{item}}~{{mods[i][0]}}">
   <div class="modal-body">
@@ -124,14 +121,13 @@
   <!-- Modal -->
 
   <br>
-  <h4>Min {{mods[i][2]}} <a data-toggle="modal" data-target="#min_Modal" class="button"><i class="fas fa-edit"></i></a></h4>
+  <h4>Min {{mods[i][2]}} <a data-toggle="modal" data-target="#min_Modal" class="button btn-lg btn-light"><i class="fas fa-edit"></i></a></h4>
   <!-- Modal -->
   <div class="modal fade" id="min_Modal" role="dialog">
   <div class="modal-dialog modal-lg">
   <div class="modal-content">
   <div class="modal-header">
-  <button type="button" class="close" data-dismiss="modal">&times;</button>
-  <h4 class="modal-title">Edit Min Value</h4>
+  <h4 class="modal-title">Edit Min Value <button type="button" class="close" data-dismiss="modal">&times;</button></h4>
   </div>
   <form method="POST" action="editMin~{{menu}}~{{cat}}~{{item}}~{{mods[i][0]}}">
   <div class="modal-body">

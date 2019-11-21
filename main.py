@@ -222,6 +222,8 @@ def scheduleSet(location,day):
         'time': time.time()
     })
     sched_ref = db.reference('/restaurants/' + estNameStr + '/'+location+"/schedule")
+    menu_ref = dict(db.reference('/restaurants/' + estNameStr + '/'+location+"/menu").get())
+    menuTotals = list(menu_ref)
     currentSchedule = dict(sched_ref.get()[day])
     schedList = list(currentSchedule.keys())
     timeDict = {"Start-of-Day":'0:00'}
@@ -246,13 +248,46 @@ def scheduleSet(location,day):
     menuTimes.append(23.59)
     menuTimesStr.append("23:59")
     timeDict.update({"End-of-Day":"23:59"})
-    return(render_template("POS/AdminMini/listSchedule.html",day=day,timeDict=timeDict,menuTimes=menuTimes,menus=menus,menuTimesStr=menuTimesStr))
-    #return(str(menuTimes) + "mt" + str(menus)+ "mn"+str(menuTimesStr) +"dict"+str(timeDict))
+    return(render_template("POS/AdminMini/listSchedule.html",day=day,menuTotals=menuTotals,timeDict=timeDict,menuTimes=menuTimes,menus=menus,menuTimesStr=menuTimesStr))
 
 @app.route('/<location>/remTs~<day>~<menu>')
 def remTimeSlot(location,day,menu):
     menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/schedule/'+str(day)+"/"+str(menu))
     menu_ref.delete()
+    return(redirect(url_for("scheduleSet",location=location,day=day)))
+
+@app.route('/<location>/schedMenu~<day>~<menu>~<timeVal>', methods=["POST"])
+def editTimeSlot(location,day,menu,timeVal):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    new_menu = str(rsp["menu"])
+    del_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/schedule/'+str(day)+"/"+menu)
+    del_ref.delete()
+    menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/schedule/'+str(day))
+    menu_ref.update({new_menu:float(timeVal)})
+    return(redirect(url_for("scheduleSet",location=location,day=day)))
+
+@app.route('/<location>/editMenuTime~<day>~<menu>', methods=["POST"])
+def editMenuSlot(location,day,menu):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    hour = float(rsp["hour"])
+    minute = (float(rsp["minute"])/100)
+    newTime = hour+minute
+    menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/schedule/'+str(day))
+    menu_ref.update({menu:newTime})
+    return(redirect(url_for("scheduleSet",location=location,day=day)))
+
+@app.route('/<location>/addTs~<day>', methods=["POST"])
+def addTimeSlot(location,day):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    hour = float(rsp["hour"])
+    minute = (float(rsp["minute"])/100)
+    menu = str(rsp["menu"])
+    newTime = hour+minute
+    menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/schedule/'+str(day))
+    menu_ref.update({menu:newTime})
     return(redirect(url_for("scheduleSet",location=location,day=day)))
 
 @app.route('/<location>/create-menu', methods=["GET"])
