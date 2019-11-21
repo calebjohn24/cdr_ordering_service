@@ -252,6 +252,7 @@ def scheduleSet(location,day):
 
 @app.route('/<location>/remTs~<day>~<menu>')
 def remTimeSlot(location,day,menu):
+    menu = str(menu).replace("-"," ")
     menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/schedule/'+str(day)+"/"+str(menu))
     menu_ref.delete()
     return(redirect(url_for("scheduleSet",location=location,day=day)))
