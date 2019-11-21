@@ -222,8 +222,13 @@ def scheduleSet(location,day):
         'time': time.time()
     })
     sched_ref = db.reference('/restaurants/' + estNameStr + '/'+location+"/schedule")
-    menu_ref = dict(db.reference('/restaurants/' + estNameStr + '/'+location+"/menu").get())
-    menuTotals = list(menu_ref)
+    menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu')
+    menu_keys = list((menu_ref.get()).keys())
+    menu_data = menu_ref.get()
+    menuTotals = []
+    for keys in menu_keys:
+        if(menu_data[keys]["active"] == True):
+            menuTotals.append(keys)
     currentSchedule = dict(sched_ref.get()[day])
     schedList = list(currentSchedule.keys())
     timeDict = {"Start-of-Day":'0:00'}
