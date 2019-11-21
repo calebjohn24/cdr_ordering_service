@@ -502,6 +502,10 @@ def editImgX(location,menu,cat,item):
     file = request.files['img']
     filename = secure_filename(file.filename)
     file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    old_img_ref = dict(db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+cat+"/"+str(item)).get())
+    old_img = str(old_img_ref["img"]).split(str(estNameStr)+str("/"))
+    imgUUID = str(estNameStr)+str("/")+str(old_img[1])
+    bucket.delete_blob(imgUUID)
     upName = "/"+estNameStr+"/imgs/"+file.filename
     blob = bucket.blob(upName)
     fileId = str(uuid.uuid4())
