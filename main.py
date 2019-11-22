@@ -976,14 +976,8 @@ def genMenuData(location,menu):
                 tmpArr.append(tmpArr2)
             catArr.append(tmpArr)
         modsItm.append(catArr)
-    '''
-    print(baseItms[0][0][0])
-    print(categories[0])
-    print(descrips[0][0])
-    print(exInfo[0][0])
-    print(modsName[0][0][0][0])
-    print(modsItm[0][0][0][0][1])
-    '''
+
+
     itmArr = [baseItms,categories,descrips,exInfo,modsName,modsItm,imgLink]
     return itmArr
 
@@ -1019,6 +1013,60 @@ def findMenu(location):
 @app.route('/<location>/sitdown-startKiosk', methods=["GET"])
 def startKiosk2(location):
     return(render_template("Customer/Sitdown/startKiosk.html",btn="startKiosk",restName=estNameStr,locName=location))
+
+@app.route('/<location>/qsr-startKiosk', methods=["GET"])
+def startKiosk3(location):
+    return(render_template("Customer/QSR/startKiosk.html",btn="startKioskQsr",restName=estNameStr,locName=location))
+
+@app.route('/<location>/qsr-startKiosk', methods=["POST"])
+def startKioskQsr(location):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    phone = rsp["number"]
+    name = rsp["name"]
+    table = "To Go"
+    session['table'] = table
+    session['name'] = name
+    session['phone'] = phone
+    path = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/"
+    orderToken = str(uuid.uuid4())
+    ref = db.reference(path)
+    newOrd = ref.push({
+        "name":name,
+        "phone":phone,
+        "table":table,
+        "alert":"null",
+        "alertTime":0,
+        "timestamp":time.time(),
+        "subtotal":0.0
+        })
+    print(newOrd.key)
+    session['orderToken'] = newOrd.key
+    menu = findMenu(location)
+    # menu = "lunch"
+    session["menu"] = menu
+    #print(menu)
+    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu
+    menuInfo = db.reference(pathMenu).get()
+    menuData = genMenuData(location,menu)
+    baseItms = menuData[0]
+    cats = menuData[1]
+    descrips = menuData[2]
+    exInfo = menuData[3]
+    modsName = menuData[4]
+    modsItm = menuData[5]
+    imgData = menuData[6]
+    baseitmCart = ["Add Items to Your Cart"]
+    modsCart = [" "]
+    notesCart = [" "]
+    qtysCart = [" "]
+    imgCart = [" "]
+    cartKeys = ["-ig"]
+    return(render_template("Customer/QSR/mainKiosk.html",
+                           cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,imgData=imgData,
+                           modsName=modsName,modsItm=modsItm,btn=str("qsr-additms"),restName=str(estNameStr.capitalize()),
+                           baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,imgCart=imgCart,
+                           cartKeys=cartKeys,btn2="qsr-itmRemove",btn3="cartAdd-qsr"))
 
 
 @app.route('/<location>/sitdown-startKiosk', methods=["POST"])
@@ -1071,13 +1119,12 @@ def startKiosk(location):
                            baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,imgCart=imgCart,
                            cartKeys=cartKeys,btn2="itmRemove",btn3="sendReq"))
 
-
-@app.route('/<location>/sitdown-additms', methods=["POST"])
-def kiosk2(location):
+@app.route('/<location>/qsr-additms', methods=["POST"])
+def kiosk2QSR(location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     #print((request.form))
     rsp = dict((request.form))
-    #print(rsp)
+    # print(rsp)
     itmKeys = list(rsp.keys())
     cat = ""
     itm = ""
@@ -1155,13 +1202,163 @@ def kiosk2(location):
             modStr += " - "
         modsCart.append(modStr)
         modStr = ""
+    return(render_template("Customer/QSR/mainKiosk.html",location=location,
+                           cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,imgData=imgData,
+                           modsName=modsName,modsItm=modsItm,btn="qsr-additms",restName=str(estNameStr.capitalize()),
+                           baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,imgCart=imgCart,
+                           cartKeys=cartKeys,btn2="qsr-itmRemove",btn3="cartAdd-qsr"))
 
+
+@app.route('/<location>/sitdown-additms', methods=["POST"])
+def kiosk2(location):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    #print((request.form))
+    rsp = dict((request.form))
+    # print(rsp)
+    itmKeys = list(rsp.keys())
+    cat = ""
+    itm = ""
+    mods = []
+    img = ""
+    notes = ""
+    qty = 1
+    price = 0.0
+    unitPrice = 0.0
+    for itx in itmKeys:
+        if((itx[:3]) == "mod"):
+            try:
+                spt = list(str(rsp[itx]).split("~"))
+                unitPrice += float(spt[1])
+                mods.append(spt)
+            except:
+                pass
+        elif((itx) == "itm"):
+            cat = list(str(rsp[itx]).split("~"))[0]
+            itm = list(str(rsp[itx]).split("~"))[1]
+            img = list(str(rsp[itx]).split("~"))[2]
+        if(itx == "notes"):
+            notes = rsp[itx]
+        if(itx == "qty"):
+            if(rsp[itx] == ""):
+                qty = 1
+            else:
+                qty = int(rsp[itx])
+
+    price = unitPrice*qty
+    price = round(price,2)
+    unitPrice = round(unitPrice,2)
+    #print(price,itm,cat,unitPrice,qty,mods,notes)
+    menu = session.get('menu', None)
+    orderToken = session.get('orderToken',None)
+    #print(orderToken)
+    pathCartitm = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/cart/"
+    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu
+    cartRefItm = db.reference(pathCartitm)
+    cartRefItm.push({
+        'cat':cat,
+        'itm':itm,
+        'qty':qty,
+        'img':img,
+        'notes':notes,
+        'price':price,
+        'mods':mods,
+        'unitPrice':unitPrice
+    })
+    menuInfo = db.reference(pathMenu).get()
+    menuData = genMenuData(location,menu)
+    baseItms = menuData[0]
+    cats = menuData[1]
+    descrips = menuData[2]
+    exInfo = menuData[3]
+    modsName = menuData[4]
+    modsItm = menuData[5]
+    imgData  = menuData[6]
+    cartData = db.reference(pathCartitm).get()
+    #print(cartData)
+    cartKeys = list(cartData.keys())
+    baseitmCart = []
+    modsCart = []
+    notesCart = []
+    qtysCart = []
+    imgCart = []
+    for cc in range(len(cartKeys)):
+        baseitmCart.append(cartData[cartKeys[cc]]["itm"])
+        notesCart.append(cartData[cartKeys[cc]]["notes"])
+        qtysCart.append(cartData[cartKeys[cc]]["qty"])
+        imgCart.append(cartData[cartKeys[cc]]["img"])
+        modStr = ""
+        for mds in range(len(cartData[cartKeys[cc]]["mods"])):
+            modStr += cartData[cartKeys[cc]]["mods"][mds][0]
+            modStr += " - "
+        modsCart.append(modStr)
+        modStr = ""
     return(render_template("Customer/Sitdown/mainKiosk.html",location=location,
                            cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,imgData=imgData,
                            modsName=modsName,modsItm=modsItm,btn="sitdown-additms",restName=str(estNameStr.capitalize()),
                            baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,imgCart=imgCart,
                            cartKeys=cartKeys,btn2="itmRemove",btn3="cartAdd"))
 
+
+@app.route('/<location>/qsr-itmRemove', methods=["POST"])
+def kioskRemQSR(location):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = dict((request.form))
+    remItm = rsp["remove"]
+    orderToken = session.get('orderToken',None)
+    menu = session.get('menu',None)
+    pathCartitm = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken +"/cart/"
+    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu
+    remPath = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken +"/cart/" + remItm
+    try:
+        remRef = db.reference(remPath)
+        remRef.delete()
+    except Exception as e:
+        pass
+    cartRefItm = db.reference(pathCartitm)
+    menuInfo = db.reference(pathMenu).get()
+    menuData = genMenuData(location,menu)
+    baseItms = menuData[0]
+    cats = menuData[1]
+    descrips = menuData[2]
+    exInfo = menuData[3]
+    modsName = menuData[4]
+    modsItm = menuData[5]
+    imgData = menuData[6]
+    cartData = db.reference(pathCartitm).get()
+    #print(cartData)
+
+    try:
+        cartKeys = list(cartData.keys())
+        baseitmCart = []
+        modsCart = []
+        notesCart = []
+        qtysCart = []
+        imgCart = []
+        for cc in range(len(cartKeys)):
+            baseitmCart.append(cartData[cartKeys[cc]]["itm"])
+            notesCart.append(cartData[cartKeys[cc]]["notes"])
+            qtysCart.append(cartData[cartKeys[cc]]["qty"])
+            imgCart.append(cartData[cartKeys[cc]]["img"])
+            modStr = ""
+            for mds in range(len(cartData[cartKeys[cc]]["mods"])):
+                modStr += cartData[cartKeys[cc]]["mods"][mds][0]
+                modStr += " - "
+            modsCart.append(modStr)
+            modStr = ""
+        #print("INFO--",baseitmCart,modsCart,notesCart,notesCart,qtysCart)
+    except:
+        baseitmCart = ["Add Items to Your Cart"]
+        modsCart = [" "]
+        notesCart = [" "]
+        qtysCart = [" "]
+        cartKeys = ["-ig"]
+        imgCart = [" "]
+    testData = "testAlert"
+    return(render_template("Customer/QSR/mainKiosk.html",location=location,
+                           cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,imgData=imgData,
+                           modsName=modsName,modsItm=modsItm,btn="sitdown-additms",restName=str(estNameStr.capitalize()),
+                           baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,imgCart=imgCart,
+                           cartKeys=cartKeys,btn2="qsr-itmRemove",btn3="cartAdd-qsr"))
 
 @app.route('/<location>/itmRemove', methods=["POST"])
 def kioskRem(location):
@@ -1284,6 +1481,45 @@ def kioskCart(location):
                            modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),restName=str(estNameStr.capitalize()),
                            baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,imgCart=imgCart,
                            cartKeys=cartKeys,btn2="itmRemove"))
+
+@app.route('/<location>/cartAdd-QSR', methods=["POST"])
+def kioskCartQSR(location):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    orderToken = session.get('orderToken',None)
+    menu = session.get('menu',None)
+    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu
+    pathCart = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken +"/cart/"
+    pathTable = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken +"/table/"
+    pathRequest = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/"
+    tableNum = db.reference(pathTable).get()
+    menuInfo = db.reference(pathMenu).get()
+    menuData = genMenuData(location,menu)
+    try:
+        cartRef = db.reference(pathCart)
+        cart = db.reference(pathCart).get()
+        reqRef = db.reference(pathRequest)
+        newReq = reqRef.push(cart)
+        pathRequestkey = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/" + newReq.key + "/info"
+        reqRefkey = db.reference(pathRequestkey)
+        reqRefkey.set({"table":tableNum,"type":"order","token":orderToken})
+        cartRef.delete()
+        print(cart)
+    except Exception:
+        pass
+    baseItms = menuData[0]
+    cats = menuData[1]
+    descrips = menuData[2]
+    exInfo = menuData[3]
+    modsName = menuData[4]
+    modsItm = menuData[5]
+    imgData = menuData[6]
+    baseitmCart = ["Add Items to Your Cart"]
+    modsCart = [" "]
+    notesCart = [" "]
+    qtysCart = [" "]
+    cartKeys = ["-ig"]
+    imgCart = [" "]
+    return(redirect(url_for("pay-QSR")))
 
 @app.route('/<location>/close-alert')
 def kioskClear(location):
@@ -1408,6 +1644,7 @@ def kioskSendReq(location):
         notesCart = [" "]
         qtysCart = [" "]
         cartKeys = ["-ig"]
+        imgCart = [""]
     return(render_template("Customer/Sitdown/mainKiosk.html",location=location,
                            cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,imgData=imgData,
                            modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),restName=str(estNameStr.capitalize()),
@@ -1617,7 +1854,6 @@ def RemBill(location):
     remRef = db.reference(pathUserX)
     remRef.delete()
     return(redirect(url_for("EmployeePanel",location=location)))
-
 
 
 

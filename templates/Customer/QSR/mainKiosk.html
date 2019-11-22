@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <link rel="manifest" href="/manifest.json">
+  <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" sizes="60x60" href="../../../static/img/CedarRoboticsLogo.jpg">
  <link rel="apple-touch-icon" sizes="57x57" href="../../../static/img/CedarRoboticsLogo.jpg">
  <link rel="apple-touch-icon" sizes="72x72" href="../../../static/img/CedarRoboticsLogo.jpg">
@@ -25,7 +25,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="Caleb John">
-  <link rel="manifest" href="/manifest.json" >
 
   <title>Menu</title>
 
@@ -38,299 +37,33 @@
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+<script>
+$(document).ready(function(e) {
+    var refresher = setInterval("update_content();",15000); // 1 seconds
+    $('#alert').hide();
+})
+
+function update_content(){
+  $.ajax({
+         url: 'SDupdate',
+         success: function(data) {
+             console.log('get info');
+             $('#info').html(JSON.stringify(data, null, '   '));
+             if(data['alert'] != "null"){
+               document.getElementById("alertData").innerHTML = data['alert'];
+               $('#alert').show();
+             }
+             else{
+                $('#alert').hide();
+             }
 
 
-</head>
-
-<body>
-  <div class="container-fluid">
-  <br>
-  <div class="input-group">
-    <h3 class="h3 mb-0 text-gray-800">{{restName}}</h3>
-  </div>
-  <hr>
-
-<div class="center">
-<div class="tab">
-<button class="tablinks" onclick="openTab(event, 'Menu')">Menu</button>
-<button class="tablinks" onclick="openTab(event, 'Cart')">Cart</button>
-<hr>
-</div>
-</div>
+         }
+     });
 
 
-
-<div id="Cart" class="tabcontent">
-
-  <div class="card">
-    <div class="card-header">
-      <h4>Base Item</h4>
-    </div>
-    <div class="card-body">
-
-      <h4 class="card-title">Modifiers</h4>
-
-      <h4 class="card-title">Notes</h4>
-      <h4 class="card-title">Quantity</h4>
-        <h4 class="card-title">Price</h4>
-        <br>
-        <button class="btn btn-danger btn-circle btn-sm" data-toggle="popover" data-content="Item Removed">
-          <strong>Remove </strong><i class="fas fa-times-circle"></i>
-        </button>
-          </div>
-
-
-    </div>
-  <hr>
-  <form class="form-inline">
-    <h6>subtotal ${{subtotal}}</h6>
-    <h6>Taxes ${{taxes}}</h6>
-    <h6>Security Fee $0.10</h6>
-    <h5>Total ${{total}}</h5>
-    <hr>
-  <button type="submit" class="btn btn-primary mb-2">Pay Now</button>
-  <!--JS webview script here-->
-  </form>
-  </div>
-
-
-
-<div id="Requests" class="tabcontent">
-  <div class="card">
-
-    <div class="card-header">
-      <h4>11:38</h4>
-    </div>
-    <div class="card-body">
-      <h4 class="card-title">Food</h4>
-
-      <h5 class="card-text">Food Item - Price</h5>
-
-    </div>
-  <hr>
-
-  <div class="card-header">
-    <h4>11:38</h4>
-  </div>
-  <div class="card-body">
-    <h4 class="card-title">Food</h4>
-
-    <h5 class="card-text">Food Item - Price</h5>
-
-  </div>
-<hr>
-
-</div>
-
-</div>
-
-
-
-<div id="Menu" class="tabcontent">
-  <div class="panel-group" id="accordion">
-    <div class="panel panel-default">
-      <div class="panel-heading">
-        <h4 class="panel-title">
-          <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
-          Category</a>
-          </h4>
-          </div>
-          <div id="collapse1" class="panel-collapse collapse">
-            <div class="panel-body">
-            <div class="panel panel-default">
-
-            <div class="panel-heading">
-            <h4 class="panel-title">
-            <a data-toggle="collapse" data-parent="#accordion2" href="#collapse2">Base Item</a>
-            </h4>
-            </div>
-            <div id="collapse2" class="panel-collapse collapse">
-            <div class="panel-body">
-            <h4 class="card-title">description</h4>
-            <h6 class="card-title">more info</h6>
-            <hr>
-            <div class="card">
-            <h4 class="card-header">Size</h4>
-            <div class="card-body">
-              <div class="form-check">
-                <label class="form-check-label" for="exampleRadios1">
-                  Size 1
-                </label>
-              <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios1" value="option1">
-            </div>
-            <br>
-            <div class="form-check">
-              <label class="form-check-label" for="exampleRadios2">
-                Size 2
-              </label>
-              <input class="form-check-input" type="radio" name="exampleRadios" id="exampleRadios2" value="option2">
-            </div>
-            </div>
-            </div>
-            <hr>
-            <div class="card">
-            <h4 class="card-header">Modifier</h4>
-            <div class="card-body">
-              <h5 class="card-title">(min 1, max 2)</h5>
-                <div class="form-check">
-                  <label class="form-check-label" for="defaultCheck1">
-                    Option 1
-                  </label>
-                <input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
-                </div>
-                <br>
-                <div class="form-check">
-                  <label class="form-check-label" for="defaultCheck1">
-                    Option 2
-                  </label>
-                <input class="form-check-input" type="checkbox" value="" id="defaultCheck2">
-                </div>
-            </div>
-            </div>
-            <hr>
-
-      <div class="form-group">
-          <label for="exampleFormControlSelect0">Notes</label>
-        <input class="form-control" type="text" placeholder="Notes" id="exampleFormControlSelect1">
-        <br>
-        <label for="validationDefault05">Quantity</label>
-        <input type="number" class="form-control" id="validationDefault05" placeholder="1">
-      </div>
-
-        <button class="btn btn-success btn-circle btn-sm" data-toggle="popover" data-content="Added to Cart">
-        <strong>Add Item </strong><i class="fas fa-check"></i>
-        </button>
-      </div>
-      </div>
-    </div>
-  </div>
-  </div>
-  </div>
-  </div>
-  </div>
-
-
-
-<div id="Help" class="tabcontent">
-
-  <div class="card">
-    <br>
-  <div class="row">
-    <div class="col-sm-6">
-      <button type="button" class="btn btn-primary btn-lg" data-toggle="collapse" data-target="#drink">Refill Drink</button>
-      <div id="drink" class="collapse">
-        <br>
-        <h5>Enter Drinks to Refill</h5>
-
-      <div class="row">
-        <div class="col-sm-8">
-        <input type="text" class="form-control" placeholder="Drinks" required>
-        </div>
-        <div class="col-sm-1">
-        <button class="btn btn-success" data-toggle="popover" data-content="Request Sent" type="submit">Request</button>
-       </div>
-      </div>
-
-      </div>
-    </div>
-    <br>
-    <div class="col-sm-6">
-      <button type="button" class="btn btn-primary btn-lg">Extra Napkins</button>
-    </div>
-  </div>
-  <br>
-  <div class="row">
-    <div class="col-sm-6">
-      <button type="button" class="btn btn-primary btn-lg">Extra Cutlery</button>
-    </div>
-    <br>
-    <div class="col-sm-6">
-      <button type="button" class="btn btn-primary btn-lg">Clear Table</button>
-    </div>
-    <br>
-  </div>
-  <br>
-  <div class="row">
-    <div class="col-sm-6">
-      <button type="button" class="btn btn-primary btn-lg" data-toggle="collapse" data-target="#iss">Issue With Food/Bill</button>
-      <div id="iss" class="collapse">
-      <br>
-      <h5>Enter Issue</h5>
-
-    <div class="row">
-      <div class="col-sm-8">
-      <input type="text" class="form-control" required>
-      </div>
-      <div class="col-sm-1">
-      <button class="btn btn-success" data-toggle="popover" data-content="Request Sent" type="submit">Send</button>
-     </div>
-    </div>
-    </div>
-    </div>
-    <br>
-
-    <div class="col-sm-6">
-      <button type="button" class="btn btn-primary btn-lg" data-toggle="collapse" data-target="#boxFood">Box Food</button>
-      <div id="boxFood" class="collapse">
-      <br>
-      <h5>Number of Boxes</h5>
-
-    <div class="row">
-      <div class="col-sm-8">
-      <input type="number" class="form-control" placeholder="1" step="1" required>
-      </div>
-      <div class="col-sm-1">
-      <button class="btn btn-success" data-toggle="popover" data-content="Request Sent" type="submit">Request</button>
-     </div>
-    </div>
-
-    </div>
-  </div>
-  <br>
-  </div>
-  <br>
-  <div class="row">
-    <div class="col-sm-6">
-
-    <button type="button" class="btn btn-primary btn-lg" data-toggle="collapse" data-target="#cond">Request Condiments</button>
-    <div id="cond" class="collapse">
-    <br>
-    <h5>Enter Condiments</h5>
-
-  <div class="row">
-    <div class="col-sm-8">
-    <input type="text" class="form-control" placeholder="Condiments">
-    </div>
-    <div class="col-sm-1">
-    <button class="btn btn-success" data-toggle="popover" data-content="Request Sent" type="submit">Request</button>
-   </div>
-  </div>
-
-    </div>
-    </div>
-    <br>
-
-
-    <div class="col-sm-6">
-      <button type="button" class="btn btn-primary btn-lg" data-toggle="collapse" data-target="#othr">Other</button>
-      <div id="othr" class="collapse">
-        <br>
-        <h5>Enter Request</h5>
-
-      <div class="row">
-        <div class="col-sm-8">
-        <input type="text" class="form-control" required>
-        </div>
-        <div class="col-sm-1">
-        <button class="btn btn-success" data-toggle="popover" data-content="Request Sent" type="submit">Request</button>
-       </div>
-      </div>
-      </div>
-    </div>
-  </div>
-  </div>
-</div>
-
+}
+</script>
 
 <script>
 function openTab(evt, cityName) {
@@ -353,7 +86,463 @@ $(document).ready(function(){
 $('[data-toggle="popover"]').popover();
 });
 </script>
+</head>
 
+<body>
+  <div class="container-fluid">
+  <br>
+  <div class="input-group">
+    <h3 class="h3 mb-0 text-gray-800">{{restName}}</h3>
+  </div>
+
+  <hr>
+  <div id="alert" class="alert alert-warning" role="alert">
+  <h4 id="alertData"></h4>
+  <a class="btn btn-warning" href="close-alert">&times;</a>
+ </div>
+
+<div class="center">
+<div class="tab">
+<button class="tablinks" onclick="openTab(event, 'Menu')">Menu</button>
+<button class="tablinks" onclick="openTab(event, 'Cart')">Cart</button>
+
+<!-- <button class="tablinks" onclick="openTab(event, 'Requests')">Contact Staff</button> -->
+<!-- <button class="tablinks" onclick="openTab(event, 'Bill')">Pay Bill</button> -->
+<hr>
+</div>
+</div>
+
+<div id="Bill" class="tabcontent">
+<div class="card">
+<br>
+<form class="form-inline" method="POST" action="payKiosk">
+<button type="submit" class="btn btn-lg btn-primary mb-2">Pay Now</button>
+<!--JS webview script here-->
+</form>
+<br>
+</div>
+</div>
+
+
+
+<div id="Cart" class="tabcontent">
+  <div class="card">
+    <form method="POST" action="{{btn2}}">
+    {% for bb in range(cartKeys|count) %}
+    <div class="card-header">
+      <h4>{{baseitmCart[bb]}}</h4>
+      <br>
+      <img src="{{imgCart[bb]}}" class="img-rounded" alt="" width="200">
+    </div>
+    <div class="card-body">
+      <h4 class="card-title">{{modsCart[bb]}}</h4>
+
+      <h4 class="card-title">Notes: {{notesCart[bb]}}</h4>
+      <h4 class="card-title">QTY: {{qtysCart[bb]}}</h4>
+        <br>
+        <button class="btn btn-danger btn-circle btn-sm" type="submit" name="remove", value="{{cartKeys[bb]}}" data-toggle="popover" data-content="Item Removed">
+          <strong>Remove </strong><i class="fas fa-times-circle"></i>
+        </button>
+      </div>
+{% endfor %}
+</form>
+    </div>
+  <hr>
+  <div class="row">
+    <form method="POST" action="cartAdd-QSR">
+      <div class="col-lg-12">
+
+    <button class="btn btn-success btn-circle btn-md" name="add", value="cart" data-toggle="popover" data-placement="bottom" data-content="Items Sent To Kitchen">
+      <strong>Order Items </strong><i class="fas fa-arrow-right"></i>
+    </button>
+      </div>
+    </form>
+  </div>
+  </div>
+
+
+
+<div id="Requests" class="tabcontent">
+  <div class="card">
+    <br>
+
+  <div class="row">
+  <div class="col-sm-6">
+
+  <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#drink-modal">
+  Refill Drinks
+  </button>
+
+  <div class="modal fade" id="drink-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+  <div class="modal-content">
+  <div class="modal-header">
+  <h5 class="modal-title" id="exampleModalLabel">Refill Drinks</h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+  <span aria-hidden="true">&times;</span>
+  </button>
+  </div>
+  <div class="modal-body">
+  <form method="POST" action="sendReq">
+  <div class="form-group">
+  <br>
+  <input type="text" class="form-control" name="drinks" placeholder="Enter Drink Names" required>
+  </div>
+  <hr>
+  <button type="submit" class="btn btn-lg btn-success">Next</button>
+  </form>
+  <br>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+
+
+    <br>
+    <div class="col-sm-6">
+
+    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#napkin-modal">
+    Extra Napkins
+    </button>
+
+    <div class="modal fade" id="napkin-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">Request Napkins</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    <div class="modal-body">
+    <form method="POST" action="sendReq">
+    <div class="form-group">
+    </div>
+    <button type="submit" name="napkins" value="ex" class="btn btn-lg btn-success">Next</button>
+    </form>
+    <br>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+
+  </div>
+  <br>
+  <div class="row">
+
+    <div class="col-sm-6">
+
+    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#cutlery-modal">
+    Extra Cutlery
+    </button>
+
+    <div class="modal fade" id="cutlery-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">Request Cutlery</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    <div class="modal-body">
+    <form method="POST" action="sendReq">
+    <div class="form-group">
+    </div>
+    <button type="submit" name="cutlery" value="ex" class="btn btn-lg btn-success">Next</button>
+    </form>
+    <br>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+
+    <br>
+    <div class="col-sm-6">
+
+    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#clear-modal">
+    Clear Table
+    </button>
+
+    <div class="modal fade" id="clear-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">Clear Table</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    <div class="modal-body">
+    <form method="POST" action="sendReq">
+    <div class="form-group">
+    </div>
+    <button type="submit" name="clear" value="ex" class="btn btn-lg btn-success">Next</button>
+    </form>
+    <br>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+
+    <br>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-sm-6">
+
+    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#iss-modal">
+    Issue With Food
+    </button>
+
+    <div class="modal fade" id="iss-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">Issue with Food</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    <div class="modal-body">
+    <form method="POST" action="sendReq">
+    <div class="form-group">
+    <br>
+    <input type="text" class="form-control" name="issue" placeholder="Enter Issue" required>
+    </div>
+    <hr>
+    <button type="submit" class="btn btn-lg btn-success">Next</button>
+    </form>
+    <br>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+
+  <br>
+
+  <div class="col-sm-6">
+
+  <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#box-modal">
+  Box Food
+  </button>
+
+  <div class="modal fade" id="box-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+  <div class="modal-content">
+  <div class="modal-header">
+  <h5 class="modal-title" id="exampleModalLabel">Box Food</h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+  <span aria-hidden="true">&times;</span>
+  </button>
+  </div>
+  <div class="modal-body">
+  <form method="POST" action="sendReq">
+  <div class="form-group">
+  <br>
+  <input type="number" class="form-control" name="box" placeholder="Number of boxes" required>
+  </div>
+  <hr>
+  <button type="submit" class="btn btn-lg btn-success">Next</button>
+  </form>
+  <br>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+
+
+  <br>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-sm-6">
+
+    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#cond-modal">
+    Request Condiments
+    </button>
+
+    <div class="modal fade" id="cond-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">Request Condiments</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    <div class="modal-body">
+    <form method="POST" action="sendReq">
+    <div class="form-group">
+    <br>
+    <input type="text" class="form-control" name="condiments" placeholder="Enter Condiment Names" required>
+    </div>
+    <hr>
+    <button type="submit" class="btn btn-lg btn-success">Next</button>
+    </form>
+    <br>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+
+    <br>
+    <div class="col-sm-6">
+
+    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#other-modal">
+    Other
+    </button>
+
+    <div class="modal fade" id="other-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">Other</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    <div class="modal-body">
+    <form method="POST" action="sendReq-QSR">
+    <div class="form-group">
+    <br>
+    <input type="text" class="form-control" name="other" placeholder="Enter Request" required>
+    </div>
+    <hr>
+    <button type="submit" class="btn btn-lg btn-success">Next</button>
+    </form>
+    <br>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+
+  </div>
+
+
+  </div>
+</div>
+
+
+<div id="Menu" class="tabcontent">
+      {% for i in range(cats|count) %}
+
+    <div class="panel-group" id="accordion">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h2 class="panel-title">
+            <a data-toggle="collapse" data-parent="#accordion" href="#{{cats[i]}}">
+            {{cats[i]}} </a><br>
+          </h2>
+              <br>
+            </div>
+            <div id="{{cats[i]}}" class="panel-collapse collapse">
+              {% for j in range(baseItms[i]|count) %}
+              <div class="panel-body">
+              <div class="panel panel-default">
+              <div class="panel-heading">
+              <h3 class="panel-title">
+              <a data-toggle="collapse" data-parent="#accordion2" href="#{{baseItms[i][j][0]}}">{{baseItms[i][j][1]}}
+              <img src="{{imgData[i][j]}}" class="img-rounded" alt="" width="40">
+              </a>
+              </h3>
+              </div>
+              <div id="{{baseItms[i][j][0]}}" class="panel-collapse collapse">
+              <div class="panel-body">
+                <h5 class="card-title">{{descrips[i][j]}}</h5>
+              <h6 class="card-title">{{exInfo[i][j]}}</h6>
+              <br>
+              <img src="{{imgData[i][j]}}" class="img-rounded" alt="" width="200">
+              <hr>
+
+              <button class="btn btn-success btn-circle btn-sm" data-toggle="modal" data-target="#{{baseItms[i][j][0]}}-modal">
+              <strong>Add Item </strong><i class="fas fa-check"></i>
+              </button>
+            </div>
+              </div>
+              </div>
+
+              <div class="modal fade" id="{{baseItms[i][j][0]}}-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+              <div class="modal-header">
+              <h4 class="modal-title" id="exampleModalLongTitle">{{baseItms[i][j][1]}}</h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+              </button>
+              </div>
+              <form method="POST" action="{{btn}}" id="itm-form-{{baseItms[i][j][1]}}">
+              <div class="modal-body">
+              {% for x in range(modsName[i][j]|count) %}
+              <div class="card">
+              <h4 class="card-header">{{modsName[i][j][x][0]}}</h4>
+              <div class="card-body">
+
+                {% for yy in range(modsName[i][j][x][1]) %}
+                <h4 class="card-header">
+                  {% for y in range(modsItm[i][j][x]|count) %}
+                      <input type="radio" name="mod-{{i}}-{{j}}-{{x}}-{{yy}}-0" value="{{modsItm[i][j][x][y][0]}}~{{modsItm[i][j][x][y][1]}}" required> {{modsItm[i][j][x][y][0]}} ${{modsItm[i][j][x][y][1]}}</input>
+                      <br>
+                {% endfor %}
+                <br>
+                <br>
+            </h4>
+              {% endfor %}
+              {% for yyx in range(modsName[i][j][x][2]) %}
+              <h4 class="card-header">
+                {% for yz in range(modsItm[i][j][x]|count) %}
+                  <input type="radio" name="mod-{{i}}-{{j}}-{{x}}-{{yyx}}-1" value="{{modsItm[i][j][x][yz][0]}}~{{modsItm[i][j][x][yz][1]}}"> {{modsItm[i][j][x][yz][0]}} ${{modsItm[i][j][x][yz][1]}}</option>
+                  <br>
+              {% endfor %}
+              <input type="radio" name="mod-{{i}}-{{j}}-{{x}}-{{yyx}}-1" value="NaN"> None</option>
+              <br>
+            </h4>
+              <br>
+
+              {% endfor %}
+
+              </div>
+              {% endfor %}
+              <hr>
+
+            <label for="exampleFormControlSelect0">Notes</label>
+            <input class="form-control" name="notes" form="itm-form-{{baseItms[i][j][1]}}" type="text" placeholder="Notes" id="exampleFormControlSelect1">
+            <br>
+            <label for="validationDefault05">Quantity</label>
+            <input type="number" name="qty" class="form-control" form="itm-form-{{baseItms[i][j][1]}}" id="validationDefault05" placeholder="1">
+              </div>
+              <br>
+              <hr>
+              <button class="btn btn-success btn-circle btn-sm" type="submit" form="itm-form-{{baseItms[i][j][1]}}" name="itm" value="{{cats[i]}}~{{baseItms[i][j][1]}}~{{imgData[i][j]}}" data-toggle="modal" data-target="#exampleModal">
+              <strong>Add To Cart </strong><i class="fas fa-check"></i>
+              </button>
+            </form>
+          </div>
+
+              </div>
+              <div class="modal-footer">
+
+            </div>
+              </div>
+              </div>
+              </div>
+              {%endfor%}
+              </div>
+
+            </div>
+          </div>
+          {%endfor%}
+  </div>
+
+</div>
 
 
 </body>

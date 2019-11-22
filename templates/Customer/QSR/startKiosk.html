@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <link rel="manifest" href="/manifest.json">
+  <link rel="manifest" href="/manifest.json" >
   <link rel="apple-touch-icon" sizes="60x60" href="../../../static/img/CedarRoboticsLogo.jpg">
  <link rel="apple-touch-icon" sizes="57x57" href="../../../static/img/CedarRoboticsLogo.jpg">
  <link rel="apple-touch-icon" sizes="72x72" href="../../../static/img/CedarRoboticsLogo.jpg">
@@ -43,26 +43,30 @@
 </head>
 
 <body>
+  <br>
+  <div class="container">
   <div class="input-group">
-    <h3 class="h3 mb-0 text-gray-800">Welcome to {{restName}} - {{locName}}</h3>
+    <h3 class="h3 mb-0 text-gray-800">Welcome to {{restName}} {{locName}}</h3>
   </div>
   <hr>
-  <form>
+  <form method="POST" action="qsr-startKiosk">
   <div class="input-group mb-3">
     <div class="input-group-prepend">
       <span class="input-group-text" id="inputGroup-sizing-default">Phone Number</span>
     </div>
-    <input type="number" placeholder="1 555 555 5555" size="11" maxlength=11 class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+    <input type="number" name="number" placeholder="1 555 555 5555" size="11" maxlength=11 class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
   </div>
   <hr>
+
   <div class="input-group mb-3">
     <div class="input-group-prepend">
-      <span class="input-group-text" id="inputGroup-sizing-default">Table Number</span>
+      <span class="input-group-text" id="inputGroup-sizing-default">Name</span>
     </div>
-    <input type="number" size="11" maxlength=11 class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+    <input type="text" name="name" size="11" maxlength=11 class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
   </div>
   <div class="d-inline-flex p-2">
     <button type="submit" class="btn btn-primary mb-2">Start</button>
   </div>
   </form>
+  </div>
 </body>

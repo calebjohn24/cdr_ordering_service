@@ -446,7 +446,6 @@ $('[data-toggle="popover"]').popover();
             <div id="{{cats[i]}}" class="panel-collapse collapse">
               {% for j in range(baseItms[i]|count) %}
               <div class="panel-body">
-
               <div class="panel panel-default">
               <div class="panel-heading">
               <h3 class="panel-title">
@@ -474,7 +473,7 @@ $('[data-toggle="popover"]').popover();
               <div class="modal-dialog modal-dialog-centered" role="document">
               <div class="modal-content">
               <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLongTitle">{{baseItms[i][j][1]}}</h5>
+              <h4 class="modal-title" id="exampleModalLongTitle">{{baseItms[i][j][1]}}</h4>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
               </button>
@@ -487,24 +486,24 @@ $('[data-toggle="popover"]').popover();
               <div class="card-body">
 
                 {% for yy in range(modsName[i][j][x][1]) %}
-                <h6 class="card-header">
+                <h4 class="card-header">
                   {% for y in range(modsItm[i][j][x]|count) %}
                       <input type="radio" name="mod-{{i}}-{{j}}-{{x}}-{{yy}}-0" value="{{modsItm[i][j][x][y][0]}}~{{modsItm[i][j][x][y][1]}}" required> {{modsItm[i][j][x][y][0]}} ${{modsItm[i][j][x][y][1]}}</input>
                       <br>
                 {% endfor %}
                 <br>
                 <br>
-            </h6>
+            </h4>
               {% endfor %}
               {% for yyx in range(modsName[i][j][x][2]) %}
-              <h6 class="card-header">
+              <h5 class="card-header">
                 {% for yz in range(modsItm[i][j][x]|count) %}
                   <input type="radio" name="mod-{{i}}-{{j}}-{{x}}-{{yyx}}-1" value="{{modsItm[i][j][x][yz][0]}}~{{modsItm[i][j][x][yz][1]}}"> {{modsItm[i][j][x][yz][0]}} ${{modsItm[i][j][x][yz][1]}}</option>
                   <br>
               {% endfor %}
               <input type="radio" name="mod-{{i}}-{{j}}-{{x}}-{{yyx}}-1" value="NaN"> None</option>
               <br>
-              </h6>
+            </h5>
               <br>
 
               {% endfor %}
@@ -519,14 +518,17 @@ $('[data-toggle="popover"]').popover();
             <label for="validationDefault05">Quantity</label>
             <input type="number" name="qty" class="form-control" form="itm-form-{{baseItms[i][j][1]}}" id="validationDefault05" placeholder="1">
               </div>
+              <br>
+              <hr>
+              <button class="btn btn-success btn-circle btn-sm" type="submit" form="itm-form-{{baseItms[i][j][1]}}" name="itm" value="{{cats[i]}}~{{baseItms[i][j][1]}}~{{imgData[i][j]}}" data-toggle="modal" data-target="#exampleModal">
+              <strong>Add To Cart </strong><i class="fas fa-check"></i>
+              </button>
             </form>
           </div>
 
               </div>
               <div class="modal-footer">
-              <button class="btn btn-success btn-circle btn-sm" type="submit" form="itm-form-{{baseItms[i][j][1]}}" name="itm" value="{{cats[i]}}~{{baseItms[i][j][1]}}~{{imgData[i][j]}}" data-toggle="modal" data-target="#exampleModal">
-              <strong>Add To Cart </strong><i class="fas fa-check"></i>
-              </button>
+
             </div>
               </div>
               </div>
