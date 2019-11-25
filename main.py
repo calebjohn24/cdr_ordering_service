@@ -917,31 +917,32 @@ def genMenuData(location,menu):
         for ll in range(len(list(menuInfo["categories"][itms]))):
             itmArr = []
             itx = (list(menuInfo["categories"][itms])[ll])
-            itx2 = itx.replace(" ","-")
-            currArr2.append([itx2,itx])
-            descrip = (menuInfo["categories"][itms][itx]["descrip"])
-            exinfo = (menuInfo["categories"][itms][itx]["extra-info"])
-            img = (menuInfo["categories"][itms][itx]["img"])
-            mN = (list(menuInfo["categories"][itms][itx]))
-            mN.remove("img")
-            mN.remove("descrip")
-            mN.remove("extra-info")
-            currArr3.append(descrip)
-            currArr4.append(exinfo)
-            currArr5.append(img)
-            for mods in mN:
-                print(mods)
-                max = int(menuInfo["categories"][itms][itx][mods]["max"]) - int(menuInfo["categories"][itms][itx][mods]["min"])
-                min = int(menuInfo["categories"][itms][itx][mods]["min"])
-                opt = list(menuInfo["categories"][itms][itx][mods]["info"])
-        baseItms.append(currArr2)
-        descrips.append(currArr3)
-        exInfo.append(currArr4)
-        imgLink.append(currArr5)
-        currArr2 = []
-        currArr3 = []
-        currArr4 = []
-        currArr5 = []
+            if(menuInfo["categories"][itms][itx]["descrip"] != "INACTIVE"):
+                itx2 = itx.replace(" ","-")
+                currArr2.append([itx2,itx])
+                descrip = (menuInfo["categories"][itms][itx]["descrip"])
+                exinfo = (menuInfo["categories"][itms][itx]["extra-info"])
+                img = (menuInfo["categories"][itms][itx]["img"])
+                mN = (list(menuInfo["categories"][itms][itx]))
+                mN.remove("img")
+                mN.remove("descrip")
+                mN.remove("extra-info")
+                currArr3.append(descrip)
+                currArr4.append(exinfo)
+                currArr5.append(img)
+                for mods in mN:
+                    print(mods)
+                    max = int(menuInfo["categories"][itms][itx][mods]["max"]) - int(menuInfo["categories"][itms][itx][mods]["min"])
+                    min = int(menuInfo["categories"][itms][itx][mods]["min"])
+                    opt = list(menuInfo["categories"][itms][itx][mods]["info"])
+            baseItms.append(currArr2)
+            descrips.append(currArr3)
+            exInfo.append(currArr4)
+            imgLink.append(currArr5)
+            currArr2 = []
+            currArr3 = []
+            currArr4 = []
+            currArr5 = []
     modsName = []
     modsItm = []
     for itms in categories:
@@ -950,14 +951,15 @@ def genMenuData(location,menu):
         for mx in list(menuInfo["categories"][itms]):
             tmpArr = []
             mNX = list(menuInfo["categories"][itms][mx])
-            mNX.remove("img")
-            mNX.remove("descrip")
-            mNX.remove("extra-info")
-            for tt in mNX:
-                max = int(menuInfo["categories"][itms][mx][tt]["max"]) - int(menuInfo["categories"][itms][mx][tt]["min"])
-                min = menuInfo["categories"][itms][mx][tt]["min"]
-                tmpArr.append([tt,min,max])
-            catArr.append(tmpArr)
+            if(mNX["descrip"] != "INACTIVE"):
+                mNX.remove("img")
+                mNX.remove("descrip")
+                mNX.remove("extra-info")
+                for tt in mNX:
+                    max = int(menuInfo["categories"][itms][mx][tt]["max"]) - int(menuInfo["categories"][itms][mx][tt]["min"])
+                    min = menuInfo["categories"][itms][mx][tt]["min"]
+                    tmpArr.append([tt,min,max])
+                catArr.append(tmpArr)
         modsName.append(catArr)
 
 
@@ -966,15 +968,16 @@ def genMenuData(location,menu):
         for mx2 in list(menuInfo["categories"][itms2]):
             tmpArr = []
             mNX2 = list(menuInfo["categories"][itms2][mx2])
-            mNX2.remove("img")
-            mNX2.remove("descrip")
-            mNX2.remove("extra-info")
-            for tt2 in mNX2:
-                tmpArr2 = []
-                for hnn in list(menuInfo["categories"][itms2][mx2][tt2]["info"]):
-                    tmpArr2.append([hnn,menuInfo["categories"][itms2][mx2][tt2]["info"][hnn]])
-                tmpArr.append(tmpArr2)
-            catArr.append(tmpArr)
+            if(mNX2["descrip"] != "INACTIVE"):
+                mNX2.remove("img")
+                mNX2.remove("descrip")
+                mNX2.remove("extra-info")
+                for tt2 in mNX2:
+                    tmpArr2 = []
+                    for hnn in list(menuInfo["categories"][itms2][mx2][tt2]["info"]):
+                        tmpArr2.append([hnn,menuInfo["categories"][itms2][mx2][tt2]["info"][hnn]])
+                    tmpArr.append(tmpArr2)
+                catArr.append(tmpArr)
         modsItm.append(catArr)
 
 
@@ -1015,8 +1018,67 @@ def startKiosk2(location):
     return(render_template("Customer/Sitdown/startKiosk.html",btn="startKiosk",restName=estNameStr,locName=location))
 
 @app.route('/<location>/qsr-startKiosk', methods=["GET"])
-def startKiosk3(location):
-    return(render_template("Customer/QSR/startKiosk.html",btn="startKioskQsr",restName=estNameStr,locName=location))
+def startKiosk4(location):
+    return(render_template("Customer/QSR/startKiosk.html",btn="qsr-startKiosk",restName=estNameStr,locName=location))
+
+@app.route('/<location>/order', methods=["GET"])
+def startKiosk5(location):
+    return(render_template("Customer/QSR/startKiosk.html",btn="startOnline",restName=estNameStr,locName=location))
+
+@app.route('/<location>/startOnline', methods=["POST"])
+def startOnline(location):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    phone = rsp["number"]
+    name = rsp["name"]
+    togo = rsp["togo"]
+    table = ""
+    session['table'] = ""
+    session['name'] = name
+    session['phone'] = phone
+    path = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/"
+    orderToken = str(uuid.uuid4())
+    ref = db.reference(path)
+    newOrd = ref.push({
+        "togo":togo,
+        "QSR":True,
+        "kiosk":False,
+        "name":name,
+        "phone":phone,
+        "table":table,
+        "alert":"null",
+        "alertTime":0,
+        "timestamp":time.time(),
+        "subtotal":0.0
+        })
+    print(newOrd.key)
+    session['orderToken'] = newOrd.key
+    menu = findMenu(location)
+    # menu = "lunch"
+    session["menu"] = menu
+    #print(menu)
+    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu
+    menuInfo = db.reference(pathMenu).get()
+    menuData = genMenuData(location,menu)
+    baseItms = menuData[0]
+    cats = menuData[1]
+    descrips = menuData[2]
+    exInfo = menuData[3]
+    modsName = menuData[4]
+    modsItm = menuData[5]
+    imgData = menuData[6]
+    baseitmCart = ["Add Items to Your Cart"]
+    modsCart = [" "]
+    notesCart = [" "]
+    qtysCart = [" "]
+    imgCart = [" "]
+    cartKeys = ["-ig"]
+    return(render_template("Customer/QSR/mainKiosk.html",
+                           cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,imgData=imgData,
+                           modsName=modsName,modsItm=modsItm,btn=str("qsr-additms"),restName=str(estNameStr.capitalize()),
+                           baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,imgCart=imgCart,
+                           cartKeys=cartKeys,btn2="qsr-itmRemove",btn3="cartAdd-qsr"))
+
 
 @app.route('/<location>/qsr-startKiosk', methods=["POST"])
 def startKioskQsr(location):
@@ -1024,6 +1086,7 @@ def startKioskQsr(location):
     rsp = ((request.form))
     phone = rsp["number"]
     name = rsp["name"]
+    togo = rsp["togo"]
     table = "To Go"
     session['table'] = table
     session['name'] = name
@@ -1032,6 +1095,9 @@ def startKioskQsr(location):
     orderToken = str(uuid.uuid4())
     ref = db.reference(path)
     newOrd = ref.push({
+        "togo":togo,
+        "QSR":True,
+        "kiosk":True,
         "name":name,
         "phone":phone,
         "table":table,
@@ -1083,6 +1149,8 @@ def startKiosk(location):
     orderToken = str(uuid.uuid4())
     ref = db.reference(path)
     newOrd = ref.push({
+        "QSR":False,
+        "kiosk":True,
         "name":name,
         "phone":phone,
         "table":table,
@@ -1356,7 +1424,7 @@ def kioskRemQSR(location):
     testData = "testAlert"
     return(render_template("Customer/QSR/mainKiosk.html",location=location,
                            cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,imgData=imgData,
-                           modsName=modsName,modsItm=modsItm,btn="sitdown-additms",restName=str(estNameStr.capitalize()),
+                           modsName=modsName,modsItm=modsItm,btn="qsr-additms",restName=str(estNameStr.capitalize()),
                            baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,imgCart=imgCart,
                            cartKeys=cartKeys,btn2="qsr-itmRemove",btn3="cartAdd-qsr"))
 
@@ -1497,29 +1565,49 @@ def kioskCartQSR(location):
     try:
         cartRef = db.reference(pathCart)
         cart = db.reference(pathCart).get()
-        reqRef = db.reference(pathRequest)
-        newReq = reqRef.push(cart)
-        pathRequestkey = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/" + newReq.key + "/info"
-        reqRefkey = db.reference(pathRequestkey)
-        reqRefkey.set({"table":tableNum,"type":"order","token":orderToken})
-        cartRef.delete()
-        print(cart)
+        test = str(list(cart.keys()))
+        return(redirect(url_for("payQSR",location=location)))
     except Exception:
-        pass
-    baseItms = menuData[0]
-    cats = menuData[1]
-    descrips = menuData[2]
-    exInfo = menuData[3]
-    modsName = menuData[4]
-    modsItm = menuData[5]
-    imgData = menuData[6]
-    baseitmCart = ["Add Items to Your Cart"]
-    modsCart = [" "]
-    notesCart = [" "]
-    qtysCart = [" "]
-    cartKeys = ["-ig"]
-    imgCart = [" "]
-    return(redirect(url_for("pay-QSR")))
+        baseItms = menuData[0]
+        cats = menuData[1]
+        descrips = menuData[2]
+        exInfo = menuData[3]
+        modsName = menuData[4]
+        modsItm = menuData[5]
+        imgData = menuData[6]
+        baseitmCart = ["Add Items to Your Cart"]
+        modsCart = [" "]
+        notesCart = [" "]
+        qtysCart = [" "]
+        cartKeys = ["-ig"]
+        imgCart = [" "]
+        return(render_template("Customer/QSR/mainKiosk.html",location=location,
+                               cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,imgData=imgData,
+                               modsName=modsName,modsItm=modsItm,btn=str("qsr-additms"),restName=str(estNameStr.capitalize()),
+                               baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,imgCart=imgCart,
+                               cartKeys=cartKeys,btn2="itmRemove"))
+
+
+@app.route('/<location>/pay')
+def payQSR(location):
+    orderToken = session.get('orderToken',None)
+    pathOrder = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
+    orderInfo = dict(db.reference(pathOrder).get())
+    typeKiosk = orderInfo["kiosk"]
+    if(typeKiosk == False):
+        # get Cart Da
+        return(render_template("Customer/QSR/Payment.html",locName=str(location).capitalize(),restName=str(estNameStr).capitalize()))
+    else:
+
+        return(render_template("Customer/QSR/Payment.html",locName=str(location).capitalize(),restName=str(estNameStr).capitalize()))
+
+
+@app.route('/<location>/pay0~<type>')
+def payQSR1(location,type):
+    orderToken = session.get('orderToken',None)
+    orderPath = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + str(orderToken)
+    order = dict(db.reference(orderPath).get())
+    return str(order)+str(type)
 
 @app.route('/<location>/close-alert')
 def kioskClear(location):
@@ -1559,7 +1647,7 @@ def kioskClear(location):
                 modStr += " - "
             modsCart.append(modStr)
             modStr = ""
-        #print("INFO--",baseitmCart,modsCart,notesCart,notesCart,qtysCart)
+            #print("INFO--",baseitmCart,modsCart,notesCart,notesCart,qtysCart)
     except:
         baseitmCart = ["Add Items to Your Cart"]
         modsCart = [" "]
@@ -1672,7 +1760,6 @@ def EmployeePanel(location):
                 for tickItms in list(ticket.keys()):
                     tickItmX = []
                     for tts in list(ordsGet[tt]["ticket"][tickItms].keys()):
-
                         modStr = ""
                         modStr += str(ordsGet[tt]["ticket"][tickItms][tts]["qty"])
                         modStr += "x $"

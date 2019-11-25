@@ -33,32 +33,53 @@
   <!-- Custom styles for this template-->
   <link href="../../../static/css/tab.css" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
-
+  <script>
+  function goBack() {
+    window.history.back();
+  }
+  </script>
 </head>
 
 <body>
-  <div class="container-fluid">
+  <div class="container">
   <br>
   <div class="input-group">
-    <h3 class="h3 mb-0 text-gray-800">{{restName}}</h3>
+    <h3 class="h3 mb-0 text-gray-800">{{restName}} {{locName}}</h3>
   </div>
+  <br><br><h3>Pay Now</h3><br><button class="btn-lg btn-info" onclick="goBack()"><i class="fas fa-arrow-left"></i></button>
+
+
   <hr>
 
-
-<div class="center">
-<form>
-<button type="submit" name="pay" value="CC" class="btn btn-primary mb-2 btn-lg">Credit/Debit</button>
-</form>
-</div>
 <br>
-<div class="center">
-<form>
-<button type="submit" name="pay" value="GC" class="btn btn-primary mb-2 btn-lg">Gift Card</button>
-</form>
+<div class="row">
+<div class="col-sm-3">
+<h3><button onclick="location.href='pay0~CC'" class="btn-light btn-lg">
+<h3>Credit Card </h3>
+<h1>
+<i class="fab fa-cc-mastercard"></i>
+<i class="fab fa-cc-visa"></i>
+<i class="fab fa-cc-amex"></i>
+<i class="fab fa-cc-discover"></i><br>
+</h1>
+</button>
+</h3>
+</div>
+<div class="col-sm-2">
+<h3><button onclick="location.href='pay0~GC'" class="btn-light btn-lg"><h3>Gift Card</h3><h1><i class="fas fa-gift"></i></h1></button></h3>
+<br>
+</div>
+<div class="col-sm-2">
+<h3><button onclick="location.href='pay0~Cash'" class="btn-light btn-lg"><h3>Cash</h3> <h1><i class="fas fa-money-bill"></i></h1></button></h3>
+</div>
+</div>
+
+
 </div>
 
 

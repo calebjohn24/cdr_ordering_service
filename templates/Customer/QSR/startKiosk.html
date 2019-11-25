@@ -49,7 +49,7 @@
     <h3 class="h3 mb-0 text-gray-800">Welcome to {{restName}} {{locName}}</h3>
   </div>
   <hr>
-  <form method="POST" action="qsr-startKiosk">
+  <form method="POST" action="{{btn}}">
   <div class="input-group mb-3">
     <div class="input-group-prepend">
       <span class="input-group-text" id="inputGroup-sizing-default">Phone Number</span>
@@ -63,9 +63,17 @@
       <span class="input-group-text" id="inputGroup-sizing-default">Name</span>
     </div>
     <input type="text" name="name" size="11" maxlength=11 class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
-  </div>
+    <br>
+
+  </div><hr>
+<h4>Is This Order For Here or Togo?</h4>
+  <br>
   <div class="d-inline-flex p-2">
-    <button type="submit" class="btn btn-primary mb-2">Start</button>
+    <button type="submit" name="togo" value ="togo" class="btn btn-primary mb-2">To Go</button>
+  </div>
+  <br>
+  <div class="d-inline-flex p-2">
+    <button type="submit" name="togo" value ="here" class="btn btn-primary mb-2">For Here</button>
   </div>
   </form>
   </div>
