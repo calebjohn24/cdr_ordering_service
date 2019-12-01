@@ -57,6 +57,17 @@
   <hr>
 
 <br>
+
+ {% for i in range(items|count) %}
+ <h4>{{items[i]}}</h4>
+<br>
+{% endfor %}
+<hr>
+<h4>Subtotal {{subtotal}}</h4>
+<h4>Tax {{tax}}</h4>
+<h4>Total {{total}}</h4>
+<hr>
+<br>
 <div class="row">
 <div class="col-sm-3">
 <h3><button onclick="location.href='pay0~CC'" class="btn-light btn-lg">

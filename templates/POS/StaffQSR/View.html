@@ -3,205 +3,310 @@
 
 <head>
   <link rel="apple-touch-icon" sizes="60x60" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="57x57" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="72x72" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="76x76" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="114x114" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="120x120" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="144x144" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="152x152" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="180x180" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="icon" type="image/png" sizes="192x192"  href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="icon" type="image/png" sizes="32x32" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="icon" type="image/png" sizes="96x96" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="icon" type="image/png" sizes="16x16" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="manifest" href="/manifest.json">
- <meta name="msapplication-TileColor" content="#000000">
- <meta name="msapplication-TileImage" content="../../../static/img/CedarRoboticsLogo.jpg">
- <meta name="theme-color" content="#000000">
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="180x180" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="icon" type="image/png" sizes="192x192"  href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="icon" type="image/png" sizes="96x96" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="msapplication-TileColor" content="#000000">
+  <meta name="msapplication-TileImage" content="../../../static/img/CedarRoboticsLogo.jpg">
+  <meta name="theme-color" content="#000000">
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="Caleb John">
-  <!-- Custom fonts for this template-->
-  <link href="../../../static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-  <!-- Custom styles for this template-->
-  <link href="../../../static/css/tab.css" rel="stylesheet">
-    <link href="../../../static/css/sb-admin-2.min.css" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+      <link href="../../../static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
   <title>Employee Panel</title>
+</head>
 
 <body>
-  <div class="container-fluid">
+<br>
+
+<div class="container">
+  <h2>{{restName}} {{location}} Employee Panel QSR <button class="btn-lg btn-light" onClick="window.location.reload()"><i class="fas fa-sync"></i></button></h2>
   <br>
-  <div class="input-group">
-    <h3 class="h3 mb-0 text-gray-800">{{LocName}} {{restName}} </h3>
-  </div>
-  <hr>
+  <!-- Nav tabs -->
+  <ul class="nav nav-tabs" role="tablist">
+    <li class="nav-item">
+      <a class="nav-link active" data-toggle="tab" href="#menu2">Requests</a>
+    </li>
 
-<div class="center">
-<div class="tab">
-  <button class="tablinks" onclick="openTab(event, 'Request')">Menus</button>
-  <button class="tablinks" onclick="openTab(event, 'MenuOut')">Schedules</button>
-  <button class="tablinks" onclick="openTab(event, 'MenuIn')">Activate Item</button>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#menu1">Deactivate Item</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" data-toggle="tab" href="#menu3">Activate Item</a>
+    </li>
+    <!--
+    <li class="nav-item">
+      <a class="nav-link active" data-toggle="tab" href="#menu2">Tickets</a>
+    </li>
+    -->
+  </ul>
+
+  <!-- Tab panes -->
+  <div class="tab-content">
+    <div id="home" class="container tab-pane"><br>
+
+      <div class="container">
+      {% for x in range(requests|count) %}
+      <div class="card">
+      <div class="card-body">
+      <h5 class="card-title">Table #{{tables[x]}}</h5>
+      <h6 class="card-subtitle mb-2 text-muted">{{type[x]}}</h6>
+      {% for xx in range(requests[x]|count) %}
+      <p class="card-text">{{requests[x][xx]}}</p>
+      <br>
+      {% endfor %}
 
 
-</div>
-</div>
+      <div class="row">
+      <div class="col-lg-1">
+      <form method="POST" action="{{success}}">
+      <button type="submit" name="req" value="{{reqKeys[x]}}" class="btn btn-success btn-circle btn-lg">
+      <i class="fas fa-check"></i>
+      </button>
+      </form>
+      </div>
+      <div class="col-lg-1">
+      <button data-toggle="modal" data-target="#warn-{{reqKeys[x]}}" class="btn btn-warning btn-circle btn-lg">
+      <i class="fas fa-exclamation-triangle"></i>
+    </button>
 
-<div id="MenuIn" class="tabcontent">
+      <div class="modal" id="warn-{{reqKeys[x]}}" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+      <div class="modal-content">
+      <div class="modal-header">
+      <h5 class="modal-title">Accept Request With Warning</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+      </button>
+      </div>
+    <form method="POST" action="{{warning}}">
+      <div class="modal-body">
+        <label>Enter Warning</label>
+        <input class="form-control" name="reason" type="text" id="exampleFormControlSelect1">
+      </div>
+      <div class="modal-footer">
+      <button type="submit" name="req" value="{{reqKeys[x]}}" class="btn btn-warning btn-circle btn-lg">
+        Send
+      </button>
+      </div>
+      </form>
+      </div>
+      </div>
+      </div>
+      </div>
+      <div class="col-lg-1">
 
-    <p>Type something in the input field to search the table for first names, last names or emails:</p>
-    <input class="form-control" id="myInput2" type="text" placeholder="Search..">
-    <br>
-    <table class="table table-bordered table-striped">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-        </tr>
-      </thead>
-      <tbody id="myTable2">
-        <tr>
-          <td>11 in Pizza     <a href="#" class="btn btn-success btn-circle btn-lg">
-              <i class="fas fa-check"></i>
+      <button data-toggle="modal" data-target="#reject-{{reqKeys[x]}}" class="btn btn-danger btn-circle btn-lg">
+      <i class="fas fa-times-circle"></i>
+      </button>
+
+      <div class="modal" id="reject-{{reqKeys[x]}}" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+      <div class="modal-content">
+      <div class="modal-header">
+      <h5 class="modal-title">Reject Request</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+      </button>
+      </div>
+      <form method="POST" action="{{reject}}">
+      <div class="modal-body">
+        <label>Enter Reason For Request Rejection</label>
+        <input class="form-control" name="reason" type="text" id="exampleFormControlSelect1">
+      </div>
+      <div class="modal-footer">
+      <button type="submit" name="req" value="{{reqKeys[x]}}" class="btn btn-danger btn-circle btn-lg">
+        Send
+      </button>
+      </div>
+      </form>
+      </div>
+      </div>
+      </div>
+
+      </form>
+      </div>
+      </div>
+      <br>
+      </div>
+      </div>
+      <hr>
+      {% endfor %}
+   </div>
+
+
+
+
+    </div>
+    <div id="menu1" class="container tab-pane fade"><br>
+      <input class="form-control" id="myInput" type="text" placeholder="Search..">
+      <br>
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <th>Active {{menu}} Items</th>
+          </tr>
+        </thead>
+
+        <tbody id="myTable">
+          {% for act in range(activeItems|count) %}
+
+          <tr>
+            <td>{{activeItems[act]}} <a href="deactivate-item~{{activeItems[act]}}~{{menu}}" class="btn btn-danger btn-circle btn-lg">
+              <i class="fas fa-times-circle"></i>
               </a></td>
-          <td>Base Item</td>
+          </tr>
 
-        </tr>
-        <tr>
-          <td>17 in Pizza    <a href="#" class="btn btn-success btn-circle btn-lg">
-              <i class="fas fa-check"></i>
-              </a></td>
-          <td>Base Item</td>
+          {%endfor%}
 
-        </tr>
-        <tr>
-          <td>Bacon  <a href="#" class="btn btn-success btn-circle btn-lg">
-              <i class="fas fa-check"></i>
-              </a></td>
-          <td>Modifier</td>
+        </tbody>
+      </table>
 
-        </tr>
-      </tbody>
-    </table>
+    <script>
+    $(document).ready(function(){
+      $("#myInput").on("keyup", function() {
+        var value = $(this).val().toLowerCase();
+        $("#myTable tr").filter(function() {
+          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+        });
+      });
+    });
+    </script>
+
+    </div>
+    <div id="menu2" class="container tab-pane active"><br>
+      <div class="container">
+      {% for ym in range(tickets|count) %}
+      <div class="panel-group">
+      <div class="panel panel-default">
+      <div class="panel-heading">
+      <h4 class="panel-title">
+      <a data-toggle="collapse" data-parent="#accordion" href="#{{ym}}">Table #{{tableTotals[ym]}}</a>
+      </h4>
+      </div>
+      <div id="{{ym}}" class="panel-collapse collapse">
+      <div class="panel-body">
+        {% for ymm in range(ticketDisp[ym]|count) %}
+          {% for ymnn in range(ticketDisp[ym][ymm]|count) %}
+          <h4>
+        {{ticketDisp[ym][ymm][ymnn]}}
+      </h4>
+        <br>
+        {% endfor %}
+        {% endfor %}
+        <hr>
+        <h4>
+        subtotal ${{subTotals[ym]}}
+      </h4>
+        <hr>
+
+        <a href="#" data-toggle="modal" data-target="#edit-{{tickets[ym]}}" class="btn-lg btn-info btn-circle">
+        <i class="fas fa-edit"></i>
+        </a>
+        <br>
+        <br>
+        <form method="POST" action="view-clearTicket">
+        <button href="#" type="submit" name="req" value="{{tickets[ym]}}" class="btn-lg btn-info btn-circle">
+        <i class="fas fa-times-circle"></i>
+      </button>
+        </form>
+
+
+        <!-- Modal -->
+        <div class="modal fade" id="edit-{{tickets[ym]}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Edit Bill</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+        </button>
+        </div>
+        <div class="modal-body">
+
+          <form method="POST" action="view-editBill">
+          <div class="modal-body">
+            <label>Enter Bill Change</label>
+            <input class="form-control" name="amt" type="number" step="0.01" placeholder="Amount (to deduct from bill enter a negative number)" id="exampleFormControlSelect1">
+            <br>
+            <input class="form-control" name="itm" type="text"  placeholder="enter reason for bill change" id="exampleFormControlSelect2">
+          </div>
+          <div class="modal-footer">
+          <button type="submit" name="req" value="{{tickets[ym]}}" class="btn btn-info btn-circle">
+            Change
+          </button>
+          </div>
+          </form>
+        </div>
+        </div>
+        </div>
+        </div>
+
+
+      </div>
+      </div>
+      </div>
+
+      </div>
+      {% endfor %}
+      </div>
+
+    </div>
+
+  <div id="menu3" class="container tab-pane fade"><br>
+
+  <input class="form-control" id="myInput2" type="text" placeholder="Search..">
+  <br>
+  <table class="table table-bordered table-striped">
+  <thead>
+  <tr>
+  <th>Inactive {{menu}} Items</th>
+  </tr>
+  </thead>
+  <tbody id="myTable2">
+    {% for inact in range(inactiveItems|count) %}
+  <tr>
+  <td>{{inactiveItems[inact]}} <a href="activate-item~{{inactiveItems[inact]}}~{{menu}}" class="btn btn-success btn-circle btn-lg">
+  <i class="fas fa-check"></i>
+  </a></td>
+{%endfor%}
+  </tr>
+  </tbody>
+  </table>
   </div>
 
   <script>
   $(document).ready(function(){
-    $("#myInput2").on("keyup", function() {
-      var value = $(this).val().toLowerCase();
-      $("#myTable2 tr").filter(function() {
-        $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-      });
-    });
+  $("#myInput2").on("keyup", function() {
+  var value = $(this).val().toLowerCase();
+  $("#myTable2 tr").filter(function() {
+  $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+  });
+  });
   });
   </script>
 
-</div>
+  </div>
 
 
-<div id="MenuOut" class="tabcontent">
-  <input class="form-control" id="myInput" type="text" placeholder="Search..">
-  <br>
-  <table class="table table-bordered table-striped">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Type</th>
-      </tr>
-    </thead>
-    <tbody id="myTable">
-      <tr>
-        <td>11 in Pizza   <a href="#" class="btn btn-danger btn-circle btn-lg">
-          <i class="fas fa-times-circle"></i>
-          </a></td>
-        <td>Base Item</td>
 
-      </tr>
-      <tr>
-        <td>17 in Pizza   <a href="#" class="btn btn-danger btn-circle btn-lg">
-          <i class="fas fa-times-circle"></i>
-          </a></td>
-        <td>Base Item</td>
-
-      </tr>
-      <tr>
-        <td>Bacon   <a href="#" class="btn btn-danger btn-circle btn-lg">
-          <i class="fas fa-times-circle"></i>
-          </a></td>
-        <td>Modifier</td>
-
-      </tr>
-    </tbody>
-  </table>
-
-<script>
-$(document).ready(function(){
-  $("#myInput").on("keyup", function() {
-    var value = $(this).val().toLowerCase();
-    $("#myTable tr").filter(function() {
-      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-    });
-  });
-});
-</script>
-
-</div>
-
-<div id="Request" class="tabcontent">
-    <div class="card shadow mb-4">
-    <!-- Card Header - Accordion -->
-    <a href="#collapseCardExample" class="d-block card-header py-3" data-toggle="collapse" role="button" aria-expanded="true" aria-controls="collapseCardExample">
-    <h6 class="m-0 font-weight-bold text-primary">Table #12</h6>
-    </a>
-    <!-- Card Content - Collapse -->
-    <div class="collapse show" id="collapseCardExample">
-    <div class="card-body">
-
-
-    <div class="row">
-    <div class="col-lg-12">
-    <div class="form-group row">
-    <div class="col-sm-2"><strong>Item</strong></div>
-    <div class="col-sm-10">
-    <div class="form-check">
-    <input class="form-check-input" type="checkbox" id="gridCheck1">
-    <label class="form-check-label" for="gridCheck1">
-    add to ticket
-    </label>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-
-
-    <br>
-    <div class="row">
-    <div class="col-lg-12">
-    <a href="#" class="btn btn-success btn-circle btn-lg">
-    <i class="fas fa-check"></i>
-    </a>
-    <a href="#" class="btn btn-warning btn-circle btn-lg">
-    <i class="fas fa-exclamation-triangle"></i>
-    </a>
-    <a href="#" class="btn btn-danger btn-circle btn-lg">
-    <i class="fas fa-times-circle"></i>
-    </a>
-    </div>
-    </div>
-    <br>
-
-
-    </div>
-    </div>
-    </div>
   </div>
 
 
@@ -209,23 +314,6 @@ $(document).ready(function(){
 
 
 
-<script>
-function openTab(evt, cityName) {
-  var i, tabcontent, tablinks;
-  tabcontent = document.getElementsByClassName("tabcontent");
-  for (i = 0; i < tabcontent.length; i++) {
-    tabcontent[i].style.display = "none";
-  }
-  tablinks = document.getElementsByClassName("tablinks");
-  for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(" active", "");
-  }
-  document.getElementById(cityName).style.display = "block";
-  evt.currentTarget.className += " active";
-}
-</script>
-
-<!-- Bootstrap core JavaScript-->
 <script src="../../../static/vendor/jquery/jquery.min.js"></script>
 <script src="../../../static/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
@@ -243,5 +331,4 @@ function openTab(evt, cityName) {
 <script src="../../../static/js/demo/chart-pie-demo.js"></script>
   <script src="../../../static/js/demo/chart-bar-demo.js"></script>
 </body>
-
 </html>

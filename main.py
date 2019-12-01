@@ -153,8 +153,6 @@ def login(location):
 def pwReset():
     return render_template("POS/AdminMini/forgot-password.html", btn=str("admin"), restName=estNameStr)
 
-
-
 @app.route('/<location>/admin', methods=["POST"])
 def loginPageCheck(location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
@@ -203,6 +201,7 @@ def panel(location):
     return render_template("POS/AdminMini/mainAdmin.html",
                            restName=str(estNameStr).capitalize(),
                            locName=str(location).capitalize())
+
 
 
 @app.route('/<location>/schedule-<day>', methods=["GET"])
@@ -524,6 +523,49 @@ def editImgX(location,menu,cat,item):
     os.remove(estNameStr + "/imgs/" + filename)
     return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
 
+@app.route('/<location>/addCpn~<menu>~<category>~<item>')
+def addCpn(location,menu,category,item):
+    idToken = session.get('token', None)
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    try:
+        user_ref = ref.get()[str(username)]
+    except Exception:
+        return redirect(url_for('.login', location=location))
+    if (checkAdminToken(idToken, username) == 1):
+        return redirect(url_for('.login', location=location))
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    user_ref = ref.child(str(username))
+    user_ref.update({
+        'time': time.time()
+    })
+    return render_template("POS/AdminMini/addCpn.html",menu=menu,cat=category,item=item)
+
+@app.route('/<location>/addCpn2~<menu>~<category>~<item>', methods=["POST"])
+def addCpn2(location,menu,category,item):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    type = rsp["type"]
+    name = rsp["name"]
+    amount = float(rsp["amount"])
+    min = int(rsp["min"])
+    limit = int(rsp["lim"])
+    discRef = db.reference('/restaurants/' + estNameStr +'/'+location+'/menu/' + menu + '/discounts')
+    discRef.update({
+        str(name):{
+        'cat': str(category),
+        'itm':str(item),
+        'type':str(type),
+        'amt':amount,
+        'lim':limit,
+        'min':min
+        }
+
+    })
+    return str(rsp) +"-"+str(menu)+"-"+str(category)+"-"+str(item)
+    # return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
+
+
 @app.route('/<location>/act-menu')
 def chooseMenu(location):
     idToken = session.get('token', None)
@@ -600,7 +642,7 @@ def removeItem(location,menu,cat,item):
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     item = str(item).replace("-"," ")
-    print(item)
+    # print(item)
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
@@ -618,7 +660,7 @@ def removeItem(location,menu,cat,item):
 
 @app.route("/<location>/viewitm~<menu>~<cat>~<item>")
 def viewItem(location,menu,cat,item):
-    print(menu,cat,item)
+    # print(menu,cat,item)
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -636,7 +678,7 @@ def viewItem(location,menu,cat,item):
     item_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/"+str(cat)+"/"+str(item)).get()
     if(item_ref == None):
         item = str(item).replace("-"," ")
-        print(item)
+        # print(item)
         item_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+str(cat)+"/"+str(item)).get()
     descrip = item_ref["descrip"]
     extra_info = item_ref["extra-info"]
@@ -915,9 +957,9 @@ def genMenuData(location,menu):
         currArr4 = []
         currArr5 = []
         for ll in range(len(list(menuInfo["categories"][itms]))):
-            itmArr = []
             itx = (list(menuInfo["categories"][itms])[ll])
             if(menuInfo["categories"][itms][itx]["descrip"] != "INACTIVE"):
+                itmArr = []
                 itx2 = itx.replace(" ","-")
                 currArr2.append([itx2,itx])
                 descrip = (menuInfo["categories"][itms][itx]["descrip"])
@@ -935,14 +977,14 @@ def genMenuData(location,menu):
                     max = int(menuInfo["categories"][itms][itx][mods]["max"]) - int(menuInfo["categories"][itms][itx][mods]["min"])
                     min = int(menuInfo["categories"][itms][itx][mods]["min"])
                     opt = list(menuInfo["categories"][itms][itx][mods]["info"])
-            baseItms.append(currArr2)
-            descrips.append(currArr3)
-            exInfo.append(currArr4)
-            imgLink.append(currArr5)
-            currArr2 = []
-            currArr3 = []
-            currArr4 = []
-            currArr5 = []
+        baseItms.append(currArr2)
+        descrips.append(currArr3)
+        exInfo.append(currArr4)
+        imgLink.append(currArr5)
+        currArr2 = []
+        currArr3 = []
+        currArr4 = []
+        currArr5 = []
     modsName = []
     modsItm = []
     for itms in categories:
@@ -951,7 +993,8 @@ def genMenuData(location,menu):
         for mx in list(menuInfo["categories"][itms]):
             tmpArr = []
             mNX = list(menuInfo["categories"][itms][mx])
-            if(mNX["descrip"] != "INACTIVE"):
+            # print(menuInfo["categories"][itms][mx])
+            if(menuInfo["categories"][itms][mx]["descrip"] != "INACTIVE"):
                 mNX.remove("img")
                 mNX.remove("descrip")
                 mNX.remove("extra-info")
@@ -968,7 +1011,7 @@ def genMenuData(location,menu):
         for mx2 in list(menuInfo["categories"][itms2]):
             tmpArr = []
             mNX2 = list(menuInfo["categories"][itms2][mx2])
-            if(mNX2["descrip"] != "INACTIVE"):
+            if(menuInfo["categories"][itms2][mx2]["descrip"] != "INACTIVE"):
                 mNX2.remove("img")
                 mNX2.remove("descrip")
                 mNX2.remove("extra-info")
@@ -1005,17 +1048,15 @@ def findMenu(location):
             menuKey = sh
             break
 
-
     for sh2 in range(len(schedlist)):
         if(sortedHr[menuKey] == schedule[schedlist[sh2]]):
             menu = (schedlist[sh2])
-            # break
             return(str(menu))
 
 
 @app.route('/<location>/sitdown-startKiosk', methods=["GET"])
 def startKiosk2(location):
-    return(render_template("Customer/Sitdown/startKiosk.html",btn="startKiosk",restName=estNameStr,locName=location))
+    return(render_template("Customer/Sitdown/startKiosk.html",btn="sitdown-startKiosk",restName=estNameStr,locName=location))
 
 @app.route('/<location>/qsr-startKiosk', methods=["GET"])
 def startKiosk4(location):
@@ -1078,6 +1119,7 @@ def startOnline(location):
                            modsName=modsName,modsItm=modsItm,btn=str("qsr-additms"),restName=str(estNameStr.capitalize()),
                            baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,imgCart=imgCart,
                            cartKeys=cartKeys,btn2="qsr-itmRemove",btn3="cartAdd-qsr"))
+
 
 
 @app.route('/<location>/qsr-startKiosk', methods=["POST"])
@@ -1482,12 +1524,12 @@ def kioskRem(location):
         qtysCart = [" "]
         cartKeys = ["-ig"]
         imgCart = [" "]
-    testData = "testAlert"
     return(render_template("Customer/Sitdown/mainKiosk.html",location=location,
                            cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,imgData=imgData,
                            modsName=modsName,modsItm=modsItm,btn="sitdown-additms",restName=str(estNameStr.capitalize()),
                            baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,imgCart=imgCart,
                            cartKeys=cartKeys,btn2="itmRemove",btn3="cartAdd"))
+
 
 
 
@@ -1528,7 +1570,7 @@ def kioskCart(location):
         reqRefkey = db.reference(pathRequestkey)
         reqRefkey.set({"table":tableNum,"type":"order","token":orderToken})
         cartRef.delete()
-        print(cart)
+        # print(cart)
     except Exception:
         pass
     baseItms = menuData[0]
@@ -1588,26 +1630,75 @@ def kioskCartQSR(location):
                                cartKeys=cartKeys,btn2="itmRemove"))
 
 
+def sendTicket(orderJson):
+    print(orderJson)
+    return "tick"
+
 @app.route('/<location>/pay')
 def payQSR(location):
     orderToken = session.get('orderToken',None)
     pathOrder = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
     orderInfo = dict(db.reference(pathOrder).get())
-    typeKiosk = orderInfo["kiosk"]
-    if(typeKiosk == False):
-        # get Cart Da
-        return(render_template("Customer/QSR/Payment.html",locName=str(location).capitalize(),restName=str(estNameStr).capitalize()))
+    QSR = orderInfo["QSR"]
+    if(QSR == True):
+        cart = dict(orderInfo["cart"])
+        subtotal = 0
+        items = []
+        cartKeys = list(cart.keys())
+        for keys in cartKeys:
+            subtotal += cart[keys]["price"]
+            dispStr = cart[keys]["itm"]
+            dispStr += " "
+            for mod in range(len(cart[keys]["mods"])):
+                dispStr += cart[keys]["mods"][mod][0]
+                dispStr += " "
+            dispStr += str("$" + "{:0,.2f}".format(float(cart[keys]["unitPrice"])))
+            dispStr += " x "
+            dispStr += str(cart[keys]["qty"])
+            dispStr += " || $"
+            dispStr += "{:0,.2f}".format(float(cart[keys]["price"]))
+            items.append(dispStr)
+        subtotalStr = "${:0,.2f}".format(subtotal)
+        tax = "${:0,.2f}".format(subtotal *0.1)
+        total = "${:0,.2f}".format(subtotal *1.1)
+        session['total'] = round(subtotal*1.1,2)
+        session['kiosk'] = orderInfo["kiosk"]
+        return(render_template("Customer/QSR/Payment.html",locName=str(location).capitalize(),restName=str(estNameStr).capitalize(), cart=str(cart), items=items, subtotal=subtotalStr,tax=tax,total=total))
     else:
-
-        return(render_template("Customer/QSR/Payment.html",locName=str(location).capitalize(),restName=str(estNameStr).capitalize()))
+        cart = dict(orderInfo["ticket"])
+        subtotal = orderInfo["subtotal"]
+        subtotalStr = "${:0,.2f}".format(subtotal)
+        tax = "${:0,.2f}".format(subtotal *0.1)
+        total = "${:0,.2f}".format(subtotal *1.1)
+        cartKeys = list(cart.keys())
+        items = []
+        for ck in cartKeys:
+            ckKeys = list(cart[ck].keys())
+            for ckk in ckKeys:
+                dispStr = cart[ck][ckk]["itm"]
+                dispStr += " "
+                for mds in range(len(cart[ck][ckk]["mods"])):
+                    dispStr += cart[ck][ckk]["mods"][mds][0]
+                dispStr += " "
+                dispStr += str("$" + "{:0,.2f}".format(float(cart[ck][ckk]["unitPrice"])))
+                dispStr += " x "
+                dispStr += str(cart[ck][ckk]["qty"])
+                dispStr += " || $"
+                dispStr += "{:0,.2f}".format(float(cart[ck][ckk]["price"]))
+                items.append(dispStr)
+                session['total'] = round(subtotal*1.1,2)
+                session['kiosk'] = orderInfo["kiosk"]
+        return(render_template("Customer/Sitdown/Payment.html",locName=str(location).capitalize(),restName=str(estNameStr).capitalize(),items=items, subtotal=subtotalStr,tax=tax,total=total))
 
 
 @app.route('/<location>/pay0~<type>')
 def payQSR1(location,type):
     orderToken = session.get('orderToken',None)
+    total = session.get('total',None)
+    kiosk = session.get('kiosk',None)
     orderPath = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + str(orderToken)
     order = dict(db.reference(orderPath).get())
-    return str(order)+str(type)
+    return str(type)+"-"+str(total)+"-"+str(kiosk)
 
 @app.route('/<location>/close-alert')
 def kioskClear(location):
@@ -1686,7 +1777,6 @@ def kioskSendReq(location):
         requestId = "box food-"+rsp["box"]
     elif(rspKey == "other"):
         requestId = "other-"+rsp["other"]
-
     pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu
     pathRequest = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/"
     reqRef = db.reference(pathRequest)
@@ -1725,7 +1815,7 @@ def kioskSendReq(location):
                 modStr += " "
             modsCart.append(modStr)
             modStr = ""
-        print(baseitmCart,modsCart,notesCart,notesCart,qtysCart)
+        # print(baseitmCart,modsCart,notesCart,notesCart,qtysCart)
     except:
         baseitmCart = ["Add Items to Your Cart"]
         modsCart = [" "]
@@ -1741,6 +1831,18 @@ def kioskSendReq(location):
 
 
 ##########Employee###########
+@app.route('/<location>/view-qsr')
+def EmployeePanelQSR(location):
+    try:
+        ordPath = '/restaurants/' + estNameStr + '/' + str(location) + "/ordersQSR/"
+        ordsRef = db.reference(ordPath)
+        ordsGet = dict(ordsRef.get())
+    except Exception:
+        pass
+    return "-_*"
+
+
+
 @app.route('/<location>/view')
 def EmployeePanel(location):
     try:
@@ -1824,8 +1926,41 @@ def EmployeePanel(location):
         reqTypes = []
         requests = []
         tables = []
+    menu = findMenu(location)
+    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu + "/categories"
+    menuInfo = dict(db.reference(pathMenu).get())
+    categories = list(menuInfo.keys())
+    activeItems = []
+    inactiveItems = []
+    for cats in categories:
+        itms = list(dict(menuInfo[cats]).keys())
+        for itm in itms:
+            if(menuInfo[cats][itm]["descrip"] != "INACTIVE"):
+                appItem = str(cats) + "~" + str(itm)
+                activeItems.append(appItem)
+            else:
+                appItem = str(cats) + "~" + str(itm)
+                inactiveItems.append(appItem)
     return(render_template("POS/StaffSitdown/View.html",location=str(location).capitalize(),restName=str(estNameStr.capitalize()),ticketDisp=ticketDisp,tickets=tokens,subTotals=subTotals,
-    tableTotals=tableTotals,success="view-success",reject="view-reject",warning="view-warning",reqKeys=reqKeys,type=reqTypes,tables=tables,requests=requests))
+    tableTotals=tableTotals,success="view-success",reject="view-reject",warning="view-warning",reqKeys=reqKeys,type=reqTypes,tables=tables,requests=requests,menu=menu,activeItems=activeItems,inactiveItems=inactiveItems))
+
+
+@app.route('/<location>/activate-item~<cat>~<item>~<menu>')
+def activateItem(location,cat,item,menu):
+    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu + "/categories/"+ cat + "/" + item
+    descrip = dict(db.reference(pathMenu).get())["tmp"]
+    db.reference(pathMenu).update({"descrip":descrip})
+    pathDel = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu + "/categories/"+ cat + "/" + item +"/tmp"
+    db.reference(pathDel).delete()
+    return(redirect(url_for("EmployeePanel",location=location)))
+
+@app.route('/<location>/deactivate-item~<cat>~<item>~<menu>')
+def deactivateItem(location,cat,item,menu):
+    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu + "/categories/"+ cat + "/" + item
+    descrip = dict(db.reference(pathMenu).get())["descrip"]
+    db.reference(pathMenu).update({"tmp":descrip})
+    db.reference(pathMenu).update({"descrip":"INACTIVE"})
+    return(redirect(url_for("EmployeePanel",location=location)))
 
 @app.route('/<location>/view-success', methods=["POST"])
 def EmployeeSuccess(location):

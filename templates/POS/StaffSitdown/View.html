@@ -44,14 +44,13 @@
     <li class="nav-item">
       <a class="nav-link active" data-toggle="tab" href="#home">Requests</a>
     </li>
-    <!--
+
     <li class="nav-item">
       <a class="nav-link" data-toggle="tab" href="#menu1">Deactivate Item</a>
     </li>
     <li class="nav-item">
       <a class="nav-link" data-toggle="tab" href="#menu3">Activate Item</a>
     </li>
-     -->
     <li class="nav-item">
       <a class="nav-link" data-toggle="tab" href="#menu2">Tickets</a>
     </li>
@@ -160,32 +159,21 @@
       <table class="table table-bordered table-striped">
         <thead>
           <tr>
-            <th>Name</th>
-            <th>Type</th>
+            <th>Active {{menu}} Items</th>
           </tr>
         </thead>
+
         <tbody id="myTable">
+          {% for act in range(activeItems|count) %}
+
           <tr>
-            <td>11 in Pizza   <a href="#" class="btn btn-danger btn-circle btn-lg">
+            <td>{{activeItems[act]}} <a href="deactivate-item~{{activeItems[act]}}~{{menu}}" class="btn btn-danger btn-circle btn-lg">
               <i class="fas fa-times-circle"></i>
               </a></td>
-            <td>Base Item</td>
-
           </tr>
-          <tr>
-            <td>17 in Pizza   <a href="#" class="btn btn-danger btn-circle btn-lg">
-              <i class="fas fa-times-circle"></i>
-              </a></td>
-            <td>Base Item</td>
 
-          </tr>
-          <tr>
-            <td>Bacon   <a href="#" class="btn btn-danger btn-circle btn-lg">
-              <i class="fas fa-times-circle"></i>
-              </a></td>
-            <td>Modifier</td>
+          {%endfor%}
 
-          </tr>
         </tbody>
       </table>
 
@@ -280,55 +268,40 @@
 
     </div>
 
-    <div id="menu3" class="container tab-pane fade"><br>
+  <div id="menu3" class="container tab-pane fade"><br>
 
-      <input class="form-control" id="myInput2" type="text" placeholder="Search..">
-      <br>
-      <table class="table table-bordered table-striped">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-          </tr>
-        </thead>
-        <tbody id="myTable2">
-          <tr>
-            <td>11 in Pizza     <a href="#" class="btn btn-success btn-circle btn-lg">
-                <i class="fas fa-check"></i>
-                </a></td>
-            <td>Base Item</td>
+  <input class="form-control" id="myInput2" type="text" placeholder="Search..">
+  <br>
+  <table class="table table-bordered table-striped">
+  <thead>
+  <tr>
+  <th>Inactive {{menu}} Items</th>
+  </tr>
+  </thead>
+  <tbody id="myTable2">
+    {% for inact in range(inactiveItems|count) %}
+  <tr>
+  <td>{{inactiveItems[inact]}} <a href="activate-item~{{inactiveItems[inact]}}~{{menu}}" class="btn btn-success btn-circle btn-lg">
+  <i class="fas fa-check"></i>
+  </a></td>
+{%endfor%}
+  </tr>
+  </tbody>
+  </table>
+  </div>
 
-          </tr>
-          <tr>
-            <td>17 in Pizza    <a href="#" class="btn btn-success btn-circle btn-lg">
-                <i class="fas fa-check"></i>
-                </a></td>
-            <td>Base Item</td>
+  <script>
+  $(document).ready(function(){
+  $("#myInput2").on("keyup", function() {
+  var value = $(this).val().toLowerCase();
+  $("#myTable2 tr").filter(function() {
+  $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+  });
+  });
+  });
+  </script>
 
-          </tr>
-          <tr>
-            <td>Bacon  <a href="#" class="btn btn-success btn-circle btn-lg">
-                <i class="fas fa-check"></i>
-                </a></td>
-            <td>Modifier</td>
-
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <script>
-    $(document).ready(function(){
-      $("#myInput2").on("keyup", function() {
-        var value = $(this).val().toLowerCase();
-        $("#myTable2 tr").filter(function() {
-          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-        });
-      });
-    });
-    </script>
-
-    </div>
+  </div>
 
 
 
