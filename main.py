@@ -1656,6 +1656,7 @@ def payQSR(location):
             dispStr += str("$" + "{:0,.2f}".format(float(cart[keys]["unitPrice"])))
             dispStr += " x "
             dispStr += str(cart[keys]["qty"])
+            dispStr += " " + str(cart[keys]["notes"])
             dispStr += " || $"
             dispStr += "{:0,.2f}".format(float(cart[keys]["price"]))
             items.append(dispStr)
@@ -1684,6 +1685,7 @@ def payQSR(location):
                 dispStr += str("$" + "{:0,.2f}".format(float(cart[ck][ckk]["unitPrice"])))
                 dispStr += " x "
                 dispStr += str(cart[ck][ckk]["qty"])
+                dispStr += " " + str(cart[ck][ckk]["notes"])
                 dispStr += " || $"
                 dispStr += "{:0,.2f}".format(float(cart[ck][ckk]["price"]))
                 items.append(dispStr)
@@ -1698,14 +1700,58 @@ def applyCpn(location):
     menu = session.get('menu',None)
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = dict((request.form))
-    code = rsp["code"]
+    code = str(rsp["code"]).lower()
+    pathOrder = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
+    orderInfo = dict(db.reference(pathOrder).get())
     try:
         cpnsPath = '/restaurants/' + estNameStr + '/' + str(location) + "/discounts/"+ menu
         cpns = dict(db.reference(cpnsPath).get())
         disc = cpns[code]
-        
+        discCat = disc["cat"]
+        discItm = disc["itm"]
+        lim = disc["lim"]
+        min = disc["min"]
+        type = disc["type"]
+        amt = float(disc["amt"])
+        modName = disc["mods"][0]
+        modItm = disc["mods"][1]
+        QSR = orderInfo["QSR"]
+        if(QSR == True):
+            cart = dict(orderInfo["cart"])
+            amtUsed = 0
+            discAmt = 0
+            cartKeys = list(cart.keys())
+            for keys in cartKeys:
+                if(discCat == cart[keys]["cat"] and discItm == cart[keys]["itm"]):
+                    for mod in range(len(cart[keys]["mods"])):
+                        md = cart[keys]["mods"][mod][1]
+                        if(modItm == md):
+                            for q in range(int(cart[keys]["qty"])):
+                                if(amtUsed < lim):
+                                    if(type == "money"):
+                                        discAmt -= amt
+                                    else:
+                                        discAmt -= (cart[keys]["unitPrice"]*float(amt/100))
+                                    amtUsed += 1
+                                else:
+                                    break
+
+                dispStr += str("$" + "{:0,.2f}".format(float(cart[keys]["unitPrice"])))
+                dispStr += " x "
+                dispStr += str(cart[keys]["qty"])
+                dispStr += " " + str(cart[keys]["notes"])
+                dispStr += " || $"
+                dispStr += "{:0,.2f}".format(float(cart[keys]["price"]))
+                items.append(dispStr)
+            subtotalStr = "${:0,.2f}".format(subtotal)
+
+        else:
+            cart = orderInfo['ticket']
+
         return(redirect(url_for('payQSR',location=location)))
     except Exception as e:
+        cpnsPath = '/restaurants/' + estNameStr + '/' + str(location) + "/discounts/"+ menu
+        cpns = dict(db.reference(cpnsPath).get())
         return(redirect(url_for('payQSR',location=location)))
 
 @app.route('/<location>/pay0~<type>')
