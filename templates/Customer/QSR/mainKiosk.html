@@ -38,6 +38,11 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 <script>
+jQuery(function(){
+   jQuery('#defaultOpen').click();
+});
+</script>
+<script>
 function openTab(evt, cityName) {
   var i, tabcontent, tablinks;
   tabcontent = document.getElementsByClassName("tabcontent");
@@ -50,7 +55,9 @@ function openTab(evt, cityName) {
   }
   document.getElementById(cityName).style.display = "block";
   evt.currentTarget.className += " active";
+
 }
+// Get the element with id="defaultOpen" and click on it
 </script>
 
 <script>
@@ -71,7 +78,7 @@ $('[data-toggle="popover"]').popover();
 
 <div class="center">
 <div class="tab">
-<button class="tablinks" onclick="openTab(event, 'Menu')">Menu</button>
+<button class="tablinks" onclick="openTab(event, 'Menu')" id="defaultOpen">Menu</button>
 <button class="tablinks" onclick="openTab(event, 'Cart')">Cart</button>
 
 <!-- <button class="tablinks" onclick="openTab(event, 'Requests')">Contact Staff</button> -->

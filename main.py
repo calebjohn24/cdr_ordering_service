@@ -523,8 +523,8 @@ def editImgX(location,menu,cat,item):
     os.remove(estNameStr + "/imgs/" + filename)
     return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
 
-@app.route('/<location>/addCpn~<menu>~<category>~<item>')
-def addCpn(location,menu,category,item):
+@app.route('/<location>/addCpn~<menu>~<category>~<item>~<modName>~<modItm>')
+def addCpn(location,menu,category,item,modName,modItm):
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -539,10 +539,10 @@ def addCpn(location,menu,category,item):
     user_ref.update({
         'time': time.time()
     })
-    return render_template("POS/AdminMini/addCpn.html",menu=menu,cat=category,item=item)
+    return render_template("POS/AdminMini/addCpn.html",menu=menu,cat=category,item=item,modName=modName,modItm=modItm)
 
-@app.route('/<location>/addCpn2~<menu>~<category>~<item>', methods=["POST"])
-def addCpn2(location,menu,category,item):
+@app.route('/<location>/addCpn2~<menu>~<category>~<item>~<modName>~<modItm>', methods=["POST"])
+def addCpn2(location,menu,category,item,modName,modItm):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     type = rsp["type"]
@@ -550,11 +550,12 @@ def addCpn2(location,menu,category,item):
     amount = float(rsp["amount"])
     min = int(rsp["min"])
     limit = int(rsp["lim"])
-    discRef = db.reference('/restaurants/' + estNameStr +'/'+location+'/menu/' + menu + '/discounts')
+    discRef = db.reference('/restaurants/' + estNameStr +'/'+location + '/discounts/'+ menu)
     discRef.update({
         str(name):{
         'cat': str(category),
         'itm':str(item),
+        'mods':[modName,modItm],
         'type':str(type),
         'amt':amount,
         'lim':limit,
@@ -562,8 +563,8 @@ def addCpn2(location,menu,category,item):
         }
 
     })
-    return str(rsp) +"-"+str(menu)+"-"+str(category)+"-"+str(item)
-    # return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
+    # return str(rsp) +"-"+str(menu)+"-"+str(category)+"-"+str(item)
+    return(redirect(url_for("panel",location=location)))
 
 
 @app.route('/<location>/act-menu')
@@ -1691,6 +1692,22 @@ def payQSR(location):
         return(render_template("Customer/Sitdown/Payment.html",locName=str(location).capitalize(),restName=str(estNameStr).capitalize(),items=items, subtotal=subtotalStr,tax=tax,total=total))
 
 
+@app.route('/<location>/applyCpn', methods=["POST"])
+def applyCpn(location):
+    orderToken = session.get('orderToken',None)
+    menu = session.get('menu',None)
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = dict((request.form))
+    code = rsp["code"]
+    try:
+        cpnsPath = '/restaurants/' + estNameStr + '/' + str(location) + "/discounts/"+ menu
+        cpns = dict(db.reference(cpnsPath).get())
+        disc = cpns[code]
+        
+        return(redirect(url_for('payQSR',location=location)))
+    except Exception as e:
+        return(redirect(url_for('payQSR',location=location)))
+
 @app.route('/<location>/pay0~<type>')
 def payQSR1(location,type):
     orderToken = session.get('orderToken',None)
@@ -1874,7 +1891,7 @@ def EmployeePanel(location):
                         for mds in range(len(ordsGet[tt]["ticket"][tickItms][tts]["mods"])):
                             modStr += ordsGet[tt]["ticket"][tickItms][tts]["mods"][mds][0]
                             modStr += " - "
-                        modStr += "||$"
+                        modStr += "|| $"
                         modStr += str(ordsGet[tt]["ticket"][tickItms][tts]["price"])
                         tickItmX.append(modStr)
                         modStr = ""

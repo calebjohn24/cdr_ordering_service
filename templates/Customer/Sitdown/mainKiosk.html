@@ -38,6 +38,11 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 <script>
+jQuery(function(){
+   jQuery('#defaultOpen').click();
+});
+</script>
+<script>
 $(document).ready(function(e) {
     var refresher = setInterval("update_content();",15000); // 1 seconds
     $('#alert').hide();
@@ -78,9 +83,14 @@ function openTab(evt, cityName) {
   }
   document.getElementById(cityName).style.display = "block";
   evt.currentTarget.className += " active";
-}
-</script>
 
+}
+document.getElementById("defaultOpen").click();
+</script>
+<script>
+// Get the element with id="defaultOpen" and click on it
+document.getElementById("defaultOpen").click();
+</script>
 <script>
 $(document).ready(function(){
 $('[data-toggle="popover"]').popover();
@@ -89,6 +99,7 @@ $('[data-toggle="popover"]').popover();
 </head>
 
 <body>
+
   <div class="container-fluid">
   <br>
   <div class="input-group">
@@ -103,7 +114,7 @@ $('[data-toggle="popover"]').popover();
 
 <div class="center">
 <div class="tab">
-<button class="tablinks" onclick="openTab(event, 'Menu')">Menu</button>
+<button class="tablinks"  id="defaultOpen" onclick="openTab(event, 'Menu')">Menu</button>
 <button class="tablinks" onclick="openTab(event, 'Cart')">Cart</button>
 <button class="tablinks" onclick="openTab(event, 'Requests')">Contact Staff</button>
 <button class="tablinks" onclick="openTab(event, 'Bill')">Pay Bill</button>
