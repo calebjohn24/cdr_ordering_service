@@ -1736,14 +1736,8 @@ def applyCpn(location):
                                 else:
                                     break
 
-                dispStr += str("$" + "{:0,.2f}".format(float(cart[keys]["unitPrice"])))
-                dispStr += " x "
-                dispStr += str(cart[keys]["qty"])
-                dispStr += " " + str(cart[keys]["notes"])
-                dispStr += " || $"
-                dispStr += "{:0,.2f}".format(float(cart[keys]["price"]))
-                items.append(dispStr)
-            subtotalStr = "${:0,.2f}".format(subtotal)
+            if(amtUsed >= min):
+                print("discApplied")
 
         else:
             cart = orderInfo['ticket']
