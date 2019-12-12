@@ -1083,8 +1083,9 @@ def startOnline(location):
     ref = db.reference(path)
     newOrd = ref.push({
         "togo":togo,
-        "QSR":True,
-        "kiosk":False,
+        "QSR":0,
+        "cpn":1,
+        "kiosk":1,
         "name":name,
         "phone":phone,
         "table":table,
@@ -1139,8 +1140,9 @@ def startKioskQsr(location):
     ref = db.reference(path)
     newOrd = ref.push({
         "togo":togo,
-        "QSR":True,
-        "kiosk":True,
+        "QSR":0,
+        "cpn":1,
+        "kiosk":0,
         "name":name,
         "phone":phone,
         "table":table,
@@ -1192,8 +1194,9 @@ def startKiosk(location):
     orderToken = str(uuid.uuid4())
     ref = db.reference(path)
     newOrd = ref.push({
-        "QSR":False,
-        "kiosk":True,
+        "QSR":1,
+        "kiosk":0,
+        "cpn":1,
         "name":name,
         "phone":phone,
         "table":table,
@@ -1609,6 +1612,17 @@ def kioskCartQSR(location):
         cartRef = db.reference(pathCart)
         cart = db.reference(pathCart).get()
         test = str(list(cart.keys()))
+        pathOrder = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
+        orderInfo = dict(db.reference(pathOrder).get())
+        cpnBool = orderInfo["cpn"]
+        if(cpnBool == 0):
+            cart = dict(orderInfo["cart"])
+            cartKeys = list(cart.keys())
+            for keys in cartKeys:
+                if("discount" == str(cart[keys]["cat"])):
+                    pathRem = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/cart/" + keys
+                    pathRemRef = db.reference(pathRem)
+                    pathRemRef.delete()
         return(redirect(url_for("payQSR",location=location)))
     except Exception:
         baseItms = menuData[0]
@@ -1641,7 +1655,9 @@ def payQSR(location):
     pathOrder = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
     orderInfo = dict(db.reference(pathOrder).get())
     QSR = orderInfo["QSR"]
-    if(QSR == True):
+    orderInfo = dict(db.reference(pathOrder).get())
+    QSR = orderInfo["QSR"]
+    if(QSR == 0):
         cart = dict(orderInfo["cart"])
         subtotal = 0
         items = []
@@ -1703,6 +1719,7 @@ def applyCpn(location):
     code = str(rsp["code"]).lower()
     pathOrder = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
     orderInfo = dict(db.reference(pathOrder).get())
+    QSR = orderInfo["QSR"]
     try:
         cpnsPath = '/restaurants/' + estNameStr + '/' + str(location) + "/discounts/"+ menu
         cpns = dict(db.reference(cpnsPath).get())
@@ -1715,16 +1732,29 @@ def applyCpn(location):
         amt = float(disc["amt"])
         modName = disc["mods"][0]
         modItm = disc["mods"][1]
-        QSR = orderInfo["QSR"]
-        if(QSR == True):
+        QSR = int(orderInfo["QSR"])
+        pathOrder = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
+        orderInfo = dict(db.reference(pathOrder).get())
+        cpnBool = orderInfo["cpn"]
+        if(cpnBool == 0):
+            cart = dict(orderInfo["cart"])
+            cartKeys = list(cart.keys())
+            for keys in cartKeys:
+                if("discount" == str(cart[keys]["cat"])):
+                    pathRem = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/cart/" + keys
+                    pathRemRef = db.reference(pathRem)
+                    pathRemRef.delete()
+        varQSR = (QSR == 0)
+        if(varQSR == True):
             cart = dict(orderInfo["cart"])
             amtUsed = 0
             discAmt = 0
             cartKeys = list(cart.keys())
             for keys in cartKeys:
-                if(discCat == cart[keys]["cat"] and discItm == cart[keys]["itm"]):
+                if(discCat == str(cart[keys]["cat"]) and discItm == str(cart[keys]["itm"])):
+                    # TODO
                     for mod in range(len(cart[keys]["mods"])):
-                        md = cart[keys]["mods"][mod][1]
+                        md = cart[keys]["mods"][mod][0]
                         if(modItm == md):
                             for q in range(int(cart[keys]["qty"])):
                                 if(amtUsed < lim):
@@ -1738,14 +1768,38 @@ def applyCpn(location):
 
             if(amtUsed >= min):
                 print("discApplied")
+                pathCartitm = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/cart/"
+                pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu
+                pathCpn =  '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
+                cartRefItm = db.reference(pathCartitm)
+                cartRefItm.push({
+                    'cat':'discount',
+                    'itm':code,
+                    'qty':int(amtUsed),
+                    'img':'',
+                    'notes':'',
+                    'price':discAmt,
+                    'mods':[[" ",0]],
+                    'unitPrice':float(float(discAmt)/float(amtUsed))
+                })
+                pathCpn.update({"cpn":0})
+            return(redirect(url_for('payQSR',location=location)))
+        else:
+            return("15")
+        '''
+        print(QSR == 0)
+        if(QSR == 0):
 
         else:
             cart = orderInfo['ticket']
 
-        return(redirect(url_for('payQSR',location=location)))
+        # return(redirect(url_for('payQSR',location=location)))
+        return "t"
+        '''
     except Exception as e:
         cpnsPath = '/restaurants/' + estNameStr + '/' + str(location) + "/discounts/"+ menu
         cpns = dict(db.reference(cpnsPath).get())
+        # return(redirect(url_for('payQSR',location=location)))
         return(redirect(url_for('payQSR',location=location)))
 
 @app.route('/<location>/pay0~<type>')
