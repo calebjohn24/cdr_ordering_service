@@ -198,9 +198,31 @@ def panel(location):
         'time': time.time()
     })
     getSquare()
+    discRef = db.reference('/restaurants/' + estNameStr + '/'+ location + '/discounts')
+    discDict = dict(discRef.get())
+    discMenus = list(discDict.keys())
+    discItms = []
+    discTypes = []
+    discAmts = []
+    discLimMin = []
+    discNames = []
+    discMenu = []
+    for menus in discMenus:
+        cpns = list(dict(discDict[menus]).keys())
+        for disc in cpns:
+            discMenu.append(menus)
+            discNames.append(disc)
+            discItms.append(str(discDict[menus][disc]["mods"][1]) + " " + str(discDict[menus][disc]["itm"]))
+            discTypes.append(discDict[menus][disc]["type"])
+            discAmts.append(str(discDict[menus][disc]["amt"]))
+            limStr = str("lim:") + str(discDict[menus][disc]["lim"]) + str(" min:") + str(discDict[menus][disc]["min"])
+            discLimMin.append(limStr)
     return render_template("POS/AdminMini/mainAdmin.html",
                            restName=str(estNameStr).capitalize(),
-                           locName=str(location).capitalize())
+                           locName=str(location).capitalize(),
+                           discNames=discNames,discItms=discItms,
+                           discTypes=discTypes,discMenu=discMenu,
+                           discAmts=discAmts,discLimMin=discLimMin)
 
 
 
@@ -714,7 +736,6 @@ def addMod(location,menu,cat,item):
         'time': time.time()
     })
     return(render_template("POS/AdminMini/addMod2.html",location=location,menu=menu,cat=cat,item=item))
-
 
 @app.route("/<location>/addModX2~<menu>~<cat>~<item>", methods=["POST"])
 def addModX(location,menu,cat,item):

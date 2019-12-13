@@ -94,8 +94,19 @@
       <div class="container">
       <div class="list-group">
         <br>
-        <!-- for loop -->
-      <h4>CPNS HERE</h4>
+        {% for i in range(discNames|count) %}
+      <h4>{{discNames[i]}}  <a href="remCpn~{{discMenu[i]}}~{{discNames[i]}}" class="btn-danger btn-sm"> <i class="fas fa-times-circle"></i></a></h4>
+      <br>
+      <h5>Item: {{discItms[i]}}</h5>
+      <br>
+      <h5>Type: {{discTypes[i]}}</h5>
+      <br>
+      <h5>Amt: {{discAmts[i]}}</h5>
+      <br>
+      <h5>{{discLimMin[i]}}</h5>
+      <br>
+      <h1><hr></h1>
+      {%endfor%}
       </div>
       </div>
     </div>
@@ -104,7 +115,45 @@
       <div class="container">
         <br>
         <!-- for loop -->
-      <h4>CODE HERE</h4>
+      <h4>Change Employee Code <a data-toggle="modal" data-target="#empCode_infoModal" class="button btn-lg btn-light"><i class="fas fa-edit"></i></a></h4>
+      <!-- Modal -->
+      <div class="modal fade" id="empCode_infoModal" role="dialog">
+      <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+      <div class="modal-header">
+      <h4 class="modal-title">Enter Admin Password <button type="button" class="close" data-dismiss="modal">&times;</button></h4>
+      </div>
+      <form method="POST" action="editEmployee">
+      <div class="modal-body">
+      <input type="text" class="form-control" name="pw"  required>
+      </div>
+      <div class="modal-footer">
+      <button type="submit" class="btn btn-success">Done</button>
+      </div>
+      </form>
+      </div>
+      </div>
+      </div>
+
+      <br>
+      <h4>Add Admin Acoount <a data-toggle="modal" data-target="#admin_infoModal" class="button btn-lg btn-light"><i class="fas fa-plus-square"></i></a></h4>
+      <div class="modal fade" id="admin_infoModal" role="dialog">
+      <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+      <div class="modal-header">
+      <h4 class="modal-title">Enter Admin Password <button type="button" class="close" data-dismiss="modal">&times;</button></h4>
+      </div>
+      <form method="POST" action="addAdmin">
+      <div class="modal-body">
+      <input type="text" class="form-control" name="pw"  required>
+      </div>
+      <div class="modal-footer">
+      <button type="submit" class="btn btn-success">Done</button>
+      </div>
+      </form>
+      </div>
+      </div>
+      </div>
       </div>
     </div>
 
