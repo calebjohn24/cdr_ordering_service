@@ -193,6 +193,7 @@ def panel(location):
     if (checkAdminToken(idToken, username) == 1):
         return redirect(url_for('.login', location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
         'time': time.time()
@@ -224,7 +225,94 @@ def panel(location):
                            discTypes=discTypes,discMenu=discMenu,
                            discAmts=discAmts,discLimMin=discLimMin)
 
+@app.route('/<location>/addAdmin', methods=["POST"])
+def addAdmin(location):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    email = session.get('user', None)
+    pw = str(rsp["pw"])
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    email = str(email).replace(".","-")
+    users = list(dict(ref.get()))
+    users.remove(email)
+    try:
+        user = ref.get()[str(email)]
+        if ((pbkdf2_sha256.verify(pw, user["password"])) == True):
+            return(render_template("POS/AdminMini/addAdmin.html",users=users))
+        else:
+            return redirect(url_for('panel',location=location))
+    except Exception:
+        return redirect(url_for('panel',location=location))
 
+@app.route('/<location>/confirmAdmin', methods=["POST"])
+def confirmAdmin(location):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    # email = session.get('user', None)
+    email = str(rsp["email"])
+    pw = str(rsp["password"])
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    email = str(email).replace(".","-")
+    hash = pbkdf2_sha256.hash(pw)
+    ref.update({
+        email: {
+            "password":hash,
+            "time":0.0,
+            "token":"uuid"
+        }
+    })
+    return redirect(url_for('panel',location=location))
+
+@app.route('/<location>/editEmployee', methods=["POST"])
+def editEmployee(location):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    email = session.get('user', None)
+    pw = str(rsp["pw"])
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    email = str(email).replace(".","-")
+    try:
+        user = ref.get()[str(email)]
+        if ((pbkdf2_sha256.verify(pw, user["password"])) == True):
+            return(render_template("POS/AdminMini/editEmp.html"))
+        else:
+            return redirect(url_for('panel',location=location))
+    except Exception:
+        return redirect(url_for('panel',location=location))
+
+@app.route('/<location>/confirmEmpCode', methods=["POST"])
+def confirmEmployeeCode(location):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    email = session.get('user', None)
+    code = rsp["code"]
+    hash = pbkdf2_sha256.hash(code)
+    ref = db.reference('/restaurants/' + estNameStr + '/' + str(location) + '/employee')
+    ref.update({
+        'code': hash
+    })
+    return redirect(url_for('panel',location=location))
+
+@app.route('/<location>/remUser~<user>')
+def remUser(location,user):
+    idToken = session.get('token', None)
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    try:
+        user_ref = ref.get()[str(username)]
+    except Exception:
+        return redirect(url_for('.login', location=location))
+    if (checkAdminToken(idToken, username) == 1):
+        return redirect(url_for('.login', location=location))
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    user_ref = ref.child(str(username))
+    user_ref.update({
+        'time': time.time()
+    })
+    if(username != user):
+        rem_ref = db.reference('/restaurants/' + estNameStr + '/admin-info/' + user)
+        rem_ref.delete()
+    return redirect(url_for('panel',location=location))
 
 @app.route('/<location>/schedule-<day>', methods=["GET"])
 def scheduleSet(location,day):
@@ -1974,9 +2062,48 @@ def EmployeePanelQSR(location):
     return "-_*"
 
 
+@app.route('/<location>/employee-login')
+def EmployeeLogin(location):
+    return(render_template("POS/StaffSitdown/login.html"))
+
+@app.route('/<location>/employee-login2')
+def EmployeeLogin2(location):
+    return(render_template("POS/StaffSitdown/login2.html"))
+
+@app.route('/<location>/employee-login', methods=['POST'])
+def EmployeeLoginCheck(location):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    code = rsp['code']
+    loginRef = db.reference('/restaurants/' + estNameStr + '/' + str(location) + "/employee")
+    loginData = dict(loginRef.get())
+    hashCheck = pbkdf2_sha256.verify(code, loginData['code'])
+    if(hashCheck == True):
+        token = str(uuid.uuid4())
+        loginRef.update({
+            "token":token,
+            "time":time.time()
+        })
+        session["token"] = token
+        return(redirect(url_for("EmployeePanel",location=location)))
+    else:
+        return(redirect(url_for("EmployeeLogin2",location=location)))
 
 @app.route('/<location>/view')
 def EmployeePanel(location):
+    token = session.get('token',None)
+    loginRef = db.reference('/restaurants/' + estNameStr + '/' + str(location) + "/employee/")
+    loginData = dict(loginRef.get())
+    try:
+        if(((token == loginData["token"]) and (time.time() - loginData["time"] <= 3600))):
+            loginRef.update({
+                "time":time.time()
+            })
+        else:
+            return(redirect(url_for("EmployeeLogin2",location=location)))
+    except Exception as e:
+        return(redirect(url_for("EmployeeLogin2",location=location)))
+
     try:
         ordPath = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/"
         ordsRef = db.reference(ordPath)

@@ -114,7 +114,6 @@
     <div id="emp" class="container tab-pane fade"><br>
       <div class="container">
         <br>
-        <!-- for loop -->
       <h4>Change Employee Code <a data-toggle="modal" data-target="#empCode_infoModal" class="button btn-lg btn-light"><i class="fas fa-edit"></i></a></h4>
       <!-- Modal -->
       <div class="modal fade" id="empCode_infoModal" role="dialog">
@@ -125,10 +124,10 @@
       </div>
       <form method="POST" action="editEmployee">
       <div class="modal-body">
-      <input type="text" class="form-control" name="pw"  required>
+      <input type="password" class="form-control" name="pw"  required>
       </div>
       <div class="modal-footer">
-      <button type="submit" class="btn btn-success">Done</button>
+      <button type="submit" class="btn btn-success">Next</button>
       </div>
       </form>
       </div>
@@ -136,7 +135,7 @@
       </div>
 
       <br>
-      <h4>Add Admin Acoount <a data-toggle="modal" data-target="#admin_infoModal" class="button btn-lg btn-light"><i class="fas fa-plus-square"></i></a></h4>
+      <h4>Add/Remove Admin Acoount <a data-toggle="modal" data-target="#admin_infoModal" class="button btn-lg btn-light"><i class="fas fa-edit"></i></a></h4>
       <div class="modal fade" id="admin_infoModal" role="dialog">
       <div class="modal-dialog modal-lg">
       <div class="modal-content">
@@ -145,10 +144,10 @@
       </div>
       <form method="POST" action="addAdmin">
       <div class="modal-body">
-      <input type="text" class="form-control" name="pw"  required>
+      <input type="password" class="form-control" name="pw"  required>
       </div>
       <div class="modal-footer">
-      <button type="submit" class="btn btn-success">Done</button>
+      <button type="submit" class="btn btn-success">Next</button>
       </div>
       </form>
       </div>
