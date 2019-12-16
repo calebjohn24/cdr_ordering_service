@@ -1798,6 +1798,19 @@ def payQSR(location):
         tax = "${:0,.2f}".format(subtotal *0.1)
         total = "${:0,.2f}".format(subtotal *1.1)
         cartKeys = list(cart.keys())
+        cpnBool = orderInfo["cpn"]
+        if(cpnBool == 0):
+            cart = dict(orderInfo["ticket"])
+            cartKeys = list(cart.keys())
+            for ckx in cartKeys:
+                ckxKeys = list(cart[ckx].keys())
+                for ckkx in ckxKeys:
+                    if("discount" == str(cart[ckx][ckkx]["cat"])):
+                        pathRem = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/ticket/" + str(ckx) + "/" + str(ckkx)
+                        pathRemRef = db.reference(pathRem)
+                        pathRemRef.delete()
+        pathCpn =  db.reference('/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken)
+        pathCpn.update({"cpn":1})
         items = []
         for ck in cartKeys:
             ckKeys = list(cart[ck].keys())
@@ -1877,9 +1890,9 @@ def applyCpn(location):
 
             if(amtUsed >= min):
                 print("discApplied")
-                pathCartitm = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/cart/"
                 pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu
-                pathCpn =  '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
+                pathCpn =  db.reference('/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken)
+                pathCartitm = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/cart/"
                 cartRefItm = db.reference(pathCartitm)
                 cartRefItm.push({
                     'cat':'discount',
@@ -1894,17 +1907,68 @@ def applyCpn(location):
                 pathCpn.update({"cpn":0})
             return(redirect(url_for('payQSR',location=location)))
         else:
-            return("15")
-        '''
-        print(QSR == 0)
-        if(QSR == 0):
-
-        else:
-            cart = orderInfo['ticket']
-
-        # return(redirect(url_for('payQSR',location=location)))
-        return "t"
-        '''
+            cart = dict(orderInfo["ticket"])
+            subtotal = orderInfo["subtotal"]
+            subtotalStr = "${:0,.2f}".format(subtotal)
+            tax = "${:0,.2f}".format(subtotal *0.1)
+            total = "${:0,.2f}".format(subtotal *1.1)
+            amtUsed = 0
+            discAmt = 0
+            cartKeys = list(cart.keys())
+            cpnBool = orderInfo["cpn"]
+            if(cpnBool == 0):
+                for ck in cartKeys:
+                    ckKeys = list(cart[ck].keys())
+                    for ckk in ckKeys:
+                        if(cart[ck][ckk]["cat"] == "discount"):
+                            pathRem = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/ticket/" + str(ck) + "/" + str(ckk)
+                            pathRemRef = db.reference(pathRem)
+                            pathRemRef.delete()
+            pathOrder = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
+            orderInfo = dict(db.reference(pathOrder).get())
+            cart = dict(orderInfo["ticket"])
+            subtotal = orderInfo["subtotal"]
+            subtotalStr = "${:0,.2f}".format(subtotal)
+            tax = "${:0,.2f}".format(subtotal *0.1)
+            total = "${:0,.2f}".format(subtotal *1.1)
+            amtUsed = 0
+            discAmt = 0
+            cartKeys = list(cart.keys())
+            for ckx in cartKeys:
+                ckxKeys = list(cart[ckx].keys())
+                for ckkx in ckxKeys:
+                    if((discCat == str(cart[ckx][ckkx]["cat"])) and (discItm == str(cart[ckx][ckkx]["itm"]))):
+                        for mod in range(len(cart[ckx][ckkx]["mods"])):
+                            md = cart[ckx][ckkx]["mods"][mod][0]
+                            if(modItm == md):
+                                for q in range(int(cart[ckx][ckkx]["qty"])):
+                                    if(amtUsed < lim):
+                                        if(type == "money"):
+                                            discAmt -= amt
+                                        else:
+                                            discAmt -= (cart[ckx][ckkx]["unitPrice"]*float(amt/100))
+                                        amtUsed += 1
+                                    else:
+                                        break
+            if(amtUsed >= min):
+                print("discApplied")
+                pathCpn =  db.reference('/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken)
+                pathCartitm = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/ticket/"
+                cartRefItm = db.reference(pathCartitm)
+                cartRefItm.push({
+                    str(uuid.uuid4()):{
+                    'cat':'discount',
+                    'itm':code,
+                    'qty':int(amtUsed),
+                    'img':'',
+                    'notes':'',
+                    'price':discAmt,
+                    'mods':[[" ",0]],
+                    'unitPrice':float(float(discAmt)/float(amtUsed))
+                    }
+                })
+                pathCpn.update({"cpn":0})
+                return(redirect(url_for('payQSR',location=location)))
     except Exception as e:
         cpnsPath = '/restaurants/' + estNameStr + '/' + str(location) + "/discounts/"+ menu
         cpns = dict(db.reference(cpnsPath).get())
@@ -2096,14 +2160,11 @@ def EmployeePanel(location):
     loginData = dict(loginRef.get())
     try:
         if(((token == loginData["token"]) and (time.time() - loginData["time"] <= 3600))):
-            loginRef.update({
-                "time":time.time()
-            })
+            pass
         else:
             return(redirect(url_for("EmployeeLogin2",location=location)))
     except Exception as e:
         return(redirect(url_for("EmployeeLogin2",location=location)))
-
     try:
         ordPath = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/"
         ordsRef = db.reference(ordPath)
