@@ -627,7 +627,7 @@ def editImgX(location,menu,cat,item):
     d = bucket.blob(d)
     d.upload_from_filename(str(str(UPLOAD_FOLDER)+"/"+str(file.filename)),content_type='image/jpeg')
     url = str(d.public_url)
-    url = url.replace("googleapis","cloud.google")
+    # url = url.replace("googleapis","cloud.google")
     opt_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+cat+"/"+str(item))
     opt_ref.update({"img":url})
     os.remove(estNameStr + "/imgs/" + filename)
@@ -671,7 +671,6 @@ def addCpn2(location,menu,category,item,modName,modItm):
         'lim':limit,
         'min':min
         }
-
     })
     # return str(rsp) +"-"+str(menu)+"-"+str(category)+"-"+str(item)
     return(redirect(url_for("panel",location=location)))
@@ -1114,8 +1113,6 @@ def genMenuData(location,menu):
                     tmpArr.append([tt,min,max])
                 catArr.append(tmpArr)
         modsName.append(catArr)
-
-
     for itms2 in categories:
         catArr = []
         for mx2 in list(menuInfo["categories"][itms2]):
@@ -1132,8 +1129,6 @@ def genMenuData(location,menu):
                     tmpArr.append(tmpArr2)
                 catArr.append(tmpArr)
         modsItm.append(catArr)
-
-
     itmArr = [baseItms,categories,descrips,exInfo,modsName,modsItm,imgLink]
     return itmArr
 
@@ -1786,17 +1781,21 @@ def payQSR(location):
             dispStr += "{:0,.2f}".format(float(cart[keys]["price"]))
             items.append(dispStr)
         subtotalStr = "${:0,.2f}".format(subtotal)
-        tax = "${:0,.2f}".format(subtotal *0.1)
-        total = "${:0,.2f}".format(subtotal *1.1)
-        session['total'] = round(subtotal*1.1,2)
+        taxRate = float(db.reference('/restaurants/' + estNameStr + '/' + str(location) + '/taxrate').get())
+        tax = "${:0,.2f}".format(subtotal * taxRate)
+        tax += " (" + str(float(taxRate * 100)) + "%)"
+        total = "${:0,.2f}".format(subtotal * (1+taxRate))
+        session['total'] = round(subtotal*(1+taxRate),2)
         session['kiosk'] = orderInfo["kiosk"]
         return(render_template("Customer/QSR/Payment.html",locName=str(location).capitalize(),restName=str(estNameStr).capitalize(), cart=str(cart), items=items, subtotal=subtotalStr,tax=tax,total=total))
     else:
         cart = dict(orderInfo["ticket"])
         subtotal = orderInfo["subtotal"]
         subtotalStr = "${:0,.2f}".format(subtotal)
-        tax = "${:0,.2f}".format(subtotal *0.1)
-        total = "${:0,.2f}".format(subtotal *1.1)
+        taxRate = float(db.reference('/restaurants/' + estNameStr + '/' + str(location) + '/taxrate').get())
+        tax = "${:0,.2f}".format(subtotal * taxRate)
+        tax += " (" + str(float(taxRate * 100)) + "%)"
+        total = "${:0,.2f}".format(subtotal * (1+taxRate))
         cartKeys = list(cart.keys())
         cpnBool = orderInfo["cpn"]
         if(cpnBool == 0):
@@ -1827,7 +1826,7 @@ def payQSR(location):
                 dispStr += " || $"
                 dispStr += "{:0,.2f}".format(float(cart[ck][ckk]["price"]))
                 items.append(dispStr)
-                session['total'] = round(subtotal*1.1,2)
+                session['total'] = round(subtotal*(1+taxRate),2)
                 session['kiosk'] = orderInfo["kiosk"]
         return(render_template("Customer/Sitdown/Payment.html",locName=str(location).capitalize(),restName=str(estNameStr).capitalize(),items=items, subtotal=subtotalStr,tax=tax,total=total))
 
@@ -1972,7 +1971,6 @@ def applyCpn(location):
     except Exception as e:
         cpnsPath = '/restaurants/' + estNameStr + '/' + str(location) + "/discounts/"+ menu
         cpns = dict(db.reference(cpnsPath).get())
-        # return(redirect(url_for('payQSR',location=location)))
         return(redirect(url_for('payQSR',location=location)))
 
 @app.route('/<location>/pay0~<type>')
@@ -2162,7 +2160,7 @@ def EmployeePanel(location):
         if(((token == loginData["token"]) and (time.time() - loginData["time"] <= 3600))):
             pass
         else:
-            return(redirect(url_for("EmployeeLogin2",location=location)))
+            return(redirect(url_for("EmployeeLogin",location=location)))
     except Exception as e:
         return(redirect(url_for("EmployeeLogin2",location=location)))
     try:
