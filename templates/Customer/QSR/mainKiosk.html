@@ -69,6 +69,7 @@ $('[data-toggle="popover"]').popover();
 
 <body>
   <div class="container-fluid">
+
   <br>
   <div class="input-group">
     <h3 class="h3 mb-0 text-gray-800">{{restName}}</h3>
@@ -101,11 +102,12 @@ $('[data-toggle="popover"]').popover();
 
 
 <div id="Cart" class="tabcontent">
+  <div class="text-center">
   <div class="card">
     <form method="POST" action="{{btn2}}">
     {% for bb in range(cartKeys|count) %}
     <div class="card-header">
-      <h4>{{baseitmCart[bb]}}</h4>
+      <h3>{{baseitmCart[bb]}}</h3>
       <br>
       <img src="{{imgCart[bb]}}" class="img-rounded" alt="" width="200">
     </div>
@@ -127,7 +129,7 @@ $('[data-toggle="popover"]').popover();
     <form method="POST" action="cartAdd-QSR">
       <div class="col-lg-12">
 
-    <button class="btn btn-success btn-circle btn-md" name="add", value="cart" data-toggle="popover" data-placement="top" data-content="Items Sent To Kitchen">
+    <button class="btn btn-success btn-circle btn-md" name="add", value="cart" data-toggle="popover" data-placement="top" data-content="Proceed To Checkout">
       <strong>Order Items </strong><i class="fas fa-arrow-right"></i>
     </button>
       </div>
@@ -136,6 +138,7 @@ $('[data-toggle="popover"]').popover();
   <br>
   <br>
   </div>
+</div>
 
 
 
@@ -415,10 +418,10 @@ $('[data-toggle="popover"]').popover();
     <div class="panel-group" id="accordion">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <h2 class="panel-title">
+          <h1 class="panel-title">
             <a data-toggle="collapse" data-parent="#accordion" href="#{{cats[i]}}">
             {{cats[i]}} </a><br>
-          </h2>
+          </h1>
               <br>
             </div>
             <div id="{{cats[i]}}" class="panel-collapse collapse">
@@ -426,15 +429,15 @@ $('[data-toggle="popover"]').popover();
               <div class="panel-body">
               <div class="panel panel-default">
               <div class="panel-heading">
-              <h3 class="panel-title">
+              <h2 class="panel-title">
               <a data-toggle="collapse" data-parent="#accordion2" href="#{{baseItms[i][j][0]}}">{{baseItms[i][j][1]}}
               <img src="{{imgData[i][j]}}" class="img-rounded" alt="" width="40">
               </a>
-              </h3>
+            </h2>
               </div>
               <div id="{{baseItms[i][j][0]}}" class="panel-collapse collapse">
               <div class="panel-body">
-                <h5 class="card-title">{{descrips[i][j]}}</h5>
+              <h5 class="card-title">{{descrips[i][j]}}</h5>
               <h6 class="card-title">{{exInfo[i][j]}}</h6>
               <br>
               <img src="{{imgData[i][j]}}" class="img-rounded" alt="" width="200">
@@ -451,7 +454,7 @@ $('[data-toggle="popover"]').popover();
               <div class="modal-dialog modal-dialog-centered" role="document">
               <div class="modal-content">
               <div class="modal-header">
-              <h4 class="modal-title" id="exampleModalLongTitle">{{baseItms[i][j][1]}}</h4>
+              <h3 class="modal-title" id="exampleModalLongTitle">{{baseItms[i][j][1]}}</h3>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
               </button>
@@ -460,28 +463,28 @@ $('[data-toggle="popover"]').popover();
               <div class="modal-body">
               {% for x in range(modsName[i][j]|count) %}
               <div class="card">
-              <h4 class="card-header">{{modsName[i][j][x][0]}}</h4>
+              <h3 class="card-header">{{modsName[i][j][x][0]}}</h3>
               <div class="card-body">
 
                 {% for yy in range(modsName[i][j][x][1]) %}
-                <h4 class="card-header">
+                <h3 class="card-header">
                   {% for y in range(modsItm[i][j][x]|count) %}
                       <input type="radio" name="mod-{{i}}-{{j}}-{{x}}-{{yy}}-0" value="{{modsItm[i][j][x][y][0]}}~{{modsItm[i][j][x][y][1]}}" required> {{modsItm[i][j][x][y][0]}} ${{modsItm[i][j][x][y][1]}}</input>
-                      <br>
+                      <hr>
                 {% endfor %}
                 <br>
                 <br>
             </h4>
               {% endfor %}
               {% for yyx in range(modsName[i][j][x][2]) %}
-              <h4 class="card-header">
+              <h3 class="card-header">
                 {% for yz in range(modsItm[i][j][x]|count) %}
                   <input type="radio" name="mod-{{i}}-{{j}}-{{x}}-{{yyx}}-1" value="{{modsItm[i][j][x][yz][0]}}~{{modsItm[i][j][x][yz][1]}}"> {{modsItm[i][j][x][yz][0]}} ${{modsItm[i][j][x][yz][1]}}</option>
                   <br>
               {% endfor %}
               <input type="radio" name="mod-{{i}}-{{j}}-{{x}}-{{yyx}}-1" value="NaN"> None</option>
               <br>
-            </h4>
+            </h3>
               <br>
 
               {% endfor %}
@@ -489,16 +492,17 @@ $('[data-toggle="popover"]').popover();
               </div>
               {% endfor %}
               <hr>
-
+              <h4>
             <label for="exampleFormControlSelect0">Notes</label>
             <input class="form-control" name="notes" form="itm-form-{{baseItms[i][j][1]}}" type="text" placeholder="Notes" id="exampleFormControlSelect1">
             <br>
             <label for="validationDefault05">Quantity</label>
             <input type="number" name="qty" class="form-control" form="itm-form-{{baseItms[i][j][1]}}" id="validationDefault05" placeholder="1">
+          </h4>
               </div>
               <br>
               <hr>
-              <button class="btn btn-success btn-circle btn-sm" type="submit" form="itm-form-{{baseItms[i][j][1]}}" name="itm" value="{{cats[i]}}~{{baseItms[i][j][1]}}~{{imgData[i][j]}}" data-toggle="modal" data-target="#exampleModal">
+              <button class="btn-lg btn-success" type="submit" form="itm-form-{{baseItms[i][j][1]}}" name="itm" value="{{cats[i]}}~{{baseItms[i][j][1]}}~{{imgData[i][j]}}" data-toggle="modal" data-target="#exampleModal">
               <strong>Add To Cart </strong><i class="fas fa-check"></i>
               </button>
             </form>
@@ -520,7 +524,6 @@ $('[data-toggle="popover"]').popover();
           </div>
 
   </div>
-
 </div>
 
 

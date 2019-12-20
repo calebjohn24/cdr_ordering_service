@@ -1787,7 +1787,8 @@ def payQSR(location):
         total = "${:0,.2f}".format(subtotal * (1+taxRate))
         session['total'] = round(subtotal*(1+taxRate),2)
         session['kiosk'] = orderInfo["kiosk"]
-        return(render_template("Customer/QSR/Payment.html",locName=str(location).capitalize(),restName=str(estNameStr).capitalize(), cart=str(cart), items=items, subtotal=subtotalStr,tax=tax,total=total))
+        sqTotal = str(int(round(subtotal*(1+taxRate),2) * 100)) + "~" + str(orderToken)
+        return(render_template("Customer/QSR/Payment.html",locName=str(location).capitalize(),restName=str(estNameStr).capitalize(), cart=str(cart), items=items, subtotal=subtotalStr,tax=tax,total=total,sqTotal=sqTotal))
     else:
         cart = dict(orderInfo["ticket"])
         subtotal = orderInfo["subtotal"]
