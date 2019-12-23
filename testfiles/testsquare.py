@@ -12,17 +12,21 @@ api_locations = client.locations
 mobile_authorization_api = client.mobile_authorization
 # Call list_locations method to get all locations in this Square account
 result = api_locations.list_locations()
+testLoc = "cedar-location-1"
 # Call the success method to see if the call succeeded
 if result.is_success():
 	# The body property is a list of locations
     locations = result.body['locations']
 	# Iterate over the list
     for location in locations:
+        # print(location)
         if((dict(location.items())["status"]) == "ACTIVE"):
             print(dict(location.items()))
             locationName = (dict(location.items())["name"]).replace(" ","-")
             print(locationName)
             locationId = dict(location.items())["id"]
+
+            '''
             print(dict(location.items())["business_email"])
             print(dict(location.items()))
             print(locationId)
@@ -39,19 +43,24 @@ if result.is_success():
 
             addrP = str(addrNumber+ ","+ street+","+dict(location.items())["address"]['locality'] + "," + dict(location.items())["address"]['administrative_district_level_1'] + "," + dict(location.items())["address"]['postal_code'][:5])
             timez = dict(location.items())["timezone"]
+            '''
 
 
 
+            if(str(locationName).lower() == testLoc):
+                body = {}
+                body['location_id'] = locationId
 
-            body = {}
-            body['location_id'] = locationId
+                result = mobile_authorization_api.create_mobile_authorization_code(body)
 
-            result = mobile_authorization_api.create_mobile_authorization_code(body)
-
-            if result.is_success():
-                print(result.body)
-            elif result.is_error():
-                print(result.errors)
+                if result.is_success():
+                    # print(dict(result.body))
+                    # print("AUTH CODE")
+                    code = dict(result.body)['authorization_code']
+                    print(code)
+                    print("AUTH CODE")
+                elif result.is_error():
+                    print(result.errors)
 
 
             checkout_api = client.checkout
@@ -87,7 +96,7 @@ if result.is_success():
             result = checkout_api.create_checkout(location_id, body)
 
             if result.is_success():
-                print(result.body["checkout"]["checkout_page_url"])
+                # print(result.body["checkout"]["checkout_page_url"])
                 print(result.body["checkout"])
             elif result.is_error():
                 print(result.errors)
