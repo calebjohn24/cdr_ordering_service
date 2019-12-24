@@ -1305,6 +1305,7 @@ def startKiosk(location):
         "name":name,
         "phone":phone,
         "table":table,
+        "paid":1,
         "alert":"null",
         "alertTime":0,
         "timestamp":time.time(),
@@ -1788,7 +1789,7 @@ def payQSR(location):
         total = "${:0,.2f}".format(subtotal * (1+taxRate))
         session['total'] = round(subtotal*(1+taxRate),2)
         session['kiosk'] = orderInfo["kiosk"]
-        sqTotal = str(int(round(subtotal*(1+taxRate),2) * 100)) + "~" + str(orderToken)
+        sqTotal = str(int(round(subtotal*(1+taxRate),2) * 100)) + "~" + str(orderToken) +"~"+mainLink+location
         return(render_template("Customer/QSR/Payment.html",locName=str(location).capitalize(),restName=str(estNameStr).capitalize(), cart=str(cart), items=items, subtotal=subtotalStr,tax=tax,total=total,sqTotal=sqTotal))
     else:
         cart = dict(orderInfo["ticket"])
@@ -1820,7 +1821,7 @@ def payQSR(location):
                 items.append(dispStr)
                 session['total'] = round(subtotal*(1+taxRate),2)
                 session['kiosk'] = orderInfo["kiosk"]
-        sqTotal = str(int(round(subtotal*(1+taxRate),2) * 100)) + "~" + str(orderToken)
+        sqTotal = str(int(round(subtotal*(1+taxRate),2) * 100)) + "~" + str(orderToken)+"~"+mainLink+location
         return(render_template("Customer/Sitdown/Payment.html",locName=str(location).capitalize(),restName=str(estNameStr).capitalize(),
                                items=items, subtotal=subtotalStr,tax=tax,total=total, sqTotal=sqTotal))
 
@@ -2387,7 +2388,41 @@ def RemBill(location):
     remRef.delete()
     return(redirect(url_for("EmployeePanel",location=location)))
 
-####OAUTHSQUARE####
+####SQUARE####
+@app.route('/<location>/verify-kiosk', methods=["POST"])
+def verifyOrder(location):
+    rsp = request.get_json()
+    print(rsp)
+    token = rsp['tokenVal']
+    pathOrder = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + token
+    orderRef = db.reference(pathOrder)
+    order = dict(orderRef.get())
+    if(order['QSR'] == 0):
+        qsrOrderPath = '/restaurants/' + estNameStr + '/' + str(location) + '/orderQSR'
+        qsrOrderRef = db.reference(qsrOrderPath)
+        qsrOrderRef.update({
+            token:{
+                "cart":dict(order['cart']),
+                "info":{"name":order["name"],
+                        "number":order['phone']}
+                }
+        })
+        packet = {
+            "code":token,
+            "success": "true"
+        }
+        return jsonify(packet)
+    else:
+        orderRef.update({
+            "paid":0
+        })
+        packet = {
+            "code":tokenVal,
+            "success": "true"
+        }
+        return jsonify(packet)
+
+
 @app.route('/reader/<locationX>/<type>', methods=["POST"])
 def GenReaderCode(locationX,type):
     rsp = request.get_json()
