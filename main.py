@@ -1802,7 +1802,7 @@ def payQSR(location):
         cartKeys = list(cart.keys())
         cpnBool = orderInfo["cpn"]
         pathCpn =  db.reference('/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken)
-        pathCpn.update({"cpn":1})
+        # pathCpn.update({"cpn":1})
         items = []
         for ck in cartKeys:
             ckKeys = list(cart[ck].keys())
@@ -1851,17 +1851,17 @@ def applyCpn(location):
         QSR = int(orderInfo["QSR"])
         pathOrder = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
         orderInfo = dict(db.reference(pathOrder).get())
-        cpnBool = orderInfo["cpn"]
-        if(cpnBool == 0):
-            cart = dict(orderInfo["cart"])
-            cartKeys = list(cart.keys())
-            for keys in cartKeys:
-                if("discount" == str(cart[keys]["cat"])):
-                    pathRem = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/cart/" + keys
-                    pathRemRef = db.reference(pathRem)
-                    pathRemRef.delete()
         varQSR = (QSR == 0)
         if(varQSR == True):
+            cpnBool = orderInfo["cpn"]
+            if(cpnBool == 0):
+                cart = dict(orderInfo["cart"])
+                cartKeys = list(cart.keys())
+                for keys in cartKeys:
+                    if("discount" == str(cart[keys]["cat"])):
+                        pathRem = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/cart/" + keys
+                        pathRemRef = db.reference(pathRem)
+                        pathRemRef.delete()
             cart = dict(orderInfo["cart"])
             amtUsed = 0
             discAmt = 0
@@ -1910,6 +1910,7 @@ def applyCpn(location):
             discAmt = 0
             cartKeys = list(cart.keys())
             cpnBool = orderInfo["cpn"]
+            print(cpnBool)
             if(cpnBool == 0):
                 for ck in cartKeys:
                     ckKeys = list(cart[ck].keys())
@@ -1917,6 +1918,9 @@ def applyCpn(location):
                         if(cart[ck][ckk]["cat"] == "discount"):
                             pathRem = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/ticket/" + str(ck) + "/" + str(ckk)
                             pathRemRef = db.reference(pathRem)
+                            subtotal -= cart[ck][ckk]['price']
+                            pathCpn =  db.reference('/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken)
+                            pathCpn.update({"subtotal":subtotal})
                             pathRemRef.delete()
             pathOrder = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
             orderInfo = dict(db.reference(pathOrder).get())
@@ -1942,10 +1946,12 @@ def applyCpn(location):
                                         else:
                                             discAmt -= (cart[ckx][ckkx]["unitPrice"]*float(amt/100))
                                         amtUsed += 1
+
                                     else:
                                         break
             if(amtUsed >= min):
                 #print("discApplied")
+                subtotal += discAmt
                 pathCpn =  db.reference('/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken)
                 pathCartitm = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/ticket/"
                 cartRefItm = db.reference(pathCartitm)
@@ -1961,7 +1967,8 @@ def applyCpn(location):
                     'unitPrice':float(float(discAmt)/float(amtUsed))
                     }
                 })
-                pathCpn.update({"cpn":0})
+                pathCpn.update({"cpn":0,
+                                "subtotal":subtotal})
             return(redirect(url_for('payQSR',location=location)))
     except Exception as e:
         return(redirect(url_for('payQSR',location=location)))
@@ -2165,34 +2172,37 @@ def EmployeePanel(location):
         tableTotals = []
         ticketDisp = []
         for tt in tokens:
-            subTotals.append(round(float(ordsGet[tt]["subtotal"]),2))
-            tableTotals.append(ordsGet[tt]["table"])
-            try:
-                tickList = []
-                ticket = dict(ordsGet[tt]["ticket"])
-                for tickItms in list(ticket.keys()):
-                    tickItmX = []
-                    for tts in list(ordsGet[tt]["ticket"][tickItms].keys()):
-                        modStr = ""
-                        modStr += str(ordsGet[tt]["ticket"][tickItms][tts]["qty"])
-                        modStr += "x $"
-                        modStr += str(ordsGet[tt]["ticket"][tickItms][tts]["unitPrice"])
-                        modStr += " "
-                        modStr += ordsGet[tt]["ticket"][tickItms][tts]["itm"]
-                        modStr += "-"
-                        modStr += ordsGet[tt]["ticket"][tickItms][tts]["notes"]
-                        modStr += "-"
-                        for mds in range(len(ordsGet[tt]["ticket"][tickItms][tts]["mods"])):
-                            modStr += ordsGet[tt]["ticket"][tickItms][tts]["mods"][mds][0]
-                            modStr += " - "
-                        modStr += "|| $"
-                        modStr += str(ordsGet[tt]["ticket"][tickItms][tts]["price"])
-                        tickItmX.append(modStr)
-                        modStr = ""
-                    tickList.append(tickItmX)
-                ticketDisp.append(tickList)
-            except Exception as e:
-                ticketDisp.append([["No Items"]])
+            # print(ordsGet[tt])
+            if(ordsGet[tt]["QSR"] == 1 or ordsGet[tt]["table"] != "To Go"):
+                print(ordsGet[tt])
+                subTotals.append(round(float(ordsGet[tt]["subtotal"]),2))
+                tableTotals.append(ordsGet[tt]["table"])
+                try:
+                    tickList = []
+                    ticket = dict(ordsGet[tt]["ticket"])
+                    for tickItms in list(ticket.keys()):
+                        tickItmX = []
+                        for tts in list(ordsGet[tt]["ticket"][tickItms].keys()):
+                            modStr = ""
+                            modStr += str(ordsGet[tt]["ticket"][tickItms][tts]["qty"])
+                            modStr += "x $"
+                            modStr += str(ordsGet[tt]["ticket"][tickItms][tts]["unitPrice"])
+                            modStr += " "
+                            modStr += ordsGet[tt]["ticket"][tickItms][tts]["itm"]
+                            modStr += "-"
+                            modStr += ordsGet[tt]["ticket"][tickItms][tts]["notes"]
+                            modStr += "-"
+                            for mds in range(len(ordsGet[tt]["ticket"][tickItms][tts]["mods"])):
+                                modStr += ordsGet[tt]["ticket"][tickItms][tts]["mods"][mds][0]
+                                modStr += " - "
+                            modStr += "|| $"
+                            modStr += str(ordsGet[tt]["ticket"][tickItms][tts]["price"])
+                            tickItmX.append(modStr)
+                            modStr = ""
+                        tickList.append(tickItmX)
+                    ticketDisp.append(tickList)
+                except Exception as e:
+                    ticketDisp.append([["No Items"]])
     except Exception as e:
         subtotals = []
         tokens = []
@@ -2473,6 +2483,11 @@ def GenReaderCode(locationX,type):
             "code":"invlaid employee code"
         }
         return jsonify(packet)
+
+
+
+
+
 
 if __name__ == '__main__':
     try:
