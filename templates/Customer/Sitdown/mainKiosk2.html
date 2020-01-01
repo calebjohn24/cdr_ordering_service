@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="57x57" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="72x72" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="76x76" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="114x114" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="120x120" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="144x144" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="152x152" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="apple-touch-icon" sizes="180x180" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="icon" type="image/png" sizes="192x192"  href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="icon" type="image/png" sizes="32x32" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="icon" type="image/png" sizes="96x96" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="icon" type="image/png" sizes="16x16" href="../../../static/img/CedarRoboticsLogo.jpg">
+ <link rel="manifest" href="../../../static/manifest.json">
+ <meta name="msapplication-TileColor" content="#000000">
+ <meta name="msapplication-TileImage" content="../../../static/img/CedarRoboticsLogo.jpg">
+ <meta name="theme-color" content="#000000">
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="description" content="">
+<meta name="author" content="Caleb John">
+<script src="https://kit.fontawesome.com/80bbe0004b.js" crossorigin="anonymous"></script>
+<link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+<title>Menu</title>
+</head>
+<body>
+<div class="container-fluid">
+  <br>
+<h1>{{restName}} {{locName}}</h1>
+<hr>
+<br>
+
+<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+<li class="nav-item">
+<a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Menu</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Cart</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">Contact Staff</a>
+</li>
+<li class="nav-item">
+<a class="nav-link" id="pills-pay-tab" data-toggle="pill" href="#pills-pay" role="tab" aria-controls="pills-pay" aria-selected="false">Pay</a>
+</li>
+</ul>
+<div class="tab-content" id="pills-tabContent">
+
+<div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+
+
+  <div id="accordion">
+
+  <!-- for loop Cat Here -->
+  <div class="card">
+  <div class="card-header" id="headingTwo">
+  <h5 class="mb-0">
+  <button class="btn btn-lg collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+  {{cat}}
+  </button>
+  </h5>
+  </div>
+  <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+  <div class="card-body">
+
+  <!-- For Loop Items Here -->
+  <div class="card" style="width: 28rem;">
+  <div class="card-body">
+  <h5 class="card-title">Card title</h5>
+  <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
+  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+  <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModalCenter">
+  Add Item
+  </button>
+
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+  <div class="modal-content">
+  <div class="modal-header">
+  <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+  <span aria-hidden="true">&times;</span>
+  </button>
+  </div>
+  <div class="modal-body">
+
+
+
+
+  <label for="exampleFormControlSelect0">Notes</label>
+  <input class="form-control" name="notes" form="itm-form-{{baseItms[i][j][1]}}" type="text" placeholder="Notes" id="exampleFormControlSelect1">
+  <br>
+  <label for="validationDefault05">Quantity</label>
+  <input type="number" name="qty" class="form-control" form="itm-form-{{baseItms[i][j][1]}}" min="1" id="validationDefault05" placeholder="1">
+
+  </div>
+  <div class="modal-footer">
+  <input type="submit" value="Add Item To Cart" class="btn btn-success">
+  </div>
+
+
+
+
+  </div>
+  </div>
+  </div>
+
+
+  </div>
+  <img class="card-img-top" src="https://storage.googleapis.com/cedarchatbot.appspot.com/testraunt/015d33e3-3328-45d9-b475-81c26b0554f3">
+  </div>
+
+
+  </div>
+  </div>
+  </div>
+
+
+
+
+  </div>
+
+
+</div>
+
+
+<div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab"><hr>
+<div class="text-center">
+<h1>Cart</h1>
+
+<form method="POST" action="cartAdd">
+<button class="btn btn-lg btn-success btn-circle btn-md" name="add", value="cart" data-toggle="popover" data-placement="top" data-content="Items Sent To Kitchen">
+<strong>Order Items </strong><i class="fas fa-arrow-right"></i>
+</button>
+</form>
+
+</div>
+</div>
+
+<div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+<div class="text-center">
+    <hr>
+
+  <div class="row">
+  <div class="col-sm-6">
+
+  <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#drink-modal">
+  Refill Drinks
+  </button>
+
+  <div class="modal fade" id="drink-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+  <div class="modal-content">
+  <div class="modal-header">
+  <h5 class="modal-title" id="exampleModalLabel">Refill Drinks</h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+  <span aria-hidden="true">&times;</span>
+  </button>
+  </div>
+  <div class="modal-body">
+  <form method="POST" action="sendReq">
+  <div class="form-group">
+  <br>
+  <input type="text" class="form-control" name="drinks" placeholder="Enter Drink Names" required>
+  </div>
+  <hr>
+  <button type="submit" class="btn btn-lg btn-success">Next</button>
+  </form>
+  <br>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+
+
+    <br>
+    <div class="col-sm-6">
+
+    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#napkin-modal">
+    Extra Napkins
+    </button>
+
+    <div class="modal fade" id="napkin-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">Request Napkins</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    <div class="modal-body">
+    <form method="POST" action="sendReq">
+    <div class="form-group">
+    </div>
+    <button type="submit" name="napkins" value="ex" class="btn btn-lg btn-success">Next</button>
+    </form>
+    <br>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+
+  </div>
+  <br>
+  <div class="row">
+
+    <div class="col-sm-6">
+
+    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#cutlery-modal">
+    Extra Cutlery
+    </button>
+
+    <div class="modal fade" id="cutlery-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">Request Cutlery</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    <div class="modal-body">
+    <form method="POST" action="sendReq">
+    <div class="form-group">
+    </div>
+    <button type="submit" name="cutlery" value="ex" class="btn btn-lg btn-success">Next</button>
+    </form>
+    <br>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+
+    <br>
+    <div class="col-sm-6">
+
+    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#clear-modal">
+    Clear Table
+    </button>
+
+    <div class="modal fade" id="clear-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">Clear Table</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    <div class="modal-body">
+    <form method="POST" action="sendReq">
+    <div class="form-group">
+    </div>
+    <button type="submit" name="clear" value="ex" class="btn btn-lg btn-success">Next</button>
+    </form>
+    <br>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+
+    <br>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-sm-6">
+
+    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#iss-modal">
+    Issue With Food
+    </button>
+
+    <div class="modal fade" id="iss-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">Issue with Food</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    <div class="modal-body">
+    <form method="POST" action="sendReq">
+    <div class="form-group">
+    <br>
+    <input type="text" class="form-control" name="issue" placeholder="Enter Issue" required>
+    </div>
+    <hr>
+    <button type="submit" class="btn btn-lg btn-success">Next</button>
+    </form>
+    <br>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+
+  <br>
+
+  <div class="col-sm-6">
+
+  <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#box-modal">
+  Box Food
+  </button>
+
+  <div class="modal fade" id="box-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+  <div class="modal-content">
+  <div class="modal-header">
+  <h5 class="modal-title" id="exampleModalLabel">Box Food</h5>
+  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+  <span aria-hidden="true">&times;</span>
+  </button>
+  </div>
+  <div class="modal-body">
+  <form method="POST" action="sendReq">
+  <div class="form-group">
+  <br>
+  <input type="number" class="form-control" name="box" placeholder="Number of boxes" required>
+  </div>
+  <hr>
+  <button type="submit" class="btn btn-lg btn-success">Next</button>
+  </form>
+  <br>
+  </div>
+  </div>
+  </div>
+  </div>
+  </div>
+
+
+  <br>
+  </div>
+  <br>
+  <div class="row">
+    <div class="col-sm-6">
+
+    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#cond-modal">
+    Request Condiments
+    </button>
+
+    <div class="modal fade" id="cond-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">Request Condiments</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    <div class="modal-body">
+    <form method="POST" action="sendReq">
+    <div class="form-group">
+    <br>
+    <input type="text" class="form-control" name="condiments" placeholder="Enter Condiment Names" required>
+    </div>
+    <hr>
+    <button type="submit" class="btn btn-lg btn-success">Next</button>
+    </form>
+    <br>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+
+    <br>
+    <div class="col-sm-6">
+
+    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#other-modal">
+    Other
+    </button>
+
+    <div class="modal fade" id="other-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+    <div class="modal-content">
+    <div class="modal-header">
+    <h5 class="modal-title" id="exampleModalLabel">Other</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+    </button>
+    </div>
+    <div class="modal-body">
+    <form method="POST" action="sendReq">
+    <div class="form-group">
+    <br>
+    <input type="text" class="form-control" name="other" placeholder="Enter Request" required>
+    </div>
+    <hr>
+    <button type="submit" class="btn btn-lg btn-success">Next</button>
+    </form>
+    <br>
+    </div>
+    </div>
+    </div>
+    </div>
+    </div>
+
+
+  </div>
+
+</div>
+
+</div>
+
+<div class="tab-pane fade" id="pills-pay" role="tabpanel" aria-labelledby="pills-pay-tab">
+<div class="text-center">
+<form class="form-inline" method="GET" action="pay">
+<button type="submit" class="btn btn-lg btn-primary mb-2">Pay Now</button>
+</form>
+</div>
+</div>
+
+
+</div>
+</div>
+</body>
+</html>
