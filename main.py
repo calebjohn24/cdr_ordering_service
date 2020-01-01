@@ -1260,7 +1260,7 @@ def dummyMenuRender(location):
     menu = "breakfast"
     pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu + "/categories"
     menuInfo = dict(db.reference(pathMenu).get())
-    return(render_template("Customer/QSR/mainKiosk2.html", menu=menuInfo))
+    return(render_template("Customer/QSR/mainKiosk2.html", menu=menuInfo, restName=estNameStr.capitalize(), locName=location.capitalize()))
 
 @app.route('/<location>/qsr-additms', methods=["POST"])
 def kiosk2QSR(location):

@@ -77,8 +77,6 @@
     <button type="button" class="btn btn-success" data-toggle="modal" data-target="#{{item.uuid}}">
     Add Item
     </button>
-
-
     <div class="modal fade" id="{{item.uuid}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
     <div class="modal-content">
@@ -88,8 +86,31 @@
     <span aria-hidden="true">&times;</span>
     </button>
     </div>
+    <form action="add-itm" method="POST">
     <div class="modal-body">
+      {% for key_mod, mod in item.items() %}
+      {% if mod.info %}
+      <!-- <h6>{{mod.max}}</h6><br> -->
+      <!-- <h6>{{mod.min}}</h6><br> -->
+      {%for m in range(0, mod.min)%}
 
+      <h3>{{key_mod|capitalize}}</h3><hr>
+      {% for key_opt, opt in mod.info.items() %}
+      <h4>{{key_opt}} <input type="radio" name="mod~req~{{m}}" value="{{key_opt}}" required></h4><h5>{{"$%.2f"|format(opt)}}</h5>
+      <br>
+      {%endfor%}
+      <br>
+      {%endfor%}
+      {%for m in range(0, (mod.max-mod.min))%}
+      <h3>{{key_mod|capitalize}}</h3><hr>
+      {% for key_opt, opt in mod.info.items() %}
+      <h4>{{key_opt}} <input type="radio" name="mod~opt~{{m}}" value="{{key_opt}}" ></h4><h5>{{"$%.2f"|format(opt)}}</h5>
+      <br>
+      {%endfor%}
+
+      {%endfor%}
+      {% endif %}
+      {% endfor %}
     <hr>
     <label for="exampleFormControlSelect0">Notes</label>
     <input class="form-control" name="notes" type="text" placeholder="Notes" id="exampleFormControlSelect1">
@@ -99,8 +120,9 @@
 
     </div>
     <div class="modal-footer">
-    <input type="submit" value="Add Item To Cart" class="btn btn-success">
+    <input type="submit" value="Add To Cart" class="btn btn-success">
     </div>
+    </form>
 
 
     </div>
