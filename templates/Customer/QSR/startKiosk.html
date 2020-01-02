@@ -75,9 +75,19 @@
   </div>
 </h1>
   <br>
-  <div class="d-inline-flex p-2">
-    <button type="submit" name="togo" value = "here" class="btn-lg btn-secondary mb-2">For Here</button>
-  </div>
+
+    <button class="btn btn-lg btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
+    For Here
+    </button>
+    <div class="collapse" id="collapseExample">
+    <div>
+      <br>
+    <h3>Enter Table Number</h3><br>
+    <input class="number" min="1" name="table" required><br><br>
+    <button type="submit" name="togo" value = "here" class="btn-lg btn-success">Next</button>
+    </div>
+    </div>
+
 </form>
   <br>
   <br>

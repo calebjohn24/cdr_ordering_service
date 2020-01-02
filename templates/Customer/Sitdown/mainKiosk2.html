@@ -57,95 +57,136 @@
 <div class="tab-content" id="pills-tabContent">
 
 <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-
-
   <div id="accordion">
-
+  {% for key_cat, value_cat in menu.items() %}
   <!-- for loop Cat Here -->
   <div class="card">
   <div class="card-header" id="headingTwo">
   <h5 class="mb-0">
-  <button class="btn btn-lg collapsed" data-toggle="collapse" data-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-  {{cat}}
+  <button class="btn btn-lg collapsed" data-toggle="collapse" data-target="#{{key_cat}}" aria-expanded="false" aria-controls="{{key_cat}}">
+  {{key_cat}}
+
   </button>
   </h5>
   </div>
-  <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordion">
+  <div id="{{key_cat}}" class="collapse" aria-labelledby="{{key_cat}}" data-parent="#accordion">
+  {% for key_item, item in value_cat.items() %}
   <div class="card-body">
+    <div class="row">
+      <div class="col-lg-6">
+      <div class="card">
+      <div class="card-body">
+      <h5 class="card-title">{{key_item}}</h5>
+      <h6 class="card-subtitle mb-2 text-muted">{{item.get('extra-info')}}</h6>
+      <p class="card-text">{{item.descrip}}</p>
+      <button type="button" class="btn btn-success" data-toggle="modal" data-target="#{{item.uuid}}">
+      Add Item
+      </button>
+      <div class="modal fade" id="{{item.uuid}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+      <div class="modal-header">
+      <h5 class="modal-title" id="exampleModalLongTitle">{{key_item}}</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+      </button>
+      </div>
+      <form action="qsr-additms~{{key_cat}}~{{key_item}}" method="POST">
+      <div class="modal-body">
+        {% for key_mod, mod in item.items() %}
+        {% if mod.info %}
+        <!-- <h6>{{mod.max}}</h6><br> -->
+        <!-- <h6>{{mod.min}}</h6><br> -->
+        {%for m in range(0, mod.min)%}
 
-  <!-- For Loop Items Here -->
-  <div class="card" style="width: 28rem;">
-  <div class="card-body">
-  <h5 class="card-title">Card title</h5>
-  <h6 class="card-subtitle mb-2 text-muted">Card subtitle</h6>
-  <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-  <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModalCenter">
-  Add Item
-  </button>
+        <h3>{{key_mod|capitalize}}</h3><hr>
+        {% for key_opt, opt in mod.info.items() %}
+        <h4>{{key_opt|capitalize}} <input type="radio" name="{{m}}~0" value="{{key_opt}}~{{opt}}~{{item.img}}" required></h4><h5>{{"$%.2f"|format(opt)}}</h5>
+        <br>
+        {%endfor%}
+        <br>
+        {%endfor%}
+        {%for m in range(0, (mod.max-mod.min))%}
+        <h3>{{key_mod|capitalize}}</h3><hr>
+        {% for key_opt, opt in mod.info.items() %}
+        <h4>{{key_opt|capitalize}} <input type="radio" name="{{m}}~1" value="{{key_opt}}~{{opt}}~{{item.img}}" ></h4><h5>{{"$%.2f"|format(opt)}}</h5>
+        <br>
+        {%endfor%}
 
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-  <div class="modal-content">
-  <div class="modal-header">
-  <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-  <span aria-hidden="true">&times;</span>
-  </button>
+        {%endfor%}
+        {% endif %}
+        {% endfor %}
+      <hr>
+      <label for="exampleFormControlSelect0">Notes</label>
+      <input class="form-control" name="notes" type="text" placeholder="Notes" id="exampleFormControlSelect1">
+      <br>
+      <label for="validationDefault05">Quantity</label>
+      <input type="number" name="qty" class="form-control"  min="1" id="validationDefault05" placeholder="1">
+
+      </div>
+      <div class="modal-footer">
+      <input type="submit" value="Add To Cart" class="btn btn-success">
+      </div>
+      </form>
+
+
+      </div>
+      </div>
+      </div>
+
+
+      </div>
+      <img class="card-img-top" src="{{item.img}}">
+
+
+
+    </div>
+    </div>
   </div>
-  <div class="modal-body">
-
-
-
-
-  <label for="exampleFormControlSelect0">Notes</label>
-  <input class="form-control" name="notes" form="itm-form-{{baseItms[i][j][1]}}" type="text" placeholder="Notes" id="exampleFormControlSelect1">
-  <br>
-  <label for="validationDefault05">Quantity</label>
-  <input type="number" name="qty" class="form-control" form="itm-form-{{baseItms[i][j][1]}}" min="1" id="validationDefault05" placeholder="1">
-
   </div>
-  <div class="modal-footer">
-  <input type="submit" value="Add Item To Cart" class="btn btn-success">
-  </div>
-
-
-
-
+    {% endfor %}
   </div>
   </div>
-  </div>
-
-
-  </div>
-  <img class="card-img-top" src="https://storage.googleapis.com/cedarchatbot.appspot.com/testraunt/015d33e3-3328-45d9-b475-81c26b0554f3">
-  </div>
-
+  {% endfor %}
 
   </div>
-  </div>
-  </div>
-
-
-
-
-  </div>
-
-
 </div>
 
 
 <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab"><hr>
-<div class="text-center">
-<h1>Cart</h1>
+  <div class="text-center">
+  <br>
+  <div class="row">
+    <div class="col-sm-3">
+    </div>
+    <div class="col-sm-6">
+  {% for key_cart, cart_items in cart.items() %}
 
-<form method="POST" action="cartAdd">
-<button class="btn btn-lg btn-success btn-circle btn-md" name="add", value="cart" data-toggle="popover" data-placement="top" data-content="Items Sent To Kitchen">
-<strong>Order Items </strong><i class="fas fa-arrow-right"></i>
-</button>
-</form>
-
-</div>
+  <div class="card" >
+    <img class="card-img-top" src="{{cart_items.img}}" >
+    <div class="card-body">
+      <p class="card-text"><h4>{{cart_items.dispStr}}</h4></p>
+    </div>
+  </div>
+  <hr>
+  {% endfor %}
+  <br>
+  <hr>
+  <form method="POST" action="cartAdd">
+  <button class="btn btn-success btn-circle btn-md" name="add", value="cart" data-toggle="popover" data-placement="top" data-content="Proceed To Checkout">
+  <strong>Order Items </strong><i class="fas fa-arrow-right"></i>
+  </button>
+  </form>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br><br>
+  </div>
+  <div class="col-sm-3">
+  </div>
+  </div>
+  </div>
 </div>
 
 <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
