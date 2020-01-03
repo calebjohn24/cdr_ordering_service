@@ -34,7 +34,7 @@
 <title>Menu</title>
 </head>
 <body>
-<div class="container-fluid">
+<div class="container">
   <br>
 <h1>{{restName}} {{locName}}</h1>
 <hr>
@@ -91,7 +91,7 @@
       <span aria-hidden="true">&times;</span>
       </button>
       </div>
-      <form action="qsr-additms~{{key_cat}}~{{key_item}}" method="POST">
+      <form action="sitdown-additms~{{key_cat}}~{{key_item}}" method="POST">
       <div class="modal-body">
         {% for key_mod, mod in item.items() %}
         {% if mod.info %}
@@ -163,9 +163,19 @@
   {% for key_cart, cart_items in cart.items() %}
 
   <div class="card" >
+    <div class="card-header">
+      <h3>{{cart_items.dispStr}}</h3>
+
+    </div>
     <img class="card-img-top" src="{{cart_items.img}}" >
     <div class="card-body">
-      <p class="card-text"><h4>{{cart_items.dispStr}}</h4></p>
+      <p class="card-text">
+
+    </div>
+    <div class="card-footer text-muted">
+      <form id = "rem-{{key_cart}}" method="POST" action="itmRemove">
+      <div class="p-2"><button class="btn btn-lg btn-danger" type="submit" form="rem-{{key_cart}}" name="remove" value="{{key_cart}}">Remove <i class="fas fa-times-circle"></i></button></div>
+      </form>
     </div>
   </div>
   <hr>
@@ -173,7 +183,7 @@
   <br>
   <hr>
   <form method="POST" action="cartAdd">
-  <button class="btn btn-success btn-circle btn-md" name="add", value="cart" data-toggle="popover" data-placement="top" data-content="Proceed To Checkout">
+  <button class="btn btn-success btn-circle btn-lg" name="add", value="cart" data-toggle="popover" data-placement="top" data-content="Proceed To Checkout">
   <strong>Order Items </strong><i class="fas fa-arrow-right"></i>
   </button>
   </form>
@@ -185,6 +195,9 @@
   </div>
   <div class="col-sm-3">
   </div>
+
+
+
   </div>
   </div>
 </div>

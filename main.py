@@ -1230,16 +1230,7 @@ def startKiosk(location):
     menu = findMenu(location)
     # menu = "lunch"
     session["menu"] = menu
-    ##print(menu)
-    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu
-    menuInfo = db.reference(pathMenu).get()
-    cart = {}
-
-    return(render_template("Customer/Sitdown/mainKiosk.html",
-                           cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,imgData=imgData,
-                           modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),restName=str(estNameStr.capitalize()),
-                           baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,imgCart=imgCart,
-                           cartKeys=cartKeys,btn2="itmRemove",btn3="sendReq"))
+    return(redirect(url_for('sitdownMenu', location=location)))
 
 
 @app.route('/<location>/testmenu')
@@ -1251,6 +1242,19 @@ def dummyMenuRender(location):
     return(render_template("Customer/QSR/mainKiosk2.html", menu=menuInfo, restName=estNameStr.capitalize(), locName=location.capitalize(), cart=cart ))
 
 
+@app.route('/<location>/sitdown-menudisp')
+def sitdownMenu(location):
+    menu = session.get('menu', None)
+    orderToken = session.get('orderToken',None)
+    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu + "/categories"
+    menuInfo = dict(db.reference(pathMenu).get())
+    cartRef = db.reference('/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/cart")
+    try:
+        cart = dict(cartRef.get())
+    except Exception as e:
+        cart = {}
+    print(cart)
+    return(render_template("Customer/Sitdown/mainKiosk2.html", menu=menuInfo, restName=estNameStr.capitalize(), cart=cart, locName=location.capitalize()))
 
 @app.route('/<location>/qsr-menudisp')
 def qsrMenu(location):
@@ -1294,7 +1298,7 @@ def kiosk2QSR(location,cat,itm):
             except Exception as e:
                 pass
     price = float(qty*unitPrice)
-    dispStr += "  |Notes:" +notes + "  $" + "{:0,.2f}".format(price)
+    dispStr += "  |Notes: " +notes + "  ($" + "{:0,.2f}".format(price) + ")"
     menu = session.get('menu', None)
     orderToken = session.get('orderToken',None)
     ##print(orderToken)
@@ -1315,45 +1319,35 @@ def kiosk2QSR(location,cat,itm):
     return(redirect(url_for('qsrMenu', location=location)))
 
 
-@app.route('/<location>/sitdown-additms', methods=["POST"])
-def kiosk2(location):
+@app.route('/<location>/sitdown-additms~<cat>~<itm>', methods=["POST"])
+def kiosk2(location, cat, itm):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     ##print((request.form))
     rsp = dict((request.form))
-    # #print(rsp)
-    itmKeys = list(rsp.keys())
-    cat = ""
-    itm = ""
+    dispStr = ""
+    unitPrice = 0
+    notes = rsp['notes']
+    qty_str = rsp['qty']
+    if(qty_str == ""):
+        qty = 1
+    else:
+        qty = int(qty_str)
+    dispStr += str(qty) + " x " + itm + " "
+    dict_keys = list(rsp.keys())
     mods = []
     img = ""
-    notes = ""
-    qty = 1
-    price = 0.0
-    unitPrice = 0.0
-    for itx in itmKeys:
-        if((itx[:3]) == "mod"):
+    for keys in dict_keys:
+        if(keys != "notes" or keys != "qty"):
             try:
-                spt = list(str(rsp[itx]).split("~"))
-                unitPrice += float(spt[1])
-                mods.append(spt)
-            except:
+                raw_arr = rsp[keys].split("~")
+                img = raw_arr[2]
+                dispStr += str(raw_arr[0]).capitalize() + " "
+                mods.append([raw_arr[0],raw_arr[1]])
+                unitPrice += float(raw_arr[1])
+            except Exception as e:
                 pass
-        elif((itx) == "itm"):
-            cat = list(str(rsp[itx]).split("~"))[0]
-            itm = list(str(rsp[itx]).split("~"))[1]
-            img = list(str(rsp[itx]).split("~"))[2]
-        if(itx == "notes"):
-            notes = rsp[itx]
-        if(itx == "qty"):
-            if(rsp[itx] == ""):
-                qty = 1
-            else:
-                qty = int(rsp[itx])
-
-    price = unitPrice*qty
-    price = round(price,2)
-    unitPrice = round(unitPrice,2)
-    ##print(price,itm,cat,unitPrice,qty,mods,notes)
+    price = float(qty*unitPrice)
+    dispStr += "  |Notes: " +notes + "  ($" + "{:0,.2f}".format(price) + ")"
     menu = session.get('menu', None)
     orderToken = session.get('orderToken',None)
     ##print(orderToken)
@@ -1367,17 +1361,11 @@ def kiosk2(location):
         'img':img,
         'notes':notes,
         'price':price,
+        'dispStr':dispStr,
         'mods':mods,
         'unitPrice':unitPrice
     })
-    menuInfo = db.reference(pathMenu).get()
-    cartData = db.reference(pathCartitm).get()
-
-    return(render_template("Customer/Sitdown/mainKiosk.html",location=location,
-                           cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,imgData=imgData,
-                           modsName=modsName,modsItm=modsItm,btn="sitdown-additms",restName=str(estNameStr.capitalize()),
-                           baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,imgCart=imgCart,
-                           cartKeys=cartKeys,btn2="itmRemove",btn3="cartAdd"))
+    return(redirect(url_for('sitdownMenu', location=location)))
 
 
 @app.route('/<location>/qsr-itmRemove', methods=["POST"])
@@ -1398,12 +1386,8 @@ def kioskRemQSR(location):
     cartRefItm = db.reference(pathCartitm)
     menuInfo = db.reference(pathMenu).get()
     cartData = db.reference(pathCartitm).get()
+    return(redirect(url_for('qsrMenu', location=location)))
 
-    return(render_template("Customer/QSR/mainKiosk.html",location=location,
-                           cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,imgData=imgData,
-                           modsName=modsName,modsItm=modsItm,btn="qsr-additms",restName=str(estNameStr.capitalize()),
-                           baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,imgCart=imgCart,
-                           cartKeys=cartKeys,btn2="qsr-itmRemove",btn3="cartAdd-qsr"))
 
 @app.route('/<location>/itmRemove', methods=["POST"])
 def kioskRem(location):
@@ -1424,12 +1408,8 @@ def kioskRem(location):
         cartRefItm = db.reference(pathCartitm)
         menuInfo = db.reference(pathMenu).get()
         cartData = db.reference(pathCartitm).get()
+    return(redirect(url_for('sitdownMenu', location=location)))
 
-    return(render_template("Customer/Sitdown/mainKiosk.html",location=location,
-                           cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,imgData=imgData,
-                           modsName=modsName,modsItm=modsItm,btn="sitdown-additms",restName=str(estNameStr.capitalize()),
-                           baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,imgCart=imgCart,
-                           cartKeys=cartKeys,btn2="itmRemove",btn3="cartAdd"))
 
 
 
@@ -1467,7 +1447,7 @@ def kioskCart(location):
         newReq = reqRef.push(cart)
         pathRequestkey = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/" + newReq.key + "/info"
         reqRefkey = db.reference(pathRequestkey)
-        reqRefkey.set({"table":tableNum,"type":"order","token":orderToken})
+        reqRefkey.update({"table":tableNum,"type":"order","token":orderToken})
         cartRef.delete()
         # #print(cart)
     except Exception:
@@ -1475,11 +1455,7 @@ def kioskCart(location):
     menuInfo = db.reference(pathMenu).get()
     cart = {}
 
-    return(render_template("Customer/Sitdown/mainKiosk.html",location=location,
-                           cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,imgData=imgData,
-                           modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),restName=str(estNameStr.capitalize()),
-                           baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,imgCart=imgCart,
-                           cartKeys=cartKeys,btn2="itmRemove"))
+    return(redirect(url_for('sitdownMenu', location=location)))
 
 @app.route('/<location>/cartAdd-QSR', methods=["POST"])
 def kioskCartQSR(location):
@@ -1781,13 +1757,7 @@ def kioskSendReq(location):
     pathRequestkey = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/" + newReq.key + "/info"
     reqRefkey = db.reference(pathRequestkey)
     reqRefkey.set({"table":tableNum,"type":"help","token":orderToken})
-
-
-    return(render_template("Customer/Sitdown/mainKiosk.html",location=location,
-                           cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,imgData=imgData,
-                           modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),restName=str(estNameStr.capitalize()),
-                           baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,imgCart=imgCart,
-                           cartKeys=cartKeys,btn2="itmRemove",btn3="cartAdd"))
+    return(redirect(url_for("sitdownMenu", location=location)))
 
 
 ##########Employee###########
@@ -1846,85 +1816,18 @@ def EmployeePanel(location):
         ordsRef = db.reference(ordPath)
         ordsGet = dict(ordsRef.get())
         tokens = list(ordsGet)
-        subTotals = []
-        tableTotals = []
-        ticketDisp = []
         for tt in tokens:
-            # print(ordsGet[tt])
-            if(ordsGet[tt]["QSR"] == 1 or ordsGet[tt]["table"] != "To Go"):
+            if(int(ordsGet[tt]["QSR"]) == 0):
                 print(ordsGet[tt])
-                subTotals.append(round(float(ordsGet[tt]["subtotal"]),2))
-                tableTotals.append(ordsGet[tt]["table"])
-                try:
-                    tickList = []
-                    ticket = dict(ordsGet[tt]["ticket"])
-                    for tickItms in list(ticket.keys()):
-                        tickItmX = []
-                        for tts in list(ordsGet[tt]["ticket"][tickItms].keys()):
-                            modStr = ""
-                            modStr += str(ordsGet[tt]["ticket"][tickItms][tts]["qty"])
-                            modStr += "x $"
-                            modStr += str(ordsGet[tt]["ticket"][tickItms][tts]["unitPrice"])
-                            modStr += " "
-                            modStr += ordsGet[tt]["ticket"][tickItms][tts]["itm"]
-                            modStr += "-"
-                            modStr += ordsGet[tt]["ticket"][tickItms][tts]["notes"]
-                            modStr += "-"
-                            for mds in range(len(ordsGet[tt]["ticket"][tickItms][tts]["mods"])):
-                                modStr += ordsGet[tt]["ticket"][tickItms][tts]["mods"][mds][0]
-                                modStr += " - "
-                            modStr += "|| $"
-                            modStr += str(ordsGet[tt]["ticket"][tickItms][tts]["price"])
-                            tickItmX.append(modStr)
-                            modStr = ""
-                        tickList.append(tickItmX)
-                    ticketDisp.append(tickList)
-                except Exception as e:
-                    ticketDisp.append([["No Items"]])
+                del ordsGet[tt]
     except Exception as e:
-        subtotals = []
-        tokens = []
-        tableTotals = []
-        ticketDisp = []
+        ordsGet = {}
     try:
         pathRequest = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/"
         reqRef = db.reference(pathRequest)
-        reqData = reqRef.get()
-        reqKeys = list(reqData.keys())
-        reqTypes = []
-        requests = []
-        tables = []
-        for rr in reqKeys:
-            reqTypes.append(reqData[rr]["info"]["type"])
-            tables.append(reqData[rr]["info"]["table"])
-            if(reqData[rr]["info"]["type"] == "help"):
-                requests.append([reqData[rr]["help"]])
-            else:
-                totalAdd = 0
-                cartData = reqData[rr]
-                cartKeys = list(cartData.keys())
-                cartKeys.remove("info")
-                # return(str(cartKeys))
-                req = []
-                for cc in range(len(cartKeys)):
-                    modStr = ""
-                    modStr += str(cartData[cartKeys[cc]]["qty"])
-                    modStr += "x "
-                    modStr += cartData[cartKeys[cc]]["itm"]
-                    modStr += "-"
-                    modStr += cartData[cartKeys[cc]]["notes"]
-                    modStr += "-"
-                    for mds in range(len(cartData[cartKeys[cc]]["mods"])):
-                        modStr += cartData[cartKeys[cc]]["mods"][mds][0]
-                        modStr += " - "
-                    req.append(modStr)
-                    modStr = ""
-                requests.append(req)
+        reqData = dict(reqRef.get())
     except Exception as e:
-        reqKeys = []
-        reqTypes = []
-        requests = []
-        tables = []
+        reqData = {}
     menu = findMenu(location)
     pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu + "/categories"
     menuInfo = dict(db.reference(pathMenu).get())
@@ -1940,8 +1843,9 @@ def EmployeePanel(location):
             else:
                 appItem = str(cats) + "~" + str(itm)
                 inactiveItems.append(appItem)
-    return(render_template("POS/StaffSitdown/View.html",location=str(location).capitalize(),restName=str(estNameStr.capitalize()),ticketDisp=ticketDisp,tickets=tokens,subTotals=subTotals,
-    tableTotals=tableTotals,success="view-success",reject="view-reject",warning="view-warning",reqKeys=reqKeys,type=reqTypes,tables=tables,requests=requests,menu=menu,activeItems=activeItems,inactiveItems=inactiveItems))
+    print(tokens)
+    # return str(reqData) + "\n" + "--------------------------------" + str(ordsGet)
+    return(render_template("POS/StaffSitdown/View.html", location=str(location).capitalize(), restName=str(estNameStr.capitalize()), menu=menu, activeItems=activeItems, inactiveItems=inactiveItems, reqData=reqData, orders=ordsGet))
 
 
 @app.route('/<location>/activate-item~<cat>~<item>~<menu>')

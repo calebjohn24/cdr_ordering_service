@@ -91,13 +91,13 @@
       <div class="modal-body">
         {% for key_mod, mod in item.items() %}
         {% if mod.info %}
-        <!-- <h6>{{mod.max}}</h6><br> -->
-        <!-- <h6>{{mod.min}}</h6><br> -->
+
         {%for m in range(0, mod.min)%}
 
         <h3>{{key_mod|capitalize}}</h3><hr>
         {% for key_opt, opt in mod.info.items() %}
         <h4>{{key_opt|capitalize}} <input type="radio" name="{{m}}~0" value="{{key_opt}}~{{opt}}~{{item.img}}" required></h4><h5>{{"$%.2f"|format(opt)}}</h5>
+
         <br>
         {%endfor%}
         <br>
@@ -158,9 +158,19 @@
 {% for key_cart, cart_items in cart.items() %}
 
 <div class="card" >
+  <div class="card-header">
+    <h3>{{cart_items.dispStr}}</h3>
+
+  </div>
   <img class="card-img-top" src="{{cart_items.img}}" >
   <div class="card-body">
-    <p class="card-text"><h4>{{cart_items.dispStr}}</h4></p>
+    <p class="card-text">
+
+  </div>
+  <div class="card-footer text-muted">
+    <form id = "rem-{{key_cart}}" method="POST" action="qsr-itmRemove">
+    <div class="p-2"><button class="btn btn-lg btn-danger" type="submit" form="rem-{{key_cart}}" name="remove" value="{{key_cart}}">Remove <i class="fas fa-times-circle"></i></button></div>
+    </form>
   </div>
 </div>
 <hr>
@@ -168,7 +178,7 @@
 <br>
 <hr>
 <form method="POST" action="cartAdd-QSR">
-<button class="btn btn-success btn-circle btn-md" name="add", value="cart" data-toggle="popover" data-placement="top" data-content="Proceed To Checkout">
+<button class="btn btn-success btn-circle btn-lg" name="add", value="cart" data-toggle="popover" data-placement="top" data-content="Proceed To Checkout">
 <strong>Order Items </strong><i class="fas fa-arrow-right"></i>
 </button>
 </form>

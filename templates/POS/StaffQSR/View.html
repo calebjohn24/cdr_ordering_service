@@ -69,7 +69,7 @@
       <h5 class="card-title">Table #{{tables[x]}}</h5>
       <h6 class="card-subtitle mb-2 text-muted">{{type[x]}}</h6>
       {% for xx in range(requests[x]|count) %}
-      <p class="card-text">{{requests[x][xx]}}</p>
+      <p class="card-text">{{requests[x][xx]}} </p>
       <br>
       {% endfor %}
 
@@ -192,6 +192,7 @@
 
     </div>
     <div id="menu2" class="container tab-pane active"><br>
+      <!--  
       <div class="container">
       {% for ym in range(tickets|count) %}
       <div class="panel-group">
@@ -213,7 +214,7 @@
         {% endfor %}
         <hr>
         <h4>
-        subtotal ${{subTotals[ym]}}
+        Subtotal ${{"$%.2f"|format(subTotals[ym])}}<br>
       </h4>
         <hr>
 
@@ -267,7 +268,7 @@
       </div>
       {% endfor %}
       </div>
-
+-->
     </div>
 
   <div id="menu3" class="container tab-pane fade"><br>
