@@ -1219,7 +1219,7 @@ def startKiosk(location):
         "name":name,
         "phone":phone,
         "table":table,
-        "paid":1,
+        "paid":"Not Paid",
         "alert":"null",
         "alertTime":0,
         "timestamp":time.time(),
@@ -1761,15 +1761,97 @@ def kioskSendReq(location):
 
 
 ##########Employee###########
-@app.route('/<location>/view-qsr')
+@app.route('/<location>/qsr-employee-login')
+def EmployeeLoginQSR(location):
+    return(render_template("POS/StaffQSR/login.html"))
+
+@app.route('/<location>/qsr-employee-login2')
+def EmployeeLogin2QSR(location):
+    return(render_template("POS/StaffSitdown/login2.html"))
+
+@app.route('/<location>/qsr-employee-login', methods=['POST'])
+def EmployeeLoginCheckQSR(location):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    code = rsp['code']
+    loginRef = db.reference('/restaurants/' + estNameStr + '/' + str(location) + "/employee")
+    loginData = dict(loginRef.get())
+    hashCheck = pbkdf2_sha256.verify(code, loginData['code'])
+    if(hashCheck == True):
+        token = str(uuid.uuid4())
+        loginRef.update({
+            "token":token,
+            "time":time.time()
+        })
+        session["token"] = token
+        return(redirect(url_for("EmployeePanelQSR",location=location)))
+    else:
+        return(redirect(url_for("EmployeeLogin2",location=location)))
+
+@app.route('/<location>/qsr-view')
 def EmployeePanelQSR(location):
+    token = session.get('token',None)
+    loginRef = db.reference('/restaurants/' + estNameStr + '/' + str(location) + "/employee/")
+    loginData = dict(loginRef.get())
     try:
-        ordPath = '/restaurants/' + estNameStr + '/' + str(location) + "/ordersQSR/"
+        if(((token == loginData["token"]) and (time.time() - loginData["time"] <= 3600))):
+            pass
+        else:
+            return(redirect(url_for("EmployeeLogin",location=location)))
+    except Exception as e:
+        return(redirect(url_for("EmployeeLogin2",location=location)))
+    try:
+        ordPath = '/restaurants/' + estNameStr + '/' + str(location) + "/orderQSR"
         ordsRef = db.reference(ordPath)
         ordsGet = dict(ordsRef.get())
-    except Exception:
-        pass
-    return "-_*"
+    except Exception as e:
+        ordsGet = {}
+    menu = findMenu(location)
+    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu + "/categories"
+    menuInfo = dict(db.reference(pathMenu).get())
+    categories = list(menuInfo.keys())
+    activeItems = []
+    inactiveItems = []
+    for cats in categories:
+        itms = list(dict(menuInfo[cats]).keys())
+        for itm in itms:
+            if(menuInfo[cats][itm]["descrip"] != "INACTIVE"):
+                appItem = str(cats) + "~" + str(itm)
+                activeItems.append(appItem)
+            else:
+                appItem = str(cats) + "~" + str(itm)
+                inactiveItems.append(appItem)
+    return(render_template("POS/StaffQSR/View.html", location=str(location).capitalize(), restName=str(estNameStr.capitalize()), menu=menu, activeItems=activeItems, inactiveItems=inactiveItems, orders=ordsGet))
+
+
+@app.route('/<location>/qsr-activate-item~<cat>~<item>~<menu>')
+def activateItemQSR(location,cat,item,menu):
+    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu + "/categories/"+ cat + "/" + item
+    descrip = dict(db.reference(pathMenu).get())["tmp"]
+    db.reference(pathMenu).update({"descrip":descrip})
+    pathDel = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu + "/categories/"+ cat + "/" + item +"/tmp"
+    db.reference(pathDel).delete()
+    return(redirect(url_for("EmployeePanelQSR",location=location)))
+
+@app.route('/<location>/qsr-deactivate-item~<cat>~<item>~<menu>')
+def deactivateItemQSR(location,cat,item,menu):
+    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu + "/categories/"+ cat + "/" + item
+    descrip = dict(db.reference(pathMenu).get())["descrip"]
+    db.reference(pathMenu).update({"tmp":descrip})
+    db.reference(pathMenu).update({"descrip":"INACTIVE"})
+    return(redirect(url_for("EmployeePanelQSR",location=location)))
+
+@app.route('/<location>/qsr-view-success', methods=["POST"])
+def EmployeeSuccessQSR(location):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    reqToken = rsp["req"]
+    pathRequest = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/" + reqToken
+    reqRef = db.reference(pathRequest)
+    reqData = dict(reqRef.get())
+    orderToken = reqData["info"]["token"]
+    reqRef.delete()
+    return(redirect(url_for("EmployeePanel",location=location)))
 
 
 @app.route('/<location>/employee-login')
@@ -1844,7 +1926,6 @@ def EmployeePanel(location):
                 appItem = str(cats) + "~" + str(itm)
                 inactiveItems.append(appItem)
     print(tokens)
-    # return str(reqData) + "\n" + "--------------------------------" + str(ordsGet)
     return(render_template("POS/StaffSitdown/View.html", location=str(location).capitalize(), restName=str(estNameStr.capitalize()), menu=menu, activeItems=activeItems, inactiveItems=inactiveItems, reqData=reqData, orders=ordsGet))
 
 
@@ -1963,6 +2044,7 @@ def EditBill(location):
         'itm':itm,
         'qty':1,
         'notes':"added by staff",
+        'dispStr':"Staff Correction: "+ itm + "  ($" + "{:0,.2f}".format(amt) + ")",
         'price':amt,
         'mods':[["",str(amt)]],
         'unitPrice':amt
@@ -1996,7 +2078,8 @@ def verifyOrder(location):
             token:{
                 "cart":dict(order['cart']),
                 "info":{"name":order["name"],
-                        "number":order['phone']}
+                        "number":order['phone'],
+                        "paid":"PAID"}
                 }
         })
         packet = {
@@ -2006,7 +2089,7 @@ def verifyOrder(location):
         return jsonify(packet)
     else:
         orderRef.update({
-            "paid":0
+            "paid":"PAID"
         })
         packet = {
             "code":tokenVal,
