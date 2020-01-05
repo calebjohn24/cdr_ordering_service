@@ -219,8 +219,10 @@ def panel(location):
             discAmts.append(str(discDict[menus][disc]["amt"]))
             limStr = str("lim:") + str(discDict[menus][disc]["lim"]) + str(" min:") + str(discDict[menus][disc]["min"])
             discLimMin.append(limStr)
+    feedback_ref = db.reference('/restaurants/' + estNameStr + '/'+ location + '/feedback')
+    feedback = dict(feedback_ref.get())
     return render_template("POS/AdminMini/mainAdmin.html",
-                           restName=str(estNameStr).capitalize(),
+                           restName=str(estNameStr).capitalize(), feedback=feedback,
                            locName=str(location).capitalize(),
                            discNames=discNames,discItms=discItms,
                            discTypes=discTypes,discMenu=discMenu,
@@ -795,7 +797,7 @@ def viewItem(location,menu,cat,item):
     img = item_ref["img"]
     mods = []
     for item_keys in list(item_ref.keys()):
-        if(str(item_keys) != "descrip" and str(item_keys) != "extra-info" and str(item_keys) != "img"):
+        if(str(item_keys) != "descrip" and str(item_keys) != "extra-info" and str(item_keys) != "img" and str(item_keys) != "uuid"):
             tmp_arr = [item_keys, item_ref[item_keys]["max"],item_ref[item_keys]["min"]]
             tmp_arr2 = []
             for info_keys in list(dict(item_ref[item_keys]["info"]).keys()):
@@ -1488,9 +1490,10 @@ def kioskCartQSR(location):
         return(redirect(url_for("qsrMenu",location=location)))
 
 
-def sendTicket(orderJson):
-    #print(orderJson)
-    return "tick"
+@app.route('/<location>/collect-feedback')
+def dispFeedBack(location):
+
+    return "-"
 
 @app.route('/<location>/pay')
 def payQSR(location):
@@ -1516,6 +1519,10 @@ def payQSR(location):
         total = "${:0,.2f}".format(subtotal * (1+taxRate))
         session['total'] = round(subtotal*(1+taxRate),2)
         session['kiosk'] = orderInfo["kiosk"]
+        db.reference(pathOrder).update({
+            "subtotal":subtotal,
+            "total":float(subtotal*(1+taxRate))
+        })
         sqTotal = str(int(round(subtotal*(1+taxRate),2) * 100)) + "~" + str(orderToken) +"~"+mainLink+location
         return(render_template("Customer/QSR/Payment.html",locName=str(location).capitalize(),restName=str(estNameStr).capitalize(), cart=str(cart), items=items, subtotal=subtotalStr,tax=tax,total=total,sqTotal=sqTotal))
     else:
@@ -1704,14 +1711,6 @@ def applyCpn(location):
         print(str(e))
         return(redirect(url_for('payQSR',location=location)))
 
-@app.route('/<location>/pay0~<type>')
-def payQSR1(location,type):
-    orderToken = session.get('orderToken',None)
-    total = session.get('total',None)
-    kiosk = session.get('kiosk',None)
-    orderPath = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + str(orderToken)
-    order = dict(db.reference(orderPath).get())
-    return str(type)+"-"+str(total)+"-"+str(kiosk)
 
 @app.route('/<location>/close-alert')
 def kioskClear(location):
@@ -1797,9 +1796,9 @@ def EmployeePanelQSR(location):
         if(((token == loginData["token"]) and (time.time() - loginData["time"] <= 3600))):
             pass
         else:
-            return(redirect(url_for("EmployeeLogin",location=location)))
+            return(redirect(url_for("EmployeeLoginQSR",location=location)))
     except Exception as e:
-        return(redirect(url_for("EmployeeLogin2",location=location)))
+        return(redirect(url_for("EmployeeLogin2QSR",location=location)))
     try:
         ordPath = '/restaurants/' + estNameStr + '/' + str(location) + "/orderQSR"
         ordsRef = db.reference(ordPath)
@@ -1846,12 +1845,10 @@ def EmployeeSuccessQSR(location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     reqToken = rsp["req"]
-    pathRequest = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/" + reqToken
+    pathRequest = '/restaurants/' + estNameStr + '/' + str(location) + "/orderQSR/" + reqToken
     reqRef = db.reference(pathRequest)
-    reqData = dict(reqRef.get())
-    orderToken = reqData["info"]["token"]
     reqRef.delete()
-    return(redirect(url_for("EmployeePanel",location=location)))
+    return(redirect(url_for("EmployeePanelQSR",location=location)))
 
 
 @app.route('/<location>/employee-login')
@@ -2079,7 +2076,9 @@ def verifyOrder(location):
                 "cart":dict(order['cart']),
                 "info":{"name":order["name"],
                         "number":order['phone'],
-                        "paid":"PAID"}
+                        "paid":"PAID",
+                        "subtotal":order['subtotal'],
+                        "total":order['total']}
                 }
         })
         packet = {
