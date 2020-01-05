@@ -221,8 +221,10 @@ def panel(location):
             discLimMin.append(limStr)
     feedback_ref = db.reference('/restaurants/' + estNameStr + '/'+ location + '/feedback')
     feedback = dict(feedback_ref.get())
+    comment_ref = db.reference('/restaurants/' + estNameStr + '/'+ location + '/comments')
+    comments = dict(comment_ref.get())
     return render_template("POS/AdminMini/mainAdmin.html",
-                           restName=str(estNameStr).capitalize(), feedback=feedback,
+                           restName=str(estNameStr).capitalize(), feedback=feedback,comments=comments,
                            locName=str(location).capitalize(),
                            discNames=discNames,discItms=discItms,
                            discTypes=discTypes,discMenu=discMenu,

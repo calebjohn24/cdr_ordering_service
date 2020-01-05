@@ -162,10 +162,9 @@
     <div id="feedback" class="container tab-pane fade">
     <br>
     <div class="container text-center">
-    <br>
     <div class="alert alert-info" role="alert">
-      These Questions and Comments Are Only Recorded In Sitdown Mode
-    </div>
+    Questions and Comments Are Only Recorded In Sitdown Mode
+    </div><hr>
 
     <div class="row">
 
@@ -193,6 +192,45 @@
   </div>
 <div class="col-lg-6">
 <h3>Comments</h3><hr>
+
+
+
+<ul class="nav nav-tabs" id="myTab" role="tablist">
+  <li class="nav-item">
+    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#new-comment" role="tab" aria-controls="home" aria-selected="true">New</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#saved-comment" role="tab" aria-controls="profile" aria-selected="false">Saved</a>
+  </li>
+
+</ul>
+<div class="tab-content" id="myTabContent">
+  <div class="tab-pane fade show active" id="new-comment" role="tabpanel" aria-labelledby="home-tab"><br>
+    {% for key_new_comments, v_new_comments in comments.new.items() %}
+
+    <h3>{{v_new_comments.name}} @ {{v_new_comments.timeStamp}}</h3>
+    <h4>Comment: {{v_new_comments.comment}}</h4>
+    <hr>
+
+    {% endfor %}
+  </div>
+
+
+  <div class="tab-pane fade" id="saved-comment" role="tabpanel" aria-labelledby="profile-tab"><br>
+    {% for key_saved_comments, v_saved_comments in comments.saved.items() %}
+
+    <h3>{{v_saved_comments.name}} @ {{v_saved_comments.timeStamp}}</h3>
+    <h4>Comment: {{v_saved_comments.comment}}</h4>
+    <hr>
+
+    {% endfor %}
+
+  </div>
+
+</div>
+
+
+
 </div>
 
     </div>
