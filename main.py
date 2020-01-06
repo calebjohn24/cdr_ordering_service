@@ -1508,6 +1508,7 @@ def collectFeedback(location):
     orderInfo = dict(db.reference(pathOrder).get())
     now = datetime.datetime.now(tzGl[0])
     feedback_ref = db.reference('/restaurants/' + estNameStr + '/'+ location + '/feedback')
+    curr_feedback = dict(feedback_ref.get())
     comment_ref = db.reference('/restaurants/' + estNameStr + '/'+ location + '/comments/new')
     comments = str(rsp['comment']) + " "
     comment_ref.push({
@@ -1515,6 +1516,23 @@ def collectFeedback(location):
         "name":orderInfo['name'],
         "timeStamp":str(now.hour) + ":" + str(now.minute) + " " + str(now.month) + "-" + str(now.day) + "-" + str(now.year)
     })
+    del rsp['comment']
+    newFeedKeys = list(rsp.keys())
+    feedKeys = list(curr_feedback.keys())
+    for keys in feedKeys:
+        currScore = curr_feedback[keys]['info']['totalScore']
+        ansSize = curr_feedback[keys]['info']['count']
+        addScore = curr_feedback[keys]['ans'][rsp[keys]]['score']
+        currScore += addScore
+        ansSize += 1
+        newDispScore = round(float(currScore)/float(ansSize),2)
+        qFeedbackRef = db.reference('/restaurants/' + estNameStr + '/'+ location + '/feedback/' + keys + '/info')
+        qFeedbackRef.update({
+            'count':ansSize,
+            'currentScore': newDispScore,
+            'totalScore':currScore
+        })
+
     return(redirect(url_for("payQSR",location=location)))
 
 @app.route('/<location>/pay')

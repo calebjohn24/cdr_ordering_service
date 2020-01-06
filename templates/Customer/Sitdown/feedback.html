@@ -53,9 +53,7 @@ function goBack() {
       {% for key_ans, v_ans in feed.ans.items() %}
     <div class="col">
       <h5 class="text-light">{{v_ans.name|capitalize}}</h5>
-
-      <input type="radio" name="{{key_feed}}" value="{{v_ans.name}}" aria-label="..." required>
-
+      <input type="radio" name="{{key_feed}}" value="{{key_ans}}" aria-label="..." required>
     </div>
     {% endfor %}
   </div><br><br>
