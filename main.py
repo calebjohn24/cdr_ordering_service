@@ -1050,6 +1050,95 @@ def saveComment(location,comment):
         })
         return(redirect(url_for("panel",location=location)))
 
+@app.route('/<location>/rem-feedback~<question>')
+def remQuestion(location,question):
+    idToken = session.get('token', None)
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    try:
+        user_ref = ref.get()[str(username)]
+    except Exception:
+        return redirect(url_for('.login', location=location))
+    finally:
+        if (checkAdminToken(idToken, username) == 1):
+            return redirect(url_for('.login', location=location))
+        item_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/feedback/'+str(question))
+        item_ref.delete()
+        return(redirect(url_for("panel",location=location)))
+
+@app.route('/<location>/add-feedback')
+def addQuestion(location):
+    idToken = session.get('token', None)
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    try:
+        user_ref = ref.get()[str(username)]
+    except Exception:
+        return redirect(url_for('.login', location=location))
+    finally:
+        if (checkAdminToken(idToken, username) == 1):
+            return redirect(url_for('.login', location=location))
+        return(render_template("POS/AdminMini/addFeedback.html",location=location))
+
+@app.route('/<location>/add-feedback-confirm', methods=['POST'])
+def addQuestionConfirm(location):
+    idToken = session.get('token', None)
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    try:
+        user_ref = ref.get()[str(username)]
+    except Exception:
+        return redirect(url_for('.login', location=location))
+    finally:
+        if (checkAdminToken(idToken, username) == 1):
+            return redirect(url_for('.login', location=location))
+
+        request.parameter_storage_class = ImmutableOrderedMultiDict
+        rsp = dict((request.form))
+        print(rsp)
+        qName = rsp['q-name']
+        qId = str(uuid.uuid4()).replace("-","")
+        qDict = {qId:
+            {'ans':{},
+             'info':{
+                 "name":qName,
+                 "maxScore":int(rsp['max']),
+                 "day":{
+                     "currday":int(datetime.datetime.now().weekday()),
+                     "count":0,
+                     "currentScore":0.0,
+                     "totalScore":0
+                 },
+                 "week":{
+                     "currweek":int(datetime.datetime.now().isocalendar()[1]),
+                     "count":0,
+                     "currentScore":0.0,
+                     "totalScore":0
+                 },
+                 "month":{
+                     "currmonth":int(datetime.datetime.now().month),
+                     "count":0,
+                     "currentScore":0.0,
+                     "totalScore":0
+                 }
+             }
+             }}
+        del rsp['q-name']
+        del rsp['max']
+        for k in range(0,int(len(rsp)/2)):
+            nameKey = 'name-' + str(k+1)
+            scoreKey = 'prce-' + str(k+1)
+            print(rsp[nameKey])
+            ansKey = str(uuid.uuid4()).replace("-","")
+            ansDict = {ansKey:{
+                "name":rsp[nameKey],
+                "score":int(rsp[scoreKey])
+            }}
+            qDict[qId]['ans'].update(ansDict)
+
+        qRef = db.reference('/restaurants/' + estNameStr + '/' +location+ '/feedback')
+        qRef.update(qDict)
+        return(redirect(url_for("panel",location=location)))
 
 ##########CUSTOMER END###########
 
@@ -1489,19 +1578,33 @@ def collectFeedback(location):
     del rsp['comment']
     newFeedKeys = list(rsp.keys())
     feedKeys = list(curr_feedback.keys())
-    for keys in feedKeys:
-        currScore = curr_feedback[keys]['info']['totalScore']
-        ansSize = curr_feedback[keys]['info']['count']
-        addScore = curr_feedback[keys]['ans'][rsp[keys]]['score']
-        currScore += addScore
-        ansSize += 1
-        newDispScore = round(float(currScore)/float(ansSize),2)
-        qFeedbackRef = db.reference('/restaurants/' + estNameStr + '/'+ location + '/feedback/' + keys + '/info')
-        qFeedbackRef.update({
-            'count':ansSize,
-            'currentScore': newDispScore,
-            'totalScore':currScore
-        })
+    timeScale = ['day','week','month']
+    timeScaleVal = [int(datetime.datetime.now(tzGl[0]).weekday()),int(datetime.datetime.now(tzGl[0]).isocalendar()[1]),int(datetime.datetime.now(tzGl[0]).month)]
+    for tms in range(len(timeScale)):
+        for keys in feedKeys:
+            currScore = curr_feedback[keys]['info'][timeScale[tms]]['totalScore']
+            ansSize = curr_feedback[keys]['info'][timeScale[tms]]['count']
+            addScore = curr_feedback[keys]['ans'][rsp[keys]]['score']
+            timeKey = "curr" + str(timeScale[tms])
+            timeVal = curr_feedback[keys]['info'][timeScale[tms]][timeKey]
+
+            currScore += addScore
+            ansSize += 1
+            newDispScore = round(float(currScore)/float(ansSize),2)
+            qFeedbackRef = db.reference('/restaurants/' + estNameStr + '/'+ location + '/feedback/' + keys + '/info/' + str(timeScale[tms]))
+            if(timeVal == timeScaleVal[tms]):
+                qFeedbackRef.update({
+                    'count':ansSize,
+                    'currentScore': newDispScore,
+                    'totalScore':currScore
+                })
+            else:
+                qFeedbackRef.update({
+                    timeKey:timeScaleVal[tms],
+                    'count':1,
+                    'currentScore': addScore,
+                    'totalScore':addScore
+                })
     return(redirect(url_for("payQSR",location=location)))
 
 @app.route('/<location>/pay')

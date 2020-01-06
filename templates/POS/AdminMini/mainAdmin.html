@@ -176,14 +176,24 @@
 
     {% for key_feed, feed in feedback.items() %}
 
-    <h4>{{feed.info.name}} <a class="btn btn-sm btn-danger" href="rem-feedback~{{key_feed}}" role="button"><i class="fas fa-times-circle"></i></a><br></h4>
-    <h5>Current Score: {{feed.info.currentScore}}/{{feed.info.maxScore}} <br>Sample Size: {{feed.info.count}} </h5><br>
+    <h4>{{feed.info.name|capitalize}} <a class="btn btn-sm btn-danger" href="rem-feedback~{{key_feed}}" role="button"><i class="fas fa-times-circle"></i></a><br></h4>
+    <br>
+    <h5>Daily</h5>
+    <h6>Current Score: {{feed.info.day.currentScore}}/{{feed.info.maxScore}} <br>Sample Size: {{feed.info.day.count}} </h6><br>
+    <br>
+
+    <h5>Weekly</h5>
+    <h6>Current Score: {{feed.info.week.currentScore}}/{{feed.info.maxScore}} <br>Sample Size: {{feed.info.week.count}} </h6><br>
+    <br>
+
+    <h5>Monthly</h5>
+    <h6>Current Score: {{feed.info.month.currentScore}}/{{feed.info.maxScore}} <br>Sample Size: {{feed.info.month.count}} </h6><br>
+    <br>
+
 
     <h4>Answers</h4><br>
-    <a class="btn btn-success" href="add-feedback-ans~{{key_feed}}" role="button">Add Response <i class="fas fa-plus"></i></a><br>
-    <br>
     {% for key_ans, v_ans in feed.ans.items() %}
-    <h5>{{v_ans.name}} <a class="btn btn-sm btn-danger" href="rem-resp~{{key_feed}}~{{key_ans}}" role="button"><i class="fas fa-times-circle"></i></a></h5><h5>Score: {{v_ans.score}}</h5><br>
+    <h5>{{v_ans.name|capitalize}}  (Score: {{v_ans.score}})</h5>
     {% endfor %}
     <br>
     <hr>
