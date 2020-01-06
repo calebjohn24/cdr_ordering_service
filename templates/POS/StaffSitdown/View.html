@@ -291,6 +291,7 @@
     <div id="menu2" class="container tab-pane fade"><br>
       <div class="container">
         {% for key_ord, ord in orders.items() %}
+        {% if ord.ticket %}
         <h3>Table #{{ord.table}}</h3><br>
         {% for key_key_ord, ord_ord in ord.ticket.items() %}
         {% for key_ord_itm, ord_itm in ord_ord.items() %}
@@ -344,6 +345,7 @@
 
 
         <hr><br>
+        {% endif %}
         {%endfor%}
         <br><br><br>
       </div>

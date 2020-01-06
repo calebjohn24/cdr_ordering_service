@@ -1494,8 +1494,28 @@ def kioskCartQSR(location):
 
 @app.route('/<location>/collect-feedback')
 def dispFeedBack(location):
+    feedback_ref = db.reference('/restaurants/' + estNameStr + '/'+ location + '/feedback')
+    feedback = dict(feedback_ref.get())
+    return(render_template("Customer/Sitdown/feedback.html",feedback=feedback))
 
-    return "-"
+
+@app.route('/<location>/collect-feedback-ans', methods=['POST'])
+def collectFeedback(location):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = dict((request.form))
+    orderToken = session.get('orderToken',None)
+    pathOrder = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
+    orderInfo = dict(db.reference(pathOrder).get())
+    now = datetime.datetime.now(tzGl[0])
+    feedback_ref = db.reference('/restaurants/' + estNameStr + '/'+ location + '/feedback')
+    comment_ref = db.reference('/restaurants/' + estNameStr + '/'+ location + '/comments/new')
+    comments = str(rsp['comment']) + " "
+    comment_ref.push({
+        "comment":comments,
+        "name":orderInfo['name'],
+        "timeStamp":str(now.hour) + ":" + str(now.minute) + " " + str(now.month) + "-" + str(now.day) + "-" + str(now.year)
+    })
+    return(redirect(url_for("payQSR",location=location)))
 
 @app.route('/<location>/pay')
 def payQSR(location):
