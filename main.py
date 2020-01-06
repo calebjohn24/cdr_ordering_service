@@ -997,94 +997,64 @@ def addCatX(location):
     return(render_template("POS/AdminMini/addMod.html",location=location,menu=menu,cat=cat,item=name))
     # return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=name)))
 
+@app.route('/<location>/rem-new-comment~<comment>')
+def remNewComment(location,comment):
+    idToken = session.get('token', None)
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    try:
+        user_ref = ref.get()[str(username)]
+    except Exception:
+        return redirect(url_for('.login', location=location))
+    finally:
+        if (checkAdminToken(idToken, username) == 1):
+            return redirect(url_for('.login', location=location))
+        item_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/comments/new/'+str(comment))
+        item_ref.delete()
+        return(redirect(url_for("panel",location=location)))
+
+@app.route('/<location>/rem-saved-comment~<comment>')
+def remSavedComment(location,comment):
+    idToken = session.get('token', None)
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    try:
+        user_ref = ref.get()[str(username)]
+    except Exception:
+        return redirect(url_for('.login', location=location))
+    finally:
+        if (checkAdminToken(idToken, username) == 1):
+            return redirect(url_for('.login', location=location))
+        item_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/comments/saved/'+str(comment))
+        item_ref.delete()
+        return(redirect(url_for("panel",location=location)))
+
+@app.route('/<location>/save-comment~<comment>')
+def saveComment(location,comment):
+    idToken = session.get('token', None)
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    try:
+        user_ref = ref.get()[str(username)]
+    except Exception:
+        return redirect(url_for('.login', location=location))
+    finally:
+        if (checkAdminToken(idToken, username) == 1):
+            return redirect(url_for('.login', location=location))
+        commRef = db.reference('/restaurants/' + estNameStr + '/' +location+ '/comments/new/'+str(comment))
+        commentData = dict(commRef.get())
+        commRef.delete()
+        savedRef = db.reference('/restaurants/' + estNameStr + '/' +location+ '/comments/saved')
+        savedRef.update({
+            comment:commentData
+        })
+        return(redirect(url_for("panel",location=location)))
+
 
 ##########CUSTOMER END###########
 
 
 ###Kiosk###
-
-def genMenuData(location,menu):
-    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu
-    menuInfo = db.reference(pathMenu).get()
-    ##print(menuInfo)
-    categories = list(menuInfo["categories"])
-
-    baseItms = []
-    descrips = []
-    exInfo = []
-    imgLink = []
-    for itms in categories:
-        ##print(list(menuInfo["categories"][itms]))
-        currArr2 = []
-        currArr3 = []
-        currArr4 = []
-        currArr5 = []
-        for ll in range(len(list(menuInfo["categories"][itms]))):
-            itx = (list(menuInfo["categories"][itms])[ll])
-            if(menuInfo["categories"][itms][itx]["descrip"] != "INACTIVE"):
-                itmArr = []
-                itx2 = itx.replace(" ","-")
-                currArr2.append([itx2,itx])
-                descrip = (menuInfo["categories"][itms][itx]["descrip"])
-                exinfo = (menuInfo["categories"][itms][itx]["extra-info"])
-                img = (menuInfo["categories"][itms][itx]["img"])
-                mN = (list(menuInfo["categories"][itms][itx]))
-                mN.remove("img")
-                mN.remove("descrip")
-                mN.remove("extra-info")
-                currArr3.append(descrip)
-                currArr4.append(exinfo)
-                currArr5.append(img)
-                for mods in mN:
-                    # #print(mods)
-                    max = int(menuInfo["categories"][itms][itx][mods]["max"]) - int(menuInfo["categories"][itms][itx][mods]["min"])
-                    min = int(menuInfo["categories"][itms][itx][mods]["min"])
-                    opt = list(menuInfo["categories"][itms][itx][mods]["info"])
-        baseItms.append(currArr2)
-        descrips.append(currArr3)
-        exInfo.append(currArr4)
-        imgLink.append(currArr5)
-        currArr2 = []
-        currArr3 = []
-        currArr4 = []
-        currArr5 = []
-    modsName = []
-    modsItm = []
-    for itms in categories:
-        catArr = []
-        catArr2 = []
-        for mx in list(menuInfo["categories"][itms]):
-            tmpArr = []
-            mNX = list(menuInfo["categories"][itms][mx])
-            # #print(menuInfo["categories"][itms][mx])
-            if(menuInfo["categories"][itms][mx]["descrip"] != "INACTIVE"):
-                mNX.remove("img")
-                mNX.remove("descrip")
-                mNX.remove("extra-info")
-                for tt in mNX:
-                    max = int(menuInfo["categories"][itms][mx][tt]["max"]) - int(menuInfo["categories"][itms][mx][tt]["min"])
-                    min = menuInfo["categories"][itms][mx][tt]["min"]
-                    tmpArr.append([tt,min,max])
-                catArr.append(tmpArr)
-        modsName.append(catArr)
-    for itms2 in categories:
-        catArr = []
-        for mx2 in list(menuInfo["categories"][itms2]):
-            tmpArr = []
-            mNX2 = list(menuInfo["categories"][itms2][mx2])
-            if(menuInfo["categories"][itms2][mx2]["descrip"] != "INACTIVE"):
-                mNX2.remove("img")
-                mNX2.remove("descrip")
-                mNX2.remove("extra-info")
-                for tt2 in mNX2:
-                    tmpArr2 = []
-                    for hnn in list(menuInfo["categories"][itms2][mx2][tt2]["info"]):
-                        tmpArr2.append([hnn,menuInfo["categories"][itms2][mx2][tt2]["info"][hnn]])
-                    tmpArr.append(tmpArr2)
-                catArr.append(tmpArr)
-        modsItm.append(catArr)
-    itmArr = [baseItms,categories,descrips,exInfo,modsName,modsItm,imgLink]
-    return itmArr
 
 def findMenu(location):
     day = dayNames[int(datetime.datetime.now(tzGl[0]).weekday())]
@@ -1532,7 +1502,6 @@ def collectFeedback(location):
             'currentScore': newDispScore,
             'totalScore':currScore
         })
-
     return(redirect(url_for("payQSR",location=location)))
 
 @app.route('/<location>/pay')
