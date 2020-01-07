@@ -42,36 +42,31 @@ firebase_admin.initialize_app(cred, {
 storage_client = storage.Client.from_service_account_json('CedarChatbot-b443efe11b73.json')
 bucket = storage_client.get_bucket("cedarchatbot.appspot.com")
 
-sqRef = db.reference(str('/restaurants/' + estNameStr))
-##print(sqRef.get())
-squareToken = sqRef.get()["sq-token"]
+
 promoPass = "promo-" + str(estName)
 addPass = "add-" + str(estName)
 remPass = "remove-" + str(estName)
 #sh = gc.open('TestRaunt')
 webLink = "sms:+" + botNumber + "?body=order"
-sender = 'receipts@cedarrobots.com'
-emailPass = "Cedar2421!"
-smtpObj = smtplib.SMTP_SSL("smtp.zoho.com", 465)
+sender = 'cedarrestaurantsbot@gmail.com'
+emailPass = "cda33d07-f6bd-479e-806f-5d039ae2fa2d"
+smtpObj = smtplib.SMTP_SSL("smtp.gmail.com", 465)
 smtpObj.login(sender, emailPass)
-squareClient = Client(
-    access_token=squareToken,
-    environment='production',
-)
+
 dayNames = ["MON", "TUE", "WED", "THURS", "FRI", "SAT", "SUN"]
 global locationsPaths
 locationsPaths = {}
-UPLOAD_FOLDER = estNameStr+"/imgs/"
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 app = Flask(__name__)
 sslify = SSLify(app)
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 scKey = uuid.uuid4()
 app.secret_key = scKey
 
+'''
 api_locations = squareClient.locations
 mobile_authorization_api = squareClient.mobile_authorization
 result = api_locations.list_locations()
+'''
 locationsPaths = {}
 tzGl = []
 
@@ -82,7 +77,17 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-def getSquare():
+def getSquare(estNameStr):
+    sqRef = db.reference(str('/restaurants/' + estNameStr))
+    ##print(sqRef.get())
+    squareToken = dict(sqRef.get())["sq-token"]
+    squareClient = Client(
+        access_token=squareToken,
+        environment='production',
+    )
+    api_locations = squareClient.locations
+    mobile_authorization_api = squareClient.mobile_authorization
+    result = api_locations.list_locations()
     if result.is_success():
         # The body property is a list of locations
         locations = result.body['locations']
@@ -151,8 +156,27 @@ def login(location):
     return render_template("POS/AdminMini/login.html", btn=str("admin"), restName=estNameStr,locName=location)
 
 @app.route('/<location>/forgot-password', methods=["GET"])
-def pwReset():
+def pwReset(location):
     return render_template("POS/AdminMini/forgot-password.html", btn=str("admin"), restName=estNameStr)
+
+
+@app.route('/<location>/forgot-password', methods=["POST"])
+def pwResetConfirm(location):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = dict((request.form))
+    email = str(rsp['email']).replace(".","-")
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info/' + email)
+    user = ref.get()
+    if(user != None):
+
+        alert = "Password Reset Email From cedarrestaurantsbot@gmail.com Sent"
+        type="success"
+    else:
+        alert = "Invalid Email Please Go Back and Re-Enter Your Email or Create a New Account"
+        type = "danger"
+    return render_template("POS/AdminMini/pwsent.html", alert=alert, type=type)
+    # return render_template("POS/AdminMini/forgot-password.html", btn=str("admin"), restName=estNameStr)
+
 
 @app.route('/<location>/admin', methods=["POST"])
 def loginPageCheck(location):
@@ -184,6 +208,7 @@ def loginPageCheck(location):
 
 @app.route('/<location>/admin-panel', methods=["GET"])
 def panel(location):
+    getSquare(estNameStr)
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -199,7 +224,6 @@ def panel(location):
     user_ref.update({
         'time': time.time()
     })
-    getSquare()
     discRef = db.reference('/restaurants/' + estNameStr + '/'+ location + '/discounts')
     discDict = dict(discRef.get())
     discMenus = list(discDict.keys())
@@ -618,16 +642,20 @@ def editImg(location,menu,cat,item):
 
 @app.route('/<location>/addImgX~<menu>~<cat>~<item>', methods=["POST"])
 def editImgX(location,menu,cat,item):
+    UPLOAD_FOLDER = estNameStr+"/imgs/"
     file = request.files['img']
     filename = secure_filename(file.filename)
-    file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+    file.save(os.path.join(UPLOAD_FOLDER, filename))
     old_img_ref = dict(db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+cat+"/"+str(item)).get())
     old_img = str(old_img_ref["img"]).split(str(estNameStr)+str("/"))
-    imgUUID = str(estNameStr)+str("/")+str(old_img[1])
-    bucket.delete_blob(imgUUID)
+    print(old_img)
+    if(len(old_img) != 1):
+        imgUUID = str(estNameStr)+str("/")+str(old_img[1])
+        bucket.delete_blob(imgUUID)
     upName = "/"+estNameStr+"/imgs/"+file.filename
     blob = bucket.blob(upName)
     fileId = str(uuid.uuid4())
+    print(fileId)
     d = estNameStr + "/" + fileId
     d = bucket.blob(d)
     d.upload_from_filename(str(str(UPLOAD_FOLDER)+"/"+str(file.filename)),content_type='image/jpeg')
@@ -880,6 +908,7 @@ def addItem(location,menu,cat):
 
 @app.route("/<location>/addItmX~<menu>~<cat>" , methods=["POST","GET"])
 def addItem2(location,menu,cat):
+    UPLOAD_FOLDER = estNameStr+"/imgs/"
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -908,7 +937,7 @@ def addItem2(location,menu,cat):
             return(render_template("POS/AdminMini/addMod.html",location=location,menu=menu,cat=cat,item=name))
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            file.save(os.path.join(UPLOAD_FOLDER, filename))
             upName = "/"+estNameStr+"/imgs/"+file.filename
             blob = bucket.blob(upName)
             fileId = str(uuid.uuid4())
@@ -948,6 +977,7 @@ def addCat(location,menu):
 
 @app.route("/<location>/addcatSubmit", methods=["POST","GET"])
 def addCatX(location):
+    UPLOAD_FOLDER = estNameStr+"/imgs/"
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -977,7 +1007,7 @@ def addCatX(location):
             return(render_template("POS/AdminMini/addMod.html",location=location,menu=menu,cat=cat,item=name))
         if file and allowed_file(file.filename):
             filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+            file.save(os.path.join(UPLOAD_FOLDER, filename))
             upName = "/"+estNameStr+"/imgs/"+file.filename
             blob = bucket.blob(upName)
             fileId = str(uuid.uuid4())
@@ -1361,7 +1391,7 @@ def kiosk2QSR(location,cat,itm):
             except Exception as e:
                 pass
     price = float(qty*unitPrice)
-    dispStr += "  |Notes: " +notes + "  ($" + "{:0,.2f}".format(price) + ")"
+    dispStr += "  |Notes: " +notes + "  (" + "${:0,.2f}".format(price) + ")"
     menu = session.get('menu', None)
     orderToken = session.get('orderToken',None)
     ##print(orderToken)
@@ -1512,7 +1542,6 @@ def kioskCart(location):
         reqRefkey = db.reference(pathRequestkey)
         reqRefkey.update({"table":tableNum,"type":"order","token":orderToken})
         cartRef.delete()
-        # #print(cart)
     except Exception:
         pass
     menuInfo = db.reference(pathMenu).get()
@@ -1648,7 +1677,6 @@ def payQSR(location):
         cartKeys = list(cart.keys())
         cpnBool = orderInfo["cpn"]
         pathCpn =  db.reference('/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken)
-        # pathCpn.update({"cpn":1})
         items = []
         for ck in cartKeys:
             ckKeys = list(cart[ck].keys())
@@ -1829,12 +1857,7 @@ def kioskClear(location):
     orderToken = session.get('orderToken',None)
     alertPath = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
     clearAlert = db.reference(alertPath).update({"alert":"null"})
-
-    return(render_template("Customer/Sitdown/mainKiosk.html",location=location,
-                           cats=cats,baseItms=baseItms,descrips=descrips,exInfo=exInfo,imgData=imgData,
-                           modsName=modsName,modsItm=modsItm,btn=str("sitdown-additms"),restName=str(estNameStr.capitalize()),
-                           baseitmCart=baseitmCart,modsCart=modsCart,notesCart=notesCart,qtysCart=qtysCart,imgCart=imgCart,
-                           cartKeys=cartKeys,btn2="itmRemove",btn3="cartAdd"))
+    return(redirect(url_for("sitdownMenu", location=location)))
 
 
 @app.route('/<location>/sendReq', methods=["POST"])
@@ -2267,7 +2290,6 @@ def GenReaderCode(locationX,type):
 
 if __name__ == '__main__':
     try:
-        getSquare()
         ##print(locationsPaths.keys())
         app.secret_key = scKey
         sslify = SSLify(app)
