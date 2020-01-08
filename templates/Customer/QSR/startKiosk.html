@@ -50,12 +50,12 @@
     <h3 class="h3 mb-0 text-gray-800">Welcome to {{restName}} {{locName}}</h3>
   </div>
   <hr>
-  <form method="POST" action="{{btn}}">
+  <form method="POST" id="start" action="{{btn}}">
   <div class="input-group mb-3">
     <div class="input-group-prepend">
       <span class="input-group-text" id="inputGroup-sizing-default">Phone Number</span>
     </div>
-    <input type="number" name="number" placeholder="1 555 555 5555" size="11" maxlength=11 class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+    <input type="number" name="number" placeholder="1 555 555 5555" size="11" maxlength=11 class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" required>
   </div>
   <hr>
 
@@ -63,16 +63,15 @@
     <div class="input-group-prepend">
       <span class="input-group-text" id="inputGroup-sizing-default">Name</span>
     </div>
-    <input type="text" name="name" size="11" maxlength=11 class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default">
+    <input type="text" name="name" size="11" maxlength=11 class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" required>
     <br>
 
   </div><hr>
 <h4>Is This Order For Here or Togo?</h4>
   <br>
   <h1>
-  <div class="d-inline-flex p-2">
-    <button type="submit" name="togo" value = "togo" class="btn-lg btn-primary mb-2">To Go</button>
-  </div>
+
+    <input type="submit" name="togo"  value = "To Go" class="btn-lg btn-primary">
 </h1>
   <br>
 
@@ -83,7 +82,7 @@
     <div>
       <br>
     <h3>Enter Table Number</h3><br>
-    <input class="number" min="1" name="table" required><br><br>
+    <input class="number" min="1" name="table"><br><br>
     <button type="submit" name="togo" value = "here" class="btn-lg btn-success">Next</button>
     </div>
     </div>

@@ -43,9 +43,6 @@ storage_client = storage.Client.from_service_account_json('CedarChatbot-b443efe1
 bucket = storage_client.get_bucket("cedarchatbot.appspot.com")
 
 
-promoPass = "promo-" + str(estName)
-addPass = "add-" + str(estName)
-remPass = "remove-" + str(estName)
 #sh = gc.open('TestRaunt')
 webLink = "sms:+" + botNumber + "?body=order"
 sender = 'cedarrestaurantsbot@gmail.com'
@@ -151,25 +148,25 @@ def checkAdminToken(idToken, username):
 
 
 
-@app.route('/<location>/admin-login', methods=["GET"])
-def login(location):
+@app.route('/<estNameStr>/<location>/admin-login', methods=["GET"])
+def login(estNameStr,location):
     return render_template("POS/AdminMini/login.html", btn=str("admin"), restName=estNameStr,locName=location)
 
-@app.route('/<location>/reset-link~<token>~<user>', methods=["GET"])
-def pwResetLink(location,token,user):
+@app.route('/<estNameStr>/<location>/reset-link~<token>~<user>', methods=["GET"])
+def pwResetLink(estNameStr,location,token,user):
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     try:
         token_check = dict(ref.get())[user]['token']
         if(token == token_check):
             return render_template("POS/AdminMini/changepw.html", token=token, user=user)
         else:
-            return(redirect(url_for("login",location=location)))
+            return(redirect(url_for("login",estNameStr=estNameStr,location=location)))
     except Exception as e:
-        return(redirect(url_for("login",location=location)))
+        return(redirect(url_for("login",estNameStr=estNameStr,location=location)))
 
 
-@app.route('/<location>/pw-reset-confirm~<token>~<user>', methods=["POST"])
-def pwResetCheck(location,token,user):
+@app.route('/<estNameStr>/<location>/pw-reset-confirm~<token>~<user>', methods=["POST"])
+def pwResetCheck(estNameStr,location,token,user):
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     try:
         token_check = dict(ref.get())[user]['token']
@@ -187,18 +184,18 @@ def pwResetCheck(location,token,user):
             })
             return render_template("POS/AdminMini/alertpw.html")
         else:
-            return(redirect(url_for("login",location=location)))
+            return(redirect(url_for("login",estNameStr=estNameStr,location=location)))
     except Exception as e:
-        return(redirect(url_for("login",location=location)))
+        return(redirect(url_for("login",estNameStr=estNameStr,location=location)))
 
 
-@app.route('/<location>/forgot-password', methods=["GET"])
-def pwReset(location):
+@app.route('/<estNameStr>/<location>/forgot-password', methods=["GET"])
+def pwReset(estNameStr,location):
     return render_template("POS/AdminMini/forgot-password.html", btn=str("admin"), restName=estNameStr)
 
 
-@app.route('/<location>/forgot-password', methods=["POST"])
-def pwResetConfirm(location):
+@app.route('/<estNameStr>/<location>/forgot-password', methods=["POST"])
+def pwResetConfirm(estNameStr,location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = dict((request.form))
     email = str(rsp['email']).replace(".","-")
@@ -206,11 +203,10 @@ def pwResetConfirm(location):
     user = ref.get()
     if(user != None):
         mainLink = "https://f51ea5ce.ngrok.io/"
-        write_str = mainLink + location+ "/reset-link~" + user['token'] + "~" + email
-        SUBJECT = "Password Reset for " + str(estNameStr).capitalize() + " "+ str(location).capitalize()  + " Admin Account"
+        write_str = mainLink + estNameStr+"/"+location+ "/reset-link~" + user['token'] + "~" + email
+        SUBJECT = "Password Reset for " + str(estNameStr).capitalize() + " "+ location.capitalize()  + " Admin Account"
         message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
         smtpObj.sendmail(sender, [str(rsp['email'])], message)
-        smtpObj.close()
         alert = "Password Reset Email From cedarrestaurantsbot@gmail.com Sent"
         type="success"
     else:
@@ -220,8 +216,8 @@ def pwResetConfirm(location):
     # return render_template("POS/AdminMini/forgot-password.html", btn=str("admin"), restName=estNameStr)
 
 
-@app.route('/<location>/admin', methods=["POST"])
-def loginPageCheck(location):
+@app.route('/<estNameStr>/<location>/admin', methods=["POST"])
+def loginPageCheck(estNameStr,location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     email = str(rsp["emailAddr"])
@@ -240,16 +236,16 @@ def loginPageCheck(location):
             })
             session['user'] = email
             session['token'] = LoginToken
-            return redirect(url_for('panel',location=location))
+            return redirect(url_for('panel',estNameStr=estNameStr,location=location))
         else:
             return render_template("POS/AdminMini/login2.html", btn=str("admin"), restName=estNameStr, locName=location)
     except Exception as e:
-        ##print(e)
+        print(e)
         return render_template("POS/AdminMini/login2.html", btn=str("admin"), restName=estNameStr, locName=location)
 
 
-@app.route('/<location>/admin-panel', methods=["GET"])
-def panel(location):
+@app.route('/<estNameStr>/<location>/admin-panel', methods=["GET"])
+def panel(estNameStr,location):
     getSquare(estNameStr)
     idToken = session.get('token', None)
     username = session.get('user', None)
@@ -257,9 +253,9 @@ def panel(location):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(idToken, username) == 1):
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
@@ -291,13 +287,13 @@ def panel(location):
     comments = dict(comment_ref.get())
     return render_template("POS/AdminMini/mainAdmin.html",
                            restName=str(estNameStr).capitalize(), feedback=feedback,comments=comments,
-                           locName=str(location).capitalize(),
+                           locName=location.capitalize(),
                            discNames=discNames,discItms=discItms,
                            discTypes=discTypes,discMenu=discMenu,
                            discAmts=discAmts,discLimMin=discLimMin)
 
-@app.route('/<location>/addAdmin', methods=["POST"])
-def addAdmin(location):
+@app.route('/<estNameStr>/<location>/addAdmin', methods=["POST"])
+def addAdmin(estNameStr,location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     email = session.get('user', None)
@@ -311,12 +307,12 @@ def addAdmin(location):
         if ((pbkdf2_sha256.verify(pw, user["password"])) == True):
             return(render_template("POS/AdminMini/addAdmin.html",users=users))
         else:
-            return redirect(url_for('panel',location=location))
+            return redirect(url_for('panel',estNameStr=estNameStr,location=location))
     except Exception:
-        return redirect(url_for('panel',location=location))
+        return redirect(url_for('panel',estNameStr=estNameStr,location=location))
 
-@app.route('/<location>/confirmAdmin', methods=["POST"])
-def confirmAdmin(location):
+@app.route('/<estNameStr>/<location>/confirmAdmin', methods=["POST"])
+def confirmAdmin(estNameStr,location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     # email = session.get('user', None)
@@ -332,10 +328,10 @@ def confirmAdmin(location):
             "token":"uuid"
         }
     })
-    return redirect(url_for('panel',location=location))
+    return redirect(url_for('panel',estNameStr=estNameStr,location=location))
 
-@app.route('/<location>/editEmployee', methods=["POST"])
-def editEmployee(location):
+@app.route('/<estNameStr>/<location>/editEmployee', methods=["POST"])
+def editEmployee(estNameStr,location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     email = session.get('user', None)
@@ -347,34 +343,34 @@ def editEmployee(location):
         if ((pbkdf2_sha256.verify(pw, user["password"])) == True):
             return(render_template("POS/AdminMini/editEmp.html"))
         else:
-            return redirect(url_for('panel',location=location))
+            return redirect(url_for('panel',estNameStr=estNameStr,location=location))
     except Exception:
-        return redirect(url_for('panel',location=location))
+        return redirect(url_for('panel',estNameStr=estNameStr,location=location))
 
-@app.route('/<location>/confirmEmpCode', methods=["POST"])
-def confirmEmployeeCode(location):
+@app.route('/<estNameStr>/<location>/confirmEmpCode', methods=["POST"])
+def confirmEmployeeCode(estNameStr,location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     email = session.get('user', None)
     code = rsp["code"]
     hash = pbkdf2_sha256.hash(code)
-    ref = db.reference('/restaurants/' + estNameStr + '/' + str(location) + '/employee')
+    ref = db.reference('/restaurants/' + estNameStr + '/' + location + '/employee')
     ref.update({
         'code': hash
     })
-    return redirect(url_for('panel',location=location))
+    return redirect(url_for('panel',estNameStr=estNameStr,location=location))
 
-@app.route('/<location>/remUser~<user>')
-def remUser(location,user):
+@app.route('/<estNameStr>/<location>/remUser~<user>')
+def remUser(estNameStr,location,user):
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(idToken, username) == 1):
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -383,19 +379,19 @@ def remUser(location,user):
     if(username != user):
         rem_ref = db.reference('/restaurants/' + estNameStr + '/admin-info/' + user)
         rem_ref.delete()
-    return redirect(url_for('panel',location=location))
+    return redirect(url_for('panel',estNameStr=estNameStr,location=location))
 
-@app.route('/<location>/schedule-<day>', methods=["GET"])
-def scheduleSet(location,day):
+@app.route('/<estNameStr>/<location>/schedule-<day>', methods=["GET"])
+def scheduleSet(estNameStr,location,day):
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(idToken, username) == 1):
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -435,15 +431,15 @@ def scheduleSet(location,day):
     timeDict.update({"End-of-Day":"23:59"})
     return(render_template("POS/AdminMini/listSchedule.html",day=day,menuTotals=menuTotals,timeDict=timeDict,menuTimes=menuTimes,menus=menus,menuTimesStr=menuTimesStr))
 
-@app.route('/<location>/remTs~<day>~<menu>')
-def remTimeSlot(location,day,menu):
+@app.route('/<estNameStr>/<location>/remTs~<day>~<menu>')
+def remTimeSlot(estNameStr,location,day,menu):
     menu = str(menu).replace("-"," ")
     menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/schedule/'+str(day)+"/"+str(menu))
     menu_ref.delete()
     return(redirect(url_for("scheduleSet",location=location,day=day)))
 
-@app.route('/<location>/schedMenu~<day>~<menu>~<timeVal>', methods=["POST"])
-def editTimeSlot(location,day,menu,timeVal):
+@app.route('/<estNameStr>/<location>/schedMenu~<day>~<menu>~<timeVal>', methods=["POST"])
+def editTimeSlot(estNameStr,location,day,menu,timeVal):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     new_menu = str(rsp["menu"])
@@ -453,8 +449,8 @@ def editTimeSlot(location,day,menu,timeVal):
     menu_ref.update({new_menu:float(timeVal)})
     return(redirect(url_for("scheduleSet",location=location,day=day)))
 
-@app.route('/<location>/editMenuTime~<day>~<menu>', methods=["POST"])
-def editMenuSlot(location,day,menu):
+@app.route('/<estNameStr>/<location>/editMenuTime~<day>~<menu>', methods=["POST"])
+def editMenuSlot(estNameStr,location,day,menu):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     hour = float(rsp["hour"])
@@ -464,8 +460,8 @@ def editMenuSlot(location,day,menu):
     menu_ref.update({menu:newTime})
     return(redirect(url_for("scheduleSet",location=location,day=day)))
 
-@app.route('/<location>/addTs~<day>', methods=["POST"])
-def addTimeSlot(location,day):
+@app.route('/<estNameStr>/<location>/addTs~<day>', methods=["POST"])
+def addTimeSlot(estNameStr,location,day):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     hour = float(rsp["hour"])
@@ -476,17 +472,17 @@ def addTimeSlot(location,day):
     menu_ref.update({menu:newTime})
     return(redirect(url_for("scheduleSet",location=location,day=day)))
 
-@app.route('/<location>/create-menu', methods=["GET"])
-def createMenu(location):
+@app.route('/<estNameStr>/<location>/create-menu', methods=["GET"])
+def createMenu(estNameStr,location):
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(idToken, username) == 1):
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -494,26 +490,26 @@ def createMenu(location):
     })
     return(render_template("POS/AdminMini/createMenu.html"))
 
-@app.route('/<location>/add-menu', methods=["POST"])
-def addMenu(location):
+@app.route('/<estNameStr>/<location>/add-menu', methods=["POST"])
+def addMenu(estNameStr,location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = dict((request.form))
     new_menu = rsp["name"]
     menu_ref = db.reference('/restaurants/' + estNameStr + '/'+location+"/menu")
     menu_ref.update({str(new_menu):{"active":False}})
-    return(redirect(url_for("viewMenu",location=location)))
+    return(redirect(url_for("viewMenu",estNameStr=estNameStr,location=location)))
 
-@app.route('/<location>/view-menu')
-def viewMenu(location):
+@app.route('/<estNameStr>/<location>/view-menu')
+def viewMenu(estNameStr,location):
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(idToken, username) == 1):
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -523,17 +519,17 @@ def viewMenu(location):
     menu_keys = list((menu_ref.get()).keys())
     return(render_template("POS/AdminMini/dispMenu.html",menus=menu_keys))
 
-@app.route('/<location>/edit-menu-<menu>')
-def editMenu(location,menu):
+@app.route('/<estNameStr>/<location>/edit-menu-<menu>')
+def editMenu(estNameStr,location,menu):
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(idToken, username) == 1):
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -547,17 +543,17 @@ def editMenu(location,menu):
     return(render_template("POS/AdminMini/menuDetails.html",cats=cats,menu=menu))
 
 
-@app.route('/<location>/rem-cat-<menu>~<category>')
-def remCategories(location,menu,category):
+@app.route('/<estNameStr>/<location>/rem-cat-<menu>~<category>')
+def remCategories(estNameStr,location,menu,category):
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(idToken, username) == 1):
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -565,19 +561,19 @@ def remCategories(location,menu,category):
     })
     menu_data = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+category).delete()
     # return(render_template("POS/AdminMini/catDetails.html",items=items,menu=menu,cat=category))
-    return(redirect(url_for("viewMenu",location=location)))
+    return(redirect(url_for("viewMenu",estNameStr=estNameStr,location=location)))
 
-@app.route('/<location>/view-cat-<menu>~<category>')
-def viewCategories(location,menu,category):
+@app.route('/<estNameStr>/<location>/view-cat-<menu>~<category>')
+def viewCategories(estNameStr,location,menu,category):
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(idToken, username) == 1):
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -591,25 +587,25 @@ def viewCategories(location,menu,category):
             items.append(itx2)
         return(render_template("POS/AdminMini/catDetails.html",items=items,menu=menu,cat=category))
     except Exception as e:
-        return(redirect(url_for("viewMenu",location=location)))
+        return(redirect(url_for("viewMenu",estNameStr=estNameStr,location=location)))
 
-@app.route('/<location>/remOpt~<menu>~<cat>~<item>~<mods>~<opt>')
-def remOpt(location,menu,cat,item,mods,opt):
+@app.route('/<estNameStr>/<location>/remOpt~<menu>~<cat>~<item>~<mods>~<opt>')
+def remOpt(estNameStr,location,menu,cat,item,mods,opt):
     opt_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+cat+"/"+item+"/"+mods+"/info/"+opt)
     opt_ref.delete()
     return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
 
-@app.route('/<location>/addOpt~<menu>~<cat>~<item>~<mods>')
-def addOpt(location,menu,cat,item,mods):
+@app.route('/<estNameStr>/<location>/addOpt~<menu>~<cat>~<item>~<mods>')
+def addOpt(estNameStr,location,menu,cat,item,mods):
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(idToken, username) == 1):
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -618,8 +614,8 @@ def addOpt(location,menu,cat,item,mods):
     return(render_template("POS/AdminMini/addOpt.html",menu=menu,cat=cat,item=item,mods=mods))
 
 
-@app.route('/<location>/addOptX~<menu>~<cat>~<item>~<mods>', methods=["POST"])
-def addOptX(location,menu,cat,item,mods):
+@app.route('/<estNameStr>/<location>/addOptX~<menu>~<cat>~<item>~<mods>', methods=["POST"])
+def addOptX(estNameStr,location,menu,cat,item,mods):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     name = str(rsp["name"])
@@ -628,8 +624,8 @@ def addOptX(location,menu,cat,item,mods):
     opt_ref.update({name:price})
     return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
 
-@app.route('/<location>/editMax~<menu>~<cat>~<item>~<mods>', methods=["POST"])
-def editMax(location,menu,cat,item,mods):
+@app.route('/<estNameStr>/<location>/editMax~<menu>~<cat>~<item>~<mods>', methods=["POST"])
+def editMax(estNameStr,location,menu,cat,item,mods):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     max = int(rsp["max"])
@@ -637,8 +633,8 @@ def editMax(location,menu,cat,item,mods):
     opt_ref.update({"max":max})
     return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
 
-@app.route('/<location>/editMin~<menu>~<cat>~<item>~<mods>', methods=["POST"])
-def editMin(location,menu,cat,item,mods):
+@app.route('/<estNameStr>/<location>/editMin~<menu>~<cat>~<item>~<mods>', methods=["POST"])
+def editMin(estNameStr,location,menu,cat,item,mods):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     min = int(rsp["min"])
@@ -646,8 +642,8 @@ def editMin(location,menu,cat,item,mods):
     opt_ref.update({"min":min})
     return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
 
-@app.route('/<location>/editDescrip~<menu>~<cat>~<item>', methods=["POST"])
-def editDescrip(location,menu,cat,item):
+@app.route('/<estNameStr>/<location>/editDescrip~<menu>~<cat>~<item>', methods=["POST"])
+def editDescrip(estNameStr,location,menu,cat,item):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     descrip = str(rsp["descrip"])
@@ -655,8 +651,8 @@ def editDescrip(location,menu,cat,item):
     opt_ref.update({"descrip":descrip})
     return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
 
-@app.route('/<location>/editExtras~<menu>~<cat>~<item>', methods=["POST"])
-def editExtra(location,menu,cat,item):
+@app.route('/<estNameStr>/<location>/editExtras~<menu>~<cat>~<item>', methods=["POST"])
+def editExtra(estNameStr,location,menu,cat,item):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     extra = str(rsp["extra"])
@@ -664,17 +660,17 @@ def editExtra(location,menu,cat,item):
     opt_ref.update({"extra-info": extra})
     return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
 
-@app.route('/<location>/editImg~<menu>~<cat>~<item>')
-def editImg(location,menu,cat,item):
+@app.route('/<estNameStr>/<location>/editImg~<menu>~<cat>~<item>')
+def editImg(estNameStr,location,menu,cat,item):
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(idToken, username) == 1):
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -682,8 +678,8 @@ def editImg(location,menu,cat,item):
     })
     return(render_template("POS/AdminMini/editImg.html",menu=menu,cat=cat,item=item))
 
-@app.route('/<location>/addImgX~<menu>~<cat>~<item>', methods=["POST"])
-def editImgX(location,menu,cat,item):
+@app.route('/<estNameStr>/<location>/addImgX~<menu>~<cat>~<item>', methods=["POST"])
+def editImgX(estNameStr,location,menu,cat,item):
     UPLOAD_FOLDER = estNameStr+"/imgs/"
     file = request.files['img']
     filename = secure_filename(file.filename)
@@ -707,17 +703,17 @@ def editImgX(location,menu,cat,item):
     os.remove(estNameStr + "/imgs/" + filename)
     return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
 
-@app.route('/<location>/addCpn~<menu>~<category>~<item>~<modName>~<modItm>')
-def addCpn(location,menu,category,item,modName,modItm):
+@app.route('/<estNameStr>/<location>/addCpn~<menu>~<category>~<item>~<modName>~<modItm>')
+def addCpn(estNameStr,location,menu,category,item,modName,modItm):
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(idToken, username) == 1):
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -725,8 +721,8 @@ def addCpn(location,menu,category,item,modName,modItm):
     })
     return render_template("POS/AdminMini/addCpn.html",menu=menu,cat=category,item=item,modName=modName,modItm=modItm)
 
-@app.route('/<location>/addCpn2~<menu>~<category>~<item>~<modName>~<modItm>', methods=["POST"])
-def addCpn2(location,menu,category,item,modName,modItm):
+@app.route('/<estNameStr>/<location>/addCpn2~<menu>~<category>~<item>~<modName>~<modItm>', methods=["POST"])
+def addCpn2(estNameStr,location,menu,category,item,modName,modItm):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     type = rsp["type"]
@@ -747,20 +743,20 @@ def addCpn2(location,menu,category,item,modName,modItm):
         }
     })
     # return str(rsp) +"-"+str(menu)+"-"+str(category)+"-"+str(item)
-    return(redirect(url_for("panel",location=location)))
+    return(redirect(url_for("panel",estNameStr=estNameStr,location=location)))
 
 
-@app.route('/<location>/act-menu')
-def chooseMenu(location):
+@app.route('/<estNameStr>/<location>/act-menu')
+def chooseMenu(estNameStr,location):
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(idToken, username) == 1):
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -780,17 +776,17 @@ def chooseMenu(location):
 
 
 
-@app.route('/<location>/activate-menu-<menu>')
-def enableMenu(location,menu):
+@app.route('/<estNameStr>/<location>/activate-menu-<menu>')
+def enableMenu(estNameStr,location,menu):
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(idToken, username) == 1):
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -798,19 +794,19 @@ def enableMenu(location,menu):
     })
     menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu))
     menu_ref.update({"active":True})
-    return(redirect(url_for("panel",location=location)))
+    return(redirect(url_for("panel",estNameStr=estNameStr,location=location)))
 
-@app.route('/<location>/deactivate-menu-<menu>')
-def disableMenu(location,menu):
+@app.route('/<estNameStr>/<location>/deactivate-menu-<menu>')
+def disableMenu(estNameStr,location,menu):
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(idToken, username) == 1):
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -818,10 +814,10 @@ def disableMenu(location,menu):
     })
     menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu))
     menu_ref.update({"active":False})
-    return(redirect(url_for("panel",location=location)))
+    return(redirect(url_for("panel",estNameStr=estNameStr,location=location)))
 
 @app.route("/<location>/remitm~<menu>~<cat>~<item>")
-def removeItem(location,menu,cat,item):
+def removeItem(estNameStr,location,menu,cat,item):
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -830,9 +826,9 @@ def removeItem(location,menu,cat,item):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(idToken, username) == 1):
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -843,7 +839,7 @@ def removeItem(location,menu,cat,item):
     return(redirect(url_for("viewCategories",location=location,menu=menu,category=cat)))
 
 @app.route("/<location>/viewitm~<menu>~<cat>~<item>")
-def viewItem(location,menu,cat,item):
+def viewItem(estNameStr,location,menu,cat,item):
     # #print(menu,cat,item)
     idToken = session.get('token', None)
     username = session.get('user', None)
@@ -851,9 +847,9 @@ def viewItem(location,menu,cat,item):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(idToken, username) == 1):
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -881,16 +877,16 @@ def viewItem(location,menu,cat,item):
     return(render_template("POS/AdminMini/editItem.html",mods=mods,img=img,extra_info=extra_info,descrip=descrip,menu=menu,cat=cat,item=item))
 
 @app.route("/<location>/addMod-<menu>~<cat>~<item>")
-def addMod(location,menu,cat,item):
+def addMod(estNameStr,location,menu,cat,item):
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(idToken, username) == 1):
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -899,7 +895,7 @@ def addMod(location,menu,cat,item):
     return(render_template("POS/AdminMini/addMod2.html",location=location,menu=menu,cat=cat,item=item))
 
 @app.route("/<location>/addModX2~<menu>~<cat>~<item>", methods=["POST"])
-def addModX(location,menu,cat,item):
+def addModX(estNameStr,location,menu,cat,item):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     # return(str(rsp))
@@ -925,22 +921,22 @@ def addModX(location,menu,cat,item):
     return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
 
 @app.route("/<location>/remMod~<menu>~<cat>~<item>~<mod>")
-def remMod(location,menu,cat,item,mod):
+def remMod(estNameStr,location,menu,cat,item,mod):
     item_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+str(cat)+"/"+str(item)+"/"+str(mod))
     item_ref.delete()
     return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
 
 @app.route("/<location>/addItm~<menu>~<cat>")
-def addItem(location,menu,cat):
+def addItem(estNameStr,location,menu,cat):
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(idToken, username) == 1):
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -949,7 +945,7 @@ def addItem(location,menu,cat):
     return(render_template("POS/AdminMini/addItm.html",location=location,menu=menu,cat=cat))
 
 @app.route("/<location>/addItmX~<menu>~<cat>" , methods=["POST","GET"])
-def addItem2(location,menu,cat):
+def addItem2(estNameStr,location,menu,cat):
     UPLOAD_FOLDER = estNameStr+"/imgs/"
     idToken = session.get('token', None)
     username = session.get('user', None)
@@ -957,9 +953,9 @@ def addItem2(location,menu,cat):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(idToken, username) == 1):
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -999,16 +995,16 @@ def addItem2(location,menu,cat):
     return(render_template("POS/AdminMini/addMod.html",location=location,menu=menu,cat=cat,item=name))
 
 @app.route("/<location>/addcat~<menu>")
-def addCat(location,menu):
+def addCat(estNameStr,location,menu):
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(idToken, username) == 1):
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -1018,7 +1014,7 @@ def addCat(location,menu):
 
 
 @app.route("/<location>/addcatSubmit", methods=["POST","GET"])
-def addCatX(location):
+def addCatX(estNameStr,location):
     UPLOAD_FOLDER = estNameStr+"/imgs/"
     idToken = session.get('token', None)
     username = session.get('user', None)
@@ -1026,9 +1022,9 @@ def addCatX(location):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(idToken, username) == 1):
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -1069,50 +1065,50 @@ def addCatX(location):
     return(render_template("POS/AdminMini/addMod.html",location=location,menu=menu,cat=cat,item=name))
     # return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=name)))
 
-@app.route('/<location>/rem-new-comment~<comment>')
-def remNewComment(location,comment):
+@app.route('/<estNameStr>/<location>/rem-new-comment~<comment>')
+def remNewComment(estNameStr,location,comment):
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     finally:
         if (checkAdminToken(idToken, username) == 1):
-            return redirect(url_for('.login', location=location))
+            return redirect(url_for('.login',estNameStr=estNameStr,location=location))
         item_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/comments/new/'+str(comment))
         item_ref.delete()
-        return(redirect(url_for("panel",location=location)))
+        return(redirect(url_for("panel",estNameStr=estNameStr,location=location)))
 
-@app.route('/<location>/rem-saved-comment~<comment>')
-def remSavedComment(location,comment):
+@app.route('/<estNameStr>/<location>/rem-saved-comment~<comment>')
+def remSavedComment(estNameStr,location,comment):
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     finally:
         if (checkAdminToken(idToken, username) == 1):
-            return redirect(url_for('.login', location=location))
+            return redirect(url_for('.login',estNameStr=estNameStr,location=location))
         item_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/comments/saved/'+str(comment))
         item_ref.delete()
-        return(redirect(url_for("panel",location=location)))
+        return(redirect(url_for("panel",estNameStr=estNameStr,location=location)))
 
-@app.route('/<location>/save-comment~<comment>')
-def saveComment(location,comment):
+@app.route('/<estNameStr>/<location>/save-comment~<comment>')
+def saveComment(estNameStr,location,comment):
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     finally:
         if (checkAdminToken(idToken, username) == 1):
-            return redirect(url_for('.login', location=location))
+            return redirect(url_for('.login',estNameStr=estNameStr,location=location))
         commRef = db.reference('/restaurants/' + estNameStr + '/' +location+ '/comments/new/'+str(comment))
         commentData = dict(commRef.get())
         commRef.delete()
@@ -1120,50 +1116,50 @@ def saveComment(location,comment):
         savedRef.update({
             comment:commentData
         })
-        return(redirect(url_for("panel",location=location)))
+        return(redirect(url_for("panel",estNameStr=estNameStr,location=location)))
 
-@app.route('/<location>/rem-feedback~<question>')
-def remQuestion(location,question):
+@app.route('/<estNameStr>/<location>/rem-feedback~<question>')
+def remQuestion(estNameStr,location,question):
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     finally:
         if (checkAdminToken(idToken, username) == 1):
-            return redirect(url_for('.login', location=location))
+            return redirect(url_for('.login',estNameStr=estNameStr,location=location))
         item_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/feedback/'+str(question))
         item_ref.delete()
-        return(redirect(url_for("panel",location=location)))
+        return(redirect(url_for("panel",estNameStr=estNameStr,location=location)))
 
-@app.route('/<location>/add-feedback')
-def addQuestion(location):
+@app.route('/<estNameStr>/<location>/add-feedback')
+def addQuestion(estNameStr,location):
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     finally:
         if (checkAdminToken(idToken, username) == 1):
-            return redirect(url_for('.login', location=location))
-        return(render_template("POS/AdminMini/addFeedback.html",location=location))
+            return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return(render_template("POS/AdminMini/addFeedback.html",estNameStr=estNameStr,location=location))
 
-@app.route('/<location>/add-feedback-confirm', methods=['POST'])
-def addQuestionConfirm(location):
+@app.route('/<estNameStr>/<location>/add-feedback-confirm', methods=['POST'])
+def addQuestionConfirm(estNameStr,location):
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login', location=location))
+        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
     finally:
         if (checkAdminToken(idToken, username) == 1):
-            return redirect(url_for('.login', location=location))
+            return redirect(url_for('.login',estNameStr=estNameStr,location=location))
 
         request.parameter_storage_class = ImmutableOrderedMultiDict
         rsp = dict((request.form))
@@ -1210,19 +1206,20 @@ def addQuestionConfirm(location):
 
         qRef = db.reference('/restaurants/' + estNameStr + '/' +location+ '/feedback')
         qRef.update(qDict)
-        return(redirect(url_for("panel",location=location)))
+        return(redirect(url_for("panel",estNameStr=estNameStr,location=location)))
 
 ##########CUSTOMER END###########
 
 
 ###Kiosk###
 
-def findMenu(location):
+def findMenu(estNameStr,location):
+    getSquare(estNameStr)
     day = dayNames[int(datetime.datetime.now(tzGl[0]).weekday())]
     curMin = float(datetime.datetime.now(tzGl[0]).minute) / 100.0
     curHr = float(datetime.datetime.now(tzGl[0]).hour)
     curTime = curHr + curMin
-    pathTime = '/restaurants/' + estNameStr + '/' + str(location) + "/schedule/" + day
+    pathTime = '/restaurants/' + estNameStr + '/' + location + "/schedule/" + day
 
     schedule = db.reference(pathTime).get()
     schedlist = list(schedule)
@@ -1244,20 +1241,20 @@ def findMenu(location):
             return(str(menu))
 
 
-@app.route('/<location>/sitdown-startKiosk', methods=["GET"])
-def startKiosk2(location):
+@app.route('/<estNameStr>/<location>/sitdown-startKiosk', methods=["GET"])
+def startKiosk2(estNameStr,location):
     return(render_template("Customer/Sitdown/startKiosk.html",btn="sitdown-startKiosk",restName=estNameStr,locName=location))
 
-@app.route('/<location>/qsr-startKiosk', methods=["GET"])
-def startKiosk4(location):
+@app.route('/<estNameStr>/<location>/qsr-startKiosk', methods=["GET"])
+def startKiosk4(estNameStr,location):
     return(render_template("Customer/QSR/startKiosk.html",btn="qsr-startKiosk",restName=estNameStr,locName=location))
 
-@app.route('/<location>/order', methods=["GET"])
-def startKiosk5(location):
+@app.route('/<estNameStr>/<location>/order', methods=["GET"])
+def startKiosk5(estNameStr,location):
     return(render_template("Customer/QSR/startKiosk.html",btn="startOnline",restName=estNameStr,locName=location))
 
-@app.route('/<location>/startOnline', methods=["POST"])
-def startOnline(location):
+@app.route('/<estNameStr>/<location>/startOnline', methods=["POST"])
+def startOnline(estNameStr,location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     phone = rsp["number"]
@@ -1267,7 +1264,7 @@ def startOnline(location):
     session['table'] = ""
     session['name'] = name
     session['phone'] = phone
-    path = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/"
+    path = '/restaurants/' + estNameStr + '/' + location + "/orders/"
     orderToken = str(uuid.uuid4())
     ref = db.reference(path)
     newOrd = ref.push({
@@ -1285,16 +1282,16 @@ def startOnline(location):
         })
     #print(newOrd.key)
     session['orderToken'] = newOrd.key
-    menu = findMenu(location)
+    menu = findMenu(estNameStr,location)
     # menu = "lunch"
     session["menu"] = menu
     ##print(menu)
-    return(redirect(url_for('qsrMenu', location=location)))
+    return(redirect(url_for('qsrMenu',estNameStr=estNameStr,location=location)))
 
 
 
-@app.route('/<location>/qsr-startKiosk', methods=["POST"])
-def startKioskQsr(location):
+@app.route('/<estNameStr>/<location>/qsr-startKiosk', methods=["POST"])
+def startKioskQsr(estNameStr,location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     phone = rsp["number"]
@@ -1309,7 +1306,7 @@ def startKioskQsr(location):
     session['table'] = table
     session['name'] = name
     session['phone'] = phone
-    path = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/"
+    path = '/restaurants/' + estNameStr + '/' + location + "/orders/"
     orderToken = str(uuid.uuid4())
     ref = db.reference(path)
     newOrd = ref.push({
@@ -1327,15 +1324,15 @@ def startKioskQsr(location):
         })
     #print(newOrd.key)
     session['orderToken'] = newOrd.key
-    menu = findMenu(location)
+    menu = findMenu(estNameStr,location)
     # menu = "lunch"
     session["menu"] = menu
     ##print(menu)
-    return(redirect(url_for('qsrMenu', location=location)))
+    return(redirect(url_for('qsrMenu',estNameStr=estNameStr,location=location)))
 
 
-@app.route('/<location>/sitdown-startKiosk', methods=["POST"])
-def startKiosk(location):
+@app.route('/<estNameStr>/<location>/sitdown-startKiosk', methods=["POST"])
+def startKiosk(estNameStr,location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     phone = rsp["number"]
@@ -1344,7 +1341,7 @@ def startKiosk(location):
     session['table'] = table
     session['name'] = name
     session['phone'] = phone
-    path = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/"
+    path = '/restaurants/' + estNameStr + '/' + location + "/orders/"
     orderToken = str(uuid.uuid4())
     ref = db.reference(path)
     newOrd = ref.push({
@@ -1362,28 +1359,27 @@ def startKiosk(location):
         })
     #print(newOrd.key)
     session['orderToken'] = newOrd.key
-    menu = findMenu(location)
-    # menu = "lunch"
+    menu = findMenu(estNameStr,location)
     session["menu"] = menu
-    return(redirect(url_for('sitdownMenu', location=location)))
+    return(redirect(url_for('sitdownMenu',estNameStr=estNameStr,location=location)))
 
 
-@app.route('/<location>/testmenu')
-def dummyMenuRender(location):
+@app.route('/<estNameStr>/<location>/testmenu')
+def dummyMenuRender(estNameStr,location):
     menu = "breakfast"
-    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu + "/categories"
+    pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu + "/categories"
     menuInfo = dict(db.reference(pathMenu).get())
     cart = {}
     return(render_template("Customer/QSR/mainKiosk2.html", menu=menuInfo, restName=estNameStr.capitalize(), locName=location.capitalize(), cart=cart ))
 
 
-@app.route('/<location>/sitdown-menudisp')
-def sitdownMenu(location):
+@app.route('/<estNameStr>/<location>/sitdown-menudisp')
+def sitdownMenu(estNameStr,location):
     menu = session.get('menu', None)
     orderToken = session.get('orderToken',None)
-    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu + "/categories"
+    pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu + "/categories"
     menuInfo = dict(db.reference(pathMenu).get())
-    cartRef = db.reference('/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/cart")
+    cartRef = db.reference('/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken + "/cart")
     try:
         cart = dict(cartRef.get())
     except Exception as e:
@@ -1391,13 +1387,13 @@ def sitdownMenu(location):
     print(cart)
     return(render_template("Customer/Sitdown/mainKiosk2.html", menu=menuInfo, restName=estNameStr.capitalize(), cart=cart, locName=location.capitalize()))
 
-@app.route('/<location>/qsr-menudisp')
-def qsrMenu(location):
+@app.route('/<estNameStr>/<location>/qsr-menudisp')
+def qsrMenu(estNameStr,location):
     menu = session.get('menu', None)
     orderToken = session.get('orderToken',None)
-    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu + "/categories"
+    pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu + "/categories"
     menuInfo = dict(db.reference(pathMenu).get())
-    cartRef = db.reference('/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/cart")
+    cartRef = db.reference('/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken + "/cart")
     try:
         cart = dict(cartRef.get())
     except Exception as e:
@@ -1405,8 +1401,8 @@ def qsrMenu(location):
     print(cart)
     return(render_template("Customer/QSR/mainKiosk2.html", menu=menuInfo, restName=estNameStr.capitalize(), cart=cart, locName=location.capitalize()))
 
-@app.route('/<location>/qsr-additms~<cat>~<itm>', methods=["POST"])
-def kiosk2QSR(location,cat,itm):
+@app.route('/<estNameStr>/<location>/qsr-additms~<cat>~<itm>', methods=["POST"])
+def kiosk2QSR(estNameStr,location,cat,itm):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     ##print((request.form))
     rsp = dict((request.form))
@@ -1437,8 +1433,8 @@ def kiosk2QSR(location,cat,itm):
     menu = session.get('menu', None)
     orderToken = session.get('orderToken',None)
     ##print(orderToken)
-    pathCartitm = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/cart/"
-    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu
+    pathCartitm = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken + "/cart/"
+    pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu
     cartRefItm = db.reference(pathCartitm)
     cartRefItm.push({
         'cat':cat,
@@ -1451,11 +1447,11 @@ def kiosk2QSR(location,cat,itm):
         'unitPrice':unitPrice,
         'dispStr':dispStr
     })
-    return(redirect(url_for('qsrMenu', location=location)))
+    return(redirect(url_for('qsrMenu',estNameStr=estNameStr,location=location)))
 
 
-@app.route('/<location>/sitdown-additms~<cat>~<itm>', methods=["POST"])
-def kiosk2(location, cat, itm):
+@app.route('/<estNameStr>/<location>/sitdown-additms~<cat>~<itm>', methods=["POST"])
+def kiosk2(estNameStr,location, cat, itm):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     ##print((request.form))
     rsp = dict((request.form))
@@ -1486,8 +1482,8 @@ def kiosk2(location, cat, itm):
     menu = session.get('menu', None)
     orderToken = session.get('orderToken',None)
     ##print(orderToken)
-    pathCartitm = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/cart/"
-    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu
+    pathCartitm = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken + "/cart/"
+    pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu
     cartRefItm = db.reference(pathCartitm)
     cartRefItm.push({
         'cat':cat,
@@ -1500,19 +1496,19 @@ def kiosk2(location, cat, itm):
         'mods':mods,
         'unitPrice':unitPrice
     })
-    return(redirect(url_for('sitdownMenu', location=location)))
+    return(redirect(url_for('sitdownMenu',estNameStr=estNameStr,location=location)))
 
 
-@app.route('/<location>/qsr-itmRemove', methods=["POST"])
-def kioskRemQSR(location):
+@app.route('/<estNameStr>/<location>/qsr-itmRemove', methods=["POST"])
+def kioskRemQSR(estNameStr,location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = dict((request.form))
     remItm = rsp["remove"]
     orderToken = session.get('orderToken',None)
     menu = session.get('menu',None)
-    pathCartitm = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken +"/cart/"
-    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu
-    remPath = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken +"/cart/" + remItm
+    pathCartitm = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken +"/cart/"
+    pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu
+    remPath = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken +"/cart/" + remItm
     try:
         remRef = db.reference(remPath)
         remRef.delete()
@@ -1521,19 +1517,19 @@ def kioskRemQSR(location):
     cartRefItm = db.reference(pathCartitm)
     menuInfo = db.reference(pathMenu).get()
     cartData = db.reference(pathCartitm).get()
-    return(redirect(url_for('qsrMenu', location=location)))
+    return(redirect(url_for('qsrMenu',estNameStr=estNameStr,location=location)))
 
 
-@app.route('/<location>/itmRemove', methods=["POST"])
-def kioskRem(location):
+@app.route('/<estNameStr>/<location>/itmRemove', methods=["POST"])
+def kioskRem(estNameStr,location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = dict((request.form))
     remItm = rsp["remove"]
     orderToken = session.get('orderToken',None)
     menu = session.get('menu',None)
-    pathCartitm = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken +"/cart/"
-    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu
-    remPath = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken +"/cart/" + remItm
+    pathCartitm = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken +"/cart/"
+    pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu
+    remPath = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken +"/cart/" + remItm
     try:
         remRef = db.reference(remPath)
         remRef.delete()
@@ -1543,19 +1539,19 @@ def kioskRem(location):
         cartRefItm = db.reference(pathCartitm)
         menuInfo = db.reference(pathMenu).get()
         cartData = db.reference(pathCartitm).get()
-    return(redirect(url_for('sitdownMenu', location=location)))
+    return(redirect(url_for('sitdownMenu',estNameStr=estNameStr,location=location)))
 
 
 
 
 
-@app.route('/<location>/SDupdate')
-def kioskUpdate(location):
+@app.route('/<estNameStr>/<location>/SDupdate')
+def kioskUpdate(estNameStr,location):
     try:
         orderToken = session.get('orderToken',None)
-        setPath = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
-        alertTimePath = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/alertTime"
-        alertPath = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/alert"
+        setPath = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
+        alertTimePath = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken + "/alertTime"
+        alertPath = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken + "/alert"
         alert = db.reference(alertPath).get()
         info = {
                "alert" : alert,
@@ -1565,22 +1561,22 @@ def kioskUpdate(location):
         return("200")
 
 
-@app.route('/<location>/cartAdd', methods=["POST"])
-def kioskCart(location):
+@app.route('/<estNameStr>/<location>/cartAdd', methods=["POST"])
+def kioskCart(estNameStr,location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     orderToken = session.get('orderToken',None)
     menu = session.get('menu',None)
-    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu
-    pathCart = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken +"/cart/"
-    pathTable = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken +"/table/"
-    pathRequest = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/"
+    pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu
+    pathCart = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken +"/cart/"
+    pathTable = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken +"/table/"
+    pathRequest = '/restaurants/' + estNameStr + '/' + location + "/requests/"
     tableNum = db.reference(pathTable).get()
     try:
         cartRef = db.reference(pathCart)
         cart = db.reference(pathCart).get()
         reqRef = db.reference(pathRequest)
         newReq = reqRef.push(cart)
-        pathRequestkey = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/" + newReq.key + "/info"
+        pathRequestkey = '/restaurants/' + estNameStr + '/' + location + "/requests/" + newReq.key + "/info"
         reqRefkey = db.reference(pathRequestkey)
         reqRefkey.update({"table":tableNum,"type":"order","token":orderToken})
         cartRef.delete()
@@ -1589,24 +1585,24 @@ def kioskCart(location):
     menuInfo = db.reference(pathMenu).get()
     cart = {}
 
-    return(redirect(url_for('sitdownMenu', location=location)))
+    return(redirect(url_for('sitdownMenu',estNameStr=estNameStr,location=location)))
 
-@app.route('/<location>/cartAdd-QSR', methods=["POST"])
-def kioskCartQSR(location):
+@app.route('/<estNameStr>/<location>/cartAdd-QSR', methods=["POST"])
+def kioskCartQSR(estNameStr,location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     orderToken = session.get('orderToken',None)
     menu = session.get('menu',None)
-    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu
-    pathCart = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken +"/cart/"
-    pathTable = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken +"/table/"
-    pathRequest = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/"
+    pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu
+    pathCart = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken +"/cart/"
+    pathTable = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken +"/table/"
+    pathRequest = '/restaurants/' + estNameStr + '/' + location + "/requests/"
     tableNum = db.reference(pathTable).get()
     menuInfo = db.reference(pathMenu).get()
     try:
         cartRef = db.reference(pathCart)
         cart = db.reference(pathCart).get()
         test = str(list(cart.keys()))
-        pathOrder = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
+        pathOrder = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
         orderInfo = dict(db.reference(pathOrder).get())
         cpnBool = orderInfo["cpn"]
         if(cpnBool == 0):
@@ -1614,51 +1610,51 @@ def kioskCartQSR(location):
             cartKeys = list(cart.keys())
             for keys in cartKeys:
                 if("discount" == str(cart[keys]["cat"])):
-                    pathRem = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/cart/" + keys
+                    pathRem = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken + "/cart/" + keys
                     pathRemRef = db.reference(pathRem)
                     pathRemRef.delete()
         return(render_template("Customer/QSR/receipt.html"))
-        # return(redirect(url_for("payQSR",location=location)))
+        # return(redirect(url_for("payQSR",estNameStr=estNameStr,location=location)))
     except Exception:
-        return(redirect(url_for("qsrMenu",location=location)))
+        return(redirect(url_for("qsrMenu",estNameStr=estNameStr,location=location)))
 
-@app.route('/<location>/recipt-qsr', methods=["POST"])
-def reciptQSR(location):
+@app.route('/<estNameStr>/<location>/recipt-qsr', methods=["POST"])
+def reciptQSR(estNameStr,location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = dict((request.form))
     orderToken = session.get('orderToken',None)
     if(rsp['email'] != ""):
-        userRef = db.reference('/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken)
+        userRef = db.reference('/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken)
         userRef.update({
             "email":rsp['email']
         })
     else:
-        userRef = db.reference('/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken)
+        userRef = db.reference('/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken)
         userRef.update({
             "email":"no-email"
         })
-    return(redirect(url_for("payQSR",location=location)))
+    return(redirect(url_for("payQSR",estNameStr=estNameStr,location=location)))
 
-@app.route('/<location>/collect-feedback')
-def dispFeedBack(location):
+@app.route('/<estNameStr>/<location>/collect-feedback')
+def dispFeedBack(estNameStr,location):
     feedback_ref = db.reference('/restaurants/' + estNameStr + '/'+ location + '/feedback')
     feedback = dict(feedback_ref.get())
     return(render_template("Customer/Sitdown/feedback.html",feedback=feedback))
 
 
-@app.route('/<location>/collect-feedback-ans', methods=['POST'])
-def collectFeedback(location):
+@app.route('/<estNameStr>/<location>/collect-feedback-ans', methods=['POST'])
+def collectFeedback(estNameStr,location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = dict((request.form))
     orderToken = session.get('orderToken',None)
-    pathOrder = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
+    pathOrder = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
     if(rsp['email'] != ""):
         userRef = db.reference(pathOrder)
         userRef.update({
             "email":rsp['email']
         })
     else:
-        userRef = db.reference('/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken)
+        userRef = db.reference('/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken)
         userRef.update({
             "email":"no-email"
         })
@@ -1703,12 +1699,12 @@ def collectFeedback(location):
                     'currentScore': addScore,
                     'totalScore':addScore
                 })
-    return(redirect(url_for("payQSR",location=location)))
+    return(redirect(url_for("payQSR",estNameStr=estNameStr,location=location)))
 
-@app.route('/<location>/pay')
-def payQSR(location):
+@app.route('/<estNameStr>/<location>/pay')
+def payQSR(estNameStr,location):
     orderToken = session.get('orderToken',None)
-    pathOrder = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
+    pathOrder = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
     orderInfo = dict(db.reference(pathOrder).get())
     QSR = orderInfo["QSR"]
     orderInfo = dict(db.reference(pathOrder).get())
@@ -1723,7 +1719,7 @@ def payQSR(location):
             dispStr = cart[keys]["dispStr"]
             items.append(dispStr)
         subtotalStr = "${:0,.2f}".format(subtotal)
-        taxRate = float(db.reference('/restaurants/' + estNameStr + '/' + str(location) + '/taxrate').get())
+        taxRate = float(db.reference('/restaurants/' + estNameStr + '/' + location + '/taxrate').get())
         tax = "${:0,.2f}".format(subtotal * taxRate)
         tax += " (" + str(float(taxRate * 100)) + "%)"
         total = "${:0,.2f}".format(subtotal * (1+taxRate))
@@ -1734,18 +1730,18 @@ def payQSR(location):
             "total":float(subtotal*(1+taxRate))
         })
         sqTotal = str(int(round(subtotal*(1+taxRate),2) * 100)) + "~" + str(orderToken) +"~"+mainLink+location
-        return(render_template("Customer/QSR/Payment.html",locName=str(location).capitalize(),restName=str(estNameStr).capitalize(), cart=str(cart), items=items, subtotal=subtotalStr,tax=tax,total=total,sqTotal=sqTotal))
+        return(render_template("Customer/QSR/Payment.html",locName=location.capitalize(),restName=str(estNameStr).capitalize(), cart=str(cart), items=items, subtotal=subtotalStr,tax=tax,total=total,sqTotal=sqTotal))
     else:
         cart = dict(orderInfo["ticket"])
         subtotal = orderInfo["subtotal"]
         subtotalStr = "${:0,.2f}".format(subtotal)
-        taxRate = float(db.reference('/restaurants/' + estNameStr + '/' + str(location) + '/taxrate').get())
+        taxRate = float(db.reference('/restaurants/' + estNameStr + '/' + location + '/taxrate').get())
         tax = "${:0,.2f}".format(subtotal * taxRate)
         tax += " (" + str(float(taxRate * 100)) + "%)"
         total = "${:0,.2f}".format(subtotal * (1+taxRate))
         cartKeys = list(cart.keys())
         cpnBool = orderInfo["cpn"]
-        pathCpn =  db.reference('/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken)
+        pathCpn =  db.reference('/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken)
         items = []
         for ck in cartKeys:
             ckKeys = list(cart[ck].keys())
@@ -1765,22 +1761,22 @@ def payQSR(location):
                 session['total'] = round(subtotal*(1+taxRate),2)
                 session['kiosk'] = orderInfo["kiosk"]
         sqTotal = str(int(round(subtotal*(1+taxRate),2) * 100)) + "~" + str(orderToken)+"~"+mainLink+location
-        return(render_template("Customer/Sitdown/Payment.html",locName=str(location).capitalize(),restName=str(estNameStr).capitalize(),
+        return(render_template("Customer/Sitdown/Payment.html",locName=location.capitalize(),restName=str(estNameStr).capitalize(),
                                items=items, subtotal=subtotalStr,tax=tax,total=total, sqTotal=sqTotal))
 
 
-@app.route('/<location>/applyCpn', methods=["POST"])
-def applyCpn(location):
+@app.route('/<estNameStr>/<location>/applyCpn', methods=["POST"])
+def applyCpn(estNameStr,location):
     orderToken = session.get('orderToken',None)
     menu = session.get('menu',None)
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = dict((request.form))
     code = str(rsp["code"]).lower()
-    pathOrder = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
+    pathOrder = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
     orderInfo = dict(db.reference(pathOrder).get())
     QSR = orderInfo["QSR"]
     try:
-        cpnsPath = '/restaurants/' + estNameStr + '/' + str(location) + "/discounts/"+ menu
+        cpnsPath = '/restaurants/' + estNameStr + '/' + location + "/discounts/"+ menu
         cpns = dict(db.reference(cpnsPath).get())
         disc = cpns[code]
         discCat = disc["cat"]
@@ -1792,7 +1788,7 @@ def applyCpn(location):
         modName = disc["mods"][0]
         modItm = disc["mods"][1]
         QSR = int(orderInfo["QSR"])
-        pathOrder = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
+        pathOrder = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
         orderInfo = dict(db.reference(pathOrder).get())
         varQSR = (QSR == 0)
         if(varQSR == True):
@@ -1802,7 +1798,7 @@ def applyCpn(location):
                 cartKeys = list(cart.keys())
                 for keys in cartKeys:
                     if("discount" == str(cart[keys]["cat"])):
-                        pathRem = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/cart/" + keys
+                        pathRem = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken + "/cart/" + keys
                         pathRemRef = db.reference(pathRem)
                         pathRemRef.delete()
             cart = dict(orderInfo["cart"])
@@ -1828,9 +1824,9 @@ def applyCpn(location):
             print(amtUsed, min, discAmt)
             if(amtUsed >= min):
                 #print("discApplied")
-                pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu
-                pathCpn =  db.reference('/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken)
-                pathCartitm = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/cart/"
+                pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu
+                pathCpn =  db.reference('/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken)
+                pathCartitm = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken + "/cart/"
                 cartRefItm = db.reference(pathCartitm)
                 cartRefItm.push({
                     'cat':'discount',
@@ -1844,7 +1840,7 @@ def applyCpn(location):
                     'unitPrice':float(float(discAmt)/float(amtUsed))
                 })
                 pathCpn.update({"cpn":0})
-            return(redirect(url_for('payQSR',location=location)))
+            return(redirect(url_for('payQSR',estNameStr=estNameStr,location=location)))
         else:
             cart = dict(orderInfo["ticket"])
             subtotal = orderInfo["subtotal"]
@@ -1861,13 +1857,13 @@ def applyCpn(location):
                     ckKeys = list(cart[ck].keys())
                     for ckk in ckKeys:
                         if(cart[ck][ckk]["cat"] == "discount"):
-                            pathRem = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/ticket/" + str(ck) + "/" + str(ckk)
+                            pathRem = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken + "/ticket/" + str(ck) + "/" + str(ckk)
                             pathRemRef = db.reference(pathRem)
                             subtotal -= cart[ck][ckk]['price']
-                            pathCpn =  db.reference('/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken)
+                            pathCpn =  db.reference('/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken)
                             pathCpn.update({"subtotal":subtotal})
                             pathRemRef.delete()
-            pathOrder = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
+            pathOrder = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
             orderInfo = dict(db.reference(pathOrder).get())
             cart = dict(orderInfo["ticket"])
             subtotal = orderInfo["subtotal"]
@@ -1897,8 +1893,8 @@ def applyCpn(location):
             if(amtUsed >= min):
                 #print("discApplied")
                 subtotal += discAmt
-                pathCpn =  db.reference('/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken)
-                pathCartitm = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/ticket/"
+                pathCpn =  db.reference('/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken)
+                pathCartitm = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken + "/ticket/"
                 cartRefItm = db.reference(pathCartitm)
                 postToken = str(uuid.uuid4()).replace("-","a")
                 cartRefItm.push({
@@ -1915,22 +1911,22 @@ def applyCpn(location):
                 })
                 pathCpn.update({"cpn":0,
                                 "subtotal":subtotal})
-            return(redirect(url_for('payQSR',location=location)))
+            return(redirect(url_for('payQSR',estNameStr=estNameStr,location=location)))
     except Exception as e:
         print(str(e))
-        return(redirect(url_for('payQSR',location=location)))
+        return(redirect(url_for('payQSR',estNameStr=estNameStr,location=location)))
 
 
-@app.route('/<location>/close-alert')
-def kioskClear(location):
+@app.route('/<estNameStr>/<location>/close-alert')
+def kioskClear(estNameStr,location):
     orderToken = session.get('orderToken',None)
-    alertPath = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
+    alertPath = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
     clearAlert = db.reference(alertPath).update({"alert":"null"})
-    return(redirect(url_for("sitdownMenu", location=location)))
+    return(redirect(url_for("sitdownMenu",estNameStr=estNameStr,location=location)))
 
 
-@app.route('/<location>/sendReq', methods=["POST"])
-def kioskSendReq(location):
+@app.route('/<estNameStr>/<location>/sendReq', methods=["POST"])
+def kioskSendReq(estNameStr,location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     orderToken = session.get('orderToken',None)
@@ -1953,31 +1949,31 @@ def kioskSendReq(location):
         requestId = "box food-"+rsp["box"]
     elif(rspKey == "other"):
         requestId = "other-"+rsp["other"]
-    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu
-    pathRequest = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/"
+    pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu
+    pathRequest = '/restaurants/' + estNameStr + '/' + location + "/requests/"
     reqRef = db.reference(pathRequest)
     newReq = reqRef.push({"help":requestId})
-    pathRequestkey = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/" + newReq.key + "/info"
+    pathRequestkey = '/restaurants/' + estNameStr + '/' + location + "/requests/" + newReq.key + "/info"
     reqRefkey = db.reference(pathRequestkey)
     reqRefkey.set({"table":tableNum,"type":"help","token":orderToken})
-    return(redirect(url_for("sitdownMenu", location=location)))
+    return(redirect(url_for("sitdownMenu",estNameStr=estNameStr,location=location)))
 
 
 ##########Employee###########
-@app.route('/<location>/qsr-employee-login')
-def EmployeeLoginQSR(location):
+@app.route('/<estNameStr>/<location>/qsr-employee-login')
+def EmployeeLoginQSR(estNameStr,location):
     return(render_template("POS/StaffQSR/login.html"))
 
-@app.route('/<location>/qsr-employee-login2')
-def EmployeeLogin2QSR(location):
+@app.route('/<estNameStr>/<location>/qsr-employee-login2')
+def EmployeeLogin2QSR(estNameStr,location):
     return(render_template("POS/StaffSitdown/login2.html"))
 
-@app.route('/<location>/qsr-employee-login', methods=['POST'])
-def EmployeeLoginCheckQSR(location):
+@app.route('/<estNameStr>/<location>/qsr-employee-login', methods=['POST'])
+def EmployeeLoginCheckQSR(estNameStr,location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     code = rsp['code']
-    loginRef = db.reference('/restaurants/' + estNameStr + '/' + str(location) + "/employee")
+    loginRef = db.reference('/restaurants/' + estNameStr + '/' + location + "/employee")
     loginData = dict(loginRef.get())
     hashCheck = pbkdf2_sha256.verify(code, loginData['code'])
     if(hashCheck == True):
@@ -1987,30 +1983,30 @@ def EmployeeLoginCheckQSR(location):
             "time":time.time()
         })
         session["token"] = token
-        return(redirect(url_for("EmployeePanelQSR",location=location)))
+        return(redirect(url_for("EmployeePanelQSR",estNameStr=estNameStr,location=location)))
     else:
-        return(redirect(url_for("EmployeeLogin2",location=location)))
+        return(redirect(url_for("EmployeeLogin2",estNameStr=estNameStr,location=location)))
 
-@app.route('/<location>/qsr-view')
-def EmployeePanelQSR(location):
+@app.route('/<estNameStr>/<location>/qsr-view')
+def EmployeePanelQSR(estNameStr,location):
     token = session.get('token',None)
-    loginRef = db.reference('/restaurants/' + estNameStr + '/' + str(location) + "/employee/")
+    loginRef = db.reference('/restaurants/' + estNameStr + '/' + location + "/employee/")
     loginData = dict(loginRef.get())
     try:
         if(((token == loginData["token"]) and (time.time() - loginData["time"] <= 3600))):
             pass
         else:
-            return(redirect(url_for("EmployeeLoginQSR",location=location)))
+            return(redirect(url_for("EmployeeLoginQSR",estNameStr=estNameStr,location=location)))
     except Exception as e:
-        return(redirect(url_for("EmployeeLogin2QSR",location=location)))
+        return(redirect(url_for("EmployeeLogin2QSR",estNameStr=estNameStr,location=location)))
     try:
-        ordPath = '/restaurants/' + estNameStr + '/' + str(location) + "/orderQSR"
+        ordPath = '/restaurants/' + estNameStr + '/' + location + "/orderQSR"
         ordsRef = db.reference(ordPath)
         ordsGet = dict(ordsRef.get())
     except Exception as e:
         ordsGet = {}
-    menu = findMenu(location)
-    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu + "/categories"
+    menu = findMenu(estNameStr,location)
+    pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu + "/categories"
     menuInfo = dict(db.reference(pathMenu).get())
     categories = list(menuInfo.keys())
     activeItems = []
@@ -2024,51 +2020,51 @@ def EmployeePanelQSR(location):
             else:
                 appItem = str(cats) + "~" + str(itm)
                 inactiveItems.append(appItem)
-    return(render_template("POS/StaffQSR/View.html", location=str(location).capitalize(), restName=str(estNameStr.capitalize()), menu=menu, activeItems=activeItems, inactiveItems=inactiveItems, orders=ordsGet))
+    return(render_template("POS/StaffQSR/View.html", location=location.capitalize(), restName=str(estNameStr.capitalize()), menu=menu, activeItems=activeItems, inactiveItems=inactiveItems, orders=ordsGet))
 
 
-@app.route('/<location>/qsr-activate-item~<cat>~<item>~<menu>')
-def activateItemQSR(location,cat,item,menu):
-    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu + "/categories/"+ cat + "/" + item
+@app.route('/<estNameStr>/<location>/qsr-activate-item~<cat>~<item>~<menu>')
+def activateItemQSR(estNameStr,location,cat,item,menu):
+    pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu + "/categories/"+ cat + "/" + item
     descrip = dict(db.reference(pathMenu).get())["tmp"]
     db.reference(pathMenu).update({"descrip":descrip})
-    pathDel = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu + "/categories/"+ cat + "/" + item +"/tmp"
+    pathDel = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu + "/categories/"+ cat + "/" + item +"/tmp"
     db.reference(pathDel).delete()
-    return(redirect(url_for("EmployeePanelQSR",location=location)))
+    return(redirect(url_for("EmployeePanelQSR",estNameStr=estNameStr,location=location)))
 
-@app.route('/<location>/qsr-deactivate-item~<cat>~<item>~<menu>')
-def deactivateItemQSR(location,cat,item,menu):
-    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu + "/categories/"+ cat + "/" + item
+@app.route('/<estNameStr>/<location>/qsr-deactivate-item~<cat>~<item>~<menu>')
+def deactivateItemQSR(estNameStr,location,cat,item,menu):
+    pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu + "/categories/"+ cat + "/" + item
     descrip = dict(db.reference(pathMenu).get())["descrip"]
     db.reference(pathMenu).update({"tmp":descrip})
     db.reference(pathMenu).update({"descrip":"INACTIVE"})
-    return(redirect(url_for("EmployeePanelQSR",location=location)))
+    return(redirect(url_for("EmployeePanelQSR",estNameStr=estNameStr,location=location)))
 
-@app.route('/<location>/qsr-view-success', methods=["POST"])
-def EmployeeSuccessQSR(location):
+@app.route('/<estNameStr>/<location>/qsr-view-success', methods=["POST"])
+def EmployeeSuccessQSR(estNameStr,location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     reqToken = rsp["req"]
-    pathRequest = '/restaurants/' + estNameStr + '/' + str(location) + "/orderQSR/" + reqToken
+    pathRequest = '/restaurants/' + estNameStr + '/' + location + "/orderQSR/" + reqToken
     reqRef = db.reference(pathRequest)
     reqRef.delete()
-    return(redirect(url_for("EmployeePanelQSR",location=location)))
+    return(redirect(url_for("EmployeePanelQSR",estNameStr=estNameStr,location=location)))
 
 
-@app.route('/<location>/employee-login')
-def EmployeeLogin(location):
+@app.route('/<estNameStr>/<location>/employee-login')
+def EmployeeLogin(estNameStr,location):
     return(render_template("POS/StaffSitdown/login.html"))
 
-@app.route('/<location>/employee-login2')
-def EmployeeLogin2(location):
+@app.route('/<estNameStr>/<location>/employee-login2')
+def EmployeeLogin2(estNameStr,location):
     return(render_template("POS/StaffSitdown/login2.html"))
 
-@app.route('/<location>/employee-login', methods=['POST'])
-def EmployeeLoginCheck(location):
+@app.route('/<estNameStr>/<location>/employee-login', methods=['POST'])
+def EmployeeLoginCheck(estNameStr,location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     code = rsp['code']
-    loginRef = db.reference('/restaurants/' + estNameStr + '/' + str(location) + "/employee")
+    loginRef = db.reference('/restaurants/' + estNameStr + '/' + location + "/employee")
     loginData = dict(loginRef.get())
     hashCheck = pbkdf2_sha256.verify(code, loginData['code'])
     if(hashCheck == True):
@@ -2078,24 +2074,24 @@ def EmployeeLoginCheck(location):
             "time":time.time()
         })
         session["token"] = token
-        return(redirect(url_for("EmployeePanel",location=location)))
+        return(redirect(url_for("EmployeePanel",estNameStr=estNameStr,location=location)))
     else:
-        return(redirect(url_for("EmployeeLogin2",location=location)))
+        return(redirect(url_for("EmployeeLogin2",estNameStr=estNameStr,location=location)))
 
-@app.route('/<location>/view')
-def EmployeePanel(location):
+@app.route('/<estNameStr>/<location>/view')
+def EmployeePanel(estNameStr,location):
     token = session.get('token',None)
-    loginRef = db.reference('/restaurants/' + estNameStr + '/' + str(location) + "/employee/")
+    loginRef = db.reference('/restaurants/' + estNameStr + '/' + location + "/employee/")
     loginData = dict(loginRef.get())
     try:
         if(((token == loginData["token"]) and (time.time() - loginData["time"] <= 3600))):
             pass
         else:
-            return(redirect(url_for("EmployeeLogin",location=location)))
+            return(redirect(url_for("EmployeeLogin",estNameStr=estNameStr,location=location)))
     except Exception as e:
-        return(redirect(url_for("EmployeeLogin2",location=location)))
+        return(redirect(url_for("EmployeeLogin2",estNameStr=estNameStr,location=location)))
     try:
-        ordPath = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/"
+        ordPath = '/restaurants/' + estNameStr + '/' + location + "/orders/"
         ordsRef = db.reference(ordPath)
         ordsGet = dict(ordsRef.get())
         tokens = list(ordsGet)
@@ -2106,13 +2102,13 @@ def EmployeePanel(location):
     except Exception as e:
         ordsGet = {}
     try:
-        pathRequest = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/"
+        pathRequest = '/restaurants/' + estNameStr + '/' + location + "/requests/"
         reqRef = db.reference(pathRequest)
         reqData = dict(reqRef.get())
     except Exception as e:
         reqData = {}
-    menu = findMenu(location)
-    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu + "/categories"
+    menu = findMenu(estNameStr,location)
+    pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu + "/categories"
     menuInfo = dict(db.reference(pathMenu).get())
     categories = list(menuInfo.keys())
     activeItems = []
@@ -2127,38 +2123,38 @@ def EmployeePanel(location):
                 appItem = str(cats) + "~" + str(itm)
                 inactiveItems.append(appItem)
     print(tokens)
-    return(render_template("POS/StaffSitdown/View.html", location=str(location).capitalize(), restName=str(estNameStr.capitalize()), menu=menu, activeItems=activeItems, inactiveItems=inactiveItems, reqData=reqData, orders=ordsGet))
+    return(render_template("POS/StaffSitdown/View.html", location=location.capitalize(), restName=str(estNameStr.capitalize()), menu=menu, activeItems=activeItems, inactiveItems=inactiveItems, reqData=reqData, orders=ordsGet))
 
 
-@app.route('/<location>/activate-item~<cat>~<item>~<menu>')
-def activateItem(location,cat,item,menu):
-    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu + "/categories/"+ cat + "/" + item
+@app.route('/<estNameStr>/<location>/activate-item~<cat>~<item>~<menu>')
+def activateItem(estNameStr,location,cat,item,menu):
+    pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu + "/categories/"+ cat + "/" + item
     descrip = dict(db.reference(pathMenu).get())["tmp"]
     db.reference(pathMenu).update({"descrip":descrip})
-    pathDel = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu + "/categories/"+ cat + "/" + item +"/tmp"
+    pathDel = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu + "/categories/"+ cat + "/" + item +"/tmp"
     db.reference(pathDel).delete()
-    return(redirect(url_for("EmployeePanel",location=location)))
+    return(redirect(url_for("EmployeePanel",estNameStr=estNameStr,location=location)))
 
-@app.route('/<location>/deactivate-item~<cat>~<item>~<menu>')
-def deactivateItem(location,cat,item,menu):
-    pathMenu = '/restaurants/' + estNameStr + '/' + str(location) + "/menu/" + menu + "/categories/"+ cat + "/" + item
+@app.route('/<estNameStr>/<location>/deactivate-item~<cat>~<item>~<menu>')
+def deactivateItem(estNameStr,location,cat,item,menu):
+    pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu + "/categories/"+ cat + "/" + item
     descrip = dict(db.reference(pathMenu).get())["descrip"]
     db.reference(pathMenu).update({"tmp":descrip})
     db.reference(pathMenu).update({"descrip":"INACTIVE"})
-    return(redirect(url_for("EmployeePanel",location=location)))
+    return(redirect(url_for("EmployeePanel",estNameStr=estNameStr,location=location)))
 
-@app.route('/<location>/view-success', methods=["POST"])
-def EmployeeSuccess(location):
+@app.route('/<estNameStr>/<location>/view-success', methods=["POST"])
+def EmployeeSuccess(estNameStr,location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     reqToken = rsp["req"]
-    pathRequest = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/" + reqToken
+    pathRequest = '/restaurants/' + estNameStr + '/' + location + "/requests/" + reqToken
     reqRef = db.reference(pathRequest)
     reqData = dict(reqRef.get())
     orderToken = reqData["info"]["token"]
     if(reqData["info"]["type"] == "order"):
-        pathTicket = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken +"/ticket"
-        pathTotal = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
+        pathTicket = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken +"/ticket"
+        pathTotal = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
         del reqData["info"]
         tickRef = db.reference(pathTicket)
         cartData = reqData
@@ -2172,26 +2168,26 @@ def EmployeeSuccess(location):
         currTotal = float(dict(db.reference(pathTotal).get())["subtotal"])
         tickTotal = db.reference(pathTotal).update({"subtotal":float(currTotal+addTotal)})
     reqRef.delete()
-    return(redirect(url_for("EmployeePanel",location=location)))
+    return(redirect(url_for("EmployeePanel",estNameStr=estNameStr,location=location)))
 
-@app.route('/<location>/view-warning', methods=["POST"])
-def EmployeeWarn(location):
+@app.route('/<estNameStr>/<location>/view-warning', methods=["POST"])
+def EmployeeWarn(estNameStr,location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     reqToken = rsp["req"]
     alert = rsp["reason"]
-    pathRequest = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/" + reqToken
+    pathRequest = '/restaurants/' + estNameStr + '/' + location + "/requests/" + reqToken
     reqRef = db.reference(pathRequest)
     reqData = dict(reqRef.get())
     orderToken = reqData["info"]["token"]
-    pathRequest = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/" + reqToken
-    pathUser = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
+    pathRequest = '/restaurants/' + estNameStr + '/' + location + "/requests/" + reqToken
+    pathUser = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
     reqRef = db.reference(pathRequest)
     reqData = dict(reqRef.get())
     orderToken = reqData["info"]["token"]
     if(reqData["info"]["type"] == "order"):
-        pathTicket = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken +"/ticket"
-        pathTotal = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
+        pathTicket = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken +"/ticket"
+        pathTotal = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
         del reqData["info"]
         tickRef = db.reference(pathTicket)
         cartData = reqData
@@ -2207,34 +2203,34 @@ def EmployeeWarn(location):
     AlertSend = db.reference(pathUser).update({"alert":str("Warning: "+alert)})
     AlertTime = db.reference(pathUser).update({"alertTime":time.time()})
     reqRef.delete()
-    return(redirect(url_for("EmployeePanel",location=location)))
+    return(redirect(url_for("EmployeePanel",estNameStr=estNameStr,location=location)))
 
-@app.route('/<location>/view-reject', methods=["POST"])
-def EmployeeReject(location):
+@app.route('/<estNameStr>/<location>/view-reject', methods=["POST"])
+def EmployeeReject(estNameStr,location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     reqToken = rsp["req"]
     alert = rsp["reason"]
-    pathRequest = '/restaurants/' + estNameStr + '/' + str(location) + "/requests/" + reqToken
+    pathRequest = '/restaurants/' + estNameStr + '/' + location + "/requests/" + reqToken
     reqRef = db.reference(pathRequest)
     reqData = dict(reqRef.get())
     orderToken = reqData["info"]["token"]
-    pathUser = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
+    pathUser = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
     AlertSend = db.reference(pathUser).update({"alert":str("Request Cancelled: "+alert)})
     AlertTime = db.reference(pathUser).update({"alertTime":time.time()})
     reqRef.delete()
-    return(redirect(url_for("EmployeePanel",location=location)))
+    return(redirect(url_for("EmployeePanel",estNameStr=estNameStr,location=location)))
 
 
-@app.route('/<location>/view-editBill', methods=["POST"])
-def EditBill(location):
+@app.route('/<estNameStr>/<location>/view-editBill', methods=["POST"])
+def EditBill(estNameStr,location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     orderToken = rsp["req"]
     amt = float(rsp["amt"])
     itm = str(rsp["itm"])
-    pathUserX = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
-    pathUser = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/ticket"
+    pathUserX = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
+    pathUser = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken + "/ticket"
     cartRefItm = db.reference(pathUser)
     subtotal = float(db.reference(pathUserX).get()["subtotal"])
     subtotal += amt
@@ -2250,30 +2246,30 @@ def EditBill(location):
         'mods':[["",str(amt)]],
         'unitPrice':amt
     }})
-    return(redirect(url_for("EmployeePanel",location=location)))
+    return(redirect(url_for("EmployeePanel",estNameStr=estNameStr,location=location)))
 
 
-@app.route('/<location>/view-clearTicket', methods=["POST"])
-def RemBill(location):
+@app.route('/<estNameStr>/<location>/view-clearTicket', methods=["POST"])
+def RemBill(estNameStr,location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     orderToken = rsp["req"]
-    pathUserX = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
+    pathUserX = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
     remRef = db.reference(pathUserX)
     remRef.delete()
-    return(redirect(url_for("EmployeePanel",location=location)))
+    return(redirect(url_for("EmployeePanel",estNameStr=estNameStr,location=location)))
 
 ####SQUARE####
-@app.route('/<location>/verify-kiosk', methods=["POST"])
-def verifyOrder(location):
+@app.route('/<estNameStr>/<location>/verify-kiosk', methods=["POST"])
+def verifyOrder(estNameStr,location):
     rsp = request.get_json()
     print(rsp)
     token = rsp['tokenVal']
-    pathOrder = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + token
+    pathOrder = '/restaurants/' + estNameStr + '/' + location + "/orders/" + token
     orderRef = db.reference(pathOrder)
     order = dict(orderRef.get())
     if(order['QSR'] == 0):
-        qsrOrderPath = '/restaurants/' + estNameStr + '/' + str(location) + '/orderQSR'
+        qsrOrderPath = '/restaurants/' + estNameStr + '/' + location + '/orderQSR'
         qsrOrderRef = db.reference(qsrOrderPath)
         qsrOrderRef.update({
             token:{
@@ -2303,7 +2299,7 @@ def verifyOrder(location):
                 dispStr = cart[keys]["dispStr"]
                 write_str += dispStr + "\n"
             subtotalStr = "${:0,.2f}".format(subtotal)
-            taxRate = float(db.reference('/restaurants/' + estNameStr + '/' + str(location) + '/taxrate').get())
+            taxRate = float(db.reference('/restaurants/' + estNameStr + '/' + location + '/taxrate').get())
             tax = "${:0,.2f}".format(subtotal * taxRate)
             tax += " (" + str(float(taxRate * 100)) + "%)"
             total = "${:0,.2f}".format(subtotal * (1+taxRate))
@@ -2312,7 +2308,7 @@ def verifyOrder(location):
             SUBJECT = "Your Order From "+ estNameStr + " " + locationX
             message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
             smtpObj.sendmail(sender, [order['email']], message)
-            smtpObj.close()
+
         return jsonify(packet)
     else:
         orderRef.update({
@@ -2331,7 +2327,7 @@ def verifyOrder(location):
             cart = dict(order["ticket"])
             subtotal = order["subtotal"]
             subtotalStr = "${:0,.2f}".format(subtotal)
-            taxRate = float(db.reference('/restaurants/' + estNameStr + '/' + str(location) + '/taxrate').get())
+            taxRate = float(db.reference('/restaurants/' + estNameStr + '/' + location + '/taxrate').get())
             tax = "${:0,.2f}".format(subtotal * taxRate)
             tax += " (" + str(float(taxRate * 100)) + "%)"
             total = "${:0,.2f}".format(subtotal * (1+taxRate))
@@ -2346,12 +2342,12 @@ def verifyOrder(location):
             SUBJECT = "Your Meal From "+ estNameStr + " " + locationX
             message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
             smtpObj.sendmail(sender, [order['email']], message)
-            smtpObj.close()
+
         return jsonify(packet)
 
 
-@app.route('/reader/<locationX>/<type>', methods=["POST"])
-def GenReaderCode(locationX,type):
+@app.route('/<estNameStr>/<locationX>/reader/<type>', methods=["POST"])
+def GenReaderCode(estNameStr,locationX,type):
     rsp = request.get_json()
     print(rsp)
     code = rsp['code']
