@@ -26,7 +26,7 @@
   <meta name="description" content="">
   <meta name="author" content="Caleb John">
 
-  <title>Forgot Password</title>
+  <title>Change Password</title>
 
   <!-- Custom fonts for this template-->
   <link href="../../../static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -45,38 +45,30 @@ function goBack() {
 </script>
 
 </head>
-
-<body class="bg-gradient-primary">
-
-  <div class="container">
-    <br>
-    <br>
-
-    <!-- Outer Row -->
-    <div class="row justify-content-center">
-      <div class="text-center">
-        <h1 class="h4 text-gray-900 mb-2"><button class="btn-lg btn-primary" onclick="goBack()"><i class="fas fa-arrow-left"></i></button> Forgot Your Password?</h1>
-        <hr>
-
-      <form class="user" method="POST" action="forgot-password">
-
-        <div class="form-group">
-          <input type="email" class="form-control form-control-user" name="email" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Email Address..." required>
-        </div>
-        <input type="submit" value="Reset Password" class="btn btn-primary btn-user btn-block">
-
-      </form>
-      <hr>
-    </div>
-    </div>
-
-
-    </div>
-
-  </div>
-
-  <!-- Bootstrap core JavaScript-->
-
+<body>
+<div class="container">
+<br>
+<br>
+<h2>Update Password</h2>
+<br>
+<hr>
+<form method="POST" action="pw-reset-confirm~{{token}}~{{user}}">
+<p>Password:</p>
+<input name="password" required="required" type="password" minlength="8" id="password" />
+<p>Confirm Password:</p>
+<input name="password_confirm" required="required" type="password" minlength="8" id="password_confirm" oninput="check(this)" />
+<script language='javascript' type='text/javascript'>
+    function check(input) {
+        if (input.value != document.getElementById('password').value) {
+            input.setCustomValidity('Password Must be Matching.');
+        } else {
+            // input is valid -- reset the error message
+            input.setCustomValidity('');
+        }
+    }
+</script>
+<br /><br />
+<input type="submit" value="Change Password" class="btn btn-success" />
+</form>
+</div>
 </body>
-
-</html>

@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-    <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" sizes="60x60" href="../../../static/img/CedarRoboticsLogo.jpg">
  <link rel="apple-touch-icon" sizes="57x57" href="../../../static/img/CedarRoboticsLogo.jpg">
  <link rel="apple-touch-icon" sizes="72x72" href="../../../static/img/CedarRoboticsLogo.jpg">
@@ -26,57 +25,40 @@
   <meta name="description" content="">
   <meta name="author" content="Caleb John">
 
-  <title>Forgot Password</title>
+  <title>Menu</title>
 
   <!-- Custom fonts for this template-->
   <link href="../../../static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
   <!-- Custom styles for this template-->
   <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
-<script>
-function goBack() {
-  window.history.back();
-}
-</script>
-
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <script>
+  function goBack() {
+    window.history.back();
+  }
+  </script>
 </head>
 
-<body class="bg-gradient-primary">
-
-  <div class="container">
-    <br>
-    <br>
-
-    <!-- Outer Row -->
-    <div class="row justify-content-center">
-      <div class="text-center">
-        <h1 class="h4 text-gray-900 mb-2"><button class="btn-lg btn-primary" onclick="goBack()"><i class="fas fa-arrow-left"></i></button> Forgot Your Password?</h1>
-        <hr>
-
-      <form class="user" method="POST" action="forgot-password">
-
-        <div class="form-group">
-          <input type="email" class="form-control form-control-user" name="email" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Email Address..." required>
-        </div>
-        <input type="submit" value="Reset Password" class="btn btn-primary btn-user btn-block">
-
-      </form>
-      <hr>
-    </div>
-    </div>
+<body>
+<div class="container">
+<div class="text-center">
+<br><br><br><br>
+<form method="POST" action="recipt-qsr">
+<button class="btn-lg btn-primary" onclick="goBack()"><i class="fas fa-arrow-left"></i></button>  <br><br>
+  <h3>Email For Receipt <h6>(Optional)</h6></h3><br>
+  <input class="email" name="email"><br><br>
+  <input type="submit" value="Next" class="btn btn-lg btn-success">
+  <br><br><br><br><br></form>
 
 
-    </div>
 
-  </div>
 
-  <!-- Bootstrap core JavaScript-->
 
+</div>
+</div>
 </body>
-
 </html>

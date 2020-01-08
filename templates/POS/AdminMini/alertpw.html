@@ -26,7 +26,7 @@
   <meta name="description" content="">
   <meta name="author" content="Caleb John">
 
-  <title>Forgot Password</title>
+  <title>Menu</title>
 
   <!-- Custom fonts for this template-->
   <link href="../../../static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -37,46 +37,18 @@
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-
+<meta http-equiv="Refresh" content="5; url=admin-login" />
 <script>
 function goBack() {
   window.history.back();
 }
 </script>
-
-</head>
-
-<body class="bg-gradient-primary">
-
-  <div class="container">
-    <br>
-    <br>
-
-    <!-- Outer Row -->
-    <div class="row justify-content-center">
-      <div class="text-center">
-        <h1 class="h4 text-gray-900 mb-2"><button class="btn-lg btn-primary" onclick="goBack()"><i class="fas fa-arrow-left"></i></button> Forgot Your Password?</h1>
-        <hr>
-
-      <form class="user" method="POST" action="forgot-password">
-
-        <div class="form-group">
-          <input type="email" class="form-control form-control-user" name="email" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Email Address..." required>
-        </div>
-        <input type="submit" value="Reset Password" class="btn btn-primary btn-user btn-block">
-
-      </form>
-      <hr>
-    </div>
-    </div>
-
-
-    </div>
-
-  </div>
-
-  <!-- Bootstrap core JavaScript-->
-
+<body>
+<div class="container">
+<br><br><br>
+<div class="alert alert-success" role="alert">
+  Password Changed Successfully
+</div>
+</div>
 </body>
-
 </html>

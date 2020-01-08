@@ -24,10 +24,10 @@ from werkzeug.datastructures import ImmutableOrderedMultiDict
 
 infoFile = open("info.json")
 info = json.load(infoFile)
-uid = info['uid']
+
 #gc = pygsheets.authorize(service_file='static/CedarChatbot-70ec2d781527.json')
-email = "cedarchatbot@appspot.gserviceaccount.com"
-estName = info['uid']
+# email = "cedarchatbot@appspot.gserviceaccount.com"
+
 estNameStr = str(info['name'])
 botNumber = info["number"]
 gsheetsLink = info["gsheets"]
@@ -155,6 +155,43 @@ def checkAdminToken(idToken, username):
 def login(location):
     return render_template("POS/AdminMini/login.html", btn=str("admin"), restName=estNameStr,locName=location)
 
+@app.route('/<location>/reset-link~<token>~<user>', methods=["GET"])
+def pwResetLink(location,token,user):
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    try:
+        token_check = dict(ref.get())[user]['token']
+        if(token == token_check):
+            return render_template("POS/AdminMini/changepw.html", token=token, user=user)
+        else:
+            return(redirect(url_for("login",location=location)))
+    except Exception as e:
+        return(redirect(url_for("login",location=location)))
+
+
+@app.route('/<location>/pw-reset-confirm~<token>~<user>', methods=["POST"])
+def pwResetCheck(location,token,user):
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    try:
+        token_check = dict(ref.get())[user]['token']
+        if(token == token_check):
+            request.parameter_storage_class = ImmutableOrderedMultiDict
+            rsp = dict((request.form))
+            pw = rsp['password']
+            hash = pbkdf2_sha256.hash(pw)
+            LoginToken = str((uuid.uuid4())) + "-" + str((uuid.uuid4()))
+            userRef = db.reference('/restaurants/' + estNameStr + '/admin-info/' + user)
+            userRef.update({
+                'token': LoginToken,
+                'time': time.time(),
+                'password':hash
+            })
+            return render_template("POS/AdminMini/alertpw.html")
+        else:
+            return(redirect(url_for("login",location=location)))
+    except Exception as e:
+        return(redirect(url_for("login",location=location)))
+
+
 @app.route('/<location>/forgot-password', methods=["GET"])
 def pwReset(location):
     return render_template("POS/AdminMini/forgot-password.html", btn=str("admin"), restName=estNameStr)
@@ -168,7 +205,12 @@ def pwResetConfirm(location):
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info/' + email)
     user = ref.get()
     if(user != None):
-
+        mainLink = "https://f51ea5ce.ngrok.io/"
+        write_str = mainLink + location+ "/reset-link~" + user['token'] + "~" + email
+        SUBJECT = "Password Reset for " + str(estNameStr).capitalize() + " "+ str(location).capitalize()  + " Admin Account"
+        message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
+        smtpObj.sendmail(sender, [str(rsp['email'])], message)
+        smtpObj.close()
         alert = "Password Reset Email From cedarrestaurantsbot@gmail.com Sent"
         type="success"
     else:
@@ -1575,10 +1617,27 @@ def kioskCartQSR(location):
                     pathRem = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken + "/cart/" + keys
                     pathRemRef = db.reference(pathRem)
                     pathRemRef.delete()
-        return(redirect(url_for("payQSR",location=location)))
+        return(render_template("Customer/QSR/receipt.html"))
+        # return(redirect(url_for("payQSR",location=location)))
     except Exception:
         return(redirect(url_for("qsrMenu",location=location)))
 
+@app.route('/<location>/recipt-qsr', methods=["POST"])
+def reciptQSR(location):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = dict((request.form))
+    orderToken = session.get('orderToken',None)
+    if(rsp['email'] != ""):
+        userRef = db.reference('/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken)
+        userRef.update({
+            "email":rsp['email']
+        })
+    else:
+        userRef = db.reference('/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken)
+        userRef.update({
+            "email":"no-email"
+        })
+    return(redirect(url_for("payQSR",location=location)))
 
 @app.route('/<location>/collect-feedback')
 def dispFeedBack(location):
@@ -1593,6 +1652,16 @@ def collectFeedback(location):
     rsp = dict((request.form))
     orderToken = session.get('orderToken',None)
     pathOrder = '/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken
+    if(rsp['email'] != ""):
+        userRef = db.reference(pathOrder)
+        userRef.update({
+            "email":rsp['email']
+        })
+    else:
+        userRef = db.reference('/restaurants/' + estNameStr + '/' + str(location) + "/orders/" + orderToken)
+        userRef.update({
+            "email":"no-email"
+        })
     orderInfo = dict(db.reference(pathOrder).get())
     now = datetime.datetime.now(tzGl[0])
     feedback_ref = db.reference('/restaurants/' + estNameStr + '/'+ location + '/feedback')
@@ -2220,6 +2289,30 @@ def verifyOrder(location):
             "code":token,
             "success": "true"
         }
+        if(order['email'] != "no-email"):
+            now = datetime.datetime.now(tzGl[0])
+            write_str = "Your Order From "+ estNameStr + " " + locationX + " @"
+            write_str += str(now.hour) + ":" + str(now.minute) + " on " + str(now.month) + "-" + str(now.day) + "-" + str(now.year)
+            write_str += "\n \n"
+            cart = dict(order["cart"])
+            subtotal = 0
+            items = []
+            cartKeys = list(cart.keys())
+            for keys in cartKeys:
+                subtotal += cart[keys]["price"]
+                dispStr = cart[keys]["dispStr"]
+                write_str += dispStr + "\n"
+            subtotalStr = "${:0,.2f}".format(subtotal)
+            taxRate = float(db.reference('/restaurants/' + estNameStr + '/' + str(location) + '/taxrate').get())
+            tax = "${:0,.2f}".format(subtotal * taxRate)
+            tax += " (" + str(float(taxRate * 100)) + "%)"
+            total = "${:0,.2f}".format(subtotal * (1+taxRate))
+            write_str+= "\n \n"
+            write_str += subtotalStr +"\n"+tax + "\n"+ total +"\n \n \n"
+            SUBJECT = "Your Order From "+ estNameStr + " " + locationX
+            message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
+            smtpObj.sendmail(sender, [order['email']], message)
+            smtpObj.close()
         return jsonify(packet)
     else:
         orderRef.update({
@@ -2229,6 +2322,31 @@ def verifyOrder(location):
             "code":tokenVal,
             "success": "true"
         }
+        if(order['email'] != "no-email"):
+            now = datetime.datetime.now(tzGl[0])
+            write_str = "Your Meal From "+ estNameStr + " " + locationX + " @"
+            write_str += str(now.hour) + ":" + str(now.minute) + " on " + str(now.month) + "-" + str(now.day) + "-" + str(now.year)
+            write_str += "\n \n"
+            # TODOX
+            cart = dict(order["ticket"])
+            subtotal = order["subtotal"]
+            subtotalStr = "${:0,.2f}".format(subtotal)
+            taxRate = float(db.reference('/restaurants/' + estNameStr + '/' + str(location) + '/taxrate').get())
+            tax = "${:0,.2f}".format(subtotal * taxRate)
+            tax += " (" + str(float(taxRate * 100)) + "%)"
+            total = "${:0,.2f}".format(subtotal * (1+taxRate))
+            cartKeys = list(cart.keys())
+            for ck in cartKeys:
+                ckKeys = list(cart[ck].keys())
+                for ckk in ckKeys:
+                    dispStr = cart[ck][ckk]["dispStr"] +  "\n"
+                    write_str += dispStr
+            write_str+= "\n \n"
+            write_str += subtotalStr +"\n"+tax + "\n"+ total +"\n \n \n"
+            SUBJECT = "Your Meal From "+ estNameStr + " " + locationX
+            message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
+            smtpObj.sendmail(sender, [order['email']], message)
+            smtpObj.close()
         return jsonify(packet)
 
 
