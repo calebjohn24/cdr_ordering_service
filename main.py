@@ -123,17 +123,17 @@ def getSquare(estNameStr):
                         "sqNumber": numb, "name": locationName}})
 
 
-def checkLocation(location, custFlag):
+def checkLocation(estNameStr, location):
     try:
-        locationsPaths[location]
-        return [0,0]
+        ref = db.reference('/restaurants/'+estNameStr+'/'+location)
+        test = dict(ref.get())
+        if(test != None):
+            return 0
+        else:
+            return 1
     except Exception as e:
-        if (custFlag == 0):
-            return [1, "pickLocation"]
-        elif (custFlag == 1):
-            return [1, "MobileStart"]
-        elif (custFlag == 1):
-            return [1, "EmployeeLocation"]
+        return 1
+
 
 
 def checkAdminToken(idToken, username):
@@ -150,6 +150,8 @@ def checkAdminToken(idToken, username):
 
 @app.route('/<estNameStr>/<location>/admin-login', methods=["GET"])
 def login(estNameStr,location):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     return render_template("POS/AdminMini/login.html", btn=str("admin"), restName=estNameStr,locName=location)
 
 @app.route('/<estNameStr>/<location>/reset-link~<token>~<user>', methods=["GET"])
@@ -191,6 +193,8 @@ def pwResetCheck(estNameStr,location,token,user):
 
 @app.route('/<estNameStr>/<location>/forgot-password', methods=["GET"])
 def pwReset(estNameStr,location):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     return render_template("POS/AdminMini/forgot-password.html", btn=str("admin"), restName=estNameStr)
 
 
@@ -246,6 +250,8 @@ def loginPageCheck(estNameStr,location):
 
 @app.route('/<estNameStr>/<location>/admin-panel', methods=["GET"])
 def panel(estNameStr,location):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     getSquare(estNameStr)
     idToken = session.get('token', None)
     username = session.get('user', None)
@@ -362,6 +368,8 @@ def confirmEmployeeCode(estNameStr,location):
 
 @app.route('/<estNameStr>/<location>/remUser~<user>')
 def remUser(estNameStr,location,user):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -383,6 +391,8 @@ def remUser(estNameStr,location,user):
 
 @app.route('/<estNameStr>/<location>/schedule-<day>', methods=["GET"])
 def scheduleSet(estNameStr,location,day):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -433,6 +443,8 @@ def scheduleSet(estNameStr,location,day):
 
 @app.route('/<estNameStr>/<location>/remTs~<day>~<menu>')
 def remTimeSlot(estNameStr,location,day,menu):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     menu = str(menu).replace("-"," ")
     menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/schedule/'+str(day)+"/"+str(menu))
     menu_ref.delete()
@@ -474,6 +486,8 @@ def addTimeSlot(estNameStr,location,day):
 
 @app.route('/<estNameStr>/<location>/create-menu', methods=["GET"])
 def createMenu(estNameStr,location):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -492,6 +506,8 @@ def createMenu(estNameStr,location):
 
 @app.route('/<estNameStr>/<location>/add-menu', methods=["POST"])
 def addMenu(estNameStr,location):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = dict((request.form))
     new_menu = rsp["name"]
@@ -501,6 +517,8 @@ def addMenu(estNameStr,location):
 
 @app.route('/<estNameStr>/<location>/view-menu')
 def viewMenu(estNameStr,location):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -521,6 +539,8 @@ def viewMenu(estNameStr,location):
 
 @app.route('/<estNameStr>/<location>/edit-menu-<menu>')
 def editMenu(estNameStr,location,menu):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -545,6 +565,8 @@ def editMenu(estNameStr,location,menu):
 
 @app.route('/<estNameStr>/<location>/rem-cat-<menu>~<category>')
 def remCategories(estNameStr,location,menu,category):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -565,6 +587,8 @@ def remCategories(estNameStr,location,menu,category):
 
 @app.route('/<estNameStr>/<location>/view-cat-<menu>~<category>')
 def viewCategories(estNameStr,location,menu,category):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -591,12 +615,16 @@ def viewCategories(estNameStr,location,menu,category):
 
 @app.route('/<estNameStr>/<location>/remOpt~<menu>~<cat>~<item>~<mods>~<opt>')
 def remOpt(estNameStr,location,menu,cat,item,mods,opt):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     opt_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+cat+"/"+item+"/"+mods+"/info/"+opt)
     opt_ref.delete()
     return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
 
 @app.route('/<estNameStr>/<location>/addOpt~<menu>~<cat>~<item>~<mods>')
 def addOpt(estNameStr,location,menu,cat,item,mods):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -662,6 +690,8 @@ def editExtra(estNameStr,location,menu,cat,item):
 
 @app.route('/<estNameStr>/<location>/editImg~<menu>~<cat>~<item>')
 def editImg(estNameStr,location,menu,cat,item):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -705,6 +735,8 @@ def editImgX(estNameStr,location,menu,cat,item):
 
 @app.route('/<estNameStr>/<location>/addCpn~<menu>~<category>~<item>~<modName>~<modItm>')
 def addCpn(estNameStr,location,menu,category,item,modName,modItm):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -748,6 +780,8 @@ def addCpn2(estNameStr,location,menu,category,item,modName,modItm):
 
 @app.route('/<estNameStr>/<location>/act-menu')
 def chooseMenu(estNameStr,location):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -778,6 +812,8 @@ def chooseMenu(estNameStr,location):
 
 @app.route('/<estNameStr>/<location>/activate-menu-<menu>')
 def enableMenu(estNameStr,location,menu):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -798,6 +834,8 @@ def enableMenu(estNameStr,location,menu):
 
 @app.route('/<estNameStr>/<location>/deactivate-menu-<menu>')
 def disableMenu(estNameStr,location,menu):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -818,6 +856,8 @@ def disableMenu(estNameStr,location,menu):
 
 @app.route("/<location>/remitm~<menu>~<cat>~<item>")
 def removeItem(estNameStr,location,menu,cat,item):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -840,6 +880,8 @@ def removeItem(estNameStr,location,menu,cat,item):
 
 @app.route("/<location>/viewitm~<menu>~<cat>~<item>")
 def viewItem(estNameStr,location,menu,cat,item):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     # #print(menu,cat,item)
     idToken = session.get('token', None)
     username = session.get('user', None)
@@ -878,6 +920,8 @@ def viewItem(estNameStr,location,menu,cat,item):
 
 @app.route("/<location>/addMod-<menu>~<cat>~<item>")
 def addMod(estNameStr,location,menu,cat,item):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -922,12 +966,16 @@ def addModX(estNameStr,location,menu,cat,item):
 
 @app.route("/<location>/remMod~<menu>~<cat>~<item>~<mod>")
 def remMod(estNameStr,location,menu,cat,item,mod):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     item_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+str(cat)+"/"+str(item)+"/"+str(mod))
     item_ref.delete()
     return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
 
 @app.route("/<location>/addItm~<menu>~<cat>")
 def addItem(estNameStr,location,menu,cat):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -944,7 +992,7 @@ def addItem(estNameStr,location,menu,cat):
     })
     return(render_template("POS/AdminMini/addItm.html",location=location,menu=menu,cat=cat))
 
-@app.route("/<location>/addItmX~<menu>~<cat>" , methods=["POST","GET"])
+@app.route("/<location>/addItmX~<menu>~<cat>" , methods=["POST"])
 def addItem2(estNameStr,location,menu,cat):
     UPLOAD_FOLDER = estNameStr+"/imgs/"
     idToken = session.get('token', None)
@@ -996,6 +1044,8 @@ def addItem2(estNameStr,location,menu,cat):
 
 @app.route("/<location>/addcat~<menu>")
 def addCat(estNameStr,location,menu):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -1013,7 +1063,7 @@ def addCat(estNameStr,location,menu):
     return(render_template("POS/AdminMini/addCat.html",location=location,menu=menu))
 
 
-@app.route("/<location>/addcatSubmit", methods=["POST","GET"])
+@app.route("/<location>/addcatSubmit", methods=["POST"])
 def addCatX(estNameStr,location):
     UPLOAD_FOLDER = estNameStr+"/imgs/"
     idToken = session.get('token', None)
@@ -1067,6 +1117,8 @@ def addCatX(estNameStr,location):
 
 @app.route('/<estNameStr>/<location>/rem-new-comment~<comment>')
 def remNewComment(estNameStr,location,comment):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -1083,6 +1135,8 @@ def remNewComment(estNameStr,location,comment):
 
 @app.route('/<estNameStr>/<location>/rem-saved-comment~<comment>')
 def remSavedComment(estNameStr,location,comment):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -1099,6 +1153,8 @@ def remSavedComment(estNameStr,location,comment):
 
 @app.route('/<estNameStr>/<location>/save-comment~<comment>')
 def saveComment(estNameStr,location,comment):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -1120,6 +1176,8 @@ def saveComment(estNameStr,location,comment):
 
 @app.route('/<estNameStr>/<location>/rem-feedback~<question>')
 def remQuestion(estNameStr,location,question):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -1136,6 +1194,8 @@ def remQuestion(estNameStr,location,question):
 
 @app.route('/<estNameStr>/<location>/add-feedback')
 def addQuestion(estNameStr,location):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -1243,14 +1303,20 @@ def findMenu(estNameStr,location):
 
 @app.route('/<estNameStr>/<location>/sitdown-startKiosk', methods=["GET"])
 def startKiosk2(estNameStr,location):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     return(render_template("Customer/Sitdown/startKiosk.html",btn="sitdown-startKiosk",restName=estNameStr,locName=location))
 
 @app.route('/<estNameStr>/<location>/qsr-startKiosk', methods=["GET"])
 def startKiosk4(estNameStr,location):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     return(render_template("Customer/QSR/startKiosk.html",btn="qsr-startKiosk",restName=estNameStr,locName=location))
 
 @app.route('/<estNameStr>/<location>/order', methods=["GET"])
 def startKiosk5(estNameStr,location):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     return(render_template("Customer/QSR/startKiosk.html",btn="startOnline",restName=estNameStr,locName=location))
 
 @app.route('/<estNameStr>/<location>/startOnline', methods=["POST"])
@@ -1375,6 +1441,8 @@ def dummyMenuRender(estNameStr,location):
 
 @app.route('/<estNameStr>/<location>/sitdown-menudisp')
 def sitdownMenu(estNameStr,location):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     menu = session.get('menu', None)
     orderToken = session.get('orderToken',None)
     pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu + "/categories"
@@ -1384,11 +1452,13 @@ def sitdownMenu(estNameStr,location):
         cart = dict(cartRef.get())
     except Exception as e:
         cart = {}
-    print(cart)
+    # print(cart)
     return(render_template("Customer/Sitdown/mainKiosk2.html", menu=menuInfo, restName=estNameStr.capitalize(), cart=cart, locName=location.capitalize()))
 
 @app.route('/<estNameStr>/<location>/qsr-menudisp')
 def qsrMenu(estNameStr,location):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     menu = session.get('menu', None)
     orderToken = session.get('orderToken',None)
     pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu + "/categories"
@@ -1398,7 +1468,7 @@ def qsrMenu(estNameStr,location):
         cart = dict(cartRef.get())
     except Exception as e:
         cart = {}
-    print(cart)
+    # print(cart)
     return(render_template("Customer/QSR/mainKiosk2.html", menu=menuInfo, restName=estNameStr.capitalize(), cart=cart, locName=location.capitalize()))
 
 @app.route('/<estNameStr>/<location>/qsr-additms~<cat>~<itm>', methods=["POST"])
@@ -1637,6 +1707,8 @@ def reciptQSR(estNameStr,location):
 
 @app.route('/<estNameStr>/<location>/collect-feedback')
 def dispFeedBack(estNameStr,location):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     feedback_ref = db.reference('/restaurants/' + estNameStr + '/'+ location + '/feedback')
     feedback = dict(feedback_ref.get())
     return(render_template("Customer/Sitdown/feedback.html",feedback=feedback))
@@ -1703,6 +1775,8 @@ def collectFeedback(estNameStr,location):
 
 @app.route('/<estNameStr>/<location>/pay')
 def payQSR(estNameStr,location):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     orderToken = session.get('orderToken',None)
     pathOrder = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
     orderInfo = dict(db.reference(pathOrder).get())
@@ -1919,6 +1993,8 @@ def applyCpn(estNameStr,location):
 
 @app.route('/<estNameStr>/<location>/close-alert')
 def kioskClear(estNameStr,location):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     orderToken = session.get('orderToken',None)
     alertPath = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
     clearAlert = db.reference(alertPath).update({"alert":"null"})
@@ -1962,10 +2038,14 @@ def kioskSendReq(estNameStr,location):
 ##########Employee###########
 @app.route('/<estNameStr>/<location>/qsr-employee-login')
 def EmployeeLoginQSR(estNameStr,location):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     return(render_template("POS/StaffQSR/login.html"))
 
 @app.route('/<estNameStr>/<location>/qsr-employee-login2')
 def EmployeeLogin2QSR(estNameStr,location):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     return(render_template("POS/StaffSitdown/login2.html"))
 
 @app.route('/<estNameStr>/<location>/qsr-employee-login', methods=['POST'])
@@ -1989,6 +2069,8 @@ def EmployeeLoginCheckQSR(estNameStr,location):
 
 @app.route('/<estNameStr>/<location>/qsr-view')
 def EmployeePanelQSR(estNameStr,location):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     token = session.get('token',None)
     loginRef = db.reference('/restaurants/' + estNameStr + '/' + location + "/employee/")
     loginData = dict(loginRef.get())
@@ -2025,6 +2107,8 @@ def EmployeePanelQSR(estNameStr,location):
 
 @app.route('/<estNameStr>/<location>/qsr-activate-item~<cat>~<item>~<menu>')
 def activateItemQSR(estNameStr,location,cat,item,menu):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu + "/categories/"+ cat + "/" + item
     descrip = dict(db.reference(pathMenu).get())["tmp"]
     db.reference(pathMenu).update({"descrip":descrip})
@@ -2034,6 +2118,8 @@ def activateItemQSR(estNameStr,location,cat,item,menu):
 
 @app.route('/<estNameStr>/<location>/qsr-deactivate-item~<cat>~<item>~<menu>')
 def deactivateItemQSR(estNameStr,location,cat,item,menu):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu + "/categories/"+ cat + "/" + item
     descrip = dict(db.reference(pathMenu).get())["descrip"]
     db.reference(pathMenu).update({"tmp":descrip})
@@ -2053,10 +2139,14 @@ def EmployeeSuccessQSR(estNameStr,location):
 
 @app.route('/<estNameStr>/<location>/employee-login')
 def EmployeeLogin(estNameStr,location):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     return(render_template("POS/StaffSitdown/login.html"))
 
 @app.route('/<estNameStr>/<location>/employee-login2')
 def EmployeeLogin2(estNameStr,location):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     return(render_template("POS/StaffSitdown/login2.html"))
 
 @app.route('/<estNameStr>/<location>/employee-login', methods=['POST'])
@@ -2080,6 +2170,8 @@ def EmployeeLoginCheck(estNameStr,location):
 
 @app.route('/<estNameStr>/<location>/view')
 def EmployeePanel(estNameStr,location):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     token = session.get('token',None)
     loginRef = db.reference('/restaurants/' + estNameStr + '/' + location + "/employee/")
     loginData = dict(loginRef.get())
@@ -2122,12 +2214,13 @@ def EmployeePanel(estNameStr,location):
             else:
                 appItem = str(cats) + "~" + str(itm)
                 inactiveItems.append(appItem)
-    print(tokens)
     return(render_template("POS/StaffSitdown/View.html", location=location.capitalize(), restName=str(estNameStr.capitalize()), menu=menu, activeItems=activeItems, inactiveItems=inactiveItems, reqData=reqData, orders=ordsGet))
 
 
 @app.route('/<estNameStr>/<location>/activate-item~<cat>~<item>~<menu>')
 def activateItem(estNameStr,location,cat,item,menu):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu + "/categories/"+ cat + "/" + item
     descrip = dict(db.reference(pathMenu).get())["tmp"]
     db.reference(pathMenu).update({"descrip":descrip})
@@ -2137,6 +2230,8 @@ def activateItem(estNameStr,location,cat,item,menu):
 
 @app.route('/<estNameStr>/<location>/deactivate-item~<cat>~<item>~<menu>')
 def deactivateItem(estNameStr,location,cat,item,menu):
+    if(checkLocation(estNameStr,location) == 1):
+        return(redirect(url_for("findRestaurant")))
     pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu + "/categories/"+ cat + "/" + item
     descrip = dict(db.reference(pathMenu).get())["descrip"]
     db.reference(pathMenu).update({"tmp":descrip})
@@ -2398,9 +2493,24 @@ def GenReaderCode(estNameStr,locationX,type):
         return jsonify(packet)
 
 
+@app.route('/find-restaurant')
+def findRestaurant():
+    restaurantsDict = dict(db.reference('/restaurants').get())
+    restaurants = list(restaurantsDict.keys())
+    return(render_template("Global/findrestaurant.html", restaurants=restaurants))
 
 
+@app.route('/restname~<restaurant>')
+def findRestaurantLocation(restaurant):
+    restaurantsDict = dict(db.reference('/restaurants/' + restaurant).get())
+    del restaurantsDict['admin-info']
+    del restaurantsDict['sq-token']
+    locations = list(restaurantsDict.keys())
+    return(render_template("Global/findrestaurantloc.html",restaurant=restaurant,locations=locations))
 
+@app.route('/pickscreen-<restaurant>~<location>')
+def pickScreen(restaurant, location):
+    return(render_template("Global/pickScreen.html",restaurant=restaurant,location=location))
 
 if __name__ == '__main__':
     try:
