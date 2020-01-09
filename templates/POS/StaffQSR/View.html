@@ -2,6 +2,11 @@
 <html lang="en">
 
 <head>
+  <style>
+  input[type=checkbox] {
+ zoom: 2.5;
+}
+   </style>
   <link rel="apple-touch-icon" sizes="60x60" href="../../../static/img/CedarRoboticsLogo.jpg">
   <link rel="apple-touch-icon" sizes="57x57" href="../../../static/img/CedarRoboticsLogo.jpg">
   <link rel="apple-touch-icon" sizes="72x72" href="../../../static/img/CedarRoboticsLogo.jpg">
@@ -37,7 +42,7 @@
 <br>
 
 <div class="container">
-  <h2>{{restName}} {{location}} Employee Panel <button class="btn-lg btn-light" onClick="window.location.reload()"><i class="fas fa-sync"></i></button></h2>
+  <h2>{{restName}} {{location}} Employee Panel <h6>QSR/Online Orders </h6> <button class="btn-lg btn-light" onClick="window.location.reload()"><i class="fas fa-sync"></i></button><br></h2>
   <br>
   <!-- Nav tabs -->
   <ul class="nav nav-tabs" role="tablist">
@@ -63,7 +68,7 @@
         <div class="col-lg-8">
         <div class="card">
         <div class="card-body">
-        <h3 class="card-title">{{ord.info.name|capitalize}} {{ord.info.table}} ({{ord.info.number}})</h3></h3><br><h4>{{ord.info.paid}}</h4><br>
+        <h3 class="card-title">{{ord.info.name|capitalize}}<br> {{ord.info.table}}<br> ({{ord.info.number}})</h3></h3><br><h3>{{ord.info.paid}}</h3>
         <h3 class="card-text">
           {% for key_itm, itm in ord.cart.items() %}
           <h3>{{itm.dispStr}} <input type="checkbox"></h3>
@@ -76,7 +81,7 @@
         <div class="col-lg-1">
         <form method="POST" action="qsr-view-success">
         <button type="submit" name="req" value="{{key_ord}}" class="btn btn-success btn-circle btn-lg">
-          Order Complete 
+          Order Complete
         <i class="fas fa-check"></i>
         </button>
         </form>

@@ -24,13 +24,7 @@ from werkzeug.datastructures import ImmutableOrderedMultiDict
 
 infoFile = open("info.json")
 info = json.load(infoFile)
-
-#gc = pygsheets.authorize(service_file='static/CedarChatbot-70ec2d781527.json')
-# email = "cedarchatbot@appspot.gserviceaccount.com"
-
-estNameStr = str(info['name'])
 botNumber = info["number"]
-gsheetsLink = info["gsheets"]
 mainLink = info['mainLink']
 adminSessTime = 3599
 client = plivo.RestClient(auth_id='MAYTVHN2E1ZDY4ZDA2YZ', auth_token='ODgzZDA1OTFiMjE2ZTRjY2U4ZTVhYzNiODNjNDll')
@@ -41,9 +35,6 @@ firebase_admin.initialize_app(cred, {
 })
 storage_client = storage.Client.from_service_account_json('CedarChatbot-b443efe11b73.json')
 bucket = storage_client.get_bucket("cedarchatbot.appspot.com")
-
-
-#sh = gc.open('TestRaunt')
 webLink = "sms:+" + botNumber + "?body=order"
 sender = 'cedarrestaurantsbot@gmail.com'
 emailPass = "cda33d07-f6bd-479e-806f-5d039ae2fa2d"
@@ -73,6 +64,17 @@ tzGl = []
 def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+def sendEmail(sender, rec, msg):
+    try:
+        smtpObj.sendmail(sender, [rec], msg)
+    except Exception as e:
+        sender = 'cedarrestaurantsbot@gmail.com'
+        emailPass = "cda33d07-f6bd-479e-806f-5d039ae2fa2d"
+        smtpObj = smtplib.SMTP_SSL("smtp.gmail.com", 465)
+        smtpObj.login(sender, emailPass)
+        sendEmail(sender, rec, msg)
 
 def getSquare(estNameStr):
     sqRef = db.reference(str('/restaurants/' + estNameStr))
@@ -1962,17 +1964,17 @@ def onlineVerify(estNameStr,location,orderToken):
                     dispStr = cart[keys]["dispStr"]
                     write_str += dispStr + "\n"
                 subtotal += 0.25
-                subtotalStr = "${:0,.2f}".format(subtotal)
+                subtotalStr = "Subtotal ${:0,.2f}".format(subtotal)
                 taxRate = float(db.reference('/restaurants/' + estNameStr + '/' + location + '/taxrate').get())
-                tax = "${:0,.2f}".format(subtotal * taxRate)
+                tax = "Tax ${:0,.2f}".format(subtotal * taxRate)
                 tax += " (" + str(float(taxRate * 100)) + "%)"
-                total = "${:0,.2f}".format(subtotal * (1+taxRate))
+                total = "Total ${:0,.2f}".format(subtotal * (1+taxRate))
                 write_str+= "\n \n"
                 write_str += subtotalStr +"\n"+tax + "\n"+ total +"\n \n \n"
                 write_str += 'Thank You For Your Order ' + str(order['name']).capitalize() + " !"
                 SUBJECT = "Your Order From "+ estNameStr.capitalize()  + " " + location.capitalize()
                 message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
-                smtpObj.sendmail(sender, [order['email']], message)
+                sendEmail(sender, order['email'], mesg)
         return(render_template("Customer/QSR/Payment-Success.html"))
     else:
         return(redirect(url_for('startOnline',estNameStr=estNameStr,location=location)))
@@ -2544,8 +2546,8 @@ def verifyOrder(estNameStr,location):
             write_str += 'Thank You For Your Order ' + str(order['name']).capitalize() + " !"
             SUBJECT = "Your Order From "+ estNameStr.capitalize()  + " " + location.capitalize()
             message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
-            smtpObj.sendmail(sender, [order['email']], message)
-
+            # smtpObj.sendmail(sender, [order['email']], message)
+            sendEmail(sender, order['email'], mesg)
         return jsonify(packet)
     else:
         orderRef.update({
@@ -2575,11 +2577,12 @@ def verifyOrder(estNameStr,location):
                     dispStr = cart[ck][ckk]["dispStr"] +  "\n"
                     write_str += dispStr
             write_str+= "\n \n"
-            write_str += subtotalStr +"\n"+tax + "\n"+ total +"\n \n \n"
+            write_str += subtotalStr + "\n" + tax + "\n" + total + "\n \n \n"
             write_str += 'Thank You For Dining with us ' + str(order['name']).capitalize() + " !"
-            SUBJECT = "Thank You For Dining with "+ estNameStr + " " + location
+            SUBJECT = "Thank You For Dining at "+ estNameStr + " " + location
             message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
-            smtpObj.sendmail(sender, [order['email']], message)
+            # smtpObj.sendmail(sender, [order['email']], message)
+            sendEmail(sender, order['email'], message)
 
         return jsonify(packet)
 
@@ -2657,6 +2660,18 @@ def findRestaurantLocation(restaurant):
 def pickScreen(restaurant, location):
     return(render_template("Global/pickScreen.html",restaurant=restaurant,location=location))
 
+
+
+
+
+
+
+
+
+
+
+
+
 if __name__ == '__main__':
     try:
         ##print(locationsPaths.keys())
@@ -2665,7 +2680,7 @@ if __name__ == '__main__':
         app.config['SESSION_TYPE'] = 'filesystem'
         sess = Session()
         sess.init_app(app)
-        app.permanent_session_lifetime = datetime.timedelta(minutes=200)
+        app.permanent_session_lifetime = datetime.timedelta(minutes=240)
         app.debug = True
         app.run(host="0.0.0.0",port=5000)
     except KeyboardInterrupt:
