@@ -206,7 +206,6 @@ def pwResetConfirm(estNameStr,location):
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info/' + email)
     user = ref.get()
     if(user != None):
-        mainLink = "https://f51ea5ce.ngrok.io/"
         write_str = mainLink + estNameStr+"/"+location+ "/reset-link~" + user['token'] + "~" + email
         SUBJECT = "Password Reset for " + str(estNameStr).capitalize() + " "+ location.capitalize()  + " Admin Account"
         message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
@@ -470,7 +469,7 @@ def editMenuSlot(estNameStr,location,day,menu):
     newTime = hour+minute
     menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/schedule/'+str(day))
     menu_ref.update({menu:newTime})
-    return(redirect(url_for("scheduleSet",location=location,day=day)))
+    return(redirect(url_for("scheduleSet",estNameStr=estNameStr,location=location,day=day)))
 
 @app.route('/<estNameStr>/<location>/addTs~<day>', methods=["POST"])
 def addTimeSlot(estNameStr,location,day):
@@ -1326,7 +1325,7 @@ def startOnline(estNameStr,location):
     phone = rsp["number"]
     name = rsp["name"]
     togo = rsp["togo"]
-    table = ""
+    table = "Online Order"
     session['table'] = ""
     session['name'] = name
     session['phone'] = phone
@@ -1349,7 +1348,7 @@ def startOnline(estNameStr,location):
     #print(newOrd.key)
     session['orderToken'] = newOrd.key
     menu = findMenu(estNameStr,location)
-    # menu = "lunch"
+    print(menu)
     session["menu"] = menu
     ##print(menu)
     return(redirect(url_for('qsrMenu',estNameStr=estNameStr,location=location)))
@@ -1365,10 +1364,10 @@ def startKioskQsr(estNameStr,location):
     togo = rsp["togo"]
     print(togo)
     if(togo == "here"):
-        table = rsp["table"]
+        table = "Table #" + rsp["table"]
         print(table)
     else:
-        table = "togo"
+        table = "To Go"
     session['table'] = table
     session['name'] = name
     session['phone'] = phone
@@ -1781,8 +1780,6 @@ def payQSR(estNameStr,location):
     pathOrder = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
     orderInfo = dict(db.reference(pathOrder).get())
     QSR = orderInfo["QSR"]
-    orderInfo = dict(db.reference(pathOrder).get())
-    QSR = orderInfo["QSR"]
     if(QSR == 0):
         cart = dict(orderInfo["cart"])
         subtotal = 0
@@ -1792,22 +1789,28 @@ def payQSR(estNameStr,location):
             subtotal += cart[keys]["price"]
             dispStr = cart[keys]["dispStr"]
             items.append(dispStr)
+        subtotal += 0.25
         subtotalStr = "${:0,.2f}".format(subtotal)
         taxRate = float(db.reference('/restaurants/' + estNameStr + '/' + location + '/taxrate').get())
         tax = "${:0,.2f}".format(subtotal * taxRate)
         tax += " (" + str(float(taxRate * 100)) + "%)"
         total = "${:0,.2f}".format(subtotal * (1+taxRate))
         session['total'] = round(subtotal*(1+taxRate),2)
+        session['subtotal'] = subtotal
         session['kiosk'] = orderInfo["kiosk"]
         db.reference(pathOrder).update({
             "subtotal":subtotal,
             "total":float(subtotal*(1+taxRate))
         })
         sqTotal = str(int(round(subtotal*(1+taxRate),2) * 100)) + "~" + str(orderToken) +"~"+mainLink+location
-        return(render_template("Customer/QSR/Payment.html",locName=location.capitalize(),restName=str(estNameStr).capitalize(), cart=str(cart), items=items, subtotal=subtotalStr,tax=tax,total=total,sqTotal=sqTotal))
+        if(orderInfo['kiosk'] == 0):
+            return(render_template("Customer/QSR/Payment.html",locName=location.capitalize(),restName=str(estNameStr).capitalize(), cart=str(cart), items=items, subtotal=subtotalStr,tax=tax,total=total,sqTotal=sqTotal))
+        else:
+            return(render_template("Customer/QSR/Payment-Online.html",locName=location.capitalize(),restName=str(estNameStr).capitalize(), cart=str(cart), items=items, subtotal=subtotalStr,tax=tax,total=total,orderToken=orderToken))
     else:
         cart = dict(orderInfo["ticket"])
         subtotal = orderInfo["subtotal"]
+        subtotal += 0.25
         subtotalStr = "${:0,.2f}".format(subtotal)
         taxRate = float(db.reference('/restaurants/' + estNameStr + '/' + location + '/taxrate').get())
         tax = "${:0,.2f}".format(subtotal * taxRate)
@@ -1838,6 +1841,141 @@ def payQSR(estNameStr,location):
         return(render_template("Customer/Sitdown/Payment.html",locName=location.capitalize(),restName=str(estNameStr).capitalize(),
                                items=items, subtotal=subtotalStr,tax=tax,total=total, sqTotal=sqTotal))
 
+
+@app.route('/<estNameStr>/<location>/pay-online')
+def payOnline(estNameStr,location):
+    orderToken = session.get('orderToken',None)
+    subtotal = session.get('subtotal',None)
+    pathOrder = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
+    orderInfo = dict(db.reference(pathOrder).get())
+    sqRef = db.reference(str('/restaurants/' + estNameStr))
+    squareToken = dict(sqRef.get())["sq-token"]
+    client = Client(
+        access_token=squareToken,
+        environment='production',
+    )
+    api_locations = client.locations
+    mobile_authorization_api = client.mobile_authorization
+    # Call list_locations method to get all locations in this Square account
+    result = api_locations.list_locations()
+    if result.is_success():
+    	# The body property is a list of locations
+        locations = result.body['locations']
+    	# Iterate over the list
+        for locationX in locations:
+            # print(location)
+            if((dict(locationX.items())["status"]) == "ACTIVE"):
+                locationName = (dict(locationX.items())["name"]).replace(" ","-")
+                locationId = dict(locationX.items())["id"]
+                if(str(location).lower() == str(locationName).lower() ):
+
+                    body = {}
+                    body['location_id'] = locationId
+                    checkout_api = client.checkout
+                    body = {}
+                    idX = str(uuid.uuid4())
+                    body['idempotency_key'] = idX
+                    body['order'] = {}
+                    body['order']['reference_id'] = idX
+                    body['order']['line_items'] = []
+
+                    body['order']['line_items'].append({})
+
+                    cart = dict(orderInfo["cart"])
+                    subtotal = 0
+                    items = []
+                    cartKeys = list(cart.keys())
+                    for keys in range(len(cartKeys)):
+                        dispStr = str(cart[cartKeys[keys]]["dispStr"]).split('x')
+                        disp2 = list(dispStr[1].split('('))
+                        print(disp2)
+                        dispX = disp2[0]
+                        body['order']['line_items'][keys]['name'] = dispX
+                        body['order']['line_items'][keys]['quantity'] = str(cart[cartKeys[keys]]["qty"])
+                        body['order']['line_items'][keys]['base_price_money'] = {}
+                        body['order']['line_items'][keys]['base_price_money']['amount'] = int((cart[cartKeys[keys]]["unitPrice"])*100)
+                        body['order']['line_items'][keys]['base_price_money']['currency'] = "USD"
+
+                    body['order']['line_items'].append({})
+                    body['order']['line_items'][len(cartKeys)]['name'] = 'Order Fee'
+                    body['order']['line_items'][len(cartKeys)]['quantity'] = '1'
+                    body['order']['line_items'][len(cartKeys)]['base_price_money'] = {}
+                    body['order']['line_items'][len(cartKeys)]['base_price_money']['amount'] = 25
+                    body['order']['line_items'][len(cartKeys)]['base_price_money']['currency'] = "USD"
+
+                    body['order']['taxes'] = []
+                    body['order']['taxes'].append({})
+                    body['order']['taxes'][0]['name'] = 'Sales Tax'
+                    taxRef = db.reference(str('/restaurants/' + estNameStr + '/' + location))
+                    taxDict =(dict(taxRef.get())["taxrate"])
+                    print(taxDict)
+                    tax = str((taxDict * 100))
+                    body['order']['taxes'][0]['percentage'] = tax
+
+                    body['ask_for_shipping_address'] = False
+                    body['redirect_url'] = mainLink + estNameStr + '/' + location +'/online-confirm~'+orderToken
+
+                    result = checkout_api.create_checkout(locationId , body)
+
+                    if result.is_success():
+                        link = str(result.body["checkout"]["checkout_page_url"])
+                        print(link)
+                        # print(result.body["checkout"])
+                        return redirect(link)
+                    elif result.is_error():
+                        print(result.errors)
+                        return(redirect(url_for('payQSR',estNameStr=estNameStr,location=location)))
+
+@app.route('/<estNameStr>/<location>/online-confirm~<orderToken>')
+def onlineVerify(estNameStr,location,orderToken):
+    orderTokenCheck = session.get('orderToken',None)
+    if(orderToken == orderTokenCheck):
+        pathOrder = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
+        orderRef = db.reference(pathOrder)
+        order = dict(orderRef.get())
+        if(order['QSR'] == 0):
+            qsrOrderPath = '/restaurants/' + estNameStr + '/' + location + '/orderQSR'
+            qsrOrderRef = db.reference(qsrOrderPath)
+            qsrOrderRef.update({
+                orderToken:{
+                    "cart":dict(order['cart']),
+                    "info":{"name":order["name"],
+                            "number":order['phone'],
+                            "paid":"PAID",
+                            "subtotal":float(order['subtotal']+0.25),
+                            "total":order['total'],
+                            'table':order['table']}
+                    }
+            })
+            if(order['email'] != "no-email"):
+                getSquare(estNameStr)
+                now = datetime.datetime.now(tzGl[0])
+                write_str = "Your Order From "+ estNameStr.capitalize()  + " " + location.capitalize() + " @"
+                write_str += str(now.hour) + ":" + str(now.minute) + " on " + str(now.month) + "-" + str(now.day) + "-" + str(now.year)
+                write_str += "\n \n"
+                cart = dict(order["cart"])
+                subtotal = 0
+                items = []
+                cartKeys = list(cart.keys())
+                for keys in cartKeys:
+                    subtotal += cart[keys]["price"]
+                    dispStr = cart[keys]["dispStr"]
+                    write_str += dispStr + "\n"
+                subtotal += 0.25
+                subtotalStr = "${:0,.2f}".format(subtotal)
+                taxRate = float(db.reference('/restaurants/' + estNameStr + '/' + location + '/taxrate').get())
+                tax = "${:0,.2f}".format(subtotal * taxRate)
+                tax += " (" + str(float(taxRate * 100)) + "%)"
+                total = "${:0,.2f}".format(subtotal * (1+taxRate))
+                write_str+= "\n \n"
+                write_str += subtotalStr +"\n"+tax + "\n"+ total +"\n \n \n"
+                write_str += 'Thank You For Your Order ' + str(order['name']).capitalize() + " !"
+                SUBJECT = "Your Order From "+ estNameStr.capitalize()  + " " + location.capitalize()
+                message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
+                smtpObj.sendmail(sender, [order['email']], message)
+        return(render_template("Customer/QSR/Payment-Success.html"))
+    else:
+        return(redirect(url_for('startOnline',estNameStr=estNameStr,location=location)))
 
 @app.route('/<estNameStr>/<location>/applyCpn', methods=["POST"])
 def applyCpn(estNameStr,location):
@@ -2373,7 +2511,8 @@ def verifyOrder(estNameStr,location):
                         "number":order['phone'],
                         "paid":"PAID",
                         "subtotal":order['subtotal'],
-                        "total":order['total']}
+                        "total":order['total'],
+                        'table':order['table']}
                 }
         })
         packet = {
@@ -2381,8 +2520,9 @@ def verifyOrder(estNameStr,location):
             "success": "true"
         }
         if(order['email'] != "no-email"):
+            getSquare(estNameStr)
             now = datetime.datetime.now(tzGl[0])
-            write_str = "Your Order From "+ estNameStr + " " + locationX + " @"
+            write_str = "Your Order From "+ estNameStr.capitalize()  + " " + location.capitalize() + " @"
             write_str += str(now.hour) + ":" + str(now.minute) + " on " + str(now.month) + "-" + str(now.day) + "-" + str(now.year)
             write_str += "\n \n"
             cart = dict(order["cart"])
@@ -2393,6 +2533,7 @@ def verifyOrder(estNameStr,location):
                 subtotal += cart[keys]["price"]
                 dispStr = cart[keys]["dispStr"]
                 write_str += dispStr + "\n"
+            subtotal += 0.25
             subtotalStr = "${:0,.2f}".format(subtotal)
             taxRate = float(db.reference('/restaurants/' + estNameStr + '/' + location + '/taxrate').get())
             tax = "${:0,.2f}".format(subtotal * taxRate)
@@ -2400,7 +2541,8 @@ def verifyOrder(estNameStr,location):
             total = "${:0,.2f}".format(subtotal * (1+taxRate))
             write_str+= "\n \n"
             write_str += subtotalStr +"\n"+tax + "\n"+ total +"\n \n \n"
-            SUBJECT = "Your Order From "+ estNameStr + " " + locationX
+            write_str += 'Thank You For Your Order ' + str(order['name']).capitalize() + " !"
+            SUBJECT = "Your Order From "+ estNameStr.capitalize()  + " " + location.capitalize()
             message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
             smtpObj.sendmail(sender, [order['email']], message)
 
@@ -2415,7 +2557,7 @@ def verifyOrder(estNameStr,location):
         }
         if(order['email'] != "no-email"):
             now = datetime.datetime.now(tzGl[0])
-            write_str = "Your Meal From "+ estNameStr + " " + locationX + " @"
+            write_str = "Your Meal From "+ estNameStr + " " + location + " @"
             write_str += str(now.hour) + ":" + str(now.minute) + " on " + str(now.month) + "-" + str(now.day) + "-" + str(now.year)
             write_str += "\n \n"
             # TODOX
@@ -2434,7 +2576,8 @@ def verifyOrder(estNameStr,location):
                     write_str += dispStr
             write_str+= "\n \n"
             write_str += subtotalStr +"\n"+tax + "\n"+ total +"\n \n \n"
-            SUBJECT = "Your Meal From "+ estNameStr + " " + locationX
+            write_str += 'Thank You For Dining with us ' + str(order['name']).capitalize() + " !"
+            SUBJECT = "Thank You For Dining with "+ estNameStr + " " + location
             message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
             smtpObj.sendmail(sender, [order['email']], message)
 
@@ -2447,6 +2590,8 @@ def GenReaderCode(estNameStr,locationX,type):
     print(rsp)
     code = rsp['code']
     kioskType = ["qsr-startKiosk","sitdown-startKiosk"]
+    sqRef = db.reference(str('/restaurants/' + estNameStr))
+    squareToken = dict(sqRef.get())["sq-token"]
     loginRef = db.reference('/restaurants/' + estNameStr + '/' + str(locationX) + "/employee")
     loginData = dict(loginRef.get())
     hashCheck = pbkdf2_sha256.verify(code, loginData['code'])

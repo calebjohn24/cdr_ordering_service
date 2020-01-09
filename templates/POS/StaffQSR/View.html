@@ -63,10 +63,10 @@
         <div class="col-lg-8">
         <div class="card">
         <div class="card-body">
-        <h3 class="card-title">{{ord.info.name}} ({{ord.info.number}})</h3><br><h4>{{ord.info.paid}}</h4><br>
+        <h3 class="card-title">{{ord.info.name|capitalize}} {{ord.info.table}} ({{ord.info.number}})</h3></h3><br><h4>{{ord.info.paid}}</h4><br>
         <h3 class="card-text">
           {% for key_itm, itm in ord.cart.items() %}
-          <h3>{{itm.dispStr}}</h3>
+          <h3>{{itm.dispStr}} <input type="checkbox"></h3>
           {%endfor%}<br>
           <h3>Subtotal {{"$%.2f"|format(ord.info.subtotal)}}
         </h3>
@@ -76,6 +76,7 @@
         <div class="col-lg-1">
         <form method="POST" action="qsr-view-success">
         <button type="submit" name="req" value="{{key_ord}}" class="btn btn-success btn-circle btn-lg">
+          Order Complete 
         <i class="fas fa-check"></i>
         </button>
         </form>

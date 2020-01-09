@@ -21,9 +21,7 @@ if result.is_success():
     for location in locations:
         # print(location)
         if((dict(location.items())["status"]) == "ACTIVE"):
-            print(dict(location.items()))
             locationName = (dict(location.items())["name"]).replace(" ","-")
-            print(locationName)
             locationId = dict(location.items())["id"]
 
             '''
@@ -48,9 +46,11 @@ if result.is_success():
 
 
             if(str(locationName).lower() == testLoc):
+
                 body = {}
                 body['location_id'] = locationId
 
+                '''
                 result = mobile_authorization_api.create_mobile_authorization_code(body)
 
                 if result.is_success():
@@ -61,42 +61,42 @@ if result.is_success():
                     print("AUTH CODE")
                 elif result.is_error():
                     print(result.errors)
+                    '''
 
 
-            checkout_api = client.checkout
-            location_id = 'B266MPEW4JSYZ'
-            body = {}
-            body['idempotency_key'] = '86ae1696-b1e3-4328-ade2sijiyg734f6dhdnq-fqffygyqefqe'
-            body['order'] = {}
-            body['order']['reference_id'] = 'reference_id'
-            body['order']['line_items'] = []
+                checkout_api = client.checkout
+                body = {}
+                body['idempotency_key'] = '86ae1696-b1e3-4328-ade2sijiyg734f6dhdnq-wfqffygyqefqe'
+                body['order'] = {}
+                body['order']['reference_id'] = 'reference_id'
+                body['order']['line_items'] = []
 
-            body['order']['line_items'].append({})
-            body['order']['line_items'][0]['name'] = 'Your Order From '
-            body['order']['line_items'][0]['quantity'] = '1'
-            body['order']['line_items'][0]['base_price_money'] = {}
-            body['order']['line_items'][0]['base_price_money']['amount'] = 110
-            body['order']['line_items'][0]['base_price_money']['currency'] = "USD"
+                body['order']['line_items'].append({})
+                body['order']['line_items'][0]['name'] = 'Your Order From '
+                body['order']['line_items'][0]['quantity'] = '2'
+                body['order']['line_items'][0]['base_price_money'] = {}
+                body['order']['line_items'][0]['base_price_money']['amount'] = 110
+                body['order']['line_items'][0]['base_price_money']['currency'] = "USD"
 
-            body['order']['line_items'].append({})
-            body['order']['line_items'][1]['name'] = 'Service Fees'
-            body['order']['line_items'][1]['quantity'] = '1'
-            body['order']['line_items'][1]['base_price_money'] = {}
-            body['order']['line_items'][1]['base_price_money']['amount'] = 50
-            body['order']['line_items'][1]['base_price_money']['currency'] = "USD"
+                body['order']['line_items'].append({})
+                body['order']['line_items'][1]['name'] = 'Service Fees'
+                body['order']['line_items'][1]['quantity'] = '1'
+                body['order']['line_items'][1]['base_price_money'] = {}
+                body['order']['line_items'][1]['base_price_money']['amount'] = 50
+                body['order']['line_items'][1]['base_price_money']['currency'] = "USD"
 
-            body['order']['taxes'] = []
-            body['order']['taxes'].append({})
-            body['order']['taxes'][0]['name'] = 'Sales Tax'
-            body['order']['taxes'][0]['percentage'] = '10'
+                body['order']['taxes'] = []
+                body['order']['taxes'].append({})
+                body['order']['taxes'][0]['name'] = 'Sales Tax'
+                body['order']['taxes'][0]['percentage'] = '10'
 
-            body['ask_for_shipping_address'] = False
-            body['redirect_url'] = 'https://cdrorder.serveo.net/ipn'
+                body['ask_for_shipping_address'] = False
+                body['redirect_url'] = 'https://cdrorder.serveo.net/ipn'
 
-            result = checkout_api.create_checkout(location_id, body)
+                result = checkout_api.create_checkout(locationId , body)
 
-            if result.is_success():
-                # print(result.body["checkout"]["checkout_page_url"])
-                print(result.body["checkout"])
-            elif result.is_error():
-                print(result.errors)
+                if result.is_success():
+                    # print(result.body["checkout"]["checkout_page_url"])
+                    print(result.body["checkout"])
+                elif result.is_error():
+                    print(result.errors)

@@ -31,7 +31,6 @@
   <link href="../../../static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
   <!-- Custom styles for this template-->
-  <link href="../../../static/css/tab.css" rel="stylesheet">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
@@ -39,12 +38,10 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   <script>
   function payCC() {
-    var amt = "{{sqTotal}}";
-    window.ReactNativeWebView.postMessage(amt);
-    //
-    window.location.href = "sitdown-startKiosk";
+    window.location.href = "pay-online";
   }
   </script>
+
   <script>
   function goBack() {
     window.history.back();
@@ -54,6 +51,7 @@
 
 <body>
   <div class="container">
+    <div class="text-center">
   <br>
   <div class="input-group">
     <h3 class="h3 mb-0 text-gray-800">{{restName}} {{locName}}</h3>
@@ -77,6 +75,7 @@
 <h4>Total {{total}}</h4>
 <hr>
 <br>
+<br>
 
 <form method="POST" action="applyCpn">
 <h4>Enter Promo Code</h4>
@@ -86,14 +85,8 @@
 </form>
 <hr>
 <br>
-
-<h4>Pay Now</h4>
-<br>
-<div class="row">
-<br>
-<div class="col-sm-3">
-<h3><button onclick="payCC()"  class="btn-light btn-lg">
-<h3>Credit Card </h3>
+<h3><button onclick="payCC()" class="btn-light btn-lg">
+<h3>Pay Now </h3>
 <h1>
 <i class="fab fa-cc-mastercard"></i>
 <i class="fab fa-cc-visa"></i>
@@ -102,23 +95,11 @@
 </h1>
 </button>
 </h3>
-</div>
-<div class="col-sm-2">
-<h3><button onclick="location.href='pay0~GC'" class="btn-light btn-lg"><h3>Gift Card</h3><h1><i class="fas fa-gift"></i></h1></button></h3>
-<br>
-</div>
-<div class="col-sm-2">
-<h3><button onclick="location.href='pay0~Cash'" class="btn-light btn-lg"><h3>Cash</h3> <h1><i class="fas fa-money-bill"></i></h1></button></h3>
-</div>
-</div>
-<br>
-
-<h1> <br><br></h1>
-<br>
-<br>
-</div>
 
 
+</div>
+</div>
+<br><br><br><br>
 
 
 
