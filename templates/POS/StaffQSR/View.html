@@ -78,9 +78,19 @@
         <h3>Total {{"$%.2f"|format(ord.info.total)}}
       </h3><br>
         <div class="row">
-        <div class="col-lg-1">
+        <div class="col-lg-3">
+          {% if ord.info.verify %}
+          <form method="POST" action="qsr-sendOrder">
+            <button type="submit" name="token" value="{{key_ord}}" class="btn btn-warning btn-lg">
+              Order Paid
+            <i class="fas fa-money-check-alt"></i>
+            </button>
+          </form>
+          {% endif %}
+        </div>
+        <div class="col-lg-3">
         <form method="POST" action="qsr-view-success">
-        <button type="submit" name="req" value="{{key_ord}}" class="btn btn-success btn-circle btn-lg">
+        <button type="submit" name="req" value="{{key_ord}}" class="btn btn-success btn-lg">
           Order Complete
         <i class="fas fa-check"></i>
         </button>

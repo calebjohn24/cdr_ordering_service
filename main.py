@@ -5,12 +5,12 @@ import sys
 import time
 import uuid
 import plivo
-import pygsheets
 import os
 import firebase_admin
 from passlib.hash import pbkdf2_sha256
 from firebase_admin import credentials
 from firebase_admin import db
+from flask import Blueprint, render_template, abort
 from google.cloud import storage
 import pytz
 from flask import Flask, flash, request, session, jsonify
@@ -75,6 +75,10 @@ def sendEmail(sender, rec, msg):
         smtpObj = smtplib.SMTP_SSL("smtp.gmail.com", 465)
         smtpObj.login(sender, emailPass)
         sendEmail(sender, rec, msg)
+
+def sendCheckmate(estNameStr,location,token):
+    print('order sent to checkmate')
+
 
 def getSquare(estNameStr):
     sqRef = db.reference(str('/restaurants/' + estNameStr))
@@ -1843,6 +1847,91 @@ def payQSR(estNameStr,location):
         return(render_template("Customer/Sitdown/Payment.html",locName=location.capitalize(),restName=str(estNameStr).capitalize(),
                                items=items, subtotal=subtotalStr,tax=tax,total=total, sqTotal=sqTotal))
 
+@app.route('/<estNameStr>/<location>/payStaff')
+def payStaff(estNameStr,location):
+    menu = session.get('menu',None)
+    orderToken = session.get('orderToken',None)
+    tableNum = session.get('table',None)
+    pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu
+    pathRequest = '/restaurants/' + estNameStr + '/' + location + "/requests/"
+    reqRef = db.reference(pathRequest)
+    newReq = reqRef.push({"help":'Payment Assitance'})
+    pathRequestkey = '/restaurants/' + estNameStr + '/' + location + "/requests/" + newReq.key + "/info"
+    reqRefkey = db.reference(pathRequestkey)
+    reqRefkey.set({"table":tableNum,"type":"help","token":orderToken})
+    return(render_template('Customer/Sitdown/NoCCpay.html', alert='Staff Will Enter Code To Confirm Payment'))
+
+@app.route('/<estNameStr>/<location>/payStaffConfirm', methods=['POST'])
+def payStaffConfirm(estNameStr,location):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    orderToken = session.get('orderToken',None)
+    code = rsp['code']
+    loginRef = db.reference('/restaurants/' + estNameStr + '/' + location + "/employee")
+    loginData = dict(loginRef.get())
+    hashCheck = pbkdf2_sha256.verify(code, loginData['code'])
+    if(hashCheck == True):
+        pathOrder = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
+        orderRef = db.reference(pathOrder)
+        orderRef.update({
+            "paid":"PAID"
+        })
+        if(order['email'] != "no-email"):
+            now = datetime.datetime.now(tzGl[0])
+            write_str = "Your Meal From "+ estNameStr + " " + location + " @"
+            write_str += str(now.hour) + ":" + str(now.minute) + " on " + str(now.month) + "-" + str(now.day) + "-" + str(now.year)
+            write_str += "\n \n"
+            # TODOX
+            cart = dict(order["ticket"])
+            subtotal = order["subtotal"]
+            subtotalStr = "${:0,.2f}".format(subtotal)
+            taxRate = float(db.reference('/restaurants/' + estNameStr + '/' + location + '/taxrate').get())
+            tax = "${:0,.2f}".format(subtotal * taxRate)
+            tax += " (" + str(float(taxRate * 100)) + "%)"
+            total = "${:0,.2f}".format(subtotal * (1+taxRate))
+            cartKeys = list(cart.keys())
+            for ck in cartKeys:
+                ckKeys = list(cart[ck].keys())
+                for ckk in ckKeys:
+                    dispStr = cart[ck][ckk]["dispStr"] +  "\n"
+                    write_str += dispStr
+            write_str+= "\n \n"
+            write_str += subtotalStr + "\n" + tax + "\n" + total + "\n \n \n"
+            write_str += 'Thank You For Dining with us ' + str(order['name']).capitalize() + " !"
+            SUBJECT = "Thank You For Dining at "+ estNameStr + " " + location
+            message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
+            # smtpObj.sendmail(sender, [order['email']], message)
+            sendEmail(sender, order['email'], message)
+        orderRef.delete()
+        return(redirect(url_for('startKiosk4',estNameStr=estNameStr, location=location)))
+    else:
+        return(render_template('Customer/Sitdown/NoCCpay.html', alert='Incorrect Code please try again'))
+
+
+@app.route('/<estNameStr>/<location>/qsr-payStaff')
+def payStaff(estNameStr,location):
+    orderToken = session.get('orderToken',None)
+    pathOrder = '/restaurants/' + estNameStr + '/' + location + "/orders/" + token
+    orderRef = db.reference(pathOrder)
+    order = dict(orderRef.get())
+    qsrOrderPath = '/restaurants/' + estNameStr + '/' + location + '/orderQSR'
+    qsrOrderRef = db.reference(qsrOrderPath)
+    qsrOrderRef.update({
+        token:{
+            "cart":dict(order['cart']),
+            "info":{"name":order["name"],
+                    "number":order['phone'],
+                    "paid":"NOT PAID",
+                    "subtotal":order['subtotal'],
+                    "total":order['total'],
+                    'table':order['table'],
+                    'verify':1}
+            }
+    })
+
+
+    return(render_template('Customer/QSR/NoCCpay.html'))
+
 
 @app.route('/<estNameStr>/<location>/pay-online')
 def payOnline(estNameStr,location):
@@ -1927,6 +2016,7 @@ def payOnline(estNameStr,location):
                     elif result.is_error():
                         print(result.errors)
                         return(redirect(url_for('payQSR',estNameStr=estNameStr,location=location)))
+
 
 @app.route('/<estNameStr>/<location>/online-confirm~<orderToken>')
 def onlineVerify(estNameStr,location,orderToken):
@@ -2145,9 +2235,6 @@ def kioskClear(estNameStr,location):
 def kioskSendReq(estNameStr,location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
-    orderToken = session.get('orderToken',None)
-    menu = session.get('menu',None)
-    tableNum = session.get('table',None)
     rspKey = list(rsp.keys())[0]
     if(rspKey == "condiments"):
         requestId = "extra condiments-" + rsp["condiments"]
@@ -2165,6 +2252,9 @@ def kioskSendReq(estNameStr,location):
         requestId = "box food-"+rsp["box"]
     elif(rspKey == "other"):
         requestId = "other-"+rsp["other"]
+    menu = session.get('menu',None)
+    orderToken = session.get('orderToken',None)
+    tableNum = session.get('table',None)
     pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu
     pathRequest = '/restaurants/' + estNameStr + '/' + location + "/requests/"
     reqRef = db.reference(pathRequest)
@@ -2274,6 +2364,61 @@ def EmployeeSuccessQSR(estNameStr,location):
     pathRequest = '/restaurants/' + estNameStr + '/' + location + "/orderQSR/" + reqToken
     reqRef = db.reference(pathRequest)
     reqRef.delete()
+    return(redirect(url_for("EmployeePanelQSR",estNameStr=estNameStr,location=location)))
+
+@app.route('/<estNameStr>/<location>/qsr-sendOrder', methods=["POST"])
+def applyCpn(estNameStr,location):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    token = rsp["token"]
+    pathOrder = '/restaurants/' + estNameStr + '/' + location + "/orders/" + token
+    orderRef = db.reference(pathOrder)
+    order = dict(orderRef.get())
+    qsrOrderPath = '/restaurants/' + estNameStr + '/' + location + '/orderQSR'
+    qsrOrderRef = db.reference(qsrOrderPath)
+    qsrOrderRef.update({
+        token:{
+            "cart":dict(order['cart']),
+            "info":{"name":order["name"],
+                    "number":order['phone'],
+                    "paid":"PAID",
+                    "subtotal":order['subtotal'],
+                    "total":order['total'],
+                    'table':order['table']}
+            }
+    })
+
+    checkmate = db.reference('/restaurants/' + estNameStr + '/' + location + '/checkmate').get()
+    if(checkmate == 0):
+        sendCheckmate(estNameStr,location, token)
+
+    if(order['email'] != "no-email"):
+        getSquare(estNameStr)
+        now = datetime.datetime.now(tzGl[0])
+        write_str = "Your Order From "+ estNameStr.capitalize()  + " " + location.capitalize() + " @"
+        write_str += str(now.hour) + ":" + str(now.minute) + " on " + str(now.month) + "-" + str(now.day) + "-" + str(now.year)
+        write_str += "\n \n"
+        cart = dict(order["cart"])
+        subtotal = 0
+        items = []
+        cartKeys = list(cart.keys())
+        for keys in cartKeys:
+            subtotal += cart[keys]["price"]
+            dispStr = cart[keys]["dispStr"]
+            write_str += dispStr + "\n"
+        subtotal += 0.25
+        subtotalStr = "${:0,.2f}".format(subtotal)
+        taxRate = float(db.reference('/restaurants/' + estNameStr + '/' + location + '/taxrate').get())
+        tax = "${:0,.2f}".format(subtotal * taxRate)
+        tax += " (" + str(float(taxRate * 100)) + "%)"
+        total = "${:0,.2f}".format(subtotal * (1+taxRate))
+        write_str+= "\n \n"
+        write_str += subtotalStr +"\n"+tax + "\n"+ total +"\n \n \n"
+        write_str += 'Thank You For Your Order ' + str(order['name']).capitalize() + " !"
+        SUBJECT = "Your Order From "+ estNameStr.capitalize()  + " " + location.capitalize()
+        message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
+        # smtpObj.sendmail(sender, [order['email']], message)
+        sendEmail(sender, order['email'], mesg)
     return(redirect(url_for("EmployeePanelQSR",estNameStr=estNameStr,location=location)))
 
 
@@ -2521,6 +2666,9 @@ def verifyOrder(estNameStr,location):
             "code":token,
             "success": "true"
         }
+        checkmate = db.reference('/restaurants/' + estNameStr + '/' + location + '/checkmate').get()
+        if(checkmate == 0):
+            sendCheckmate(estNameStr,location, token)
         if(order['email'] != "no-email"):
             getSquare(estNameStr)
             now = datetime.datetime.now(tzGl[0])
@@ -2550,6 +2698,8 @@ def verifyOrder(estNameStr,location):
             sendEmail(sender, order['email'], mesg)
         return jsonify(packet)
     else:
+        pathOrder = '/restaurants/' + estNameStr + '/' + location + "/orders/" + token
+        orderRef = db.reference(pathOrder)
         orderRef.update({
             "paid":"PAID"
         })
@@ -2583,7 +2733,7 @@ def verifyOrder(estNameStr,location):
             message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
             # smtpObj.sendmail(sender, [order['email']], message)
             sendEmail(sender, order['email'], message)
-
+        orderRef.delete()
         return jsonify(packet)
 
 
@@ -2659,14 +2809,6 @@ def findRestaurantLocation(restaurant):
 @app.route('/pickscreen-<restaurant>~<location>')
 def pickScreen(restaurant, location):
     return(render_template("Global/pickScreen.html",restaurant=restaurant,location=location))
-
-
-
-
-
-
-
-
 
 
 
