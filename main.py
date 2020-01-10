@@ -13,6 +13,7 @@ from firebase_admin import db
 from flask import Blueprint, render_template, abort
 from google.cloud import storage
 import pytz
+from Cedar import admin
 from flask import Flask, flash, request, session, jsonify
 from werkzeug.utils import secure_filename
 from flask import redirect, url_for
@@ -21,6 +22,7 @@ from flask_session import Session
 from flask_sslify import SSLify
 from square.client import Client
 from werkzeug.datastructures import ImmutableOrderedMultiDict
+from flask import Blueprint, render_template, abort
 
 infoFile = open("info.json")
 info = json.load(infoFile)
@@ -46,9 +48,11 @@ global locationsPaths
 locationsPaths = {}
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 app = Flask(__name__)
+app.register_blueprint(admin.admin_blueprint)
 sslify = SSLify(app)
 scKey = uuid.uuid4()
 app.secret_key = scKey
+
 
 '''
 api_locations = squareClient.locations
@@ -129,36 +133,13 @@ def getSquare(estNameStr):
                         "sqNumber": numb, "name": locationName}})
 
 
-def checkLocation(estNameStr, location):
-    try:
-        ref = db.reference('/restaurants/'+estNameStr+'/'+location)
-        test = dict(ref.get())
-        if(test != None):
-            return 0
-        else:
-            return 1
-    except Exception as e:
-        return 1
-
-
-
-def checkAdminToken(idToken, username):
-    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
-    user_ref = ref.get()[str(username)]
-    if ((idToken == user_ref["token"]) and (time.time() - user_ref["time"] < adminSessTime)):
-        return 0
-    else:
-        return 1
 
 
 
 
 
-@app.route('/<estNameStr>/<location>/admin-login', methods=["GET"])
-def login(estNameStr,location):
-    if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
-    return render_template("POS/AdminMini/login.html", btn=str("admin"), restName=estNameStr,locName=location)
+
+
 
 @app.route('/<estNameStr>/<location>/reset-link~<token>~<user>', methods=["GET"])
 def pwResetLink(estNameStr,location,token,user):
@@ -1909,7 +1890,7 @@ def payStaffConfirm(estNameStr,location):
 
 
 @app.route('/<estNameStr>/<location>/qsr-payStaff')
-def payStaff(estNameStr,location):
+def payStaffQSR(estNameStr,location):
     orderToken = session.get('orderToken',None)
     pathOrder = '/restaurants/' + estNameStr + '/' + location + "/orders/" + token
     orderRef = db.reference(pathOrder)
@@ -1928,8 +1909,6 @@ def payStaff(estNameStr,location):
                     'verify':1}
             }
     })
-
-
     return(render_template('Customer/QSR/NoCCpay.html'))
 
 
@@ -2367,7 +2346,7 @@ def EmployeeSuccessQSR(estNameStr,location):
     return(redirect(url_for("EmployeePanelQSR",estNameStr=estNameStr,location=location)))
 
 @app.route('/<estNameStr>/<location>/qsr-sendOrder', methods=["POST"])
-def applyCpn(estNameStr,location):
+def sendOrderQsr(estNameStr,location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     token = rsp["token"]
