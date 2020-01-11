@@ -41,7 +41,7 @@ locationsPaths = {}
 @schedule_blueprint.route('/<estNameStr>/<location>/schedule-<day>', methods=["GET"])
 def scheduleSet(estNameStr,location,day):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     getSquare(estNameStr, tzGl, locationsPaths)
     print(locationsPaths, tzGl)
     idToken = session.get('token', None)
@@ -95,7 +95,7 @@ def scheduleSet(estNameStr,location,day):
 @schedule_blueprint.route('/<estNameStr>/<location>/remTs~<day>~<menu>')
 def remTimeSlot(estNameStr,location,day,menu):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     menu = str(menu).replace("-"," ")
     menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/schedule/'+str(day)+"/"+str(menu))
     menu_ref.delete()

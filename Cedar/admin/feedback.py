@@ -33,7 +33,7 @@ feedback_blueprint = Blueprint('feedback', __name__,template_folder='templates')
 @feedback_blueprint.route('/<estNameStr>/<location>/rem-new-comment~<comment>')
 def remNewComment(estNameStr,location,comment):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -51,7 +51,7 @@ def remNewComment(estNameStr,location,comment):
 @feedback_blueprint.route('/<estNameStr>/<location>/rem-saved-comment~<comment>')
 def remSavedComment(estNameStr,location,comment):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -69,7 +69,7 @@ def remSavedComment(estNameStr,location,comment):
 @feedback_blueprint.route('/<estNameStr>/<location>/save-comment~<comment>')
 def saveComment(estNameStr,location,comment):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -92,7 +92,7 @@ def saveComment(estNameStr,location,comment):
 @feedback_blueprint.route('/<estNameStr>/<location>/rem-feedback~<question>')
 def remQuestion(estNameStr,location,question):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -110,7 +110,7 @@ def remQuestion(estNameStr,location,question):
 @feedback_blueprint.route('/<estNameStr>/<location>/add-feedback')
 def addQuestion(estNameStr,location):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')

@@ -95,6 +95,34 @@ def getSquare(estNameStr, tzGl, locationsPaths):
 
 
 
+def findMenu(estNameStr,location):
+    getSquare(estNameStr, tzGl, locationsPaths)
+    day = dayNames[int(datetime.datetime.now(tzGl[location]).weekday())]
+    curMin = float(datetime.datetime.now(tzGl[location]).minute) / 100.0
+    curHr = float(datetime.datetime.now(tzGl[location]).hour)
+    curTime = curHr + curMin
+    pathTime = '/restaurants/' + estNameStr + '/' + location + "/schedule/" + day
+
+    schedule = db.reference(pathTime).get()
+    schedlist = list(schedule)
+    start = 24
+    sortedHr = [0]
+    for scheds in schedlist:
+        sortedHr.append(schedule[scheds])
+
+    sortedHr.sort()
+    sortedHr.append(24)
+    for sh in range(len(sortedHr) - 1):
+        if((sortedHr[sh]< curTime < sortedHr[sh+1])== True):
+            menuKey = sh
+            break
+
+    for sh2 in range(len(schedlist)):
+        if(sortedHr[menuKey] == schedule[schedlist[sh2]]):
+            menu = (schedlist[sh2])
+            return(str(menu))
+
+
 def checkLocation(estNameStr, location):
     try:
         ref = db.reference('/restaurants/'+estNameStr+'/'+location)
@@ -122,7 +150,7 @@ def checkAdminToken(estNameStr,idToken, username):
 @admin_panel_blueprint.route('/<estNameStr>/<location>/admin-login')
 def login(estNameStr,location):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     return render_template("POS/AdminMini/login.html", btn=str("admin"), restName=estNameStr,locName=location)
 
 
@@ -158,7 +186,7 @@ def loginPageCheck(estNameStr,location):
 @admin_panel_blueprint.route('/<estNameStr>/<location>/admin-panel', methods=["GET"])
 def panel(estNameStr,location):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     getSquare(estNameStr,tzGl, locationsPaths)
     idToken = session.get('token', None)
     username = session.get('user', None)
@@ -267,7 +295,7 @@ def confirmEmployeeCode(estNameStr,location):
 @admin_panel_blueprint.route('/<estNameStr>/<location>/remUser~<user>')
 def remUser(estNameStr,location,user):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')

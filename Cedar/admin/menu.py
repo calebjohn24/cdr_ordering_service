@@ -58,7 +58,7 @@ def allowed_file(filename):
 @menu_panel_blueprint.route('/<estNameStr>/<location>/create-menu', methods=["GET"])
 def createMenu(estNameStr,location):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -79,7 +79,7 @@ def createMenu(estNameStr,location):
 @menu_panel_blueprint.route('/<estNameStr>/<location>/add-menu', methods=["POST"])
 def addMenu(estNameStr,location):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = dict((request.form))
     new_menu = rsp["name"]
@@ -91,7 +91,7 @@ def addMenu(estNameStr,location):
 @menu_panel_blueprint.route('/<estNameStr>/<location>/view-menu')
 def viewMenu(estNameStr,location):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -113,7 +113,7 @@ def viewMenu(estNameStr,location):
 @menu_panel_blueprint.route('/<estNameStr>/<location>/edit-menu-<menu>')
 def editMenu(estNameStr,location,menu):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -139,7 +139,7 @@ def editMenu(estNameStr,location,menu):
 @menu_panel_blueprint.route('/<estNameStr>/<location>/rem-cat-<menu>~<category>')
 def remCategories(estNameStr,location,menu,category):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -161,7 +161,7 @@ def remCategories(estNameStr,location,menu,category):
 @menu_panel_blueprint.route('/<estNameStr>/<location>/view-cat-<menu>~<category>')
 def viewCategories(estNameStr,location,menu,category):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -189,7 +189,7 @@ def viewCategories(estNameStr,location,menu,category):
 @menu_panel_blueprint.route('/<estNameStr>/<location>/remOpt~<menu>~<cat>~<item>~<mods>~<opt>')
 def remOpt(estNameStr,location,menu,cat,item,mods,opt):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     opt_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+cat+"/"+item+"/"+mods+"/info/"+opt)
     opt_ref.delete()
     return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
@@ -197,7 +197,7 @@ def remOpt(estNameStr,location,menu,cat,item,mods,opt):
 @menu_panel_blueprint.route('/<estNameStr>/<location>/addOpt~<menu>~<cat>~<item>~<mods>')
 def addOpt(estNameStr,location,menu,cat,item,mods):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -264,7 +264,7 @@ def editExtra(estNameStr,location,menu,cat,item):
 @menu_panel_blueprint.route('/<estNameStr>/<location>/editImg~<menu>~<cat>~<item>')
 def editImg(estNameStr,location,menu,cat,item):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -309,7 +309,7 @@ def editImgX(estNameStr,location,menu,cat,item):
 @menu_panel_blueprint.route('/<estNameStr>/<location>/addCpn~<menu>~<category>~<item>~<modName>~<modItm>')
 def addCpn(estNameStr,location,menu,category,item,modName,modItm):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -359,7 +359,7 @@ def remCpn(estNameStr,location,menu,cpn):
 @menu_panel_blueprint.route('/<estNameStr>/<location>/act-menu')
 def chooseMenu(estNameStr,location):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -391,7 +391,7 @@ def chooseMenu(estNameStr,location):
 @menu_panel_blueprint.route('/<estNameStr>/<location>/activate-menu-<menu>')
 def enableMenu(estNameStr,location,menu):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -413,7 +413,7 @@ def enableMenu(estNameStr,location,menu):
 @menu_panel_blueprint.route('/<estNameStr>/<location>/deactivate-menu-<menu>')
 def disableMenu(estNameStr,location,menu):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -435,7 +435,7 @@ def disableMenu(estNameStr,location,menu):
 @menu_panel_blueprint.route("/<estNameStr>/<location>/remitm~<menu>~<cat>~<item>")
 def removeItem(estNameStr,location,menu,cat,item):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -459,7 +459,7 @@ def removeItem(estNameStr,location,menu,cat,item):
 @menu_panel_blueprint.route("/<estNameStr>/<location>/viewitm~<menu>~<cat>~<item>")
 def viewItem(estNameStr,location,menu,cat,item):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     # #print(menu,cat,item)
     idToken = session.get('token', None)
     username = session.get('user', None)
@@ -500,7 +500,7 @@ def viewItem(estNameStr,location,menu,cat,item):
 @menu_panel_blueprint.route("/<estNameStr>/<location>/addMod-<menu>~<cat>~<item>")
 def addMod(estNameStr,location,menu,cat,item):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -546,7 +546,7 @@ def addModX(estNameStr,location,menu,cat,item):
 @menu_panel_blueprint.route("/<estNameStr>/<location>/remMod~<menu>~<cat>~<item>~<mod>")
 def remMod(estNameStr,location,menu,cat,item,mod):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     item_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+str(cat)+"/"+str(item)+"/"+str(mod))
     item_ref.delete()
     return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
@@ -554,7 +554,7 @@ def remMod(estNameStr,location,menu,cat,item,mod):
 @menu_panel_blueprint.route("/<estNameStr>/<location>/addItm~<menu>~<cat>")
 def addItem(estNameStr,location,menu,cat):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -624,7 +624,7 @@ def addItem2(estNameStr,location,menu,cat):
 @menu_panel_blueprint.route("/<estNameStr>/<location>/addcat~<menu>")
 def addCat(estNameStr,location,menu):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
