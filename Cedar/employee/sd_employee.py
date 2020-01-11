@@ -35,13 +35,13 @@ mainLink = 'https://033d08d3.ngrok.io/'
 @sd_employee_blueprint.route('/<estNameStr>/<location>/employee-login')
 def EmployeeLogin(estNameStr,location):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     return(render_template("POS/StaffSitdown/login.html"))
 
 @sd_employee_blueprint.route('/<estNameStr>/<location>/employee-login2')
 def EmployeeLogin2(estNameStr,location):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     return(render_template("POS/StaffSitdown/login2.html"))
 
 @sd_employee_blueprint.route('/<estNameStr>/<location>/employee-login', methods=['POST'])
@@ -59,24 +59,25 @@ def EmployeeLoginCheck(estNameStr,location):
             "time":time.time()
         })
         session["token"] = token
-        return(redirect(url_for("EmployeePanel",estNameStr=estNameStr,location=location)))
+        return(redirect(url_for("sd_employee.EmployeePanel",estNameStr=estNameStr,location=location)))
     else:
-        return(redirect(url_for("EmployeeLogin2",estNameStr=estNameStr,location=location)))
+        return(redirect(url_for("sd_employee.EmployeeLogin2",estNameStr=estNameStr,location=location)))
 
 @sd_employee_blueprint.route('/<estNameStr>/<location>/view')
 def EmployeePanel(estNameStr,location):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     token = session.get('token',None)
-    loginRef = db.reference('/restaurants/' + estNameStr + '/' + location + "/employee/")
+    loginRef = db.reference('/restaurants/' + estNameStr + '/' + location + "/employee")
     loginData = dict(loginRef.get())
     try:
         if(((token == loginData["token"]) and (time.time() - loginData["time"] <= 3600))):
             pass
         else:
-            return(redirect(url_for("EmployeeLogin",estNameStr=estNameStr,location=location)))
+            return(redirect(url_for("sd_employee.EmployeeLogin",estNameStr=estNameStr,location=location)))
     except Exception as e:
-        return(redirect(url_for("EmployeeLogin2",estNameStr=estNameStr,location=location)))
+        print(e)
+        return(redirect(url_for("sd_employee.EmployeeLogin2",estNameStr=estNameStr,location=location)))
     try:
         ordPath = '/restaurants/' + estNameStr + '/' + location + "/orders/"
         ordsRef = db.reference(ordPath)
@@ -115,23 +116,23 @@ def EmployeePanel(estNameStr,location):
 @sd_employee_blueprint.route('/<estNameStr>/<location>/activate-item~<cat>~<item>~<menu>')
 def activateItem(estNameStr,location,cat,item,menu):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu + "/categories/"+ cat + "/" + item
     descrip = dict(db.reference(pathMenu).get())["tmp"]
     db.reference(pathMenu).update({"descrip":descrip})
     pathDel = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu + "/categories/"+ cat + "/" + item +"/tmp"
     db.reference(pathDel).delete()
-    return(redirect(url_for("EmployeePanel",estNameStr=estNameStr,location=location)))
+    return(redirect(url_for("sd_employee.EmployeePanel",estNameStr=estNameStr,location=location)))
 
 @sd_employee_blueprint.route('/<estNameStr>/<location>/deactivate-item~<cat>~<item>~<menu>')
 def deactivateItem(estNameStr,location,cat,item,menu):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu + "/categories/"+ cat + "/" + item
     descrip = dict(db.reference(pathMenu).get())["descrip"]
     db.reference(pathMenu).update({"tmp":descrip})
     db.reference(pathMenu).update({"descrip":"INACTIVE"})
-    return(redirect(url_for("EmployeePanel",estNameStr=estNameStr,location=location)))
+    return(redirect(url_for("sd_employee.EmployeePanel",estNameStr=estNameStr,location=location)))
 
 @sd_employee_blueprint.route('/<estNameStr>/<location>/view-success', methods=["POST"])
 def EmployeeSuccess(estNameStr,location):
@@ -158,7 +159,7 @@ def EmployeeSuccess(estNameStr,location):
         currTotal = float(dict(db.reference(pathTotal).get())["subtotal"])
         tickTotal = db.reference(pathTotal).update({"subtotal":float(currTotal+addTotal)})
     reqRef.delete()
-    return(redirect(url_for("EmployeePanel",estNameStr=estNameStr,location=location)))
+    return(redirect(url_for("sd_employee.EmployeePanel",estNameStr=estNameStr,location=location)))
 
 @sd_employee_blueprint.route('/<estNameStr>/<location>/view-warning', methods=["POST"])
 def EmployeeWarn(estNameStr,location):
@@ -193,7 +194,7 @@ def EmployeeWarn(estNameStr,location):
     AlertSend = db.reference(pathUser).update({"alert":str("Warning: "+alert)})
     AlertTime = db.reference(pathUser).update({"alertTime":time.time()})
     reqRef.delete()
-    return(redirect(url_for("EmployeePanel",estNameStr=estNameStr,location=location)))
+    return(redirect(url_for("sd_employee.EmployeePanel",estNameStr=estNameStr,location=location)))
 
 
 @sd_employee_blueprint.route('/<estNameStr>/<location>/view-reject', methods=["POST"])
@@ -210,7 +211,7 @@ def EmployeeReject(estNameStr,location):
     AlertSend = db.reference(pathUser).update({"alert":str("Request Cancelled: "+alert)})
     AlertTime = db.reference(pathUser).update({"alertTime":time.time()})
     reqRef.delete()
-    return(redirect(url_for("EmployeePanel",estNameStr=estNameStr,location=location)))
+    return(redirect(url_for("sd_employee.EmployeePanel",estNameStr=estNameStr,location=location)))
 
 
 @sd_employee_blueprint.route('/<estNameStr>/<location>/view-editBill', methods=["POST"])
@@ -237,7 +238,7 @@ def EditBill(estNameStr,location):
         'mods':[["",str(amt)]],
         'unitPrice':amt
     }})
-    return(redirect(url_for("EmployeePanel",estNameStr=estNameStr,location=location)))
+    return(redirect(url_for("sd_employee.EmployeePanel",estNameStr=estNameStr,location=location)))
 
 
 @sd_employee_blueprint.route('/<estNameStr>/<location>/view-clearTicket', methods=["POST"])
@@ -248,4 +249,4 @@ def RemBill(estNameStr,location):
     pathUserX = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
     remRef = db.reference(pathUserX)
     remRef.delete()
-    return(redirect(url_for("EmployeePanel",estNameStr=estNameStr,location=location)))
+    return(redirect(url_for("sd_employee.EmployeePanel",estNameStr=estNameStr,location=location)))

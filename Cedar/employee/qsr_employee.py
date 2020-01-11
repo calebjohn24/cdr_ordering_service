@@ -38,13 +38,13 @@ mainLink = 'https://033d08d3.ngrok.io/'
 @qsr_employee_blueprint.route('/<estNameStr>/<location>/qsr-employee-login')
 def EmployeeLoginQSR(estNameStr,location):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     return(render_template("POS/StaffQSR/login.html"))
 
 @qsr_employee_blueprint.route('/<estNameStr>/<location>/qsr-employee-login2')
 def EmployeeLogin2QSR(estNameStr,location):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     return(render_template("POS/StaffSitdown/login2.html"))
 
 @qsr_employee_blueprint.route('/<estNameStr>/<location>/qsr-employee-login', methods=['POST'])
@@ -62,14 +62,14 @@ def EmployeeLoginCheckQSR(estNameStr,location):
             "time":time.time()
         })
         session["token"] = token
-        return(redirect(url_for("EmployeePanelQSR",estNameStr=estNameStr,location=location)))
+        return(redirect(url_for("qsr_employee.EmployeePanelQSR",estNameStr=estNameStr,location=location)))
     else:
-        return(redirect(url_for("EmployeeLogin2",estNameStr=estNameStr,location=location)))
+        return(redirect(url_for("qsr_employee.EmployeeLogin2",estNameStr=estNameStr,location=location)))
 
 @qsr_employee_blueprint.route('/<estNameStr>/<location>/qsr-view')
 def EmployeePanelQSR(estNameStr,location):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     token = session.get('token',None)
     loginRef = db.reference('/restaurants/' + estNameStr + '/' + location + "/employee/")
     loginData = dict(loginRef.get())
@@ -77,7 +77,7 @@ def EmployeePanelQSR(estNameStr,location):
         if(((token == loginData["token"]) and (time.time() - loginData["time"] <= 3600))):
             pass
         else:
-            return(redirect(url_for("EmployeeLoginQSR",estNameStr=estNameStr,location=location)))
+            return(redirect(url_for("qsr_employee.EmployeeLoginQSR",estNameStr=estNameStr,location=location)))
     except Exception as e:
         return(redirect(url_for("EmployeeLogin2QSR",estNameStr=estNameStr,location=location)))
     try:
@@ -107,23 +107,23 @@ def EmployeePanelQSR(estNameStr,location):
 @qsr_employee_blueprint.route('/<estNameStr>/<location>/qsr-activate-item~<cat>~<item>~<menu>')
 def activateItemQSR(estNameStr,location,cat,item,menu):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu + "/categories/"+ cat + "/" + item
     descrip = dict(db.reference(pathMenu).get())["tmp"]
     db.reference(pathMenu).update({"descrip":descrip})
     pathDel = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu + "/categories/"+ cat + "/" + item +"/tmp"
     db.reference(pathDel).delete()
-    return(redirect(url_for("EmployeePanelQSR",estNameStr=estNameStr,location=location)))
+    return(redirect(url_for("qsr_employee.EmployeePanelQSR",estNameStr=estNameStr,location=location)))
 
 @qsr_employee_blueprint.route('/<estNameStr>/<location>/qsr-deactivate-item~<cat>~<item>~<menu>')
 def deactivateItemQSR(estNameStr,location,cat,item,menu):
     if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("findRestaurant")))
+        return(redirect(url_for("find_page.findRestaurant")))
     pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu + "/categories/"+ cat + "/" + item
     descrip = dict(db.reference(pathMenu).get())["descrip"]
     db.reference(pathMenu).update({"tmp":descrip})
     db.reference(pathMenu).update({"descrip":"INACTIVE"})
-    return(redirect(url_for("EmployeePanelQSR",estNameStr=estNameStr,location=location)))
+    return(redirect(url_for("qsr_employee.EmployeePanelQSR",estNameStr=estNameStr,location=location)))
 
 @qsr_employee_blueprint.route('/<estNameStr>/<location>/qsr-view-success', methods=["POST"])
 def EmployeeSuccessQSR(estNameStr,location):
@@ -133,7 +133,7 @@ def EmployeeSuccessQSR(estNameStr,location):
     pathRequest = '/restaurants/' + estNameStr + '/' + location + "/orderQSR/" + reqToken
     reqRef = db.reference(pathRequest)
     reqRef.delete()
-    return(redirect(url_for("EmployeePanelQSR",estNameStr=estNameStr,location=location)))
+    return(redirect(url_for("qsr_employee.EmployeePanelQSR",estNameStr=estNameStr,location=location)))
 
 @qsr_employee_blueprint.route('/<estNameStr>/<location>/qsr-sendOrder', methods=["POST"])
 def sendOrderQsr(estNameStr,location):
@@ -188,4 +188,4 @@ def sendOrderQsr(estNameStr,location):
         message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
         # smtpObj.sendmail(sender, [order['email']], message)
         sendEmail(sender, order['email'], mesg)
-    return(redirect(url_for("EmployeePanelQSR",estNameStr=estNameStr,location=location)))
+    return(redirect(url_for("qsr_employee.EmployeePanelQSR",estNameStr=estNameStr,location=location)))
