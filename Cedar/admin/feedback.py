@@ -105,7 +105,7 @@ def remQuestion(estNameStr,location,question):
             return redirect(url_for('.login',estNameStr=estNameStr,location=location))
         item_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/feedback/'+str(question))
         item_ref.delete()
-        return(redirect(url_for("panel",estNameStr=estNameStr,location=location)))
+        return(redirect(url_for("admin_panel.panel",estNameStr=estNameStr,location=location)))
 
 @feedback_blueprint.route('/<estNameStr>/<location>/add-feedback')
 def addQuestion(estNameStr,location):
@@ -181,4 +181,4 @@ def addQuestionConfirm(estNameStr,location):
 
         qRef = db.reference('/restaurants/' + estNameStr + '/' +location+ '/feedback')
         qRef.update(qDict)
-        return(redirect(url_for("panel",estNameStr=estNameStr,location=location)))
+        return(redirect(url_for("admin_panel.panel",estNameStr=estNameStr,location=location)))

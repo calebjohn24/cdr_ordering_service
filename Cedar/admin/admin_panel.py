@@ -180,11 +180,16 @@ def panel(estNameStr,location):
         discDict = dict(discRef.get())
     except Exception as e:
         discDict = {}
-    feedback_ref = db.reference('/restaurants/' + estNameStr + '/'+ location + '/feedback')
-    feedback = dict(feedback_ref.get())
-    comment_ref = db.reference('/restaurants/' + estNameStr + '/'+ location + '/comments')
-    comments = dict(comment_ref.get())
-
+    try:
+        feedback_ref = db.reference('/restaurants/' + estNameStr + '/'+ location + '/feedback')
+        feedback = dict(feedback_ref.get())
+    except Exception as e:
+        feedback = {}
+    try:
+        comment_ref = db.reference('/restaurants/' + estNameStr + '/'+ location + '/comments')
+        comments = dict(comment_ref.get())
+    except Exception as e:
+        comments = {}
     return render_template("POS/AdminMini/mainAdmin.html",
                            restName=str(estNameStr).capitalize(), feedback=feedback,comments=comments,
                            locName=location.capitalize(),
