@@ -45,7 +45,7 @@ def sendEmail(sender, rec, msg):
         sendEmail(sender, rec, msg)
 
 
-def getSquare(estNameStr):
+def getSquare(estNameStr, tzGl, locationsPaths):
     sqRef = db.reference(str('/restaurants/' + estNameStr))
     ##print(sqRef.get())
     squareToken = dict(sqRef.get())["sq-token"]
@@ -134,7 +134,6 @@ def loginPageCheck(estNameStr,location):
     pw = str(rsp["pw"])
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     email = str(email).replace(".","-")
-    print(pw,email)
     try:
         user = ref.get()[str(email)]
         if ((pbkdf2_sha256.verify(pw, user["password"])) == True):
@@ -160,8 +159,7 @@ def loginPageCheck(estNameStr,location):
 def panel(estNameStr,location):
     if(checkLocation(estNameStr,location) == 1):
         return(redirect(url_for("findRestaurant")))
-    getSquare(estNameStr)
-    print(tzGl)
+    getSquare(estNameStr,tzGl, locationsPaths)
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
@@ -177,35 +175,20 @@ def panel(estNameStr,location):
     user_ref.update({
         'time': time.time()
     })
-    discRef = db.reference('/restaurants/' + estNameStr + '/'+ location + '/discounts')
-    discDict = dict(discRef.get())
-    discMenus = list(discDict.keys())
-    discItms = []
-    discTypes = []
-    discAmts = []
-    discLimMin = []
-    discNames = []
-    discMenu = []
-    for menus in discMenus:
-        cpns = list(dict(discDict[menus]).keys())
-        for disc in cpns:
-            discMenu.append(menus)
-            discNames.append(disc)
-            discItms.append(str(discDict[menus][disc]["mods"][1]) + " " + str(discDict[menus][disc]["itm"]))
-            discTypes.append(discDict[menus][disc]["type"])
-            discAmts.append(str(discDict[menus][disc]["amt"]))
-            limStr = str("lim:") + str(discDict[menus][disc]["lim"]) + str(" min:") + str(discDict[menus][disc]["min"])
-            discLimMin.append(limStr)
+    try:
+        discRef = db.reference('/restaurants/' + estNameStr + '/'+ location + '/discounts')
+        discDict = dict(discRef.get())
+    except Exception as e:
+        discDict = {}
     feedback_ref = db.reference('/restaurants/' + estNameStr + '/'+ location + '/feedback')
     feedback = dict(feedback_ref.get())
     comment_ref = db.reference('/restaurants/' + estNameStr + '/'+ location + '/comments')
     comments = dict(comment_ref.get())
+
     return render_template("POS/AdminMini/mainAdmin.html",
                            restName=str(estNameStr).capitalize(), feedback=feedback,comments=comments,
                            locName=location.capitalize(),
-                           discNames=discNames,discItms=discItms,
-                           discTypes=discTypes,discMenu=discMenu,
-                           discAmts=discAmts,discLimMin=discLimMin)
+                           discounts=discDict)
 
 
 @admin_panel_blueprint.route('/<estNameStr>/<location>/addAdmin', methods=["POST"])

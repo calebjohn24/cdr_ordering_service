@@ -348,8 +348,13 @@ def addCpn2(estNameStr,location,menu,category,item,modName,modItm):
         }
     })
     # return str(rsp) +"-"+str(menu)+"-"+str(category)+"-"+str(item)
-    return(redirect(url_for("panel",estNameStr=estNameStr,location=location)))
+    return(redirect(url_for("admin_panel.panel",estNameStr=estNameStr,location=location)))
 
+@menu_panel_blueprint.route('/<estNameStr>/<location>/remCpn~<menu>~<cpn>')
+def remCpn(estNameStr,location,menu,cpn):
+    cpn_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/discounts/' + menu + '/' +cpn)
+    cpn_ref.delete()
+    return(redirect(url_for("admin_panel.panel",estNameStr=estNameStr,location=location)))
 
 @menu_panel_blueprint.route('/<estNameStr>/<location>/act-menu')
 def chooseMenu(estNameStr,location):
@@ -403,7 +408,7 @@ def enableMenu(estNameStr,location,menu):
     })
     menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu))
     menu_ref.update({"active":True})
-    return(redirect(url_for("panel",estNameStr=estNameStr,location=location)))
+    return(redirect(url_for("admin_panel.panel",estNameStr=estNameStr,location=location)))
 
 @menu_panel_blueprint.route('/<estNameStr>/<location>/deactivate-menu-<menu>')
 def disableMenu(estNameStr,location,menu):
@@ -425,7 +430,7 @@ def disableMenu(estNameStr,location,menu):
     })
     menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu))
     menu_ref.update({"active":False})
-    return(redirect(url_for("panel",estNameStr=estNameStr,location=location)))
+    return(redirect(url_for("admin_panel.panel",estNameStr=estNameStr,location=location)))
 
 @menu_panel_blueprint.route("/<estNameStr>/<location>/remitm~<menu>~<cat>~<item>")
 def removeItem(estNameStr,location,menu,cat,item):

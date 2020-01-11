@@ -97,18 +97,16 @@
       <div class="container">
       <div class="list-group">
         <br>
-        {% for i in range(discNames|count) %}
-      <h4>{{discNames[i]}}  <a href="remCpn~{{discMenu[i]}}~{{discNames[i]}}" class="btn-danger btn-sm"> <i class="fas fa-times-circle"></i></a></h4>
+        {% for key_disc, disc in discounts.items() %}
+      {% for key_disc_disc, disc_disc in disc.items() %}
+      <h4>{{key_disc_disc}}  <a href="remCpn~{{key_disc}}~{{key_disc_disc}}" class="btn-danger btn-sm"> <i class="fas fa-times-circle"></i></a></h4>
       <br>
-      <h5>Item: {{discItms[i]}}</h5>
+      <h5>Item: {{disc_disc.cat}}- {{disc_disc.mods[1]|capitalize}} {{disc_disc.itm|capitalize}}</h5>
       <br>
-      <h5>Type: {{discTypes[i]}}</h5>
-      <br>
-      <h5>Amt: {{discAmts[i]}}</h5>
-      <br>
-      <h5>{{discLimMin[i]}}</h5>
-      <br>
+      <h5>Type:{{disc_disc.type}} <br> Amount:{{disc_disc.amt}}</h5>
+      <br><h5>Limit: {{disc_disc.lim}} <br> Minimum: {{disc_disc.min}}</h5>
       <h1><hr></h1>
+      {%endfor%}
       {%endfor%}
       </div>
       </div>
