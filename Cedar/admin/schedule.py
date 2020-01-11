@@ -50,9 +50,9 @@ def scheduleSet(estNameStr,location,day):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -99,7 +99,7 @@ def remTimeSlot(estNameStr,location,day,menu):
     menu = str(menu).replace("-"," ")
     menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/schedule/'+str(day)+"/"+str(menu))
     menu_ref.delete()
-    return(redirect(url_for("scheduleSet",location=location,day=day)))
+    return(redirect(url_for("schedule.scheduleSet",estNameStr=estNameStr,location=location,day=day)))
 
 @schedule_blueprint.route('/<estNameStr>/<location>/schedMenu~<day>~<menu>~<timeVal>', methods=["POST"])
 def editTimeSlot(estNameStr,location,day,menu,timeVal):
@@ -110,7 +110,7 @@ def editTimeSlot(estNameStr,location,day,menu,timeVal):
     del_ref.delete()
     menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/schedule/'+str(day))
     menu_ref.update({new_menu:float(timeVal)})
-    return(redirect(url_for("scheduleSet",location=location,day=day)))
+    return(redirect(url_for("schedule.scheduleSet",estNameStr=estNameStr,location=location,day=day)))
 
 @schedule_blueprint.route('/<estNameStr>/<location>/editMenuTime~<day>~<menu>', methods=["POST"])
 def editMenuSlot(estNameStr,location,day,menu):
@@ -121,7 +121,7 @@ def editMenuSlot(estNameStr,location,day,menu):
     newTime = hour+minute
     menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/schedule/'+str(day))
     menu_ref.update({menu:newTime})
-    return(redirect(url_for("scheduleSet",estNameStr=estNameStr,location=location,day=day)))
+    return(redirect(url_for("schedule.scheduleSet",estNameStr=estNameStr,location=location,day=day)))
 
 @schedule_blueprint.route('/<estNameStr>/<location>/addTs~<day>', methods=["POST"])
 def addTimeSlot(estNameStr,location,day):
@@ -133,4 +133,4 @@ def addTimeSlot(estNameStr,location,day):
     newTime = hour+minute
     menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/schedule/'+str(day))
     menu_ref.update({menu:newTime})
-    return(redirect(url_for("scheduleSet",location=location,day=day)))
+    return(redirect(url_for("schedule.scheduleSet",estNameStr=estNameStr,location=location,day=day)))

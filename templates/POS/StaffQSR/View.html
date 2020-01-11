@@ -82,11 +82,13 @@
           {% if ord.info.verify %}
           <form method="POST" action="qsr-sendOrder">
             <button type="submit" name="token" value="{{key_ord}}" class="btn btn-warning btn-lg">
-              Order Paid
+              Confirm Payment
             <i class="fas fa-money-check-alt"></i>
             </button>
           </form>
           {% endif %}
+        </div>
+        <div class="col-lg-1">
         </div>
         <div class="col-lg-3">
         <form method="POST" action="qsr-view-success">

@@ -29,7 +29,8 @@ from Cedar.admin.admin_panel import checkLocation, sendEmail, getSquare
 
 
 qsr_employee_blueprint = Blueprint('qsr_employee', __name__,template_folder='templates')
-
+sender = 'cedarrestaurantsbot@gmail.com'
+emailPass = "cda33d07-f6bd-479e-806f-5d039ae2fa2d"
 mainLink = 'https://033d08d3.ngrok.io/'
 
 
@@ -45,7 +46,7 @@ def EmployeeLoginQSR(estNameStr,location):
 def EmployeeLogin2QSR(estNameStr,location):
     if(checkLocation(estNameStr,location) == 1):
         return(redirect(url_for("find_page.findRestaurant")))
-    return(render_template("POS/StaffSitdown/login2.html"))
+    return(render_template("POS/StaffQSR/login2.html"))
 
 @qsr_employee_blueprint.route('/<estNameStr>/<location>/qsr-employee-login', methods=['POST'])
 def EmployeeLoginCheckQSR(estNameStr,location):
@@ -64,7 +65,7 @@ def EmployeeLoginCheckQSR(estNameStr,location):
         session["token"] = token
         return(redirect(url_for("qsr_employee.EmployeePanelQSR",estNameStr=estNameStr,location=location)))
     else:
-        return(redirect(url_for("qsr_employee.EmployeeLogin2",estNameStr=estNameStr,location=location)))
+        return(redirect(url_for("qsr_employee.EmployeeLogin2QSR",estNameStr=estNameStr,location=location)))
 
 @qsr_employee_blueprint.route('/<estNameStr>/<location>/qsr-view')
 def EmployeePanelQSR(estNameStr,location):
@@ -162,10 +163,12 @@ def sendOrderQsr(estNameStr,location):
         sendCheckmate(estNameStr,location, token)
 
     if(order['email'] != "no-email"):
-        getSquare(estNameStr)
+        tzGl = {}
+        locationsPaths = {}
+        getSquare(estNameStr, tzGl, locationsPaths)
         now = datetime.datetime.now(tzGl[location])
         write_str = "Your Order From "+ estNameStr.capitalize()  + " " + location.capitalize() + " @"
-        write_str += str(now.hour) + ":" + str(now.minute) + " on " + str(now.month) + "-" + str(now.day) + "-" + str(now.year)
+        write_str += str(now.strftime("%H:%M ")) + " on " + str(now.month) + "-" + str(now.day) + "-" + str(now.year)
         write_str += "\n \n"
         cart = dict(order["cart"])
         subtotal = 0
@@ -187,5 +190,5 @@ def sendOrderQsr(estNameStr,location):
         SUBJECT = "Your Order From "+ estNameStr.capitalize()  + " " + location.capitalize()
         message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
         # smtpObj.sendmail(sender, [order['email']], message)
-        sendEmail(sender, order['email'], mesg)
+        sendEmail(sender, order['email'], message)
     return(redirect(url_for("qsr_employee.EmployeePanelQSR",estNameStr=estNameStr,location=location)))

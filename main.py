@@ -27,10 +27,9 @@ from Cedar.kiosk import online_menu, payments, qsr_menu, sd_menu
 from Cedar.employee import qsr_employee, sd_employee
 from Cedar.main_page import find_page
 
-infoFile = open("info.json")
-info = json.load(infoFile)
-botNumber = info["number"]
-mainLink = info['mainLink']
+
+botNumber = '14255992978'
+mainLink = 'https://c7de15e9.ngrok.io'
 adminSessTime = 3599
 client = plivo.RestClient(auth_id='MAYTVHN2E1ZDY4ZDA2YZ', auth_token='ODgzZDA1OTFiMjE2ZTRjY2U4ZTVhYzNiODNjNDll')
 cred = credentials.Certificate('CedarChatbot-b443efe11b73.json')
@@ -39,11 +38,11 @@ firebase_admin.initialize_app(cred, {
     'storageBucket': 'cedarchatbot.appspot.com'
 })
 storage_client = storage.Client.from_service_account_json('CedarChatbot-b443efe11b73.json')
-bucket = storage_client.get_bucket("cedarchatbot.appspot.com")
+bucket = storage_client.get_bucket('cedarchatbot.appspot.com')
 sender = 'cedarrestaurantsbot@gmail.com'
 emailPass = "cda33d07-f6bd-479e-806f-5d039ae2fa2d"
-smtpObj = smtplib.SMTP_SSL("smtp.gmail.com", 465)
-smtpObj.login(sender, emailPass)
+# smtpObj = smtplib.SMTP_SSL("smtp.gmail.com", 465)
+# smtpObj.login(sender, emailPass)
 
 dayNames = ["MON", "TUE", "WED", "THURS", "FRI", "SAT", "SUN"]
 global locationsPaths

@@ -34,8 +34,8 @@ tzGl = {}
 locationsPaths = {}
 sender = 'cedarrestaurantsbot@gmail.com'
 emailPass = "cda33d07-f6bd-479e-806f-5d039ae2fa2d"
-smtpObj = smtplib.SMTP_SSL("smtp.gmail.com", 465)
-smtpObj.login(sender, emailPass)
+# smtpObj = smtplib.SMTP_SSL("smtp.gmail.com", 465)
+# smtpObj.login(sender, emailPass)
 
 
 @pw_reset_blueprint.route('/<estNameStr>/<location>/reset-link~<token>~<user>', methods=["GET"])

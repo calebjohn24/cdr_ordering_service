@@ -306,12 +306,14 @@
         <br><h4>Subtotal {{"$%.2f"|format(ord.subtotal)}}</h4><h5>{{ord.paid}}</h5><br><br>
 
         <a href="#" data-toggle="modal" data-target="#edit-{{key_ord}}" class="btn-lg btn-info btn-circle">
+          Edit Bill
         <i class="fas fa-edit"></i>
         </a>
         <br>
         <br>
         <form method="POST" action="view-clearTicket">
         <button href="#" type="submit" name="req" value="{{key_ord}}" class="btn-lg btn-info btn-circle">
+          Clear Ticket
         <i class="fas fa-times-circle"></i>
       </button>
         </form>

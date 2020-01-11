@@ -108,11 +108,11 @@ def payStaff(estNameStr,location):
     pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu
     pathRequest = '/restaurants/' + estNameStr + '/' + location + "/requests/"
     reqRef = db.reference(pathRequest)
-    newReq = reqRef.push({"help":'Payment Assitance'})
+    newReq = reqRef.push({"help":'Payment Assistance'})
     pathRequestkey = '/restaurants/' + estNameStr + '/' + location + "/requests/" + newReq.key + "/info"
     reqRefkey = db.reference(pathRequestkey)
     reqRefkey.set({"table":tableNum,"type":"help","token":orderToken})
-    return(render_template('Customer/Sitdown/NoCCpay.html', alert='Staff Will Enter Code To Confirm Payment'))
+    return(render_template('Customer/Sitdown/nonCCpay.html', alert='Enter Staff Code To Confirm Payment'))
 
 @payments_blueprint.route('/<estNameStr>/<location>/payStaffConfirm', methods=['POST'])
 def payStaffConfirm(estNameStr,location):
@@ -129,10 +129,14 @@ def payStaffConfirm(estNameStr,location):
         orderRef.update({
             "paid":"PAID"
         })
+        order = orderRef.get()
         if(order['email'] != "no-email"):
+            tzGl = {}
+            locationsPaths = {}
+            getSquare(estNameStr,tzGl, locationsPaths)
             now = datetime.datetime.now(tzGl[location])
-            write_str = "Your Meal From "+ estNameStr + " " + location + " @"
-            write_str += str(now.hour) + ":" + str(now.minute) + " on " + str(now.month) + "-" + str(now.day) + "-" + str(now.year)
+            write_str = "Your Meal From "+ estNameStr.capitalize() + " " + location.capitalize() + " @"
+            write_str += str(now.strftime("%H:%M "))  + " on " + str(now.month) + "-" + str(now.day) + "-" + str(now.year)
             write_str += "\n \n"
             # TODOX
             cart = dict(order["ticket"])
@@ -151,12 +155,13 @@ def payStaffConfirm(estNameStr,location):
             write_str+= "\n \n"
             write_str += subtotalStr + "\n" + tax + "\n" + total + "\n \n \n"
             write_str += 'Thank You For Dining with us ' + str(order['name']).capitalize() + " !"
-            SUBJECT = "Thank You For Dining at "+ estNameStr + " " + location
+            SUBJECT = "Thank You For Dining at "+ estNameStr.capitalize() + " " + location.capitalize()
             message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
+            sender = 'cedarrestaurantsbot@gmail.com'
             # smtpObj.sendmail(sender, [order['email']], message)
             sendEmail(sender, order['email'], message)
         orderRef.delete()
-        return(redirect(url_for('startKiosk4',estNameStr=estNameStr, location=location)))
+        return(redirect(url_for('sd_menu.startKiosk',estNameStr=estNameStr, location=location)))
     else:
         return(render_template('Customer/Sitdown/NoCCpay.html', alert='Incorrect Code please try again'))
 
@@ -164,13 +169,13 @@ def payStaffConfirm(estNameStr,location):
 @payments_blueprint.route('/<estNameStr>/<location>/qsr-payStaff')
 def payStaffQSR(estNameStr,location):
     orderToken = session.get('orderToken',None)
-    pathOrder = '/restaurants/' + estNameStr + '/' + location + "/orders/" + token
+    pathOrder = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
     orderRef = db.reference(pathOrder)
     order = dict(orderRef.get())
     qsrOrderPath = '/restaurants/' + estNameStr + '/' + location + '/orderQSR'
     qsrOrderRef = db.reference(qsrOrderPath)
     qsrOrderRef.update({
-        token:{
+        orderToken:{
             "cart":dict(order['cart']),
             "info":{"name":order["name"],
                     "number":order['phone'],
@@ -298,14 +303,15 @@ def onlineVerify(estNameStr,location,orderToken):
                             "paid":"PAID",
                             "subtotal":float(order['subtotal']+0.25),
                             "total":order['total'],
-                            'table':order['table']}
-                    }
+                            'table':order['table']
+                            }
+                            }
             })
             if(order['email'] != "no-email"):
                 getSquare(estNameStr)
                 now = datetime.datetime.now(tzGl[location])
                 write_str = "Your Order From "+ estNameStr.capitalize()  + " " + location.capitalize() + " @"
-                write_str += str(now.hour) + ":" + str(now.minute) + " on " + str(now.month) + "-" + str(now.day) + "-" + str(now.year)
+                write_str += str(now.strftime("%H:%M"))  + " on " + str(now.month) + "-" + str(now.day) + "-" + str(now.year)
                 write_str += "\n \n"
                 cart = dict(order["cart"])
                 subtotal = 0
@@ -519,7 +525,7 @@ def verifyOrder(estNameStr,location):
             getSquare(estNameStr)
             now = datetime.datetime.now(tzGl[location])
             write_str = "Your Order From "+ estNameStr.capitalize()  + " " + location.capitalize() + " @"
-            write_str += str(now.hour) + ":" + str(now.minute) + " on " + str(now.month) + "-" + str(now.day) + "-" + str(now.year)
+            write_str += str(now.strftime("%H:%M ")) + " on " + str(now.month) + "-" + str(now.day) + "-" + str(now.year)
             write_str += "\n \n"
             cart = dict(order["cart"])
             subtotal = 0
@@ -556,7 +562,7 @@ def verifyOrder(estNameStr,location):
         if(order['email'] != "no-email"):
             now = datetime.datetime.now(tzGl[location])
             write_str = "Your Meal From "+ estNameStr + " " + location + " @"
-            write_str += str(now.hour) + ":" + str(now.minute) + " on " + str(now.month) + "-" + str(now.day) + "-" + str(now.year)
+            write_str += str(now.strftime("%H:%M "))  + " on " + str(now.month) + "-" + str(now.day) + "-" + str(now.year)
             write_str += "\n \n"
             # TODOX
             cart = dict(order["ticket"])

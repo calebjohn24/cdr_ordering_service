@@ -22,7 +22,7 @@ from flask_sslify import SSLify
 from square.client import Client
 from werkzeug.datastructures import ImmutableOrderedMultiDict
 from flask import Blueprint, render_template, abort
-from Cedar import collect_menu
+from Cedar.collect_menu import findMenu
 from Cedar.admin import admin_panel
 from Cedar.admin.admin_panel import checkLocation, sendEmail, getSquare
 

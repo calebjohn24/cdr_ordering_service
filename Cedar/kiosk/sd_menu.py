@@ -22,7 +22,7 @@ from flask_sslify import SSLify
 from square.client import Client
 from werkzeug.datastructures import ImmutableOrderedMultiDict
 from flask import Blueprint, render_template, abort
-from Cedar import collect_menu
+from Cedar.collect_menu import findMenu
 from Cedar.admin import admin_panel
 from Cedar.admin.admin_panel import checkLocation, sendEmail, getSquare
 
@@ -71,7 +71,7 @@ def startKiosk(estNameStr,location):
     session['orderToken'] = newOrd.key
     menu = findMenu(estNameStr,location)
     session["menu"] = menu
-    return(redirect(url_for('sitdownMenu',estNameStr=estNameStr,location=location)))
+    return(redirect(url_for('sd_menu.sitdownMenu',estNameStr=estNameStr,location=location)))
 
 
 @sd_menu_blueprint.route('/<estNameStr>/<location>/sitdown-menudisp')
@@ -137,7 +137,7 @@ def kiosk2(estNameStr,location, cat, itm):
         'mods':mods,
         'unitPrice':unitPrice
     })
-    return(redirect(url_for('sitdownMenu',estNameStr=estNameStr,location=location)))
+    return(redirect(url_for('sd_menu.sitdownMenu',estNameStr=estNameStr,location=location)))
 
 
 @sd_menu_blueprint.route('/<estNameStr>/<location>/itmRemove', methods=["POST"])
@@ -159,7 +159,7 @@ def kioskRem(estNameStr,location):
         cartRefItm = db.reference(pathCartitm)
         menuInfo = db.reference(pathMenu).get()
         cartData = db.reference(pathCartitm).get()
-    return(redirect(url_for('sitdownMenu',estNameStr=estNameStr,location=location)))
+    return(redirect(url_for('sd_menu.sitdownMenu',estNameStr=estNameStr,location=location)))
 
 
 
@@ -204,7 +204,7 @@ def kioskCart(estNameStr,location):
     menuInfo = db.reference(pathMenu).get()
     cart = {}
 
-    return(redirect(url_for('sitdownMenu',estNameStr=estNameStr,location=location)))
+    return(redirect(url_for('sd_menu.sitdownMenu',estNameStr=estNameStr,location=location)))
 
 @sd_menu_blueprint.route('/<estNameStr>/<location>/collect-feedback')
 def dispFeedBack(estNameStr,location):
@@ -221,7 +221,7 @@ def kioskClear(estNameStr,location):
     orderToken = session.get('orderToken',None)
     alertPath = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
     clearAlert = db.reference(alertPath).update({"alert":"null"})
-    return(redirect(url_for("sitdownMenu",estNameStr=estNameStr,location=location)))
+    return(redirect(url_for('sd_menu.sitdownMenu',estNameStr=estNameStr,location=location)))
 
 @sd_menu_blueprint.route('/<estNameStr>/<location>/sendReq', methods=["POST"])
 def kioskSendReq(estNameStr,location):
@@ -254,7 +254,7 @@ def kioskSendReq(estNameStr,location):
     pathRequestkey = '/restaurants/' + estNameStr + '/' + location + "/requests/" + newReq.key + "/info"
     reqRefkey = db.reference(pathRequestkey)
     reqRefkey.set({"table":tableNum,"type":"help","token":orderToken})
-    return(redirect(url_for("sitdownMenu",estNameStr=estNameStr,location=location)))
+    return(redirect(url_for('sd_menu.sitdownMenu',estNameStr=estNameStr,location=location)))
 
 
 @sd_menu_blueprint.route('/<estNameStr>/<location>/collect-feedback-ans', methods=['POST'])
@@ -274,6 +274,9 @@ def collectFeedback(estNameStr,location):
             "email":"no-email"
         })
     orderInfo = dict(db.reference(pathOrder).get())
+    tzGl = {}
+    locationsPaths = {}
+    getSquare(estNameStr, tzGl, locationsPaths)
     now = datetime.datetime.now(tzGl[location])
     feedback_ref = db.reference('/restaurants/' + estNameStr + '/'+ location + '/feedback')
     curr_feedback = dict(feedback_ref.get())

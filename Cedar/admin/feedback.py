@@ -40,10 +40,10 @@ def remNewComment(estNameStr,location,comment):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     finally:
         if (checkAdminToken(estNameStr, idToken, username) == 1):
-            return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+            return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
         item_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/comments/new/'+str(comment))
         item_ref.delete()
         return(redirect(url_for("admin_panel.panel",estNameStr=estNameStr,location=location)))
@@ -58,10 +58,10 @@ def remSavedComment(estNameStr,location,comment):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     finally:
         if (checkAdminToken(estNameStr, idToken, username) == 1):
-            return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+            return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
         item_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/comments/saved/'+str(comment))
         item_ref.delete()
         return(redirect(url_for("admin_panel.panel",estNameStr=estNameStr,location=location)))
@@ -76,10 +76,10 @@ def saveComment(estNameStr,location,comment):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     finally:
         if (checkAdminToken(estNameStr, idToken, username) == 1):
-            return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+            return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
         commRef = db.reference('/restaurants/' + estNameStr + '/' +location+ '/comments/new/'+str(comment))
         commentData = dict(commRef.get())
         commRef.delete()
@@ -99,10 +99,10 @@ def remQuestion(estNameStr,location,question):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     finally:
         if (checkAdminToken(estNameStr, idToken, username) == 1):
-            return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+            return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
         item_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/feedback/'+str(question))
         item_ref.delete()
         return(redirect(url_for("admin_panel.panel",estNameStr=estNameStr,location=location)))
@@ -117,10 +117,10 @@ def addQuestion(estNameStr,location):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     finally:
         if (checkAdminToken(estNameStr, idToken, username) == 1):
-            return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+            return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
         return(render_template("POS/AdminMini/addFeedback.html",estNameStr=estNameStr,location=location))
 
 @feedback_blueprint.route('/<estNameStr>/<location>/add-feedback-confirm', methods=['POST'])
@@ -131,10 +131,10 @@ def addQuestionConfirm(estNameStr,location):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     finally:
         if (checkAdminToken(estNameStr, idToken, username) == 1):
-            return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+            return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
 
         request.parameter_storage_class = ImmutableOrderedMultiDict
         rsp = dict((request.form))

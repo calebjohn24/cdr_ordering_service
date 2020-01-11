@@ -36,8 +36,8 @@ storage_client = storage.Client.from_service_account_json('CedarChatbot-b443efe1
 bucket = storage_client.get_bucket("cedarchatbot.appspot.com")
 sender = 'cedarrestaurantsbot@gmail.com'
 emailPass = "cda33d07-f6bd-479e-806f-5d039ae2fa2d"
-smtpObj = smtplib.SMTP_SSL("smtp.gmail.com", 465)
-smtpObj.login(sender, emailPass)
+# smtpObj = smtplib.SMTP_SSL("smtp.gmail.com", 465)
+# smtpObj.login(sender, emailPass)
 
 dayNames = ["MON", "TUE", "WED", "THURS", "FRI", "SAT", "SUN"]
 
@@ -65,9 +65,9 @@ def createMenu(estNameStr,location):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -98,9 +98,9 @@ def viewMenu(estNameStr,location):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -120,9 +120,9 @@ def editMenu(estNameStr,location,menu):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -146,9 +146,9 @@ def remCategories(estNameStr,location,menu,category):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -168,9 +168,9 @@ def viewCategories(estNameStr,location,menu,category):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -204,9 +204,9 @@ def addOpt(estNameStr,location,menu,cat,item,mods):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -271,9 +271,9 @@ def editImg(estNameStr,location,menu,cat,item):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -316,9 +316,9 @@ def addCpn(estNameStr,location,menu,category,item,modName,modItm):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -366,9 +366,9 @@ def chooseMenu(estNameStr,location):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -398,9 +398,9 @@ def enableMenu(estNameStr,location,menu):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -420,9 +420,9 @@ def disableMenu(estNameStr,location,menu):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -444,9 +444,9 @@ def removeItem(estNameStr,location,menu,cat,item):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -467,9 +467,9 @@ def viewItem(estNameStr,location,menu,cat,item):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -507,9 +507,9 @@ def addMod(estNameStr,location,menu,cat,item):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -561,9 +561,9 @@ def addItem(estNameStr,location,menu,cat):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -580,9 +580,9 @@ def addItem2(estNameStr,location,menu,cat):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -631,9 +631,9 @@ def addCat(estNameStr,location,menu):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -651,9 +651,9 @@ def addCatX(estNameStr,location):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
