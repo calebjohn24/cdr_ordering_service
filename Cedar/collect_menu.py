@@ -29,7 +29,7 @@ adminSessTime = 3599
 global locationsPaths
 tzGl = {}
 locationsPaths = {}
-
+dayNames = ["MON", "TUE", "WED", "THURS", "FRI", "SAT", "SUN"]
 
 def getSquare(estNameStr):
     sqRef = db.reference(str('/restaurants/' + estNameStr))

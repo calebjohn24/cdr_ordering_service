@@ -22,7 +22,8 @@ from flask_sslify import SSLify
 from square.client import Client
 from werkzeug.datastructures import ImmutableOrderedMultiDict
 from flask import Blueprint, render_template, abort
-from Cedar import collect_menu
+from Cedar.collect_menu import findMenu
+from Cedar.admin.admin_panel import checkLocation, sendEmail, getSquare
 
 
 online_menu_blueprint = Blueprint('online_menu', __name__,template_folder='templates')

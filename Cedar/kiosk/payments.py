@@ -220,30 +220,39 @@ def payOnline(estNameStr,location):
                     body['order'] = {}
                     body['order']['reference_id'] = idX
                     body['order']['line_items'] = []
+                    body['order']['discounts'] = []
+                    body['order']['discounts'].append({})
 
                     body['order']['line_items'].append({})
+                    body['order']['line_items'][0]['name'] = 'Order Fee'
+                    body['order']['line_items'][0]['quantity'] = '1'
+                    body['order']['line_items'][0]['base_price_money'] = {}
+                    body['order']['line_items'][0]['base_price_money']['amount'] = 25
+                    body['order']['line_items'][0]['base_price_money']['currency'] = "USD"
 
                     cart = dict(orderInfo["cart"])
                     subtotal = 0
                     items = []
                     cartKeys = list(cart.keys())
-                    for keys in range(len(cartKeys)):
-                        dispStr = str(cart[cartKeys[keys]]["dispStr"]).split('x')
+                    for keys in range(1, len(cartKeys)+1):
+                        print(keys)
+                        dispStr = str(cart[cartKeys[keys-1]]["dispStr"]).split('x')
                         disp2 = list(dispStr[1].split('('))
-                        print(disp2)
                         dispX = disp2[0]
-                        body['order']['line_items'][keys]['name'] = dispX
-                        body['order']['line_items'][keys]['quantity'] = str(cart[cartKeys[keys]]["qty"])
-                        body['order']['line_items'][keys]['base_price_money'] = {}
-                        body['order']['line_items'][keys]['base_price_money']['amount'] = int((cart[cartKeys[keys]]["unitPrice"])*100)
-                        body['order']['line_items'][keys]['base_price_money']['currency'] = "USD"
+                        if(cart[cartKeys[keys-1]]["unitPrice"] > 0):
+                            body['order']['line_items'].append({})
+                            body['order']['line_items'][keys]['name'] = dispX
+                            body['order']['line_items'][keys]['quantity'] = str(cart[cartKeys[keys-1]]["qty"])
+                            body['order']['line_items'][keys]['base_price_money'] = {}
+                            body['order']['line_items'][keys]['base_price_money']['amount'] = int((cart[cartKeys[keys-1]]["unitPrice"])*100)
+                            body['order']['line_items'][keys]['base_price_money']['currency'] = "USD"
+                        else:
+                            body['order']['discounts'][0]['name'] = dispX
+                            body['order']['discounts'][0]['amount_money'] = {"amount":int((cart[cartKeys[keys-1]]["unitPrice"])*-100),"currency":"USD"}
+                            body['order']['discounts'][0]['quantity'] =  str(cart[cartKeys[keys-1]]["qty"])
+                            # keys -= 1
 
-                    body['order']['line_items'].append({})
-                    body['order']['line_items'][len(cartKeys)]['name'] = 'Order Fee'
-                    body['order']['line_items'][len(cartKeys)]['quantity'] = '1'
-                    body['order']['line_items'][len(cartKeys)]['base_price_money'] = {}
-                    body['order']['line_items'][len(cartKeys)]['base_price_money']['amount'] = 25
-                    body['order']['line_items'][len(cartKeys)]['base_price_money']['currency'] = "USD"
+
 
                     body['order']['taxes'] = []
                     body['order']['taxes'].append({})
@@ -256,7 +265,7 @@ def payOnline(estNameStr,location):
 
                     body['ask_for_shipping_address'] = False
                     body['redirect_url'] = mainLink + estNameStr + '/' + location +'/online-confirm~'+orderToken
-
+                    print(body)
                     result = checkout_api.create_checkout(locationId , body)
 
                     if result.is_success():
@@ -266,7 +275,9 @@ def payOnline(estNameStr,location):
                         return redirect(link)
                     elif result.is_error():
                         print(result.errors)
-                        return(redirect(url_for('payQSR',estNameStr=estNameStr,location=location)))
+                        print(result)
+                        print("")
+                        return(redirect(url_for('payments.payQSR',estNameStr=estNameStr,location=location)))
 
 
 @payments_blueprint.route('/<estNameStr>/<location>/online-confirm~<orderToken>')
@@ -391,12 +402,12 @@ def applyCpn(estNameStr,location):
                     'img':'',
                     'notes':'',
                     'price':discAmt,
-                    'dispStr': str(str(amtUsed) + " x " + str(code) + " $" + "{:0,.2f}".format(discAmt)),
+                    'dispStr': str(str(amtUsed) + " x " + str(code) + " ( $" + "{:0,.2f}".format(discAmt)) + " )",
                     'mods':[["-",0]],
                     'unitPrice':float(float(discAmt)/float(amtUsed))
                 })
                 pathCpn.update({"cpn":0})
-            return(redirect(url_for('payQSR',estNameStr=estNameStr,location=location)))
+            return(redirect(url_for('payments.payQSR',estNameStr=estNameStr,location=location)))
         else:
             cart = dict(orderInfo["ticket"])
             subtotal = orderInfo["subtotal"]
@@ -467,10 +478,10 @@ def applyCpn(estNameStr,location):
                 })
                 pathCpn.update({"cpn":0,
                                 "subtotal":subtotal})
-            return(redirect(url_for('payQSR',estNameStr=estNameStr,location=location)))
+            return(redirect(url_for('payments.payQSR',estNameStr=estNameStr,location=location)))
     except Exception as e:
         print(str(e))
-        return(redirect(url_for('payQSR',estNameStr=estNameStr,location=location)))
+        return(redirect(url_for('payments.payQSR',estNameStr=estNameStr,location=location)))
 
 
 

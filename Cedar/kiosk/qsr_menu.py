@@ -80,7 +80,7 @@ def startKioskQsr(estNameStr,location):
     # menu = "lunch"
     session["menu"] = menu
     ##print(menu)
-    return(redirect(url_for('qsrMenu',estNameStr=estNameStr,location=location)))
+    return(redirect(url_for('qsr_menu.qsrMenu',estNameStr=estNameStr,location=location)))
 
 
 @qsr_menu_blueprint.route('/<estNameStr>/<location>/qsr-menudisp')
@@ -145,7 +145,7 @@ def kiosk2QSR(estNameStr,location,cat,itm):
         'unitPrice':unitPrice,
         'dispStr':dispStr
     })
-    return(redirect(url_for('qsrMenu',estNameStr=estNameStr,location=location)))
+    return(redirect(url_for('qsr_menu.qsrMenu',estNameStr=estNameStr,location=location)))
 
 
 @qsr_menu_blueprint.route('/<estNameStr>/<location>/qsr-itmRemove', methods=["POST"])
@@ -166,7 +166,7 @@ def kioskRemQSR(estNameStr,location):
     cartRefItm = db.reference(pathCartitm)
     menuInfo = db.reference(pathMenu).get()
     cartData = db.reference(pathCartitm).get()
-    return(redirect(url_for('qsrMenu',estNameStr=estNameStr,location=location)))
+    return(redirect(url_for('qsr_menu.qsrMenu',estNameStr=estNameStr,location=location)))
 
 
 @qsr_menu_blueprint.route('/<estNameStr>/<location>/cartAdd-QSR', methods=["POST"])
@@ -196,7 +196,7 @@ def kioskCartQSR(estNameStr,location):
                     pathRemRef = db.reference(pathRem)
                     pathRemRef.delete()
         return(render_template("Customer/QSR/receipt.html"))
-        # return(redirect(url_for("payQSR",estNameStr=estNameStr,location=location)))
+        # return(redirect(url_for('payments.payQSR',estNameStr=estNameStr,location=location)))
     except Exception:
         return(redirect(url_for("qsrMenu",estNameStr=estNameStr,location=location)))
 
@@ -215,4 +215,4 @@ def reciptQSR(estNameStr,location):
         userRef.update({
             "email":"no-email"
         })
-    return(redirect(url_for("payQSR",estNameStr=estNameStr,location=location)))
+    return(redirect(url_for('payments.payQSR',estNameStr=estNameStr,location=location)))
