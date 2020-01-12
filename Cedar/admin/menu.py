@@ -84,8 +84,8 @@ def addMenu(estNameStr,location):
     rsp = dict((request.form))
     new_menu = rsp["name"]
     menu_ref = db.reference('/restaurants/' + estNameStr + '/'+location+"/menu")
-    menu_ref.update({str(new_menu):{"active":False}})
-    return(redirect(url_for("menu.viewMenu",estNameStr=estNameStr,location=location)))
+    menu_ref.update({str(new_menu):{"active":True}})
+    return(redirect(url_for("menu.addCat",estNameStr=estNameStr,location=location, menu=new_menu)))
 
 
 @menu_panel_blueprint.route('/<estNameStr>/<location>/view-menu')
@@ -192,7 +192,7 @@ def remOpt(estNameStr,location,menu,cat,item,mods,opt):
         return(redirect(url_for("find_page.findRestaurant")))
     opt_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+cat+"/"+item+"/"+mods+"/info/"+opt)
     opt_ref.delete()
-    return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
+    return(redirect(url_for("menu.viewItem",estNameStr=estNameStr,location=location,menu=menu,cat=cat,item=item)))
 
 @menu_panel_blueprint.route('/<estNameStr>/<location>/addOpt~<menu>~<cat>~<item>~<mods>')
 def addOpt(estNameStr,location,menu,cat,item,mods):
@@ -223,7 +223,7 @@ def addOptX(estNameStr,location,menu,cat,item,mods):
     price = float(rsp["price"])
     opt_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+cat+"/"+item+"/"+mods+"/info")
     opt_ref.update({name:price})
-    return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
+    return(redirect(url_for("menu.viewItem",estNameStr=estNameStr,location=location,menu=menu,cat=cat,item=item)))
 
 @menu_panel_blueprint.route('/<estNameStr>/<location>/editMax~<menu>~<cat>~<item>~<mods>', methods=["POST"])
 def editMax(estNameStr,location,menu,cat,item,mods):
@@ -232,7 +232,7 @@ def editMax(estNameStr,location,menu,cat,item,mods):
     max = int(rsp["max"])
     opt_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+cat+"/"+item+"/"+mods)
     opt_ref.update({"max":max})
-    return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
+    return(redirect(url_for("menu.viewItem",estNameStr=estNameStr,location=location,menu=menu,cat=cat,item=item)))
 
 @menu_panel_blueprint.route('/<estNameStr>/<location>/editMin~<menu>~<cat>~<item>~<mods>', methods=["POST"])
 def editMin(estNameStr,location,menu,cat,item,mods):
@@ -241,7 +241,7 @@ def editMin(estNameStr,location,menu,cat,item,mods):
     min = int(rsp["min"])
     opt_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+cat+"/"+str(item)+"/"+str(mods))
     opt_ref.update({"min":min})
-    return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
+    return(redirect(url_for("menu.viewItem",estNameStr=estNameStr,location=location,menu=menu,cat=cat,item=item)))
 
 @menu_panel_blueprint.route('/<estNameStr>/<location>/editDescrip~<menu>~<cat>~<item>', methods=["POST"])
 def editDescrip(estNameStr,location,menu,cat,item):
@@ -250,7 +250,7 @@ def editDescrip(estNameStr,location,menu,cat,item):
     descrip = str(rsp["descrip"])
     opt_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+cat+"/"+str(item))
     opt_ref.update({"descrip":descrip})
-    return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
+    return(redirect(url_for("menu.viewItem",estNameStr=estNameStr,location=location,menu=menu,cat=cat,item=item)))
 
 @menu_panel_blueprint.route('/<estNameStr>/<location>/editExtras~<menu>~<cat>~<item>', methods=["POST"])
 def editExtra(estNameStr,location,menu,cat,item):
@@ -259,7 +259,7 @@ def editExtra(estNameStr,location,menu,cat,item):
     extra = str(rsp["extra"])
     opt_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+cat+"/"+str(item))
     opt_ref.update({"extra-info": extra})
-    return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
+    return(redirect(url_for("menu.viewItem",estNameStr=estNameStr,location=location,menu=menu,cat=cat,item=item)))
 
 @menu_panel_blueprint.route('/<estNameStr>/<location>/editImg~<menu>~<cat>~<item>')
 def editImg(estNameStr,location,menu,cat,item):
@@ -302,12 +302,12 @@ def editImgX(estNameStr,location,menu,cat,item):
     print(fileId)
     d = estNameStr + "/" + fileId
     d = bucket.blob(d)
-    d.upload_from_filename(str(str(UPLOAD_FOLDER)+"/"+str(file.filename)),content_type='image/jpeg')
+    d.upload_from_filename(str(str(UPLOAD_FOLDER)+str(file.filename).replace(" ","_")),content_type='image/jpeg')
     url = str(d.public_url)
     opt_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+cat+"/"+str(item))
     opt_ref.update({"img":url})
     os.remove(estNameStr + "/imgs/" + filename)
-    return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
+    return(redirect(url_for("menu.viewItem", estNameStr=estNameStr,location=location,menu=menu,cat=cat,item=item)))
 
 @menu_panel_blueprint.route('/<estNameStr>/<location>/addCpn~<menu>~<category>~<item>~<modName>~<modItm>')
 def addCpn(estNameStr,location,menu,category,item,modName,modItm):
@@ -575,7 +575,7 @@ def addModX(estNameStr,location,menu,cat,item):
     except Exception:
         return(render_template("POS/AdminMini/addMod.html",location=location,menu=menu,cat=cat,item=name))
     '''
-    return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
+    return(redirect(url_for("menu.viewItem",estNameStr=estNameStr,location=location,menu=menu,cat=cat,item=item)))
 
 @menu_panel_blueprint.route("/<estNameStr>/<location>/remMod~<menu>~<cat>~<item>~<mod>")
 def remMod(estNameStr,location,menu,cat,item,mod):
@@ -583,7 +583,7 @@ def remMod(estNameStr,location,menu,cat,item,mod):
         return(redirect(url_for("find_page.findRestaurant")))
     item_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+str(cat)+"/"+str(item)+"/"+str(mod))
     item_ref.delete()
-    return(redirect(url_for("viewItem",location=location,menu=menu,cat=cat,item=item)))
+    return(redirect(url_for("menu.viewItem",estNameStr=estNameStr,location=location,menu=menu,cat=cat,item=item)))
 
 @menu_panel_blueprint.route("/<estNameStr>/<location>/addItm~<menu>~<cat>")
 def addItem(estNameStr,location,menu,cat):

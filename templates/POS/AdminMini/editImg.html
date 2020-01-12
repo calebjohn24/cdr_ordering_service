@@ -32,11 +32,16 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 <title>Create Menu</title>
+<script>
+function goBack() {
+  window.history.back();
+}
+</script>
 </head>
 <body>
 <div class="container">
 <br>
-<h3>Menus <a href="admin-panel" class="button btn-lg"><i class="fas fa-home"></i></a></h3>
+<h3>Menus <a href="admin-panel" class="button btn-lg"><i class="fas fa-home"></i></a> <button class="btn-lg btn-primary" onclick="goBack()"><i class="fas fa-arrow-left"></i></button></h3>
 <hr>
 <form action="addImgX~{{menu}}~{{cat}}~{{item}}" id="f" method="POST" enctype="multipart/form-data">
 <br>

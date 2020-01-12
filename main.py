@@ -69,38 +69,6 @@ scKey = uuid.uuid4()
 app.secret_key = scKey
 
 
-locationsPaths = {}
-tzGl = []
-
-
-# Call the success method to see if the call succeeded
-##########Restaurant END END###########
-
-
-def checkLocation(estNameStr, location):
-    try:
-        ref = db.reference('/restaurants/'+estNameStr+'/'+location)
-        test = dict(ref.get())
-        if(test != None):
-            return 0
-        else:
-            return 1
-    except Exception as e:
-        return 1
-
-
-
-def sendCheckmate(estNameStr,location,token):
-    print('order sent to checkmate')
-
-
-
-
-
-
-
-
-
 
 
 if __name__ == '__main__':
