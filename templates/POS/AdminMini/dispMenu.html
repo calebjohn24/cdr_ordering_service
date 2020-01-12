@@ -43,7 +43,7 @@
   <div class="list-group">
     {% for i in range(menus|count) %}
 <a href="edit-menu-{{menus[i]}}" class="list-group-item list-group-item-action"><h3>{{menus[i]}}</h3>
-  <a href="exportMenu-{{menus[i]}}" class="btn btn-lg btn-secondary">Export Menu <i class="fas fa-download"></i><br></a>
+  <a href="exportMenu-{{menus[i]}}" target="_blank" class="btn btn-lg btn-secondary">Export Menu <i class="fas fa-download"></i><br></a>
 </a><br>
 
 {% endfor %}

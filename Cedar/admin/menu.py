@@ -15,7 +15,7 @@ from google.cloud import storage
 import pytz
 from flask import Flask, flash, request, session, jsonify
 from werkzeug.utils import secure_filename
-from flask import redirect, url_for
+from flask import redirect, url_for, send_file
 from flask import render_template
 from flask_session import Session
 from flask_sslify import SSLify
@@ -329,6 +329,7 @@ def addCpn(estNameStr,location,menu,category,item,modName,modItm):
     })
     return render_template("POS/AdminMini/addCpn.html",menu=menu,cat=category,item=item,modName=modName,modItm=modItm)
 
+
 @menu_panel_blueprint.route('/<estNameStr>/<location>/addCpn2~<menu>~<category>~<item>~<modName>~<modItm>', methods=["POST"])
 def addCpn2(estNameStr,location,menu,category,item,modName,modItm):
     request.parameter_storage_class = ImmutableOrderedMultiDict
@@ -358,6 +359,28 @@ def remCpn(estNameStr,location,menu,cpn):
     cpn_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/discounts/' + menu + '/' +cpn)
     cpn_ref.delete()
     return(redirect(url_for("admin_panel.panel",estNameStr=estNameStr,location=location)))
+
+
+@menu_panel_blueprint.route('/<estNameStr>/<location>/exportMenu-<menu>')
+def exportMenu(estNameStr,location,menu):
+    menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/' + menu)
+    menu_dict ={menu : dict(menu_ref.get()) }
+    print(menu_dict)
+    try:
+        with open( str(estNameStr + '/menus/' + location + '-' + menu + '-menu.json') , 'w') as outfile:
+            json.dump(menu_dict, outfile)
+    except Exception as e:
+        os.mkdir(str(estNameStr + '/menus/'))
+        with open( str(estNameStr + '/menus/' + location + '-' + menu + '-menu.json') , 'w') as outfile:
+            json.dump(menu_dict, outfile)
+    try:
+        return send_file(str(estNameStr + '/menus/' + location + '-' + menu + '-menu.json'),as_attachment=True,mimetype='application/json',attachment_filename= str(location + '-' + menu + '-menu.json'))
+        # os.remove(str(estNameStr + '/menus/' + location + '-' + menu + '-menu.json'))
+    except Exception as e:
+        print(e)
+        return(redirect(url_for("admin_panel.panel",estNameStr=estNameStr,location=location)))
+
+
 
 @menu_panel_blueprint.route('/<estNameStr>/<location>/act-menu')
 def chooseMenu(estNameStr,location):
