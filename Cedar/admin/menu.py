@@ -38,7 +38,7 @@ sender = 'cedarrestaurantsbot@gmail.com'
 emailPass = "cda33d07-f6bd-479e-806f-5d039ae2fa2d"
 # smtpObj = smtplib.SMTP_SSL("smtp.gmail.com", 465)
 # smtpObj.login(sender, emailPass)
-
+ALLOWED_EXTENSIONS = { 'png', 'jpg', 'jpeg'}
 dayNames = ["MON", "TUE", "WED", "THURS", "FRI", "SAT", "SUN"]
 
 global tzGl
@@ -287,12 +287,15 @@ def editImgX(estNameStr,location,menu,cat,item):
     file = request.files['img']
     filename = secure_filename(file.filename)
     file.save(os.path.join(UPLOAD_FOLDER, filename))
-    old_img_ref = dict(db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+cat+"/"+str(item)).get())
-    old_img = str(old_img_ref["img"]).split(str(estNameStr)+str("/"))
-    print(old_img)
-    if(len(old_img) != 1):
-        imgUUID = str(estNameStr)+str("/")+str(old_img[1])
-        bucket.delete_blob(imgUUID)
+    try:
+        old_img_ref = dict(db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+cat+"/"+str(item)).get())
+        old_img = str(old_img_ref["img"]).split(str(estNameStr)+str("/"))
+        print(old_img)
+        if(len(old_img) != 1):
+            imgUUID = str(estNameStr)+str("/")+str(old_img[1])
+            bucket.delete_blob(imgUUID)
+    except Exception as e:
+        pass
     upName = "/"+estNameStr+"/imgs/"+file.filename
     blob = bucket.blob(upName)
     fileId = str(uuid.uuid4())

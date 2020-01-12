@@ -9,6 +9,7 @@ import os
 import firebase_admin
 from passlib.hash import pbkdf2_sha256
 from firebase_admin import credentials
+from google.cloud import storage
 from firebase_admin import db
 from flask import Blueprint, render_template, abort
 from google.cloud import storage
@@ -24,7 +25,8 @@ from werkzeug.datastructures import ImmutableOrderedMultiDict
 from flask import Blueprint, render_template, abort
 import Cedar
 
-
+storage_client = storage.Client.from_service_account_json('CedarChatbot-b443efe11b73.json')
+bucket = storage_client.get_bucket("cedarchatbot.appspot.com")
 admin_panel_blueprint = Blueprint('admin_panel', __name__,template_folder='templates')
 global tzGl
 adminSessTime = 3599
@@ -156,7 +158,8 @@ def checkAdminToken(estNameStr,idToken, username):
 def login(estNameStr,location):
     if(checkLocation(estNameStr,location) == 1):
         return(redirect(url_for("find_page.findRestaurant")))
-    return render_template("POS/AdminMini/login.html", btn=str("admin"), restName=estNameStr,locName=location)
+    logo = 'https://storage.googleapis.com/cedarchatbot.appspot.com/'+estNameStr+'/logo.jpg'
+    return render_template("POS/AdminMini/login.html", btn=str("admin"), restName=estNameStr,locName=location, logo=logo)
 
 
 @admin_panel_blueprint.route('/<estNameStr>/<location>/admin', methods=["POST"])
@@ -184,7 +187,8 @@ def loginPageCheck(estNameStr,location):
             return render_template("POS/AdminMini/login2.html", btn=str("admin"), restName=estNameStr, locName=location)
     except Exception as e:
         print(e)
-        return render_template("POS/AdminMini/login2.html", btn=str("admin"), restName=estNameStr, locName=location)
+        logo = 'https://storage.googleapis.com/cedarchatbot.appspot.com/'+estNameStr+'/logo.jpg'
+        return render_template("POS/AdminMini/login2.html", btn=str("admin"), restName=estNameStr, locName=location, logo=logo)
 
 
 
@@ -223,10 +227,11 @@ def panel(estNameStr,location):
         comments = dict(comment_ref.get())
     except Exception as e:
         comments = {}
+    logo = 'https://storage.googleapis.com/cedarchatbot.appspot.com/'+estNameStr+'/logo.jpg'
     return render_template("POS/AdminMini/mainAdmin.html",
                            restName=str(estNameStr).capitalize(), feedback=feedback,comments=comments,
                            locName=location.capitalize(),
-                           discounts=discDict)
+                           discounts=discDict, logo=logo)
 
 
 @admin_panel_blueprint.route('/<estNameStr>/<location>/addAdmin', methods=["POST"])
@@ -296,6 +301,25 @@ def confirmEmployeeCode(estNameStr,location):
         'code': hash
     })
     return redirect(url_for('admin_panel.panel',estNameStr=estNameStr,location=location))
+
+
+@admin_panel_blueprint.route('/<estNameStr>/<location>/editLogo', methods=["POST"])
+def editImgX(estNameStr,location):
+    UPLOAD_FOLDER = estNameStr+"/imgs/"
+    file = request.files['logo']
+    filename = secure_filename(file.filename)
+    file.save(os.path.join(UPLOAD_FOLDER, 'logo.jpg'))
+    upName = "/"+estNameStr+"/imgs/"+'logo.jpg'
+    blob = bucket.blob(upName)
+    d = estNameStr + "/logo.jpg"
+    d = bucket.blob(d)
+    d.upload_from_filename(str(str(UPLOAD_FOLDER)+"/"+str('logo.jpg')),content_type='image/jpeg')
+    url = str(d.public_url)
+    print(url)
+    return redirect(url_for('admin_panel.panel',estNameStr=estNameStr,location=location))
+
+
+
 
 @admin_panel_blueprint.route('/<estNameStr>/<location>/remUser~<user>')
 def remUser(estNameStr,location,user):

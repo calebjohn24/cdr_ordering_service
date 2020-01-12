@@ -35,12 +35,17 @@
 </head>
 <body>
 <div class="container">
-  <br>
+  <br><br>
   <h3>Menus <a href="admin-panel" class="button btn-lg"><i class="fas fa-home"></i></a></h3>
+  <hr>
+    <h4><a href="importMenu" class="btn btn-lg btn-success">Import Menu <i class="fas fa-plus-square"></i></a></h4>
   <hr>
   <div class="list-group">
     {% for i in range(menus|count) %}
-<a href="edit-menu-{{menus[i]}}" class="list-group-item list-group-item-action">{{menus[i]}}</a>
+<a href="edit-menu-{{menus[i]}}" class="list-group-item list-group-item-action"><h3>{{menus[i]}}</h3>
+  <a href="exportMenu-{{menus[i]}}" class="btn btn-lg btn-secondary">Export Menu <i class="fas fa-download"></i><br></a>
+</a><br>
+
 {% endfor %}
 </div>
 

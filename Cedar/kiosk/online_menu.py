@@ -33,7 +33,8 @@ online_menu_blueprint = Blueprint('online_menu', __name__,template_folder='templ
 def startKiosk5(estNameStr,location):
     if(checkLocation(estNameStr,location) == 1):
         return(redirect(url_for("find_page.findRestaurant")))
-    return(render_template("Customer/QSR/startKiosk.html",btn="startOnline",restName=estNameStr,locName=location))
+    logo = 'https://storage.googleapis.com/cedarchatbot.appspot.com/'+estNameStr+'/logo.jpg'
+    return(render_template("Customer/QSR/startKiosk.html",btn="startOnline",restName=estNameStr,locName=location,logo=logo))
 
 
 @online_menu_blueprint.route('/<estNameStr>/<location>/startOnline', methods=["POST"])
