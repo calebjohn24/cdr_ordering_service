@@ -85,7 +85,7 @@ def addMenu(estNameStr,location):
     new_menu = rsp["name"]
     menu_ref = db.reference('/restaurants/' + estNameStr + '/'+location+"/menu")
     menu_ref.update({str(new_menu):{"active":False}})
-    return(redirect(url_for("viewMenu",estNameStr=estNameStr,location=location)))
+    return(redirect(url_for("menu.viewMenu",estNameStr=estNameStr,location=location)))
 
 
 @menu_panel_blueprint.route('/<estNameStr>/<location>/view-menu')
@@ -156,7 +156,7 @@ def remCategories(estNameStr,location,menu,category):
     })
     menu_data = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+category).delete()
     # return(render_template("POS/AdminMini/catDetails.html",items=items,menu=menu,cat=category))
-    return(redirect(url_for("viewMenu",estNameStr=estNameStr,location=location)))
+    return(redirect(url_for("menu.viewMenu",estNameStr=estNameStr,location=location)))
 
 @menu_panel_blueprint.route('/<estNameStr>/<location>/view-cat-<menu>~<category>')
 def viewCategories(estNameStr,location,menu,category):
@@ -361,6 +361,14 @@ def remCpn(estNameStr,location,menu,cpn):
     return(redirect(url_for("admin_panel.panel",estNameStr=estNameStr,location=location)))
 
 
+@menu_panel_blueprint.route('/<estNameStr>/<location>/importMenu', methods=['POST'])
+def uploadMenu(estNameStr,location):
+    file = request.files['newMenu']
+    newMenu = dict(json.load(file))
+    menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu')
+    menu_ref.update(newMenu)
+    return(redirect(url_for("menu.viewMenu",estNameStr=estNameStr,location=location)))
+
 @menu_panel_blueprint.route('/<estNameStr>/<location>/exportMenu-<menu>')
 def exportMenu(estNameStr,location,menu):
     menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/' + menu)
@@ -374,7 +382,7 @@ def exportMenu(estNameStr,location,menu):
         with open( str(estNameStr + '/menus/' + location + '-' + menu + '-menu.json') , 'w') as outfile:
             json.dump(menu_dict, outfile)
     try:
-        return send_file(str(estNameStr + '/menus/' + location + '-' + menu + '-menu.json'),as_attachment=True,mimetype='application/json',attachment_filename= str(location + '-' + menu + '-menu.json'))
+        return send_file(str(estNameStr + '/menus/' + location + '-' + menu + '-menu.json'),as_attachment=True,mimetype='application/json',attachment_filename= str(location + '-' + menu + '-menu.cedar'))
         # os.remove(str(estNameStr + '/menus/' + location + '-' + menu + '-menu.json'))
     except Exception as e:
         print(e)

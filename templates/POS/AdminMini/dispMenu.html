@@ -38,11 +38,16 @@
   <br><br>
   <h3>Menus <a href="admin-panel" class="button btn-lg"><i class="fas fa-home"></i></a></h3>
   <hr>
-    <h4><a href="importMenu" class="btn btn-lg btn-success">Import Menu <i class="fas fa-plus-square"></i></a></h4>
+  <form action="importMenu" method="POST" enctype="multipart/form-data">
+    <h4><input type="submit" class="btn btn-lg btn-success" value="Import Menu"></h4>
+    <input type="file"
+           name="newMenu"
+           accept="application/json" required>
+  </form>
   <hr>
   <div class="list-group">
     {% for i in range(menus|count) %}
-<a href="edit-menu-{{menus[i]}}" class="list-group-item list-group-item-action"><h3>{{menus[i]}}</h3>
+<a href="edit-menu-{{menus[i]}}" class="list-group-item list-group-item-action"><h3>{{menus[i]}} <i class="fas fa-edit"></i></h3>
   <a href="exportMenu-{{menus[i]}}" target="_blank" class="btn btn-lg btn-secondary">Export Menu <i class="fas fa-download"></i><br></a>
 </a><br>
 
