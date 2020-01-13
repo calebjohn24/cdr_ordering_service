@@ -70,6 +70,12 @@ app.secret_key = scKey
 
 
 
+@app.errorhandler(404)
+def page_not_found(e):
+    # note that we set the 404 status explicitly
+    return redirect(url_for('find_page.findRestaurant'))
+
+
 
 if __name__ == '__main__':
     try:
