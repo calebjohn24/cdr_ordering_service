@@ -246,8 +246,6 @@ def payOnline(estNameStr, location):
                     body['order'] = {}
                     body['order']['reference_id'] = idX
                     body['order']['line_items'] = []
-                    body['order']['discounts'] = []
-                    body['order']['discounts'].append({})
 
                     body['order']['line_items'].append({})
                     body['order']['line_items'][0]['name'] = 'Order Fee'
@@ -276,6 +274,8 @@ def payOnline(estNameStr, location):
                                 (cart[cartKeys[keys - 1]]["unitPrice"]) * 100)
                             body['order']['line_items'][keys]['base_price_money']['currency'] = "USD"
                         else:
+                            body['order']['discounts'] = []
+                            body['order']['discounts'].append({})
                             body['order']['discounts'][0]['name'] = dispX
                             body['order']['discounts'][0]['amount_money'] = {"amount": int(
                                 (cart[cartKeys[keys - 1]]["unitPrice"]) * -100), "currency": "USD"}

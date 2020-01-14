@@ -281,6 +281,25 @@ def editImg(estNameStr,location,menu,cat,item):
     })
     return(render_template("POS/AdminMini/editImg.html",menu=menu,cat=cat,item=item))
 
+@menu_panel_blueprint.route('/<estNameStr>/<location>/addModIcon-<menu>~<cat>~<item>~<mod>~<opt>')
+def editIcon(estNameStr,location,menu,cat,item,mod,opt):
+    return(render_template("POS/AdminMini/addModImg.html",menu=menu,cat=cat,item=item, mod=mod, opt=opt))
+
+@menu_panel_blueprint.route('/<estNameStr>/<location>/addModIcon2-<menu>~<cat>~<item>~<mod>~<opt>', methods=['POST'])
+def editIconConfirm(estNameStr,location,menu,cat,item,mod,opt):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    size = str(rsp['size'])
+    imgLink = str(rsp['link'])
+    remStart = imgLink.find('src=')
+    remEnd = imgLink.find('>')
+    putLink = "width=" + size + " " + imgLink[remStart:remEnd].replace('"','')
+    print(putLink)
+    iconRef = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+cat+"/"+str(item)+"/"+mod+"/infoimg")
+    iconRef.update({opt:putLink})
+    return(redirect(url_for("menu.viewItem",estNameStr=estNameStr,location=location,menu=menu,cat=cat,item=item)))
+
+
 @menu_panel_blueprint.route('/<estNameStr>/<location>/addImgX~<menu>~<cat>~<item>', methods=["POST"])
 def editImgX(estNameStr,location,menu,cat,item):
     UPLOAD_FOLDER = estNameStr+"/imgs/"
@@ -382,7 +401,7 @@ def exportMenu(estNameStr,location,menu):
         with open( str(estNameStr + '/menus/' + location + '-' + menu + '-menu.json') , 'w') as outfile:
             json.dump(menu_dict, outfile)
     try:
-        return send_file(str(estNameStr + '/menus/' + location + '-' + menu + '-menu.json'),as_attachment=True,mimetype='application/json',attachment_filename= str(location + '-' + menu + '-menu.cedar'))
+        return send_file(str(estNameStr + '/menus/' + location + '-' + menu + '-menu.json'),as_attachment=True,mimetype='application/json',attachment_filename= str(location + '-' + menu + '-menu.json'))
         # os.remove(str(estNameStr + '/menus/' + location + '-' + menu + '-menu.json'))
     except Exception as e:
         print(e)
