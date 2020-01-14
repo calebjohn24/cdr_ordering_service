@@ -31,15 +31,17 @@ from Cedar.main_page import find_page
 botNumber = '14255992978'
 mainLink = 'https://c7de15e9.ngrok.io'
 adminSessTime = 3599
-client = plivo.RestClient(auth_id='MAYTVHN2E1ZDY4ZDA2YZ', auth_token='ODgzZDA1OTFiMjE2ZTRjY2U4ZTVhYzNiODNjNDll')
+client = plivo.RestClient(auth_id='MAYTVHN2E1ZDY4ZDA2YZ',
+                          auth_token='ODgzZDA1OTFiMjE2ZTRjY2U4ZTVhYzNiODNjNDll')
 cred = credentials.Certificate('CedarChatbot-b443efe11b73.json')
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://cedarchatbot.firebaseio.com/',
     'storageBucket': 'cedarchatbot.appspot.com'
 })
 
-ALLOWED_EXTENSIONS = { 'png', 'jpg', 'jpeg'}
-storage_client = storage.Client.from_service_account_json('CedarChatbot-b443efe11b73.json')
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
+storage_client = storage.Client.from_service_account_json(
+    'CedarChatbot-b443efe11b73.json')
 bucket = storage_client.get_bucket('cedarchatbot.appspot.com')
 sender = 'cedarrestaurantsbot@gmail.com'
 emailPass = "cda33d07-f6bd-479e-806f-5d039ae2fa2d"
@@ -69,17 +71,13 @@ scKey = uuid.uuid4()
 app.secret_key = scKey
 
 
-
 @app.errorhandler(404)
 def page_not_found(e):
-    # note that we set the 404 status explicitly
     return redirect(url_for('find_page.findRestaurant'))
-
 
 
 if __name__ == '__main__':
     try:
-        ##print(locationsPaths.keys())
         app.secret_key = scKey
         sslify = SSLify(app)
         app.config['SESSION_TYPE'] = 'filesystem'
@@ -87,6 +85,6 @@ if __name__ == '__main__':
         sess.init_app(app)
         app.permanent_session_lifetime = datetime.timedelta(minutes=240)
         app.debug = True
-        app.run(host="0.0.0.0",port=5000)
+        app.run(host="0.0.0.0", port=5000)
     except KeyboardInterrupt:
         sys.exit()

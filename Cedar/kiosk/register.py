@@ -1,15 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
-
 import datetime
 import json
 import smtplib
@@ -23,7 +11,7 @@ from passlib.hash import pbkdf2_sha256
 from firebase_admin import credentials
 from google.cloud import storage
 from firebase_admin import db
-from flask import Blueprint, render_template, abort
+from flask import Blueprint,  render_template, abort
 from google.cloud import storage
 import pytz
 from flask import Flask, flash, request, session, jsonify
@@ -89,7 +77,7 @@ def GenReaderCode(estNameStr,locationX,type):
                             code = dict(result.body)['authorization_code']
                             print(code)
                             packet = {
-                                "code":code,
+                                "code":code ,
                                 "link": str(mainLink + locationX + "/" + kioskType[int(type)])
                             }
                             return jsonify(packet)

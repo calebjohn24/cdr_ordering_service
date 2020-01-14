@@ -513,23 +513,8 @@ def viewItem(estNameStr,location,menu,cat,item):
     if(item_ref == None):
         item = str(item).replace("-"," ")
         # #print(item)
-        item_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+str(cat)+"/"+str(item)).get()
-    descrip = item_ref["descrip"]
-    extra_info = item_ref["extra-info"]
-    img = item_ref["img"]
-
-    mods = []
-    for item_keys in list(item_ref.keys()):
-        if(str(item_keys) != "descrip" and str(item_keys) != "extra-info" and str(item_keys) != "img" and str(item_keys) != "uuid" and str(item_keys) != "tmp"):
-            tmp_arr = [item_keys, item_ref[item_keys]["max"],item_ref[item_keys]["min"]]
-            tmp_arr2 = []
-            for info_keys in list(dict(item_ref[item_keys]["info"]).keys()):
-                tmp_arr2.append([info_keys,item_ref[item_keys]["info"][info_keys]])
-            tmp_arr.append(tmp_arr2)
-            mods.append(tmp_arr)
-            tmp_arr = []
-    # return(str(mods))
-    return(render_template("POS/AdminMini/editItem.html",mods=mods,img=img,extra_info=extra_info,descrip=descrip,menu=menu,cat=cat,item=item))
+        itemInfo = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+str(cat)+"/"+str(item)).get()
+        return(render_template("POS/AdminMini/editItem.html",menu=menu,cat=cat,item=item, itemInfo=itemInfo))
 
 @menu_panel_blueprint.route("/<estNameStr>/<location>/addMod-<menu>~<cat>~<item>")
 def addMod(estNameStr,location,menu,cat,item):
