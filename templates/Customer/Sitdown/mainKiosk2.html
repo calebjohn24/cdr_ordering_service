@@ -65,11 +65,57 @@ function update_content(){
 
 }
 </script>
+
+<script>
+var clickVal = '{{click}}';
+if(clickVal != "None"){
+jQuery(function(){
+  jQuery('{{click}}').click();
+});
+}
+    var disp = "{{msg}}";
+    if(disp != "None"){
+    jQuery(function(){
+      jQuery('#modal-message').click();
+    });
+}
+</script>
 </head>
 <body>
 <div class="container">
   <br>
+
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-primary" id="modal-message" data-toggle="modal" data-target="#Message" hidden>
+    Launch demo modal
+  </button>
+
+  <!-- Modal -->
+<div class="modal fade" id="Message" tabindex="-1" role="dialog" aria-labelledby="MessageCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p>{% autoescape false %}{{msg| replace('\n', '<br>')}}{% endautoescape %}</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Ok</button>
+      </div>
+    </div>
+  </div>
+</div>
+  <!--  -->
+
+
+<div class="row">
+<div class="col-11">
 <h1>{{restName}} {{locName}} </h1>
+</div>
+
+<div class="col-1">
+  <h6><img width="75" src="../../../static/img/CedarRoboticsLogo.jpg"></h6>
+
+</div>
+</div>
 <hr>
 <br>
 <div id="alert" class="alert alert-warning" role="alert">
@@ -88,7 +134,7 @@ function update_content(){
 <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Menu</a>
 </li>
 <li class="nav-item">
-<a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Cart</a>
+<a class="nav-link" id="carttab" data-toggle="pill" href="#carttab-panel" role="tab" aria-controls="carttab-panel" aria-selected="false">Cart</a>
 </li>
 <li class="nav-item">
 <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">Contact Staff</a>
@@ -106,9 +152,8 @@ function update_content(){
   <div class="card">
   <div class="card-header" id="headingTwo">
   <h5 class="mb-0">
-  <button class="btn btn-lg collapsed" data-toggle="collapse" data-target="#{{key_cat}}" aria-expanded="false" aria-controls="{{key_cat}}">
-  {{key_cat}}
-
+  <button class="btn btn-lg collapsed" id="{{key_cat}}" data-toggle="collapse" data-target="#{{key_cat}}" aria-expanded="false" aria-controls="{{key_cat}}">
+  {{key_cat|replace('-', ' ')}}
   </button>
   </h5>
   </div>
@@ -179,7 +224,9 @@ function update_content(){
         {%endfor%}
         <br>
         {%endfor%}
+        <!-- <h3>{{key_mod|capitalize}}</h3><hr> -->
         {%for m in range(0, (mod.max-mod.min))%}
+        <h3>{{key_mod|capitalize}}</h3><hr>
         {% for key_opt, opt in mod.info.items() %}
         {% if mod.get('infoimg') %}
         <h4>{{key_opt|capitalize}} <img {{mod.get('infoimg')[key_opt]}} > <input type="radio" name="{{m}}~1" value="{{key_opt}}~{{opt}}~{{item.img}}" ></h4>
@@ -233,7 +280,7 @@ function update_content(){
 </div>
 
 
-<div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab"><hr>
+<div class="tab-pane fade" id="carttab-panel" role="tabpanel" aria-labelledby="carttab"><hr>
   <div class="text-center">
   <br>
   <div class="row">
@@ -416,14 +463,14 @@ function update_content(){
     <div class="col-sm-6">
 
     <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#iss-modal">
-    Issue With Food
+    Issue With Food/Cancel Items
     </button>
 
     <div class="modal fade" id="iss-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
     <div class="modal-content">
     <div class="modal-header">
-    <h5 class="modal-title" id="exampleModalLabel">Issue with Food</h5>
+    <h5 class="modal-title" id="exampleModalLabel">Issue with Food/Item Cancellation</h5>
     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
     <span aria-hidden="true">&times;</span>
     </button>
@@ -432,7 +479,7 @@ function update_content(){
     <form method="POST" action="sendReq">
     <div class="form-group">
     <br>
-    <input type="text" class="form-control" name="issue" placeholder="Enter Issue" required>
+    <input type="text" class="form-control" name="issue" placeholder="Enter Issue/Items to cancel" required>
     </div>
     <hr>
     <button type="submit" class="btn btn-lg btn-success">Next</button>

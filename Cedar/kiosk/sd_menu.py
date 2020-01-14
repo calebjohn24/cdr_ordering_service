@@ -72,6 +72,9 @@ def startKiosk(estNameStr,location):
     session['orderToken'] = newOrd.key
     menu = findMenu(estNameStr,location)
     session["menu"] = menu
+    msg = "Welcome to " + estNameStr.capitalize() + ",\n \n You can use this tablet to browse the menu, order food, ask for drink refills, contact the staff, and pay your bill \n \n Enjoy Your Meal!"
+    session["msg"] = msg
+    session["click"] = "None"
     return(redirect(url_for('sd_menu.sitdownMenu',estNameStr=estNameStr,location=location)))
 
 
@@ -81,6 +84,8 @@ def sitdownMenu(estNameStr,location):
         return(redirect(url_for("find_page.findRestaurant")))
     menu = session.get('menu', None)
     orderToken = session.get('orderToken',None)
+    msg = session.get('msg',None)
+    click = session.get('click',None)
     pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu + "/categories"
     menuInfo = dict(db.reference(pathMenu).get())
     cartRef = db.reference('/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken + "/cart")
@@ -89,7 +94,9 @@ def sitdownMenu(estNameStr,location):
     except Exception as e:
         cart = {}
     # print(cart)
-    return(render_template("Customer/Sitdown/mainKiosk2.html", menu=menuInfo, restName=estNameStr.capitalize(), cart=cart, locName=location.capitalize()))
+    session["msg"] = "None"
+    session["click"] = "None"
+    return(render_template("Customer/Sitdown/mainKiosk2.html", menu=menuInfo, restName=estNameStr.capitalize(), cart=cart, locName=location.capitalize(), msg=msg, click=click))
 
 
 @sd_menu_blueprint.route('/<estNameStr>/<location>/sitdown-additms~<cat>~<itm>', methods=["POST"])
@@ -114,13 +121,15 @@ def kiosk2(estNameStr,location, cat, itm):
             try:
                 raw_arr = rsp[keys].split("~")
                 img = raw_arr[2]
-                dispStr += str(raw_arr[0]).capitalize() + " "
+                dispStr += str(raw_arr[0]).capitalize() + "  "
                 mods.append([raw_arr[0],raw_arr[1]])
                 unitPrice += float(raw_arr[1])
             except Exception as e:
                 pass
     price = float(qty*unitPrice)
-    dispStr += "  |Notes: " +notes + "  ($" + "{:0,.2f}".format(price) + ")"
+    msg = dispStr + " " + notes + " Added To Cart"
+    dispStr += "  | Notes: " +notes
+    dispStr += "  ($" + "{:0,.2f}".format(price) + ")"
     menu = session.get('menu', None)
     orderToken = session.get('orderToken',None)
     ##print(orderToken)
@@ -138,6 +147,9 @@ def kiosk2(estNameStr,location, cat, itm):
         'mods':mods,
         'unitPrice':unitPrice
     })
+    # print(msg)
+    session["msg"] = msg
+    session["click"] = "#"+cat
     return(redirect(url_for('sd_menu.sitdownMenu',estNameStr=estNameStr,location=location)))
 
 
@@ -160,6 +172,9 @@ def kioskRem(estNameStr,location):
         cartRefItm = db.reference(pathCartitm)
         menuInfo = db.reference(pathMenu).get()
         cartData = db.reference(pathCartitm).get()
+    msg = "None"
+    session["msg"] = msg
+    session["click"] = "#carttab"
     return(redirect(url_for('sd_menu.sitdownMenu',estNameStr=estNameStr,location=location)))
 
 
@@ -204,7 +219,8 @@ def kioskCart(estNameStr,location):
         pass
     menuInfo = db.reference(pathMenu).get()
     cart = {}
-
+    msg = "Order Sent To Kitchen"
+    session["msg"] = msg
     return(redirect(url_for('sd_menu.sitdownMenu',estNameStr=estNameStr,location=location)))
 
 @sd_menu_blueprint.route('/<estNameStr>/<location>/collect-feedback')
@@ -255,6 +271,8 @@ def kioskSendReq(estNameStr,location):
     pathRequestkey = '/restaurants/' + estNameStr + '/' + location + "/requests/" + newReq.key + "/info"
     reqRefkey = db.reference(pathRequestkey)
     reqRefkey.set({"table":tableNum,"type":"help","token":orderToken})
+    msg = "Request Sent To Staff"
+    session["msg"] = msg
     return(redirect(url_for('sd_menu.sitdownMenu',estNameStr=estNameStr,location=location)))
 
 

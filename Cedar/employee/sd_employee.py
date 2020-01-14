@@ -79,7 +79,7 @@ def EmployeePanel(estNameStr,location):
         print(e)
         return(redirect(url_for("sd_employee.EmployeeLogin2",estNameStr=estNameStr,location=location)))
     try:
-        ordPath = '/restaurants/' + estNameStr + '/' + location + "/orders/"
+        ordPath = '/restaurants/' + estNameStr + '/' + location + "/orders"
         ordsRef = db.reference(ordPath)
         ordsGet = dict(ordsRef.get())
         tokens = list(ordsGet)
@@ -87,7 +87,9 @@ def EmployeePanel(estNameStr,location):
             if(int(ordsGet[tt]["QSR"]) == 0):
                 print(ordsGet[tt])
                 del ordsGet[tt]
+        print(ordsGet)
     except Exception as e:
+        print(e)
         ordsGet = {}
     try:
         pathRequest = '/restaurants/' + estNameStr + '/' + location + "/requests/"
@@ -208,7 +210,7 @@ def EmployeeReject(estNameStr,location):
     reqData = dict(reqRef.get())
     orderToken = reqData["info"]["token"]
     pathUser = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
-    AlertSend = db.reference(pathUser).update({"alert":str("Request Cancelled: "+alert)})
+    AlertSend = db.reference(pathUser).update({"alert":str("Request Issue: "+alert)})
     AlertTime = db.reference(pathUser).update({"alertTime":time.time()})
     reqRef.delete()
     return(redirect(url_for("sd_employee.EmployeePanel",estNameStr=estNameStr,location=location)))

@@ -88,21 +88,10 @@ def payQSR(estNameStr, location):
         for ck in cartKeys:
             ckKeys = list(cart[ck].keys())
             for ckk in ckKeys:
-                dispStr = cart[ck][ckk]["itm"]
-                dispStr += " "
-                for mds in range(len(cart[ck][ckk]["mods"])):
-                    dispStr += cart[ck][ckk]["mods"][mds][0]
-                dispStr += " "
-                dispStr += str("$" +
-                               "{:0,.2f}".format(float(cart[ck][ckk]["unitPrice"])))
-                dispStr += " x "
-                dispStr += str(cart[ck][ckk]["qty"])
-                dispStr += " " + str(cart[ck][ckk]["notes"])
-                dispStr += " || $"
-                dispStr += "{:0,.2f}".format(float(cart[ck][ckk]["price"]))
+                dispStr = cart[ck][ckk]["dispStr"]
                 items.append(dispStr)
-                session['total'] = round(subtotal * (1 + taxRate), 2)
-                session['kiosk'] = orderInfo["kiosk"]
+        session['total'] = round(subtotal * (1 + taxRate), 2)
+        session['kiosk'] = orderInfo["kiosk"]
         sqTotal = str(int(round(subtotal * (1 + taxRate), 2) * 100)) + \
             "~" + str(orderToken) + "~" + mainLink + location
         return(render_template("Customer/Sitdown/Payment.html", locName=location.capitalize(), restName=str(estNameStr).capitalize(),
