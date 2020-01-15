@@ -48,10 +48,18 @@ def GenReaderCode(estNameStr,locationX,type):
     kioskRef = db.reference('/billing/' + estNameStr + '/kiosks/' + code)
     try:
         check = kioskRef.get()
-        if(check == 1):
+        print(check)
+        if(check == None):
             packet = {
                 "success":"no",
-                "code":"Kiosk Already In Use Please Deauthorize In The Admi sn Panel"
+                "code":"Invlaid Kiosk code"
+            }
+            return jsonify(packet)
+        elif(check == 1):
+            print(check)
+            packet = {
+                "success":"no",
+                "code":"Kiosk Already In Use. Please Deauthorize In The Admin Panel"
             }
             return jsonify(packet)
         else:
@@ -84,6 +92,8 @@ def GenReaderCode(estNameStr,locationX,type):
                             if result.is_success():
                                 code = dict(result.body)['authorization_code']
                                 print(code)
+                                kioskRef = db.reference('/billing/' + estNameStr + '/kiosks')
+                                kioskRef.update({str(rsp['code']):1})
                                 packet = {
                                     "success":"yes",
                                     "code":code ,
@@ -96,9 +106,12 @@ def GenReaderCode(estNameStr,locationX,type):
                                     "success":"no",
                                     "code":"invlaid location"
                                 }
+                                kioskRef = db.reference('/billing/' + estNameStr + '/kiosks')
+                                kioskRef.update({str(rsp['code']):1})
                                 return jsonify(packet)
     except Exception as e:
         print(e)
+        print(2)
         packet = {
             "success":"no",
             "code":"Invlaid Kiosk code"

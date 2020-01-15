@@ -45,12 +45,15 @@ def sendEmail(sender, rec, msg):
         smtpObj.sendmail(sender, [rec], msg)
         smtpObj.close()
     except Exception as e:
-        sender = 'cedarrestaurantsbot@gmail.com'
-        emailPass = "cda33d07-f6bd-479e-806f-5d039ae2fa2d"
-        smtpObj = smtplib.SMTP_SSL("smtp.gmail.com", 465)
-        smtpObj.login(sender, emailPass)
-        smtpObj.sendmail(sender, [rec], msg)
-        smtpObj.close()
+        try:
+            sender = 'cedarrestaurantsbot@gmail.com'
+            emailPass = "cda33d07-f6bd-479e-806f-5d039ae2fa2d"
+            smtpObj = smtplib.SMTP_SSL("smtp.gmail.com", 465)
+            smtpObj.login(sender, emailPass)
+            smtpObj.sendmail(sender, [rec], msg)
+            smtpObj.close()
+        except Exception as e:
+            pass
 
 def getSquare(estNameStr, tzGl, locationsPaths):
     sqRef = db.reference(str('/restaurants/' + estNameStr))

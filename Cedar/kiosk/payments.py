@@ -172,9 +172,9 @@ def payStaffConfirm(estNameStr, location):
             sendEmail(sender, order['email'], message)
         orderRef.delete()
         kioskCode = session.get('kioskCode',None)
-        return(redirect(url_for('sd_menu.startKiosk', estNameStr=estNameStr, location=location, kioskCode=kioskCode)))
+        return(redirect(url_for('sd_menu.startKiosk2', estNameStr=estNameStr, location=location, code=kioskCode)))
     else:
-        return(render_template('Customer/Sitdown/NoCCpay.html', alert='Incorrect Code please try again'))
+        return(render_template('Customer/Sitdown/nonCCpay.html', alert='Incorrect Code please try again'))
 
 
 @payments_blueprint.route('/<estNameStr>/<location>/qsr-payStaff')
@@ -554,17 +554,6 @@ def verifyOrder(estNameStr, location, kioskCode):
                          'table': order['table']}
             }
         })
-        testCode = db.reference('/billing/' + estNameStr + '/kiosks/' + kioskCode).get()
-        if(testCode == 0):
-            packet = {
-                "code": token,
-                "success": "true"
-            }
-        else:
-            packet = {
-                "code": token,
-                "success": "kiosk deactivated"
-            }
         checkmate = db.reference(
             '/restaurants/' + estNameStr + '/' + location + '/checkmate').get()
         if(checkmate == 0):
@@ -601,6 +590,17 @@ def verifyOrder(estNameStr, location, kioskCode):
             message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
             # smtpObj.sendmail(sender, [order['email']], message)
             sendEmail(sender, order['email'], mesg)
+        testCode = db.reference('/billing/' + estNameStr + '/kiosks/' + kioskCode).get()
+        if(testCode == 0):
+            packet = {
+                "code": token,
+                "success": "true"
+            }
+        else:
+            packet = {
+                "code": token,
+                "success": "kiosk deactivated"
+            }
         return jsonify(packet)
     else:
         pathOrder = '/restaurants/' + estNameStr + '/' + location + "/orders/" + token
@@ -608,10 +608,6 @@ def verifyOrder(estNameStr, location, kioskCode):
         orderRef.update({
             "paid": "PAID"
         })
-        packet = {
-            "code": token,
-            "success": "true"
-        }
         if(order['email'] != "no-email"):
             now = datetime.datetime.now(tzGl[location])
             write_str = "Your Meal From " + estNameStr + " " + location + " @"
