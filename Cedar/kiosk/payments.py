@@ -29,8 +29,9 @@ from Cedar.admin.admin_panel import checkLocation, sendEmail, getSquare
 payments_blueprint = Blueprint(
     'payments', __name__, template_folder='templates')
 
-mainLink = 'https://033d08d3.ngrok.io/'
-
+mainLink = 'https://927688a1.ngrok.io/'
+sender = 'cedarrestaurantsbot@gmail.com'
+emailPass = "cda33d07-f6bd-479e-806f-5d039ae2fa2d"
 
 @payments_blueprint.route('/<estNameStr>/<location>/pay')
 def payQSR(estNameStr, location):
@@ -65,12 +66,14 @@ def payQSR(estNameStr, location):
             "total": float(subtotal * (1 + taxRate))
         })
         sqTotal = str(int(round(subtotal * (1 + taxRate), 2) * 100)) + \
-            "~" + str(orderToken) + "~" + mainLink + location
+            "~" + str(orderToken) + "~" + mainLink + estNameStr+"/"+location
         if(orderInfo['kiosk'] == 0):
-            return(render_template("Customer/QSR/Payment.html", locName=location.capitalize(), restName=str(estNameStr).capitalize(), cart=str(cart), items=items, subtotal=subtotalStr, tax=tax, total=total, sqTotal=sqTotal))
+            kioskCode = session.get('kioskCode',None)
+            return(render_template("Customer/QSR/Payment.html", locName=location.capitalize(), restName=str(estNameStr).capitalize(), cart=str(cart), items=items, subtotal=subtotalStr, tax=tax, total=total, sqTotal=sqTotal,kioskCode=kioskCode))
         else:
             return(render_template("Customer/QSR/Payment-Online.html", locName=location.capitalize(), restName=str(estNameStr).capitalize(), cart=str(cart), items=items, subtotal=subtotalStr, tax=tax, total=total, orderToken=orderToken))
     else:
+        kioskCode = session.get('kioskCode',None)
         cart = dict(orderInfo["ticket"])
         subtotal = orderInfo["subtotal"]
         subtotal += 0.25
@@ -93,9 +96,9 @@ def payQSR(estNameStr, location):
         session['total'] = round(subtotal * (1 + taxRate), 2)
         session['kiosk'] = orderInfo["kiosk"]
         sqTotal = str(int(round(subtotal * (1 + taxRate), 2) * 100)) + \
-            "~" + str(orderToken) + "~" + mainLink + location
+            "~" + str(orderToken) + "~" + mainLink + estNameStr+"/"+location
         return(render_template("Customer/Sitdown/Payment.html", locName=location.capitalize(), restName=str(estNameStr).capitalize(),
-                               items=items, subtotal=subtotalStr, tax=tax, total=total, sqTotal=sqTotal))
+                               items=items, subtotal=subtotalStr, tax=tax, total=total, sqTotal=sqTotal, kioskCode =kioskCode))
 
 
 @payments_blueprint.route('/<estNameStr>/<location>/payStaff')
@@ -168,7 +171,8 @@ def payStaffConfirm(estNameStr, location):
             # smtpObj.sendmail(sender, [order['email']], message)
             sendEmail(sender, order['email'], message)
         orderRef.delete()
-        return(redirect(url_for('sd_menu.startKiosk', estNameStr=estNameStr, location=location)))
+        kioskCode = session.get('kioskCode',None)
+        return(redirect(url_for('sd_menu.startKiosk', estNameStr=estNameStr, location=location, kioskCode=kioskCode)))
     else:
         return(render_template('Customer/Sitdown/NoCCpay.html', alert='Incorrect Code please try again'))
 
@@ -525,8 +529,11 @@ def applyCpn(estNameStr, location):
         return(redirect(url_for('payments.payQSR', estNameStr=estNameStr, location=location)))
 
 
-@payments_blueprint.route('/<estNameStr>/<location>/verify-kiosk', methods=["POST"])
-def verifyOrder(estNameStr, location):
+@payments_blueprint.route('/<estNameStr>/<location>/verify-kiosk-payment~<kioskCode>', methods=["POST"])
+def verifyOrder(estNameStr, location, kioskCode):
+    tzGl = {}
+    locationsPaths = {}
+    getSquare(estNameStr,tzGl,locationsPaths)
     rsp = request.get_json()
     print(rsp)
     token = rsp['tokenVal']
@@ -547,10 +554,17 @@ def verifyOrder(estNameStr, location):
                          'table': order['table']}
             }
         })
-        packet = {
-            "code": token,
-            "success": "true"
-        }
+        testCode = db.reference('/billing/' + estNameStr + '/kiosks/' + kioskCode).get()
+        if(testCode == 0):
+            packet = {
+                "code": token,
+                "success": "true"
+            }
+        else:
+            packet = {
+                "code": token,
+                "success": "kiosk deactivated"
+            }
         checkmate = db.reference(
             '/restaurants/' + estNameStr + '/' + location + '/checkmate').get()
         if(checkmate == 0):
@@ -595,7 +609,7 @@ def verifyOrder(estNameStr, location):
             "paid": "PAID"
         })
         packet = {
-            "code": tokenVal,
+            "code": token,
             "success": "true"
         }
         if(order['email'] != "no-email"):
@@ -628,4 +642,15 @@ def verifyOrder(estNameStr, location):
             # smtpObj.sendmail(sender, [order['email']], message)
             sendEmail(sender, order['email'], message)
         orderRef.delete()
+        testCode = db.reference('/billing/' + estNameStr + '/kiosks/' + kioskCode).get()
+        if(testCode == 0):
+            packet = {
+                "code": token,
+                "success": "true"
+            }
+        else:
+            packet = {
+                "code": token,
+                "success": "kiosk deactivated"
+            }
         return jsonify(packet)

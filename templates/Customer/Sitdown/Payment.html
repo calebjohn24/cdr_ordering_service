@@ -42,7 +42,7 @@
     var amt = "{{sqTotal}}";
     window.ReactNativeWebView.postMessage(amt);
     //
-    window.location.href = "sitdown-startKiosk";
+    window.location.href = "sitdown-startKiosk-{{kioskCode}}";
   }
   </script>
   <script>
@@ -91,7 +91,7 @@
 <br>
 <div class="row">
 <br>
-<div class="col-sm-3">
+<div class="col-lg-6">
 <h3><button onclick="payCC()"  class="btn-light btn-lg">
 <h3>Credit Card </h3>
 <h1>
@@ -103,13 +103,19 @@
 </button>
 </h3>
 </div>
-<div class="col-sm-2">
+
+<div class="row">
+
+<div class="col-lg-3">
 <h3><button onclick="location.href='payStaff'" class="btn-light btn-lg"><h3>Gift Card</h3><h1><i class="fas fa-gift"></i></h1></button></h3>
 <br>
 </div>
-<div class="col-sm-2">
+<div class="col-lg-3">
 <h3><button onclick="location.href='payStaff'" class="btn-light btn-lg"><h3>Cash</h3> <h1><i class="fas fa-money-bill"></i></h1></button></h3>
 </div>
+
+</div>
+
 </div>
 <br>
 

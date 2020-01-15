@@ -3,612 +3,631 @@
 
 <head>
   <style>
-  input[type=radio] {
- zoom: 2.5;
-}
-   </style>
+    input[type=radio] {
+      zoom: 2.5;
+    }
+  </style>
   <link rel="manifest" href="/manifest.json">
   <link rel="apple-touch-icon" sizes="60x60" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="57x57" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="72x72" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="76x76" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="114x114" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="120x120" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="144x144" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="152x152" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="180x180" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="icon" type="image/png" sizes="192x192"  href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="icon" type="image/png" sizes="32x32" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="icon" type="image/png" sizes="96x96" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="icon" type="image/png" sizes="16x16" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="manifest" href="../../../static/manifest.json">
- <meta name="msapplication-TileColor" content="#000000">
- <meta name="msapplication-TileImage" content="../../../static/img/CedarRoboticsLogo.jpg">
- <meta name="theme-color" content="#000000">
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="description" content="">
-<meta name="author" content="Caleb John">
-<script src="https://kit.fontawesome.com/80bbe0004b.js" crossorigin="anonymous"></script>
-<link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-<title>Menu</title>
-<script>
-$(document).ready(function(e) {
-    var refresher = setInterval("update_content();",15000); // 1 seconds
-    $('#alert').hide();
-})
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="180x180" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="icon" type="image/png" sizes="192x192" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="icon" type="image/png" sizes="96x96" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="manifest" href="../../../static/manifest.json">
+  <meta name="msapplication-TileColor" content="#000000">
+  <meta name="msapplication-TileImage" content="../../../static/img/CedarRoboticsLogo.jpg">
+  <meta name="theme-color" content="#000000">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="">
+  <meta name="author" content="Caleb John">
+  <script src="https://kit.fontawesome.com/80bbe0004b.js" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <title>Menu</title>
+  <script>
+    $(document).ready(function(e) {
+      $('#alert').hide();
+      var refresher = setInterval("update_content();", 15000); // 1 seconds
+    })
 
-function update_content(){
-  $.ajax({
-         url: 'SDupdate',
-         success: function(data) {
-             console.log('get info');
-             $('#info').html(JSON.stringify(data, null, '   '));
-             if(data['alert'] != "null"){
-               document.getElementById("alertData").innerHTML = data['alert'];
-               $('#alert').show();
-             }
-             else{
-                $('#alert').hide();
-             }
-
-
-         }
-     });
+    function update_content() {
+      $.ajax({
+        url: 'SDupdate',
+        success: function(data) {
+          console.log('get info');
+          $('#info').html(JSON.stringify(data, null, '   '));
+          if (data['alert'] != "null") {
+            document.getElementById("alertData").innerHTML = data['alert'] + ' <a class="btn btn-warning" href="close-alert">&times;</a>';
+            $('#alert').show();
+          } else {
+            $('#alert').hide();
+          }
 
 
-}
-</script>
+        }
+      });
 
-<script>
-var clickVal = '{{click}}';
-if(clickVal != "None"){
-jQuery(function(){
-  jQuery('{{click}}').click();
-});
-}
+
+    }
+  </script>
+
+  <script>
+    var clickVal = '{{click}}';
+    if (clickVal != "None") {
+      jQuery(function() {
+        jQuery('{{click}}').click();
+      });
+    }
     var disp = "{{msg}}";
-    if(disp != "None"){
-    jQuery(function(){
-      jQuery('#modal-message').click();
-    });
-}
-</script>
+    if (disp != "None") {
+      jQuery(function() {
+        jQuery('#modal-message').click();
+      });
+    }
+  </script>
 </head>
+
 <body>
-<div class="container">
-  <br>
+  <div class="container-fluid">
+    <!-- Button trigger modal -->
 
-  <!-- Button trigger modal -->
-  <button type="button" class="btn btn-primary" id="modal-message" data-toggle="modal" data-target="#Message" hidden>
-    Launch demo modal
-  </button>
 
-  <!-- Modal -->
-<div class="modal fade" id="Message" tabindex="-1" role="dialog" aria-labelledby="MessageCenterTitle" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-body">
-        <p>{% autoescape false %}{{msg| replace('\n', '<br>')}}{% endautoescape %}</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Ok</button>
+    <!-- Modal -->
+    <div class="modal" data-backdrop="false" id="Message" tabindex="-1" role="dialog" aria-labelledby="MessageCenterTitle" aria-hidden="true">
+      <div class="container-fluid">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-body bg-primary">
+              <p class="text-white">{% autoescape false %}{{msg| replace('\n', '<br>')}}{% endautoescape %}</p><br>
+              <p class="text-primary"><button type="button" class="btn btn-light" data-dismiss="modal">Ok</button></p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </div>
-</div>
-  <!--  -->
+    <!--  -->
 
 
-<div class="row">
-<div class="col-11">
-<h1>{{restName}} {{locName}} </h1>
-</div>
+    <br>
 
-<div class="col-1">
-  <h6><img width="75" src="../../../static/img/CedarRoboticsLogo.jpg"></h6>
 
-</div>
-</div>
-<hr>
-<br>
-<div id="alert" class="alert alert-warning" role="alert">
-<div class="row">
-<div class="col-lg-11">
-<h4 id="alertData"></h4>
-</div>
-<div class="col-lg-1">
-  <a class="btn btn-warning" href="close-alert">&times;<br></a>
-</div>
-</div>
-</div>
 
-<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-<li class="nav-item">
-<a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Menu</a>
-</li>
-<li class="nav-item">
-<a class="nav-link" id="carttab" data-toggle="pill" href="#carttab-panel" role="tab" aria-controls="carttab-panel" aria-selected="false">Cart</a>
-</li>
-<li class="nav-item">
-<a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">Contact Staff</a>
-</li>
-<li class="nav-item">
-<a class="nav-link" id="pills-pay-tab" data-toggle="pill" href="#pills-pay" role="tab" aria-controls="pills-pay" aria-selected="false">Pay</a>
-</li>
-</ul>
-<div class="tab-content" id="pills-tabContent">
-
-<div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-  <div id="accordion">
-  {% for key_cat, value_cat in menu.items() %}
-  <!-- for loop Cat Here -->
-  <div class="card">
-  <div class="card-header" id="headingTwo">
-  <h5 class="mb-0">
-  <button class="btn btn-lg collapsed" id="{{key_cat}}" data-toggle="collapse" data-target="#{{key_cat}}" aria-expanded="false" aria-controls="{{key_cat}}">
-  {{key_cat|replace('-', ' ')}}
-  </button>
-  </h5>
-  </div>
-  <div id="{{key_cat}}" class="collapse" aria-labelledby="{{key_cat}}" data-parent="#accordion">
-  {% for key_item, item in value_cat.items() %}
-  {% if item.tmp %}
-  <div class="card-body">
     <div class="row">
-      <div class="col-lg-6">
-      <div class="card">
-      <div class="card-body">
-      <h5 class="card-title">{{key_item}}<br><h5 class="text-danger">ITEM UNAVAILABLE</h5> </h5>
-      <h6 class="card-subtitle mb-2 text-muted">{{item.get('extra-info')}}</h6>
-      <p class="card-text">{{item.tmp}}</p>
-      <button type="button" class="btn btn-success" data-toggle="modal" data-target="#{{item.uuid}}" disabled>
-      Add Item
-      </button>
-      </div>
-      <img class="card-img-top" src="{{item.img}}">
-
-
-
-    </div>
-    </div>
-  </div>
-  </div>
-
-  {% else %}
-  <div class="card-body">
-    <div class="row">
-      <div class="col-lg-6">
-      <div class="card">
-      <div class="card-body">
-      <h5 class="card-title">{{key_item}}</h5>
-      <h6 class="card-subtitle mb-2 text-muted">{{item.get('extra-info')}}</h6>
-      <p class="card-text">{{item.descrip}}</p>
-      <button type="button" class="btn btn-success" data-toggle="modal" data-target="#{{item.uuid}}">
-      Add Item
-      </button>
-      <div class="modal fade" id="{{item.uuid}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-      <div class="modal-header">
-      <h5 class="modal-title" id="exampleModalLongTitle">{{key_item}}</h5>
-      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-      </button>
-      </div>
-      <form action="sitdown-additms~{{key_cat}}~{{key_item}}" method="POST">
-      <div class="modal-body">
-        {% for key_mod, mod in item.items() %}
-        {% if mod.info %}
-        <!-- <h6>{{mod.max}}</h6><br> -->
-        <!-- <h6>{{mod.min}}</h6><br> -->
-        {%for m in range(0, mod.min)%}
-
-        <h3>{{key_mod|capitalize}}</h3><hr>
-        {% for key_opt, opt in mod.info.items() %}
-        {% if mod.get('infoimg') %}
-        <h4>{{key_opt|capitalize}} <img {{mod.get('infoimg')[key_opt]}} > <input type="radio" name="{{m}}~0" value="{{key_opt}}~{{opt}}~{{item.img}}" required></h4>
-        <h6>{{"$%.2f"|format(opt)}}</h6>
-        <br>
-        {% else %}
-        <h4>{{key_opt|capitalize}} <input type="radio" name="{{m}}~0" value="{{key_opt}}~{{opt}}~{{item.img}}" required></h4>
-        <h6>{{"$%.2f"|format(opt)}}</h6>
-        <br>
-        {% endif %}
-        {%endfor%}
-        <br>
-        {%endfor%}
-        <!-- <h3>{{key_mod|capitalize}}</h3><hr> -->
-        {%for m in range(0, (mod.max-mod.min))%}
-        <h3>{{key_mod|capitalize}}</h3><hr>
-        {% for key_opt, opt in mod.info.items() %}
-        {% if mod.get('infoimg') %}
-        <h4>{{key_opt|capitalize}} <img {{mod.get('infoimg')[key_opt]}} > <input type="radio" name="{{m}}~1" value="{{key_opt}}~{{opt}}~{{item.img}}" ></h4>
-        <h6>{{"$%.2f"|format(opt)}}</h6>
-        <br>
-        {% else %}
-        <h4>{{key_opt|capitalize}} <input type="radio" name="{{m}}~1" value="{{key_opt}}~{{opt}}~{{item.img}}" ></h4>
-        <h6>{{"$%.2f"|format(opt)}}</h6>
-        <br>
-        {% endif %}
-        {%endfor%}
-
-        {%endfor%}
-        {% endif %}
-        {% endfor %}
-      <hr>
-      <label for="exampleFormControlSelect0">Notes</label>
-      <input class="form-control" name="notes" type="text" placeholder="Notes" id="exampleFormControlSelect1">
-      <br>
-      <label for="validationDefault05">Quantity</label>
-      <input type="number" name="qty" class="form-control"  min="1" id="validationDefault05" placeholder="1">
-
-      </div>
-      <div class="modal-footer">
-      <input type="submit" value="Add To Cart" class="btn btn-success">
-      </div>
-      </form>
-
-
-      </div>
-      </div>
+      <div class="col-11">
+        <h1>{{restName}} {{locName}} </h1>
       </div>
 
+      <div class="col-1">
+        <h6><img width="75" src="../../../static/img/CedarRoboticsLogo.jpg"></h6>
 
       </div>
-      <img class="card-img-top" src="{{item.img}}">
-
-
-
-    </div>
-    </div>
-  </div>
-  </div>
-  {% endif %}
-    {% endfor %}
-  </div>
-  </div>
-  {% endfor %}
-
-  </div>
-</div>
-
-
-<div class="tab-pane fade" id="carttab-panel" role="tabpanel" aria-labelledby="carttab"><hr>
-  <div class="text-center">
-  <br>
-  <div class="row">
-    <div class="col-sm-3">
-    </div>
-    <div class="col-sm-6">
-  {% for key_cart, cart_items in cart.items() %}
-
-  <div class="card" >
-    <div class="card-header">
-      <h3>{{cart_items.dispStr}}</h3>
-
-    </div>
-    <img class="card-img-top" src="{{cart_items.img}}" >
-    <div class="card-body">
-      <p class="card-text">
-
-    </div>
-    <div class="card-footer text-muted">
-      <form id = "rem-{{key_cart}}" method="POST" action="itmRemove">
-      <div class="p-2"><button class="btn btn-lg btn-danger" type="submit" form="rem-{{key_cart}}" name="remove" value="{{key_cart}}">Remove <i class="fas fa-times-circle"></i></button></div>
-      </form>
-    </div>
-  </div>
-  <hr>
-  {% endfor %}
-  <br>
-  <hr>
-  <form method="POST" action="cartAdd">
-  <button class="btn btn-success btn-circle btn-lg" name="add", value="cart" data-toggle="popover" data-placement="top" data-content="Proceed To Checkout">
-  <strong>Order Items </strong><i class="fas fa-arrow-right"></i>
-  </button>
-  </form>
-  <br>
-  <br>
-  <br>
-  <br>
-  <br><br>
-  </div>
-  <div class="col-sm-3">
-  </div>
-
-
-
-  </div>
-  </div>
-</div>
-
-<div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
-<div class="text-center">
-    <hr>
-
-  <div class="row">
-  <div class="col-sm-6">
-
-  <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#drink-modal">
-  Refill Drinks
-  </button>
-
-  <div class="modal fade" id="drink-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-  <div class="modal-content">
-  <div class="modal-header">
-  <h5 class="modal-title" id="exampleModalLabel">Refill Drinks</h5>
-  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-  <span aria-hidden="true">&times;</span>
-  </button>
-  </div>
-  <div class="modal-body">
-  <form method="POST" action="sendReq">
-  <div class="form-group">
-  <br>
-  <input type="text" class="form-control" name="drinks" placeholder="Enter Drink Names" required>
-  </div>
-  <hr>
-  <button type="submit" class="btn btn-lg btn-success">Next</button>
-  </form>
-  <br>
-  </div>
-  </div>
-  </div>
-  </div>
-  </div>
-
-
-    <br>
-    <div class="col-sm-6">
-
-    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#napkin-modal">
-    Extra Napkins
-    </button>
-
-    <div class="modal fade" id="napkin-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-    <div class="modal-content">
-    <div class="modal-header">
-    <h5 class="modal-title" id="exampleModalLabel">Request Napkins</h5>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-    </button>
-    </div>
-    <div class="modal-body">
-    <form method="POST" action="sendReq">
-    <div class="form-group">
-    </div>
-    <button type="submit" name="napkins" value="ex" class="btn btn-lg btn-success">Next</button>
-    </form>
-    <br>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-
-  </div>
-  <br>
-  <div class="row">
-
-    <div class="col-sm-6">
-
-    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#cutlery-modal">
-    Extra Cutlery
-    </button>
-
-    <div class="modal fade" id="cutlery-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-    <div class="modal-content">
-    <div class="modal-header">
-    <h5 class="modal-title" id="exampleModalLabel">Request Cutlery</h5>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-    </button>
-    </div>
-    <div class="modal-body">
-    <form method="POST" action="sendReq">
-    <div class="form-group">
-    </div>
-    <button type="submit" name="cutlery" value="ex" class="btn btn-lg btn-success">Next</button>
-    </form>
-    <br>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-
-    <br>
-    <div class="col-sm-6">
-
-    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#clear-modal">
-    Clear Table
-    </button>
-
-    <div class="modal fade" id="clear-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-    <div class="modal-content">
-    <div class="modal-header">
-    <h5 class="modal-title" id="exampleModalLabel">Clear Table</h5>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-    </button>
-    </div>
-    <div class="modal-body">
-    <form method="POST" action="sendReq">
-    <div class="form-group">
-    </div>
-    <button type="submit" name="clear" value="ex" class="btn btn-lg btn-success">Next</button>
-    </form>
-    <br>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-
-    <br>
-  </div>
-  <br>
-  <div class="row">
-    <div class="col-sm-6">
-
-    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#iss-modal">
-    Issue With Food/Cancel Items
-    </button>
-
-    <div class="modal fade" id="iss-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-    <div class="modal-content">
-    <div class="modal-header">
-    <h5 class="modal-title" id="exampleModalLabel">Issue with Food/Item Cancellation</h5>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-    </button>
-    </div>
-    <div class="modal-body">
-    <form method="POST" action="sendReq">
-    <div class="form-group">
-    <br>
-    <input type="text" class="form-control" name="issue" placeholder="Enter Issue/Items to cancel" required>
     </div>
     <hr>
-    <button type="submit" class="btn btn-lg btn-success">Next</button>
-    </form>
     <br>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
-
-  <br>
-
-  <div class="col-sm-6">
-
-  <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#box-modal">
-  Box Food
-  </button>
-
-  <div class="modal fade" id="box-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-  <div class="modal-content">
-  <div class="modal-header">
-  <h5 class="modal-title" id="exampleModalLabel">Box Food</h5>
-  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-  <span aria-hidden="true">&times;</span>
-  </button>
-  </div>
-  <div class="modal-body">
-  <form method="POST" action="sendReq">
-  <div class="form-group">
-  <br>
-  <input type="number" class="form-control" name="box" placeholder="Number of boxes" required>
-  </div>
-  <hr>
-  <button type="submit" class="btn btn-lg btn-success">Next</button>
-  </form>
-  <br>
-  </div>
-  </div>
-  </div>
-  </div>
-  </div>
-
-
-  <br>
-  </div>
-  <br>
-  <div class="row">
-    <div class="col-sm-6">
-
-    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#cond-modal">
-    Request Condiments
+    <button type="button" class="btn btn-primary" id="modal-message" data-toggle="modal" data-target="#Message" hidden>
     </button>
+    <div id="alert" class="alert alert-warning" role="alert">
+      <div class="container-fluid">
 
-    <div class="modal fade" id="cond-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-    <div class="modal-content">
-    <div class="modal-header">
-    <h5 class="modal-title" id="exampleModalLabel">Request Condiments</h5>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-    </button>
-    </div>
-    <div class="modal-body">
-    <form method="POST" action="sendReq">
-    <div class="form-group">
-    <br>
-    <input type="text" class="form-control" name="condiments" placeholder="Enter Condiment Names" required>
-    </div>
-    <hr>
-    <button type="submit" class="btn btn-lg btn-success">Next</button>
-    </form>
-    <br>
-    </div>
-    </div>
-    </div>
-    </div>
+            <h4 id="alertData"></h4>
+
+
+      </div>
     </div>
 
-    <br>
-    <div class="col-sm-6">
+    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Menu</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="carttab" data-toggle="pill" href="#carttab-panel" role="tab" aria-controls="carttab-panel" aria-selected="false">Cart</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact" aria-selected="false">Contact Staff</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="pills-pay-tab" data-toggle="pill" href="#pills-pay" role="tab" aria-controls="pills-pay" aria-selected="false">Pay</a>
+      </li>
+    </ul>
+    <div class="tab-content" id="pills-tabContent">
 
-    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#other-modal">
-    Other
-    </button>
+      <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+        <div id="accordion">
+          {% for key_cat, value_cat in menu.items() %}
+          <!-- for loop Cat Here -->
+          <div class="card">
+            <div class="card-header" id="headingTwo">
+              <h5 class="mb-0">
+                <button class="btn btn-lg collapsed" id="{{key_cat}}-btn" data-toggle="collapse" data-target="#{{key_cat}}" aria-expanded="false" aria-controls="{{key_cat}}">
+                  {{key_cat}}
+                </button>
+              </h5>
+            </div>
+            <div id="{{key_cat}}" class="collapse" aria-labelledby="{{key_cat}}" data-parent="#accordion">
+              {% for key_item, item in value_cat.items() %}
+              {% if item.tmp %}
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-lg-6">
+                    <div class="card">
+                      <div class="card-body">
+                        <h5 class="card-title">{{key_item}}<br>
+                          <h5 class="text-danger">ITEM UNAVAILABLE</h5>
+                        </h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{item.get('extra-info')}}</h6>
+                        <p class="card-text">{{item.tmp}}</p>
+                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#{{item.uuid}}" disabled>
+                          Add Item
+                        </button>
+                      </div>
+                      <img class="card-img-top" src="{{item.img}}">
 
-    <div class="modal fade" id="other-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-    <div class="modal-content">
-    <div class="modal-header">
-    <h5 class="modal-title" id="exampleModalLabel">Other</h5>
-    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-    <span aria-hidden="true">&times;</span>
-    </button>
-    </div>
-    <div class="modal-body">
-    <form method="POST" action="sendReq">
-    <div class="form-group">
-    <br>
-    <input type="text" class="form-control" name="other" placeholder="Enter Request" required>
-    </div>
-    <hr>
-    <button type="submit" class="btn btn-lg btn-success">Next</button>
-    </form>
-    <br>
-    </div>
-    </div>
-    </div>
-    </div>
-    </div>
 
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {% else %}
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-lg-6">
+                    <div class="card">
+                      <div class="card-body">
+                        <h5 class="card-title">{{key_item}}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{item.get('extra-info')}}</h6>
+                        <p class="card-text">{{item.descrip}}</p>
+                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#{{item.uuid}}">
+                          Add Item
+                        </button>
+                        <div class="modal" data-backdrop="false" data-backdrop="false" id="{{item.uuid}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                          <div class="container-fluid">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5 class="modal-title" id="exampleModalLongTitle">{{key_item}}</h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <form action="sitdown-additms~{{key_cat}}~{{key_item}}" method="POST">
+                                  <div class="modal-body">
+                                    {% for key_mod, mod in item.items() %}
+                                    {% if mod.info %}
+                                    <!-- <h6>{{mod.max}}</h6><br> -->
+                                    <!-- <h6>{{mod.min}}</h6><br> -->
+                                    {%for m in range(0, mod.min)%}
+
+                                    <h3>{{key_mod|capitalize}}</h3>
+                                    <hr>
+                                    {% for key_opt, opt in mod.info.items() %}
+                                    {% if mod.get('infoimg') %}
+                                    <h4>{{key_opt|capitalize}} <img {{mod.get('infoimg')[key_opt]}}> <input type="radio" name="{{m}}~0" value="{{key_opt}}~{{opt}}~{{item.img}}" required></h4>
+                                    <h6>{{"$%.2f"|format(opt)}}</h6>
+                                    <br>
+                                    {% else %}
+                                    <h4>{{key_opt|capitalize}} <input type="radio" name="{{m}}~0" value="{{key_opt}}~{{opt}}~{{item.img}}" required></h4>
+                                    <h6>{{"$%.2f"|format(opt)}}</h6>
+                                    <br>
+                                    {% endif %}
+                                    {%endfor%}
+                                    <br>
+                                    {%endfor%}
+                                    <!-- <h3>{{key_mod|capitalize}}</h3><hr> -->
+                                    {%for m in range(0, (mod.max-mod.min))%}
+                                    <h3>{{key_mod|capitalize}}</h3>
+                                    <hr>
+                                    {% for key_opt, opt in mod.info.items() %}
+                                    {% if mod.get('infoimg') %}
+                                    <h4>{{key_opt|capitalize}} <img {{mod.get('infoimg')[key_opt]}}> <input type="radio" name="{{m}}~1" value="{{key_opt}}~{{opt}}~{{item.img}}"></h4>
+                                    <h6>{{"$%.2f"|format(opt)}}</h6>
+                                    <br>
+                                    {% else %}
+                                    <h4>{{key_opt|capitalize}} <input type="radio" name="{{m}}~1" value="{{key_opt}}~{{opt}}~{{item.img}}"></h4>
+                                    <h6>{{"$%.2f"|format(opt)}}</h6>
+                                    <br>
+                                    {% endif %}
+                                    {%endfor%}
+
+                                    {%endfor%}
+                                    {% endif %}
+                                    {% endfor %}
+                                    <hr>
+                                    <label for="exampleFormControlSelect0">Notes</label>
+                                    <input class="form-control" name="notes" type="text" placeholder="Notes" id="exampleFormControlSelect1">
+                                    <br>
+                                    <label for="validationDefault05">Quantity</label>
+                                    <input type="number" name="qty" class="form-control" min="1" id="validationDefault05" placeholder="1">
+
+                                  </div>
+                                  <div class="modal-footer">
+                                    <input type="submit" value="Add To Cart" class="btn btn-success">
+                                  </div>
+                                </form>
+
+
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+
+                      </div>
+                      <img class="card-img-top" src="{{item.img}}">
+
+
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+          {% endfor %}
+
+        </div>
+      </div>
+
+
+      <div class="tab-pane fade" id="carttab-panel" role="tabpanel" aria-labelledby="carttab">
+        <hr>
+        <div class="text-center">
+          <br>
+          <div class="row">
+            <div class="col-sm-1">
+            </div>
+            <div class="col-sm-10">
+              {% for key_cart, cart_items in cart.items() %}
+
+              <div class="card">
+                <div class="card-header">
+                  <h3>{{cart_items.dispStr}}</h3>
+
+                </div>
+                <img class="card-img-top" src="{{cart_items.img}}">
+                <div class="card-body">
+                  <p class="card-text">
+
+                </div>
+                <div class="card-footer text-muted">
+                  <form id="rem-{{key_cart}}" method="POST" action="itmRemove">
+                    <div class="p-2"><button class="btn btn-lg btn-danger" type="submit" form="rem-{{key_cart}}" name="remove" value="{{key_cart}}">Remove <i class="fas fa-times-circle"></i></button></div>
+                  </form>
+                </div>
+              </div>
+              <hr>
+              {% endfor %}
+              <br>
+              <hr>
+              <form method="POST" action="cartAdd">
+                {% if cart == {} %}
+                <button class="btn btn-success btn-circle btn-lg" name="add" , value="cart" data-toggle="popover" data-placement="top" data-content="Proceed To Checkout" disabled>
+                  <strong>Order Items </strong><i class="fas fa-arrow-right"></i>
+                </button>
+                {% else %}
+                <button class="btn btn-success btn-circle btn-lg" name="add" , value="cart" data-toggle="popover" data-placement="top" data-content="Proceed To Checkout">
+                  <strong>Order Items </strong><i class="fas fa-arrow-right"></i>
+                </button>
+                {% endif %}
+
+
+
+              </form>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br><br>
+            </div>
+            <div class="col-sm-1">
+            </div>
+
+
+
+          </div>
+        </div>
+      </div>
+
+      <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">
+        <div class="text-center">
+          <hr>
+
+          <div class="row">
+            <div class="col-sm-6">
+
+              <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#drink-modal">
+                Refill Drinks
+              </button>
+
+              <div class="modal" data-backdrop="false" data-backdrop="false" id="drink-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Refill Drinks</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <form method="POST" action="sendReq">
+                        <div class="form-group">
+                          <br>
+                          <input type="text" class="form-control" name="drinks" placeholder="Enter Drink Names" required>
+                        </div>
+                        <hr>
+                        <button type="submit" class="btn btn-lg btn-success">Next</button>
+                      </form>
+                      <br>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <br>
+            <div class="col-sm-6">
+
+              <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#napkin-modal">
+                Extra Napkins
+              </button>
+
+              <div class="modal" data-backdrop="false" data-backdrop="false" id="napkin-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Request Napkins</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <form method="POST" action="sendReq">
+                        <div class="form-group">
+                        </div>
+                        <button type="submit" name="napkins" value="ex" class="btn btn-lg btn-success">Next</button>
+                      </form>
+                      <br>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <br>
+          <div class="row">
+
+            <div class="col-sm-6">
+
+              <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#cutlery-modal">
+                Extra Cutlery
+              </button>
+
+              <div class="modal" data-backdrop="false" data-backdrop="false" id="cutlery-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Request Cutlery</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <form method="POST" action="sendReq">
+                        <div class="form-group">
+                        </div>
+                        <button type="submit" name="cutlery" value="ex" class="btn btn-lg btn-success">Next</button>
+                      </form>
+                      <br>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <br>
+            <div class="col-sm-6">
+
+              <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#clear-modal">
+                Clear Table
+              </button>
+
+              <div class="modal" data-backdrop="false" data-backdrop="false" id="clear-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Clear Table</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <form method="POST" action="sendReq">
+                        <div class="form-group">
+                        </div>
+                        <button type="submit" name="clear" value="ex" class="btn btn-lg btn-success">Next</button>
+                      </form>
+                      <br>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <br>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-sm-6">
+
+              <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#iss-modal">
+                Issue With Food/Cancel Items
+              </button>
+
+              <div class="modal" data-backdrop="false" data-backdrop="false" id="iss-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Issue with Food/Item Cancellation</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <form method="POST" action="sendReq">
+                        <div class="form-group">
+                          <br>
+                          <input type="text" class="form-control" name="issue" placeholder="Enter Issue/Items to cancel" required>
+                        </div>
+                        <hr>
+                        <button type="submit" class="btn btn-lg btn-success">Next</button>
+                      </form>
+                      <br>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <br>
+
+            <div class="col-sm-6">
+
+              <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#box-modal">
+                Box Food
+              </button>
+
+              <div class="modal" data-backdrop="false" data-backdrop="false" id="box-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Box Food</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <form method="POST" action="sendReq">
+                        <div class="form-group">
+                          <br>
+                          <input type="number" class="form-control" name="box" placeholder="Number of boxes" required>
+                        </div>
+                        <hr>
+                        <button type="submit" class="btn btn-lg btn-success">Next</button>
+                      </form>
+                      <br>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+            <br>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-sm-6">
+
+              <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#cond-modal">
+                Request Condiments
+              </button>
+
+              <div class="modal" data-backdrop="false" data-backdrop="false" id="cond-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Request Condiments</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <form method="POST" action="sendReq">
+                        <div class="form-group">
+                          <br>
+                          <input type="text" class="form-control" name="condiments" placeholder="Enter Condiment Names" required>
+                        </div>
+                        <hr>
+                        <button type="submit" class="btn btn-lg btn-success">Next</button>
+                      </form>
+                      <br>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <br>
+            <div class="col-sm-6">
+
+              <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#other-modal">
+                Other
+              </button>
+
+              <div class="modal" data-backdrop="false" data-backdrop="false" id="other-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">Other</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <form method="POST" action="sendReq">
+                        <div class="form-group">
+                          <br>
+                          <input type="text" class="form-control" name="other" placeholder="Enter Request" required>
+                        </div>
+                        <hr>
+                        <button type="submit" class="btn btn-lg btn-success">Next</button>
+                      </form>
+                      <br>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="tab-pane fade" id="pills-pay" role="tabpanel" aria-labelledby="pills-pay-tab">
+        <div class="text-center">
+          <form class="form-inline" method="GET" action="collect-feedback">
+            <button type="submit" class="btn btn-lg btn-primary mb-2">Pay Now</button>
+          </form>
+        </div>
+      </div>
+
+
+    </div>
 
   </div>
 
-</div>
-
-</div>
-
-<div class="tab-pane fade" id="pills-pay" role="tabpanel" aria-labelledby="pills-pay-tab">
-<div class="text-center">
-<form class="form-inline" method="GET" action="collect-feedback">
-<button type="submit" class="btn btn-lg btn-primary mb-2">Pay Now</button>
-</form>
-</div>
-</div>
-
-
-</div>
-</div>
 </body>
+
 </html>

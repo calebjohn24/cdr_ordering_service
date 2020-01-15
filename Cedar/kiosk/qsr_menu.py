@@ -35,10 +35,11 @@ mainLink = 'https://033d08d3.ngrok.io/'
 
 
 
-@qsr_menu_blueprint.route('/<estNameStr>/<location>/qsr-startKiosk', methods=["GET"])
-def startKiosk4(estNameStr,location):
+@qsr_menu_blueprint.route('/<estNameStr>/<location>/qsr-startKiosk-<code>', methods=["GET"])
+def startKiosk4(estNameStr,location,code):
     if(checkLocation(estNameStr,location) == 1):
         return(redirect(url_for("find_page.findRestaurant")))
+    session['kioskCode'] = code
     logo = 'https://storage.googleapis.com/cedarchatbot.appspot.com/'+estNameStr+'/logo.jpg'
     return(render_template("Customer/QSR/startKiosk.html",btn="qsr-startKiosk",restName=estNameStr,locName=location, logo=logo))
 

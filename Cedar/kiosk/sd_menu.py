@@ -32,8 +32,9 @@ sd_menu_blueprint = Blueprint('sd_menu', __name__,template_folder='templates')
 mainLink = 'https://033d08d3.ngrok.io/'
 
 
-@sd_menu_blueprint.route('/<estNameStr>/<location>/sitdown-startKiosk', methods=["GET"])
-def startKiosk2(estNameStr,location):
+@sd_menu_blueprint.route('/<estNameStr>/<location>/sitdown-startKiosk-<code>', methods=["GET"])
+def startKiosk2(estNameStr,location,code):
+    session["kioskCode"] = code
     if(checkLocation(estNameStr,location) == 1):
         return(redirect(url_for("find_page.findRestaurant")))
     logo = 'https://storage.googleapis.com/cedarchatbot.appspot.com/'+estNameStr+'/logo.jpg'
@@ -72,7 +73,7 @@ def startKiosk(estNameStr,location):
     session['orderToken'] = newOrd.key
     menu = findMenu(estNameStr,location)
     session["menu"] = menu
-    msg = "Welcome to " + estNameStr.capitalize() + ",\n \n You can use this tablet to browse the menu, order food, ask for drink refills, contact the staff, and pay your bill \n \n Enjoy Your Meal!"
+    msg = "Welcome to " + estNameStr.capitalize() + ". You can use this tablet to browse the menu, order food, ask for drink refills, and contact the staff.  Enjoy Your Meal!"
     session["msg"] = msg
     session["click"] = "None"
     return(redirect(url_for('sd_menu.sitdownMenu',estNameStr=estNameStr,location=location)))
@@ -149,7 +150,7 @@ def kiosk2(estNameStr,location, cat, itm):
     })
     # print(msg)
     session["msg"] = msg
-    session["click"] = "#"+cat
+    session["click"] = "#"+cat+"-btn"
     return(redirect(url_for('sd_menu.sitdownMenu',estNameStr=estNameStr,location=location)))
 
 
@@ -215,12 +216,13 @@ def kioskCart(estNameStr,location):
         reqRefkey = db.reference(pathRequestkey)
         reqRefkey.update({"table":tableNum,"type":"order","token":orderToken})
         cartRef.delete()
+        msg = "Order Sent To Kitchen"
+        session["msg"] = msg
     except Exception:
-        pass
+        msg = "None"
+        session["msg"] = msg
     menuInfo = db.reference(pathMenu).get()
     cart = {}
-    msg = "Order Sent To Kitchen"
-    session["msg"] = msg
     return(redirect(url_for('sd_menu.sitdownMenu',estNameStr=estNameStr,location=location)))
 
 @sd_menu_blueprint.route('/<estNameStr>/<location>/collect-feedback')
