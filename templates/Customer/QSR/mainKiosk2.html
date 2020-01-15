@@ -31,7 +31,7 @@
 <meta name="author" content="Caleb John">
 <script src="https://kit.fontawesome.com/80bbe0004b.js" crossorigin="anonymous"></script>
 <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-<!-- <meta name="viewport" content="width=device-width, initial-scale=1.1"> -->
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
@@ -39,9 +39,18 @@
 <title>Menu</title>
 </head>
 <body>
-<div class="container">
+<div class="container-fluid">
   <br>
-<h1>{{restName}} {{locName}}</h1>
+  <div class="row">
+    <div class="col-11">
+      <h1>{{restName}} {{locName}} </h1>
+    </div>
+
+    <div class="col-1">
+      <h6><img width="75" src="../../../static/img/CedarRoboticsLogo.jpg"></h6>
+
+    </div>
+  </div>
 <hr>
 <br>
 
@@ -106,7 +115,7 @@
       <button type="button" class="btn btn-success" data-toggle="modal" data-target="#{{item.uuid}}">
       Add Item
       </button>
-      <div class="modal fade" id="{{item.uuid}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+      <div class="modal" data-backdrop="false" id="{{item.uuid}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
        <div class="container-fluid">
       <div class="modal-dialog modal-dialog-centered" role="document">
       <div class="modal-content">
@@ -197,9 +206,9 @@
 <div class="text-center">
 <br>
 <div class="row">
-  <div class="col-sm-3">
+  <div class="col-lg-1">
   </div>
-  <div class="col-sm-6">
+  <div class="col-lg-10">
 {% for key_cart, cart_items in cart.items() %}
 
 <div class="card" >
@@ -240,7 +249,7 @@
 <br>
 <br><br>
 </div>
-<div class="col-sm-3">
+<div class="col-lg-1">
 </div>
 
 

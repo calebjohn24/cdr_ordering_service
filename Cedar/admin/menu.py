@@ -29,6 +29,7 @@ infoFile = open("info.json")
 info = json.load(infoFile)
 botNumber = info["number"]
 mainLink = info['mainLink']
+
 adminSessTime = 3599
 client = plivo.RestClient(auth_id='MAYTVHN2E1ZDY4ZDA2YZ', auth_token='ODgzZDA1OTFiMjE2ZTRjY2U4ZTVhYzNiODNjNDll')
 cred = credentials.Certificate('CedarChatbot-b443efe11b73.json')

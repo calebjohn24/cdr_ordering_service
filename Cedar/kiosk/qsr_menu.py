@@ -29,19 +29,24 @@ from Cedar.admin.admin_panel import checkLocation, sendEmail, getSquare
 
 
 qsr_menu_blueprint = Blueprint('qsr_menu', __name__,template_folder='templates')
-
-mainLink = 'https://033d08d3.ngrok.io/'
+infoFile = open("info.json")
+info = json.load(infoFile)
+mainLink = info['mainLink']
 
 
 
 
 @qsr_menu_blueprint.route('/<estNameStr>/<location>/qsr-startKiosk-<code>', methods=["GET"])
 def startKiosk4(estNameStr,location,code):
-    if(checkLocation(estNameStr,location) == 1):
-        return(redirect(url_for("find_page.findRestaurant")))
-    session['kioskCode'] = code
-    logo = 'https://storage.googleapis.com/cedarchatbot.appspot.com/'+estNameStr+'/logo.jpg'
-    return(render_template("Customer/QSR/startKiosk.html",btn="qsr-startKiosk",restName=estNameStr,locName=location, logo=logo))
+    testCode = db.reference('/billing/' + estNameStr + '/kiosks/' + code).get()
+    if(testCode == 0):
+        return(render_template('Customer/QSR/kioskinactive.html', alert='This Kiosk is Inactive Please Reactivate in the Admin Panel'))
+    elif(testCode == None):
+        return(render_template('Customer/QSR/kioskinactive.html', alert="Invalid Kiosk Code Please Reset Kiosk App"))
+    else:
+        session['kioskCode'] = code
+        logo = 'https://storage.googleapis.com/cedarchatbot.appspot.com/'+estNameStr+'/logo.jpg'
+        return(render_template("Customer/QSR/startKiosk.html",btn="qsr-startKiosk",restName=estNameStr,locName=location, logo=logo))
 
 
 @qsr_menu_blueprint.route('/<estNameStr>/<location>/qsr-startKiosk', methods=["POST"])

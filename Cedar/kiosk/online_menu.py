@@ -28,6 +28,9 @@ from Cedar.admin.admin_panel import checkLocation, sendEmail, getSquare
 
 online_menu_blueprint = Blueprint('online_menu', __name__,template_folder='templates')
 
+infoFile = open("info.json")
+info = json.load(infoFile)
+mainLink = info['mainLink']
 
 @online_menu_blueprint.route('/<estNameStr>/<location>/order', methods=["GET"])
 def startKiosk5(estNameStr,location):

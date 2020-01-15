@@ -25,6 +25,10 @@ from werkzeug.datastructures import ImmutableOrderedMultiDict
 from flask import Blueprint, render_template, abort
 import Cedar
 
+
+infoFile = open("info.json")
+info = json.load(infoFile)
+mainLink = info['mainLink']
 storage_client = storage.Client.from_service_account_json('CedarChatbot-b443efe11b73.json')
 bucket = storage_client.get_bucket("cedarchatbot.appspot.com")
 register_kiosk_blueprint = Blueprint('register', __name__,template_folder='templates')
@@ -97,7 +101,7 @@ def GenReaderCode(estNameStr,locationX,type):
                                 packet = {
                                     "success":"yes",
                                     "code":code ,
-                                    "link": str('https://927688a1.ngrok.io/'+estNameStr+'/'+ locationX + "/" + str(kioskType[int(type)]) + "-" + str(rsp['code']))
+                                    "link": str(mainLink+estNameStr+'/'+ locationX + "/" + str(kioskType[int(type)]) + "-" + str(rsp['code']))
                                 }
                                 return jsonify(packet)
                             elif result.is_error():

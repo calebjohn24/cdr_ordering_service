@@ -25,7 +25,10 @@ from flask import Blueprint, render_template, abort
 from Cedar.admin.admin_panel import getSquare, checkAdminToken, checkLocation
 
 
-mainLink = 'https://033d08d3.ngrok.io/'
+infoFile = open("info.json")
+info = json.load(infoFile)
+mainLink = info['mainLink']
+
 pw_reset_blueprint = Blueprint('pw_reset', __name__,template_folder='templates')
 global tzGl
 adminSessTime = 3599

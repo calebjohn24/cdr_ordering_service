@@ -25,6 +25,10 @@ from werkzeug.datastructures import ImmutableOrderedMultiDict
 from flask import Blueprint, render_template, abort
 import Cedar
 
+infoFile = open("info.json")
+info = json.load(infoFile)
+mainLink = info['mainLink']
+
 storage_client = storage.Client.from_service_account_json('CedarChatbot-b443efe11b73.json')
 bucket = storage_client.get_bucket("cedarchatbot.appspot.com")
 admin_panel_blueprint = Blueprint('admin_panel', __name__,template_folder='templates')
@@ -156,7 +160,7 @@ def checkAdminToken(estNameStr,idToken, username):
 
 
 
-
+@admin_panel_blueprint.route('/<estNameStr>/<location>/')
 @admin_panel_blueprint.route('/<estNameStr>/<location>/admin-login')
 def login(estNameStr,location):
     if(checkLocation(estNameStr,location) == 1):

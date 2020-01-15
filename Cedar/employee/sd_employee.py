@@ -30,7 +30,9 @@ from Cedar.admin.admin_panel import checkLocation, sendEmail, getSquare
 
 sd_employee_blueprint = Blueprint('sd_employee', __name__,template_folder='templates')
 
-mainLink = 'https://033d08d3.ngrok.io/'
+infoFile = open("info.json")
+info = json.load(infoFile)
+mainLink = info['mainLink']
 
 @sd_employee_blueprint.route('/<estNameStr>/<location>/employee-login')
 def EmployeeLogin(estNameStr,location):

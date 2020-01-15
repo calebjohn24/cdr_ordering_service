@@ -27,9 +27,11 @@ from Cedar.kiosk import online_menu, payments, qsr_menu, sd_menu, register
 from Cedar.employee import qsr_employee, sd_employee
 from Cedar.main_page import find_page
 
+infoFile = open("info.json")
+info = json.load(infoFile)
+mainLink = info['mainLink']
 
-botNumber = '14255992978'
-mainLink = 'https://c7de15e9.ngrok.io'
+botNumber = info['number']
 adminSessTime = 3599
 client = plivo.RestClient(auth_id='MAYTVHN2E1ZDY4ZDA2YZ',
                           auth_token='ODgzZDA1OTFiMjE2ZTRjY2U4ZTVhYzNiODNjNDll')

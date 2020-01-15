@@ -26,6 +26,10 @@ from Cedar.admin.admin_panel import checkLocation
 
 find_page_blueprint = Blueprint('find_page', __name__,template_folder='templates')
 
+infoFile = open("info.json")
+info = json.load(infoFile)
+mainLink = info['mainLink']
+
 @find_page_blueprint.route('/find-restaurant')
 def findRestaurant():
     restaurantsDict = dict(db.reference('/restaurants').get())

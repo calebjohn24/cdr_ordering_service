@@ -29,7 +29,10 @@ from Cedar.admin.admin_panel import checkLocation, sendEmail, getSquare
 payments_blueprint = Blueprint(
     'payments', __name__, template_folder='templates')
 
-mainLink = 'https://927688a1.ngrok.io/'
+infoFile = open("info.json")
+info = json.load(infoFile)
+mainLink = info['mainLink']
+
 sender = 'cedarrestaurantsbot@gmail.com'
 emailPass = "cda33d07-f6bd-479e-806f-5d039ae2fa2d"
 
@@ -202,11 +205,12 @@ def payStaffQSR(estNameStr, location):
                      'verify': 1}
         }
     })
+    kioskCode = session.get('kioskCode',None)
     testCode = db.reference('/billing/' + estNameStr + '/kiosks/' + kioskCode).get()
     if(testCode == 0):
         return(render_template('Customer/QSR/kioskinactive.html'))
     else:
-        return(render_template('Customer/QSR/NoCCpay.html'))
+        return(render_template('Customer/QSR/NoCCpay.html', code=kioskCode))
 
 
 @payments_blueprint.route('/<estNameStr>/<location>/pay-online')
@@ -369,7 +373,7 @@ def onlineVerify(estNameStr, location, orderToken):
                 sendEmail(sender, order['email'], mesg)
         return(render_template("Customer/QSR/Payment-Success.html"))
     else:
-        return(redirect(url_for('online_menu.istartOnline', estNameStr=estNameStr, location=location)))
+        return(redirect(url_for('online_menu.startOnline', estNameStr=estNameStr, location=location)))
 
 
 @payments_blueprint.route('/<estNameStr>/<location>/applyCpn', methods=["POST"])
@@ -566,8 +570,10 @@ def verifyOrder(estNameStr, location, kioskCode):
             '/restaurants/' + estNameStr + '/' + location + '/checkmate').get()
         if(checkmate == 0):
             sendCheckmate(estNameStr, location, token)
+        tzGl = {}
+        locationsPaths = {}
         if(order['email'] != "no-email"):
-            getSquare(estNameStr)
+            getSquare(estNameStr, tzGl, locationsPaths)
             now = datetime.datetime.now(tzGl[location])
             write_str = "Your Order From " + estNameStr.capitalize() + " " + \
                 location.capitalize() + " @"
@@ -597,9 +603,10 @@ def verifyOrder(estNameStr, location, kioskCode):
                 location.capitalize()
             message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
             # smtpObj.sendmail(sender, [order['email']], message)
-            sendEmail(sender, order['email'], mesg)
+            sendEmail(sender, order['email'], message)
+        kioskCode = session.get('kioskCode',None)
         testCode = db.reference('/billing/' + estNameStr + '/kiosks/' + kioskCode).get()
-        if(testCode == 0):
+        if(testCode == 1):
             packet = {
                 "code": token,
                 "success": "true"
@@ -646,6 +653,7 @@ def verifyOrder(estNameStr, location, kioskCode):
             # smtpObj.sendmail(sender, [order['email']], message)
             sendEmail(sender, order['email'], message)
         orderRef.delete()
+        kioskCode = session.get('kioskCode',None)
         testCode = db.reference('/billing/' + estNameStr + '/kiosks/' + kioskCode).get()
         if(testCode == 0):
             packet = {
