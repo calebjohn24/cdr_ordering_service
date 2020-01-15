@@ -172,7 +172,11 @@ def payStaffConfirm(estNameStr, location):
             sendEmail(sender, order['email'], message)
         orderRef.delete()
         kioskCode = session.get('kioskCode',None)
-        return(redirect(url_for('sd_menu.startKiosk2', estNameStr=estNameStr, location=location, code=kioskCode)))
+        testCode = db.reference('/billing/' + estNameStr + '/kiosks/' + kioskCode).get()
+        if(testCode == 1):
+            return(redirect(url_for('sd_menu.startKiosk2', estNameStr=estNameStr, location=location, code=kioskCode)))
+        else:
+            return(render_template('Customer/Sitdown/nonCCpay.html', alert='This kiosk has been deactivated please reactivate it in the admin panel, and re-open the app'))
     else:
         return(render_template('Customer/Sitdown/nonCCpay.html', alert='Incorrect Code please try again'))
 
@@ -198,7 +202,11 @@ def payStaffQSR(estNameStr, location):
                      'verify': 1}
         }
     })
-    return(render_template('Customer/QSR/NoCCpay.html'))
+    testCode = db.reference('/billing/' + estNameStr + '/kiosks/' + kioskCode).get()
+    if(testCode == 0):
+        return(render_template('Customer/QSR/kioskinactive.html'))
+    else:
+        return(render_template('Customer/QSR/NoCCpay.html'))
 
 
 @payments_blueprint.route('/<estNameStr>/<location>/pay-online')
