@@ -24,7 +24,7 @@ from werkzeug.datastructures import ImmutableOrderedMultiDict
 from flask import Blueprint, render_template, abort
 from Cedar import collect_menu
 from Cedar.admin.admin_panel import checkLocation, sendEmail, getSquare
-
+from Cedar.admin.billing import updateTransactionFees
 
 payments_blueprint = Blueprint(
     'payments', __name__, template_folder='templates')
@@ -173,6 +173,7 @@ def payStaffConfirm(estNameStr, location):
             sender = 'cedarrestaurantsbot@gmail.com'
             # smtpObj.sendmail(sender, [order['email']], message)
             sendEmail(sender, order['email'], message)
+        updateTransactionFees(0.5,estNameStr,location)
         orderRef.delete()
         kioskCode = session.get('kioskCode',None)
         testCode = db.reference('/billing/' + estNameStr + '/kiosks/' + kioskCode).get()
@@ -205,6 +206,7 @@ def payStaffQSR(estNameStr, location):
                      'verify': 1}
         }
     })
+    updateTransactionFees(0.5,estNameStr,location)
     kioskCode = session.get('kioskCode',None)
     testCode = db.reference('/billing/' + estNameStr + '/kiosks/' + kioskCode).get()
     if(testCode['active'] == 0):
@@ -340,6 +342,7 @@ def onlineVerify(estNameStr, location, orderToken):
                              }
                 }
             })
+            updateTransactionFees(0.5,estNameStr,location)
             if(order['email'] != "no-email"):
                 getSquare(estNameStr)
                 now = datetime.datetime.now(tzGl[location])
@@ -371,6 +374,7 @@ def onlineVerify(estNameStr, location, orderToken):
                     location.capitalize()
                 message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
                 sendEmail(sender, order['email'], mesg)
+
         return(render_template("Customer/QSR/Payment-Success.html"))
     else:
         return(redirect(url_for('online_menu.startOnline', estNameStr=estNameStr, location=location)))
@@ -616,6 +620,7 @@ def verifyOrder(estNameStr, location, kioskCode):
                 "code": token,
                 "success": "kiosk deactivated"
             }
+        updateTransactionFees(0.5,estNameStr,location)
         return jsonify(packet)
     else:
         pathOrder = '/restaurants/' + estNameStr + '/' + location + "/orders/" + token
@@ -665,4 +670,5 @@ def verifyOrder(estNameStr, location, kioskCode):
                 "code": token,
                 "success": "kiosk deactivated"
             }
+        updateTransactionFees(0.5,estNameStr,location)
         return jsonify(packet)

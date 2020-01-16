@@ -22,7 +22,7 @@ from flask_sslify import SSLify
 from square.client import Client
 from werkzeug.datastructures import ImmutableOrderedMultiDict
 from flask import Blueprint, render_template, abort
-from Cedar.admin import admin_panel, menu, pw_reset, feedback, schedule
+from Cedar.admin import admin_panel, menu, pw_reset, feedback, schedule, billing
 from Cedar.kiosk import online_menu, payments, qsr_menu, sd_menu, register
 from Cedar.employee import qsr_employee, sd_employee
 from Cedar.main_page import find_page
@@ -68,6 +68,7 @@ app.register_blueprint(payments.payments_blueprint)
 app.register_blueprint(qsr_employee.qsr_employee_blueprint)
 app.register_blueprint(sd_employee.sd_employee_blueprint)
 app.register_blueprint(register.register_kiosk_blueprint)
+app.register_blueprint(billing.billing_blueprint)
 sslify = SSLify(app)
 scKey = uuid.uuid4()
 app.secret_key = scKey
