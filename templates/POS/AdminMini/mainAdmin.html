@@ -282,7 +282,22 @@
 
     <div id="kiosk" class="container tab-pane fade">
 
-      kiosk
+      <br>
+      <div class="container text-center">
+      <div class="alert alert-info" role="alert">
+      Kiosk Licenses For All Locations
+      </div><hr>
+      {% for kiosk_key, kiosk_val in kiosks.items() %}
+      {% if kiosk_val.active == 1 %}
+        <h6 class="text-success">Active</h6>
+        <h5 class="text-success">Kiosk Code: <h4>{{kiosk_key}}</h4> <br> <h5 class="text-success">Location:</h5> <h4>{{kiosk_val.loc}}</h4> </h5><br>
+        <a href="deactivate-kiosk-{{kiosk_key}}" class="btn btn-lg btn-danger">Deactivate</a>
+          <hr>
+      {% else %}
+        <h4 class="text-danger">Kiosk Code: <h4>{{kiosk_key}}</h4> <h6 class="text-danger">Inactive</h6></h4>
+      {% endif %}
+      <br>
+      {% endfor %}
 
     </div>
 

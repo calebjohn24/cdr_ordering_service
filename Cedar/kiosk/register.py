@@ -41,7 +41,13 @@ sender = 'cedarrestaurantsbot@gmail.com'
 emailPass = "cda33d07-f6bd-479e-806f-5d039ae2fa2d"
 
 
-
+@register_kiosk_blueprint.route('/<estNameStr>/<location>/deactivate-kiosk-<kioskCode>')
+def deactivateKiosk(estNameStr, location, kioskCode):
+    kioskRef = db.reference('/billing/' + estNameStr + '/kiosks')
+    kioskRef.update({str(kioskCode):
+        {"active":0,
+         "loc":location}})
+    return redirect(url_for('admin_panel.panel',estNameStr=estNameStr,location=location))
 
 @register_kiosk_blueprint.route('/<estNameStr>/<locationX>/kiosksetup/<type>', methods=["POST"])
 def GenReaderCode(estNameStr,locationX,type):
@@ -59,7 +65,7 @@ def GenReaderCode(estNameStr,locationX,type):
                 "code":"Invlaid Kiosk code"
             }
             return jsonify(packet)
-        elif(check == 1):
+        elif(check['active'] == 1):
             print(check)
             packet = {
                 "success":"no",
@@ -97,7 +103,9 @@ def GenReaderCode(estNameStr,locationX,type):
                                 code = dict(result.body)['authorization_code']
                                 print(code)
                                 kioskRef = db.reference('/billing/' + estNameStr + '/kiosks')
-                                kioskRef.update({str(rsp['code']):1})
+                                kioskRef.update({str(rsp['code']):
+                                    {"active":1,
+                                     "loc":locationX}})
                                 packet = {
                                     "success":"yes",
                                     "code":code ,
@@ -110,8 +118,6 @@ def GenReaderCode(estNameStr,locationX,type):
                                     "success":"no",
                                     "code":"invlaid location"
                                 }
-                                kioskRef = db.reference('/billing/' + estNameStr + '/kiosks')
-                                kioskRef.update({str(rsp['code']):1})
                                 return jsonify(packet)
     except Exception as e:
         print(e)

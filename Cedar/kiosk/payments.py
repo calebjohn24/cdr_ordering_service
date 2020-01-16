@@ -176,7 +176,7 @@ def payStaffConfirm(estNameStr, location):
         orderRef.delete()
         kioskCode = session.get('kioskCode',None)
         testCode = db.reference('/billing/' + estNameStr + '/kiosks/' + kioskCode).get()
-        if(testCode == 1):
+        if(testCode['active'] == 1):
             return(redirect(url_for('sd_menu.startKiosk2', estNameStr=estNameStr, location=location, code=kioskCode)))
         else:
             return(render_template('Customer/Sitdown/nonCCpay.html', alert='This kiosk has been deactivated please reactivate it in the admin panel, and re-open the app'))
@@ -207,7 +207,7 @@ def payStaffQSR(estNameStr, location):
     })
     kioskCode = session.get('kioskCode',None)
     testCode = db.reference('/billing/' + estNameStr + '/kiosks/' + kioskCode).get()
-    if(testCode == 0):
+    if(testCode['active'] == 0):
         return(render_template('Customer/QSR/kioskinactive.html'))
     else:
         return(render_template('Customer/QSR/NoCCpay.html', code=kioskCode))
@@ -606,7 +606,7 @@ def verifyOrder(estNameStr, location, kioskCode):
             sendEmail(sender, order['email'], message)
         kioskCode = session.get('kioskCode',None)
         testCode = db.reference('/billing/' + estNameStr + '/kiosks/' + kioskCode).get()
-        if(testCode == 1):
+        if(testCode['active'] == 1):
             packet = {
                 "code": token,
                 "success": "true"
@@ -655,7 +655,7 @@ def verifyOrder(estNameStr, location, kioskCode):
         orderRef.delete()
         kioskCode = session.get('kioskCode',None)
         testCode = db.reference('/billing/' + estNameStr + '/kiosks/' + kioskCode).get()
-        if(testCode == 0):
+        if(testCode['active'] == 1):
             packet = {
                 "code": token,
                 "success": "true"

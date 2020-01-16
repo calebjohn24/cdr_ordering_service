@@ -234,11 +234,13 @@ def panel(estNameStr,location):
         comments = dict(comment_ref.get())
     except Exception as e:
         comments = {}
+    kioskRef = db.reference('/billing/' + estNameStr + '/kiosks')
+    kiosks = dict(kioskRef.get())
     logo = 'https://storage.googleapis.com/cedarchatbot.appspot.com/'+estNameStr+'/logo.jpg'
     return render_template("POS/AdminMini/mainAdmin.html",
                            restName=str(estNameStr).capitalize(), feedback=feedback,comments=comments,
                            locName=location.capitalize(),
-                           discounts=discDict, logo=logo)
+                           discounts=discDict, logo=logo, kiosks=kiosks)
 
 
 @admin_panel_blueprint.route('/<estNameStr>/<location>/addAdmin', methods=["POST"])

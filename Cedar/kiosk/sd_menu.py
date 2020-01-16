@@ -37,9 +37,9 @@ mainLink = info['mainLink']
 @sd_menu_blueprint.route('/<estNameStr>/<location>/sitdown-startKiosk-<code>', methods=["GET"])
 def startKiosk2(estNameStr,location,code):
     testCode = db.reference('/billing/' + estNameStr + '/kiosks/' + code).get()
-    if(testCode == 0):
+    if(testCode['active'] == 0):
         return(render_template('Customer/QSR/kioskinactive.html', alert='This Kiosk is Inactive Please Reactivate in the Admin Panel'))
-    elif(testCode == None):
+    elif(testCode['active'] == None):
         return(render_template('Customer/QSR/kioskinactive.html', alert="Invalid Kiosk Code Please Reset Kiosk App"))
     else:
         session["kioskCode"] = code
