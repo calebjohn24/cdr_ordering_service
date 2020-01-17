@@ -41,7 +41,7 @@ def updateTransactionFees(amt,estNameStr,location):
     newCount = fees['count'] + 1
     newFees = fees['fees'] + amt
     feesRef.update({"count":newCount, "fees":newFees})
-    feesRef = db.reference('/billing/' + estNameStr + '/fees/'+location+'/transactions')
+    feesRef = db.reference('/billing/' + estNameStr + '/fees/locations/'+location+'/transactions')
     fees = dict(feesRef.get())
     newCount = fees['count'] + 1
     newFees = fees['fees'] + amt

@@ -69,7 +69,7 @@
  <h4>{{items[i]}}</h4>
 <br>
 {% endfor %}
-<h6>Order Fee $0.25</h6>
+<h6>Order Fee {{"$%.2f"|format(fee)}}</h6>
 <br>
 <hr>
 <h4>Subtotal {{subtotal}}</h4>

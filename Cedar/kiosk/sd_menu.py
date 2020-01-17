@@ -64,7 +64,10 @@ def startKiosk(estNameStr,location):
     path = '/restaurants/' + estNameStr + '/' + location + "/orders/"
     orderToken = str(uuid.uuid4())
     ref = db.reference(path)
+    menu = findMenu(estNameStr,location)
+    session["menu"] = menu
     newOrd = ref.push({
+        "menu":menu,
         "QSR":1,
         "kiosk":0,
         "cpn":1,
@@ -79,10 +82,9 @@ def startKiosk(estNameStr,location):
         })
     #print(newOrd.key)
     session['orderToken'] = newOrd.key
-    menu = findMenu(estNameStr,location)
-    session["menu"] = menu
     msg = "Welcome to " + estNameStr.capitalize() + ". You can use this tablet to browse the menu, order food, ask for drink refills, and contact the staff.  Enjoy Your Meal!"
     session["msg"] = msg
+    session["startTime"] = time.time()
     session["click"] = "None"
     return(redirect(url_for('sd_menu.sitdownMenu',estNameStr=estNameStr,location=location)))
 

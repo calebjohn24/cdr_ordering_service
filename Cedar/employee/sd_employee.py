@@ -73,7 +73,7 @@ def EmployeePanel(estNameStr,location):
     loginRef = db.reference('/restaurants/' + estNameStr + '/' + location + "/employee")
     loginData = dict(loginRef.get())
     try:
-        if(((token == loginData["token"]) and (time.time() - loginData["time"] <= 3600))):
+        if(((token == loginData["token"]))):
             pass
         else:
             return(redirect(url_for("sd_employee.EmployeeLogin",estNameStr=estNameStr,location=location)))
