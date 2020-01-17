@@ -7,7 +7,7 @@
  zoom: 2.5;
 }
    </style>
-  <link rel="manifest" href="/manifest.json">
+  <!-- <link rel="manifest" href="manifest.json"> -->
   <link rel="apple-touch-icon" sizes="60x60" href="../../../static/img/CedarRoboticsLogo.jpg">
  <link rel="apple-touch-icon" sizes="57x57" href="../../../static/img/CedarRoboticsLogo.jpg">
  <link rel="apple-touch-icon" sizes="72x72" href="../../../static/img/CedarRoboticsLogo.jpg">
@@ -29,12 +29,8 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="description" content="">
 <meta name="author" content="Caleb John">
-<script src="https://kit.fontawesome.com/80bbe0004b.js" crossorigin="anonymous"></script>
 <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 <title>Menu</title>
 </head>
@@ -42,7 +38,7 @@
 <div class="container-fluid">
   <br>
   <div class="row">
-    <div class="col-11">
+    <div class="col-10">
       <h1>{{restName}} {{locName}} </h1>
     </div>
 
@@ -95,7 +91,7 @@
       Add Item
       </button>
       </div>
-      <img class="card-img-top" src="{{item.img}}">
+      <img class="card-img-top lozad" data-src="{{item.img}}">
 
 
 
@@ -185,7 +181,7 @@
 
 
       </div>
-      <img class="card-img-top" src="{{item.img}}">
+      <img class="card-img-top lozad" src="{{item.img}}">
 
 
 
@@ -216,7 +212,7 @@
     <h3>{{cart_items.dispStr}}</h3>
 
   </div>
-  <img class="card-img-top" src="{{cart_items.img}}" >
+  <img class="card-img-top lozad" src="{{cart_items.img}}" >
   <div class="card-body">
     <p class="card-text">
 
@@ -257,5 +253,11 @@
 </div>
 </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/lozad/dist/lozad.min.js"></script>
+<script src="https://kit.fontawesome.com/80bbe0004b.js" crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 </body>
 </html>

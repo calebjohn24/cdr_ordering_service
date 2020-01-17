@@ -88,6 +88,7 @@ if __name__ == '__main__':
         sess.init_app(app)
         app.permanent_session_lifetime = datetime.timedelta(minutes=240)
         app.debug = True
+        app.jinja_env.cache = {}
         app.run(host="0.0.0.0", port=5000)
     except KeyboardInterrupt:
         sys.exit()

@@ -85,9 +85,8 @@ def startKioskQsr(estNameStr,location):
         "timestamp":time.time(),
         "subtotal":0.0
         })
-    #print(newOrd.key)
+
     session['orderToken'] = newOrd.key
-    ##print(menu)
     return(redirect(url_for('qsr_menu.qsrMenu',estNameStr=estNameStr,location=location)))
 
 
