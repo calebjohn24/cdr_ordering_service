@@ -14,6 +14,7 @@ from flask import Blueprint, render_template, abort
 from google.cloud import storage
 import pytz
 from flask import Flask, flash, request, session, jsonify
+from flask_compress import Compress
 from werkzeug.utils import secure_filename
 from flask import redirect, url_for
 from flask import render_template, send_file
@@ -69,15 +70,17 @@ app.register_blueprint(qsr_employee.qsr_employee_blueprint)
 app.register_blueprint(sd_employee.sd_employee_blueprint)
 app.register_blueprint(register.register_kiosk_blueprint)
 app.register_blueprint(billing.billing_blueprint)
-sslify = SSLify(app)
-scKey = uuid.uuid4()
+scKey = str(uuid.uuid4())
 app.secret_key = scKey
+sslify = SSLify(app)
+Compress(app)
 
 
+'''
 @app.errorhandler(404)
 def page_not_found(e):
     return redirect(url_for('find_page.findRestaurant'))
-
+'''
 
 if __name__ == '__main__':
     try:
