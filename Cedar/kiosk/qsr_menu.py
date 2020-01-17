@@ -65,10 +65,14 @@ def startKioskQsr(estNameStr,location):
     session['table'] = table
     session['name'] = name
     session['phone'] = phone
+    session['startTime'] = time.time()
     path = '/restaurants/' + estNameStr + '/' + location + "/orders/"
     orderToken = str(uuid.uuid4())
     ref = db.reference(path)
+    menu = findMenu(estNameStr,location)
+    session["menu"] = menu
     newOrd = ref.push({
+        "menu":menu,
         "togo":togo,
         "QSR":0,
         "cpn":1,
@@ -83,9 +87,6 @@ def startKioskQsr(estNameStr,location):
         })
     #print(newOrd.key)
     session['orderToken'] = newOrd.key
-    menu = findMenu(estNameStr,location)
-    # menu = "lunch"
-    session["menu"] = menu
     ##print(menu)
     return(redirect(url_for('qsr_menu.qsrMenu',estNameStr=estNameStr,location=location)))
 
