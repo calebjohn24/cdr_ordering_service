@@ -205,6 +205,7 @@ def payStaffConfirm(estNameStr, location):
             message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
             sendEmail(sender, order['email'], message)
         orderRef.delete()
+        updateTransactionFees(billingInfo['totalFee'],estNameStr,location)
         kioskCode = session.get('kioskCode',None)
         testCode = db.reference('/billing/' + estNameStr + '/kiosks/' + kioskCode).get()
         if(testCode['active'] == 1):
@@ -238,9 +239,6 @@ def payStaffQSR(estNameStr, location):
                      'verify': 1}
         }
     })
-
-
-    updateTransactionFees(0.5,estNameStr,location)
     tzGl = {}
     locationsPaths = {}
     getSquare(estNameStr, tzGl, locationsPaths)
@@ -306,7 +304,7 @@ def payStaffQSR(estNameStr, location):
             location.capitalize()
         message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
         sendEmail(sender, order['email'], message)
-
+    updateTransactionFees(billingInfo['totalFee'],estNameStr,location)
     kioskCode = session.get('kioskCode',None)
     testCode = db.reference('/billing/' + estNameStr + '/kiosks/' + kioskCode).get()
     if(testCode['active'] == 0):
@@ -466,8 +464,8 @@ def onlineVerify(estNameStr, location, orderToken):
                         "duartion":duration,
                         "name":order['name'],
                         "phone":order['phone'],
-                        "payment":"square-cc",
-                        "type":"QSR",
+                        "payment":"square-online-cc",
+                        "type":"Online",
                         "email":order['email'],
                         "subtotal":0,
                         "fees-customer":billingInfo['custFee'],
@@ -509,6 +507,7 @@ def onlineVerify(estNameStr, location, orderToken):
                     location.capitalize()
                 message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
                 sendEmail(sender, order['email'], mesg)
+        updateTransactionFees(billingInfo['totalFee'],estNameStr,location)
         return(render_template("Customer/QSR/Payment-Success.html"))
     else:
         return(redirect(url_for('online_menu.startOnline', estNameStr=estNameStr, location=location)))
@@ -708,9 +707,6 @@ def verifyOrder(estNameStr, location, kioskCode):
             }
         updateTransactionFees(billingInfo['totalFee'],estNameStr,location)
         return jsonify(packet)
-
-
-
 
 
 
