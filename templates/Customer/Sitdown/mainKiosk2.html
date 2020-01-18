@@ -7,7 +7,7 @@
       zoom: 2.5;
     }
   </style>
-  <link rel="manifest" href="/manifest.json">
+<link rel="manifest" href="../../../static/manifest.json">
   <link rel="apple-touch-icon" sizes="60x60" href="../../../static/img/CedarRoboticsLogo.jpg">
   <link rel="apple-touch-icon" sizes="57x57" href="../../../static/img/CedarRoboticsLogo.jpg">
   <link rel="apple-touch-icon" sizes="72x72" href="../../../static/img/CedarRoboticsLogo.jpg">
@@ -29,8 +29,10 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="description" content="">
   <meta name="author" content="Caleb John">
-  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+  <script src="https://kit.fontawesome.com/80bbe0004b.js" crossorigin="anonymous"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
   <title>Menu</title>
   <script>
@@ -61,14 +63,13 @@
   </script>
 
   <script>
-  /*
     var clickVal = '{{click}}';
     if (clickVal != "None") {
       jQuery(function() {
         jQuery('{{click}}').click();
       });
     }
-    */
+
     var disp = "{{msg}}";
     if (disp != "None") {
       jQuery(function() {
@@ -89,8 +90,8 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
           <div class="modal-content">
             <div class="modal-body bg-primary">
-              <p class="text-white">{% autoescape false %}{{msg| replace('\n', '<br>')}}{% endautoescape %}</p><br>
-              <p class="text-primary"><button type="button" class="btn btn-light" data-dismiss="modal">Ok</button></p>
+              <p class="text-white">{{msg}}</p><br>
+              <p class="text-primary"><button type="button" class="btn btn-lg btn-light" data-dismiss="modal">Ok</button></p>
             </div>
           </div>
         </div>
@@ -104,16 +105,15 @@
 
 
     <div class="row">
-      <div class="col-10">
+      <div class="col-lg-10">
         <h1>{{restName}} {{locName}} </h1>
       </div>
 
-      <div class="col-1">
-        <h6><img width="75" src="../../../static/img/CedarRoboticsLogo.jpg"></h6>
+      <div class="col-lg-1">
+        <h6><img loading="lazy" loading="lazy" width="75" src="../../../static/img/CedarRoboticsLogo.jpg"></h6>
 
       </div>
     </div>
-
     <hr>
     <br>
     <button type="button" class="btn btn-primary" id="modal-message" data-toggle="modal" data-target="#Message" hidden>
@@ -172,7 +172,7 @@
                           Add Item
                         </button>
                       </div>
-                      <img class="card-img-top lozad" data-src="{{item.img}}">
+                      <img loading="lazy" loading="lazy" class="card-img-top" src="{{item.img}}">
 
 
 
@@ -199,7 +199,7 @@
                               <div class="modal-content">
                                 <div class="modal-header">
                                   <h5 class="modal-title" id="exampleModalLongTitle">{{key_item}}</h5>
-                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                  <button type="button btn-lg" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                   </button>
                                 </div>
@@ -215,7 +215,7 @@
                                     <hr>
                                     {% for key_opt, opt in mod.info.items() %}
                                     {% if mod.get('infoimg') %}
-                                    <h4>{{key_opt|capitalize}} <img {{mod.get('infoimg')[key_opt]}}> <input type="radio" name="{{m}}~0" value="{{key_opt}}~{{opt}}~{{item.img}}" required></h4>
+                                    <h4>{{key_opt|capitalize}} <img loading="lazy" {{mod.get('infoimg')[key_opt]}}> <input type="radio" name="{{m}}~0" value="{{key_opt}}~{{opt}}~{{item.img}}" required></h4>
                                     <h6>{{"$%.2f"|format(opt)}}</h6>
                                     <br>
                                     {% else %}
@@ -232,7 +232,7 @@
                                     <hr>
                                     {% for key_opt, opt in mod.info.items() %}
                                     {% if mod.get('infoimg') %}
-                                    <h4>{{key_opt|capitalize}} <img {{mod.get('infoimg')[key_opt]}}> <input type="radio" name="{{m}}~1" value="{{key_opt}}~{{opt}}~{{item.img}}"></h4>
+                                    <h4>{{key_opt|capitalize}} <img loading="lazy" {{mod.get('infoimg')[key_opt]}}> <input type="radio" name="{{m}}~1" value="{{key_opt}}~{{opt}}~{{item.img}}"></h4>
                                     <h6>{{"$%.2f"|format(opt)}}</h6>
                                     <br>
                                     {% else %}
@@ -254,7 +254,7 @@
 
                                   </div>
                                   <div class="modal-footer">
-                                    <input type="submit" value="Add To Cart" class="btn btn-success">
+                                    <input type="submit" value="Add To Cart" class="btn btn-success btn-lg">
                                   </div>
                                 </form>
 
@@ -266,7 +266,7 @@
 
 
                       </div>
-                      <img class="card-img-top lozad" data-src="{{item.img}}">
+                      <img loading="lazy" class="card-img-top" src="{{item.img}}">
 
 
 
@@ -299,7 +299,7 @@
                   <h3>{{cart_items.dispStr}}</h3>
 
                 </div>
-                <img class="card-img-top lozad" src="{{cart_items.img}}">
+                <img loading="lazy" class="card-img-top" src="{{cart_items.img}}">
                 <div class="card-body">
                   <p class="card-text">
 
@@ -359,7 +359,7 @@
                   <div class="modal-content">
                     <div class="modal-header">
                       <h5 class="modal-title" id="exampleModalLabel">Refill Drinks</h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <button type="button btn-lg" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                       </button>
                     </div>
@@ -392,7 +392,7 @@
                   <div class="modal-content">
                     <div class="modal-header">
                       <h5 class="modal-title" id="exampleModalLabel">Request Napkins</h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <button type="button btn-lg" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                       </button>
                     </div>
@@ -424,7 +424,7 @@
                   <div class="modal-content">
                     <div class="modal-header">
                       <h5 class="modal-title" id="exampleModalLabel">Request Cutlery</h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                      <button type="button btn-lg" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                       </button>
                     </div>
@@ -615,8 +615,13 @@
 
       <div class="tab-pane fade" id="pills-pay" role="tabpanel" aria-labelledby="pills-pay-tab">
         <div class="text-center">
+          <br><br>
           <form class="form-inline" method="GET" action="collect-feedback">
+            {% if boolCheck == 0 %}
             <button type="submit" class="btn btn-lg btn-primary mb-2">Pay Now</button>
+            {% else %}
+            <button type="submit" class="btn btn-lg btn-primary mb-2" disabled>Pay Now</button>
+            {% endif %}
           </form>
         </div>
       </div>
@@ -628,11 +633,9 @@
 
 
 
-  <script src="https://cdn.jsdelivr.net/npm/lozad/dist/lozad.min.js"></script>
-  <script src="https://kit.fontawesome.com/80bbe0004b.js" crossorigin="anonymous"></script>
-  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
 
 
 </body>

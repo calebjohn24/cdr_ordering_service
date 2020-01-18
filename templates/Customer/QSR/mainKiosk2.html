@@ -8,6 +8,7 @@
 }
    </style>
   <!-- <link rel="manifest" href="manifest.json"> -->
+  <link rel="manifest" href="../../../static/manifest.json">
   <link rel="apple-touch-icon" sizes="60x60" href="../../../static/img/CedarRoboticsLogo.jpg">
  <link rel="apple-touch-icon" sizes="57x57" href="../../../static/img/CedarRoboticsLogo.jpg">
  <link rel="apple-touch-icon" sizes="72x72" href="../../../static/img/CedarRoboticsLogo.jpg">
@@ -91,7 +92,7 @@
       Add Item
       </button>
       </div>
-      <img class="card-img-top lozad" data-src="{{item.img}}">
+      <img class="card-img-top" loading="lazy"  data-src="{{item.img}}">
 
 
 
@@ -131,7 +132,7 @@
         <h3>{{key_mod|capitalize}}</h3><hr>
         {% for key_opt, opt in mod.info.items() %}
         {% if mod.get('infoimg') %}
-        <h4>{{key_opt|capitalize}} <img {{mod.get('infoimg')[key_opt]}} > <input type="radio" name="{{m}}~0" value="{{key_opt}}~{{opt}}~{{item.img}}" required></h4>
+        <h4>{{key_opt|capitalize}} <img  loading="lazy"  {{mod.get('infoimg')[key_opt]}} > <input type="radio" name="{{m}}~0" value="{{key_opt}}~{{opt}}~{{item.img}}" required></h4>
         <h6>{{"$%.2f"|format(opt)}}</h6>
         <br>
         {% else %}
@@ -147,7 +148,7 @@
         <h3>{{key_mod|capitalize}}</h3><hr>
         {% for key_opt, opt in mod.info.items() %}
         {% if mod.get('infoimg') %}
-        <h4>{{key_opt|capitalize}} <img {{mod.get('infoimg')[key_opt]}} > <input type="radio" name="{{m}}~1" value="{{key_opt}}~{{opt}}~{{item.img}}" ></h4>
+        <h4>{{key_opt|capitalize}} <img loading="lazy" {{mod.get('infoimg')[key_opt]}} > <input type="radio" name="{{m}}~1" value="{{key_opt}}~{{opt}}~{{item.img}}" ></h4>
         <h6>{{"$%.2f"|format(opt)}}</h6>
         <br>
         {% else %}
@@ -181,7 +182,7 @@
 
 
       </div>
-      <img class="card-img-top lozad" src="{{item.img}}">
+      <img class="card-img-top" loading="lazy" src="{{item.img}}">
 
 
 
@@ -212,7 +213,7 @@
     <h3>{{cart_items.dispStr}}</h3>
 
   </div>
-  <img class="card-img-top lozad" src="{{cart_items.img}}" >
+  <img class="card-img-top" loading="lazy"  src="{{cart_items.img}}" >
   <div class="card-body">
     <p class="card-text">
 

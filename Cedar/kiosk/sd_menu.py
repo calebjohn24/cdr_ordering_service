@@ -104,10 +104,17 @@ def sitdownMenu(estNameStr,location):
         cart = dict(cartRef.get())
     except Exception as e:
         cart = {}
+    try:
+        tick = db.reference('/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken + "/ticket").get()
+        boolCheck = 0
+        if(tick == None):
+            boolCheck = 1
+    except Exception as e:
+        boolCheck = 1
     # print(cart)
     session["msg"] = "None"
     session["click"] = "None"
-    return(render_template("Customer/Sitdown/mainKiosk2.html", menu=menuInfo, restName=estNameStr.capitalize(), cart=cart, locName=location.capitalize(), msg=msg, click=click))
+    return(render_template("Customer/Sitdown/mainKiosk2.html", menu=menuInfo, restName=estNameStr.capitalize(), cart=cart, locName=location.capitalize(), msg=msg, click=click, boolCheck=boolCheck))
 
 
 @sd_menu_blueprint.route('/<estNameStr>/<location>/sitdown-additms~<cat>~<itm>', methods=["POST"])

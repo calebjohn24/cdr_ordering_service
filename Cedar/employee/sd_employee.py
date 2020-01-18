@@ -87,9 +87,9 @@ def EmployeePanel(estNameStr,location):
         tokens = list(ordsGet)
         for tt in tokens:
             if(int(ordsGet[tt]["QSR"]) == 0):
-                print(ordsGet[tt])
+                # print(ordsGet[tt])
                 del ordsGet[tt]
-        print(ordsGet)
+        # print(ordsGet)
     except Exception as e:
         print(e)
         ordsGet = {}
@@ -195,7 +195,7 @@ def EmployeeWarn(estNameStr,location):
         tickRef.push(reqData)
         currTotal = float(dict(db.reference(pathTotal).get())["subtotal"])
         tickTotal = db.reference(pathTotal).update({"subtotal":float(currTotal+addTotal)})
-    AlertSend = db.reference(pathUser).update({"alert":str("Warning: "+alert)})
+    AlertSend = db.reference(pathUser).update({"alert":str(alert)})
     AlertTime = db.reference(pathUser).update({"alertTime":time.time()})
     reqRef.delete()
     return(redirect(url_for("sd_employee.EmployeePanel",estNameStr=estNameStr,location=location)))
@@ -212,7 +212,7 @@ def EmployeeReject(estNameStr,location):
     reqData = dict(reqRef.get())
     orderToken = reqData["info"]["token"]
     pathUser = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
-    AlertSend = db.reference(pathUser).update({"alert":str("Request Issue: "+alert)})
+    AlertSend = db.reference(pathUser).update({"alert":str("Staff Message: Items Not Added To Bill- "+alert)})
     AlertTime = db.reference(pathUser).update({"alertTime":time.time()})
     reqRef.delete()
     return(redirect(url_for("sd_employee.EmployeePanel",estNameStr=estNameStr,location=location)))
