@@ -26,8 +26,7 @@ from Cedar import collect_menu
 from Cedar.admin.admin_panel import checkLocation, sendEmail, getSquare
 from Cedar.admin.billing import updateTransactionFees
 
-payments_blueprint = Blueprint(
-    'payments', __name__, template_folder='templates')
+payments_blueprint = Blueprint('payments', __name__, template_folder='templates')
 
 infoFile = open("info.json")
 info = json.load(infoFile)
@@ -193,14 +192,14 @@ def payStaffConfirm(estNameStr, location):
                 write_str += dispStr
                 logOrd['order'].append(cart[ck][ckk]["dispStr"])
                 logOrd['orderDict'].append(cart[ck][ckk])
-        write_str += "Order Fee " + "${:0,.2f}".format(billingInfo['custFee'])
+        write_str += "\n \n Order Fee " + "${:0,.2f}".format(billingInfo['custFee'])
         logRef = db.reference('/billing/' + estNameStr + '/fees/all/log')
         logRef.push(logOrd)
         logRef = db.reference('/billing/' + estNameStr + '/fees/locations/' + location + '/log')
         logRef.push(logOrd)
         if(order['email'] != "no-email"):
-            write_str += "\n \n"
-            write_str += subtotalStr + "\n" + tax + "\n" + total + "\n \n \n"
+            write_str += "\n"
+            write_str += "Subtotal "+subtotalStr + "\n" + "Tax " +tax + "\n" + "Total " +total + "\n \n \n"
             write_str += 'Thank You For Dining with us ' + \
                 str(order['name']).capitalize() + " !"
             SUBJECT = "Thank You For Dining at " + estNameStr.capitalize() + " " + location.capitalize()
@@ -301,7 +300,8 @@ def payStaffQSR(estNameStr, location):
     logRef.push(logOrd)
     if(order['email'] != "no-email"):
         write_str += "\n \n"
-        write_str += subtotalStr + "\n" + tax + "\n" + total + "\n \n \n"
+        write_str += "Order Fee " + "${:0,.2f}".format(billingInfo['custFee']) + "\n"
+        write_str += "Subtotal " +subtotalStr + "\n" + "Tax "+ tax + "\n" + "Total "+total + "\n \n \n"
         write_str += 'Thank You For Your Order ' + \
             str(order['name']).capitalize() + " !"
         SUBJECT = "Your Order From " + estNameStr.capitalize() + " " + \
@@ -506,6 +506,7 @@ def onlineVerify(estNameStr, location, orderToken):
             logRef.push(logOrd)
             if(order['email'] != "no-email"):
                 write_str += "\n \n"
+                write_str += "Order Fee " + "${:0,.2f}".format(billingInfo['custFee']) + "\n"
                 write_str += subtotalStr + "\n" + tax + "\n" + total + "\n \n \n"
                 write_str += 'Thank You For Your Order ' + \
                     str(order['name']).capitalize() + " !"
@@ -613,7 +614,8 @@ def verifyOrder(estNameStr, location, kioskCode):
         logRef.push(logOrd)
         if(order['email'] != "no-email"):
             write_str += "\n \n"
-            write_str += subtotalStr + "\n" + tax + "\n" + total + "\n \n \n"
+            write_str += "Order Fee " + "${:0,.2f}".format(billingInfo['custFee']) + "\n"
+            write_str += "Subtotal "+subtotalStr + "\n" + "Tax "+tax + "\n" + "Total "+total + "\n \n \n"
             write_str += 'Thank You For Your Order ' + \
                 str(order['name']).capitalize() + " !"
             SUBJECT = "Your Order From " + estNameStr.capitalize() + " " + \
@@ -689,13 +691,14 @@ def verifyOrder(estNameStr, location, kioskCode):
                 write_str += dispStr
                 logOrd['order'].append(cart[ck][ckk]["dispStr"])
                 logOrd['orderDict'].append(cart[ck][ckk])
-        write_str += "Order Fee " + "${:0,.2f}".format(billingInfo['custFee'])
         logRef = db.reference('/billing/' + estNameStr + '/fees/all/log')
         logRef.push(logOrd)
         logRef = db.reference('/billing/' + estNameStr + '/fees/locations/' + location + '/log')
         logRef.push(logOrd)
         if(order['email'] != "no-email"):
             write_str += "\n \n"
+            write_str += "Order Fee " + "${:0,.2f}".format(billingInfo['custFee'])
+            write_str += "\n"
             write_str += subtotalStr + "\n" + tax + "\n" + total + "\n \n \n"
             write_str += 'Thank You For Dining with us ' + \
                 str(order['name']).capitalize() + " !"

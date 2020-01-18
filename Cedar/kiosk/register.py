@@ -53,12 +53,12 @@ def deactivateKiosk(estNameStr, location, kioskCode):
 def GenReaderCode(estNameStr,locationX,type):
     locationX = str(locationX).lower()
     rsp = request.get_json()
-    print(rsp)
+    print(rsp, locationX)
     code = rsp['code']
-    kioskRef = db.reference('/billing/' + estNameStr + '/kiosks/' + code)
+    kioskRef = db.reference('/billing/' + estNameStr.lower() + '/kiosks/' + code)
     try:
         check = kioskRef.get()
-        print(check)
+        print(check, "check")
         if(check == None):
             packet = {
                 "success":"no",
