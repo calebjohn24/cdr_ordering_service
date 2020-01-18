@@ -194,7 +194,9 @@ def payStaffConfirm(estNameStr, location):
                 logOrd['order'].append(cart[ck][ckk]["dispStr"])
                 logOrd['orderDict'].append(cart[ck][ckk])
         write_str += "Order Fee " + "${:0,.2f}".format(billingInfo['custFee'])
-        logRef = db.reference('/billing/' + estNameStr + '/log')
+        logRef = db.reference('/billing/' + estNameStr + '/fees/all/log')
+        logRef.push(logOrd)
+        logRef = db.reference('/billing/' + estNameStr + '/fees/locations/' + location + '/log')
         logRef.push(logOrd)
         if(order['email'] != "no-email"):
             write_str += "\n \n"
@@ -293,7 +295,9 @@ def payStaffQSR(estNameStr, location):
     tax += " (" + str(float(taxRate * 100)) + "%)"
     total = "Total ${:0,.2f}".format(subtotal * (1 + taxRate))
     logOrd['info'].update({"total":float(subtotal * (1 + taxRate))})
-    logRef = db.reference('/billing/' + estNameStr + '/log')
+    logRef = db.reference('/billing/' + estNameStr + '/fees/all/log')
+    logRef.push(logOrd)
+    logRef = db.reference('/billing/' + estNameStr + '/fees/locations/' + location + '/log')
     logRef.push(logOrd)
     if(order['email'] != "no-email"):
         write_str += "\n \n"
@@ -496,7 +500,9 @@ def onlineVerify(estNameStr, location, orderToken):
             tax += " (" + str(float(taxRate * 100)) + "%)"
             total = "Total ${:0,.2f}".format(subtotal * (1 + taxRate))
             logOrd['info'].update({"total":float(subtotal * (1 + taxRate))})
-            logRef = db.reference('/billing/' + estNameStr + '/log')
+            logRef = db.reference('/billing/' + estNameStr + '/fees/all/log')
+            logRef.push(logOrd)
+            logRef = db.reference('/billing/' + estNameStr + '/fees/locations/' + location + '/log')
             logRef.push(logOrd)
             if(order['email'] != "no-email"):
                 write_str += "\n \n"
@@ -601,7 +607,9 @@ def verifyOrder(estNameStr, location, kioskCode):
         logOrd['info'].update({"taxes":float(subtotal * taxRate)})
         total = "${:0,.2f}".format(subtotal * (1 + taxRate))
         logOrd['info'].update({"total":float(subtotal * (1 + taxRate))})
-        logRef = db.reference('/billing/' + estNameStr + '/log')
+        logRef = db.reference('/billing/' + estNameStr + '/fees/all/log')
+        logRef.push(logOrd)
+        logRef = db.reference('/billing/' + estNameStr + '/fees/locations/' + location + '/log')
         logRef.push(logOrd)
         if(order['email'] != "no-email"):
             write_str += "\n \n"
@@ -682,7 +690,9 @@ def verifyOrder(estNameStr, location, kioskCode):
                 logOrd['order'].append(cart[ck][ckk]["dispStr"])
                 logOrd['orderDict'].append(cart[ck][ckk])
         write_str += "Order Fee " + "${:0,.2f}".format(billingInfo['custFee'])
-        logRef = db.reference('/billing/' + estNameStr + '/log')
+        logRef = db.reference('/billing/' + estNameStr + '/fees/all/log')
+        logRef.push(logOrd)
+        logRef = db.reference('/billing/' + estNameStr + '/fees/locations/' + location + '/log')
         logRef.push(logOrd)
         if(order['email'] != "no-email"):
             write_str += "\n \n"
