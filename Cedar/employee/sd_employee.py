@@ -128,6 +128,7 @@ def activateItem(estNameStr,location,cat,item,menu):
     db.reference(pathDel).delete()
     return(redirect(url_for("sd_employee.EmployeePanel",estNameStr=estNameStr,location=location)))
 
+
 @sd_employee_blueprint.route('/<estNameStr>/<location>/deactivate-item~<cat>~<item>~<menu>')
 def deactivateItem(estNameStr,location,cat,item,menu):
     if(checkLocation(estNameStr,location) == 1):
@@ -137,6 +138,7 @@ def deactivateItem(estNameStr,location,cat,item,menu):
     db.reference(pathMenu).update({"tmp":descrip})
     db.reference(pathMenu).update({"descrip":"INACTIVE"})
     return(redirect(url_for("sd_employee.EmployeePanel",estNameStr=estNameStr,location=location)))
+
 
 @sd_employee_blueprint.route('/<estNameStr>/<location>/view-success', methods=["POST"])
 def EmployeeSuccess(estNameStr,location):
@@ -212,7 +214,7 @@ def EmployeeReject(estNameStr,location):
     reqData = dict(reqRef.get())
     orderToken = reqData["info"]["token"]
     pathUser = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
-    AlertSend = db.reference(pathUser).update({"alert":str("Staff Message: Items Not Added To Bill- "+alert)})
+    AlertSend = db.reference(pathUser).update({"alert":str("Staff Message: Items Not Added To Bill: "+alert)})
     AlertTime = db.reference(pathUser).update({"alertTime":time.time()})
     reqRef.delete()
     return(redirect(url_for("sd_employee.EmployeePanel",estNameStr=estNameStr,location=location)))
