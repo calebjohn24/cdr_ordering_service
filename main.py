@@ -76,11 +76,10 @@ sslify = SSLify(app)
 Compress(app)
 
 
-'''
 @app.errorhandler(404)
 def page_not_found(e):
     return redirect(url_for('find_page.findRestaurant'))
-'''
+
 
 if __name__ == '__main__':
     try:
@@ -89,7 +88,8 @@ if __name__ == '__main__':
         app.config['SESSION_TYPE'] = 'filesystem'
         sess = Session()
         sess.init_app(app)
-        app.permanent_session_lifetime = datetime.timedelta(minutes=240)
+        sess.permanent = True
+        # app.permanent_session_lifetime = datetime.timedelta(minutes=240)
         app.debug = True
         app.jinja_env.cache = {}
         app.run(host="0.0.0.0", port=5000)
