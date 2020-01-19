@@ -11,7 +11,7 @@
   <link rel="apple-touch-icon" sizes="144x144" href="../../../static/img/CedarRoboticsLogo.jpg">
   <link rel="apple-touch-icon" sizes="152x152" href="../../../static/img/CedarRoboticsLogo.jpg">
   <link rel="apple-touch-icon" sizes="180x180" href="../../../static/img/CedarRoboticsLogo.jpg">
-  <link rel="icon" type="image/png" sizes="192x192"  href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="icon" type="image/png" sizes="192x192" href="../../../static/img/CedarRoboticsLogo.jpg">
   <link rel="icon" type="image/png" sizes="32x32" href="../../../static/img/CedarRoboticsLogo.jpg">
   <link rel="icon" type="image/png" sizes="96x96" href="../../../static/img/CedarRoboticsLogo.jpg">
   <link rel="icon" type="image/png" sizes="16x16" href="../../../static/img/CedarRoboticsLogo.jpg">
@@ -24,358 +24,375 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="Caleb John">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-      <link href="../../../static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-      <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+  <link href="../../../static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   <title>Admin Panel</title>
 
 </head>
 
 <body>
-<br>
-
-<div class="container">
-  <h2>{{restName}} {{locName}} Admin Panel</h2>
   <br>
-  <!-- Nav tabs -->
-  <ul class="nav nav-tabs" role="tablist">
-    <li class="nav-item">
-      <a class="nav-link active" data-toggle="tab" href="#home">Menus</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" data-toggle="tab" href="#menu1">Schedule</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" data-toggle="tab" href="#menu2">Promos</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" data-toggle="tab" href="#feedback">Customer Feedback</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" data-toggle="tab" href="#emp">Account Info</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" data-toggle="tab" href="#kiosk">Kiosks</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" data-toggle="tab" href="#billing">Billing</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" data-toggle="tab" href="#log">Logs</a>
-    </li>
-  </ul>
 
-  <!-- Tab panes -->
+  <div class="container">
+    <h2>{{restName}} {{locName}} Admin Panel</h2>
+    <br>
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" data-toggle="tab" href="#home">Menus</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#menu1">Schedule</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#menu2">Promos</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#feedback">Customer Feedback</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#emp">Account Info</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#kiosk">Kiosks</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#billing">Billing</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#log">Logs</a>
+      </li>
+    </ul>
+
+    <!-- Tab panes -->
     <div class="tab-content">
 
-    <div id="home" class="container tab-pane active"><br>
-    <div class="container">
-      <div class="list-group">
-    <a href="create-menu" class="list-group-item list-group-item-action">Create New Menu</a>
-    <a href="view-menu" class="list-group-item list-group-item-action">Edit Existing Menu</a>
-    <a href="act-menu" class="list-group-item list-group-item-action">Deactivate/Activate Menu</a>
-  </div>
+      <div id="home" class="container tab-pane active"><br>
+        <div class="container">
+          <div class="list-group">
+            <a href="create-menu" class="list-group-item list-group-item-action">Create New Menu</a>
+            <a href="view-menu" class="list-group-item list-group-item-action">Edit Existing Menu</a>
+            <a href="act-menu" class="list-group-item list-group-item-action">Deactivate/Activate Menu</a>
+          </div>
 
 
-    </div>
-    </div>
+        </div>
+      </div>
 
 
       <div id="menu1" class="container tab-pane fade">
-      <br>
-      <div class="container">
-      <div class="list-group">
-      <a href="schedule-MON" class="list-group-item list-group-item-action">Monday</a>
-      <a href="schedule-TUE" class="list-group-item list-group-item-action">Tuesday</a>
-      <a href="schedule-WED" class="list-group-item list-group-item-action">Wednesday</a>
-      <a href="schedule-THURS" class="list-group-item list-group-item-action">Thursday</a>
-      <a href="schedule-FRI" class="list-group-item list-group-item-action">Friday</a>
-      <a href="schedule-SAT" class="list-group-item list-group-item-action">Saturday</a>
-      <a href="schedule-SUN" class="list-group-item list-group-item-action">Sunday</a>
-      </div>
-      </div>
-      </div>
-
-
-
-    <div id="menu2" class="container tab-pane fade"><br>
-      <div class="container">
-      <div class="list-group">
         <br>
-        {% for key_disc, disc in discounts.items() %}
-      {% for key_disc_disc, disc_disc in disc.items() %}
-      <h4>{{key_disc_disc}}  <a href="remCpn~{{key_disc}}~{{key_disc_disc}}" class="btn-danger btn-sm"> <i class="fas fa-times-circle"></i></a></h4>
-      <br>
-      <h5>Menu: {{key_disc}}</h5>
-      <br>
-      <h5>Item: {{disc_disc.cat}}- {{disc_disc.mods[1]|capitalize}} {{disc_disc.itm|capitalize}}</h5>
-      <br>
-      <h5>Type:{{disc_disc.type}} <br> Amount:{{disc_disc.amt}}</h5>
-      <br><h5>Limit: {{disc_disc.lim}} <br> Minimum: {{disc_disc.min}}</h5>
-      <h1><hr></h1>
-      {%endfor%}
-      {%endfor%}
+        <div class="container">
+          <div class="list-group">
+            <a href="schedule-MON" class="list-group-item list-group-item-action">Monday</a>
+            <a href="schedule-TUE" class="list-group-item list-group-item-action">Tuesday</a>
+            <a href="schedule-WED" class="list-group-item list-group-item-action">Wednesday</a>
+            <a href="schedule-THURS" class="list-group-item list-group-item-action">Thursday</a>
+            <a href="schedule-FRI" class="list-group-item list-group-item-action">Friday</a>
+            <a href="schedule-SAT" class="list-group-item list-group-item-action">Saturday</a>
+            <a href="schedule-SUN" class="list-group-item list-group-item-action">Sunday</a>
+          </div>
+        </div>
       </div>
-      </div>
-    </div>
 
-    <div id="emp" class="container tab-pane fade"><br>
-      <div class="container">
+
+
+      <div id="menu2" class="container tab-pane fade"><br>
+        <div class="container">
+          <div class="list-group">
+            <br>
+            {% for key_disc, disc in discounts.items() %}
+            {% for key_disc_disc, disc_disc in disc.items() %}
+            <h4>{{key_disc_disc}} <a href="remCpn~{{key_disc}}~{{key_disc_disc}}" class="btn-danger btn-sm"> <i class="fas fa-times-circle"></i></a></h4>
+            <br>
+            <h5>Menu: {{key_disc}}</h5>
+            <br>
+            <h5>Item: {{disc_disc.cat}}- {{disc_disc.mods[1]|capitalize}} {{disc_disc.itm|capitalize}}</h5>
+            <br>
+            <h5>Type:{{disc_disc.type}} <br> Amount:{{disc_disc.amt}}</h5>
+            <br>
+            <h5>Limit: {{disc_disc.lim}} <br> Minimum: {{disc_disc.min}}</h5>
+            <h1>
+              <hr>
+            </h1>
+            {%endfor%}
+            {%endfor%}
+          </div>
+        </div>
+      </div>
+
+      <div id="emp" class="container tab-pane fade"><br>
+        <div class="container">
+          <br>
+          <h4>Change Employee Code <a data-toggle="modal" data-target="#empCode_infoModal" class="button btn-lg btn-light"><i class="fas fa-edit"></i></a></h4>
+          <!-- Modal -->
+          <div class="modal fade" id="empCode_infoModal" role="dialog">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Enter Admin Password <button type="button" class="close" data-dismiss="modal">&times;</button></h4>
+                </div>
+                <form method="POST" action="editEmployee">
+                  <div class="modal-body">
+                    <input type="password" class="form-control" name="pw" required>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Next</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <br>
+          <h4>Add/Remove Admin Acoount <a data-toggle="modal" data-target="#admin_infoModal" class="button btn-lg btn-light"><i class="fas fa-edit"></i></a></h4>
+          <div class="modal fade" id="admin_infoModal" role="dialog">
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h4 class="modal-title">Enter Admin Password <button type="button" class="close" data-dismiss="modal">&times;</button></h4>
+                </div>
+                <form method="POST" action="addAdmin">
+                  <div class="modal-body">
+                    <input type="password" class="form-control" name="pw" required>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Next</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+          <br>
+          <form action="editLogo" id="f" method="POST" enctype="multipart/form-data">
+            <br>
+            <img src="{{logo}}" alt="Please Upload a Logo" width="150">
+            <br>
+            <label for="avatar">
+              <h4>Change Logo<br></h4>
+            </label><br>
+            <input type="file" name="logo" accept="image/png, image/jpeg" required>
+            <br>
+            <br>
+            <input form="f" class="btn btn-lg btn-success" type="submit" value="Change Logo">
+          </form>
+
+
+
+        </div>
+      </div>
+
+      <div id="feedback" class="container tab-pane fade">
         <br>
-      <h4>Change Employee Code <a data-toggle="modal" data-target="#empCode_infoModal" class="button btn-lg btn-light"><i class="fas fa-edit"></i></a></h4>
-      <!-- Modal -->
-      <div class="modal fade" id="empCode_infoModal" role="dialog">
-      <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-      <div class="modal-header">
-      <h4 class="modal-title">Enter Admin Password <button type="button" class="close" data-dismiss="modal">&times;</button></h4>
-      </div>
-      <form method="POST" action="editEmployee">
-      <div class="modal-body">
-      <input type="password" class="form-control" name="pw"  required>
-      </div>
-      <div class="modal-footer">
-      <button type="submit" class="btn btn-success">Next</button>
-      </div>
-      </form>
-      </div>
-      </div>
-      </div>
-
-      <br>
-      <h4>Add/Remove Admin Acoount <a data-toggle="modal" data-target="#admin_infoModal" class="button btn-lg btn-light"><i class="fas fa-edit"></i></a></h4>
-      <div class="modal fade" id="admin_infoModal" role="dialog">
-      <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-      <div class="modal-header">
-      <h4 class="modal-title">Enter Admin Password <button type="button" class="close" data-dismiss="modal">&times;</button></h4>
-      </div>
-      <form method="POST" action="addAdmin">
-      <div class="modal-body">
-      <input type="password" class="form-control" name="pw"  required>
-      </div>
-      <div class="modal-footer">
-      <button type="submit" class="btn btn-success">Next</button>
-      </div>
-      </form>
-      </div>
-      </div>
-      </div>
-      <br>
-      <form action="editLogo" id="f" method="POST" enctype="multipart/form-data">
-      <br>
-      <img src="{{logo}}" alt="Please Upload a Logo" width="150">
-      <br>
-      <label for="avatar"><h4>Change Logo<br></h4></label><br>
-      <input type="file"
-             name="logo"
-             accept="image/png, image/jpeg" required>
-      <br>
-      <br>
-      <input form="f" class="btn btn-lg btn-success" type="submit" value="Change Logo">
-      </form>
-
-
-
-      </div>
-    </div>
-
-    <div id="feedback" class="container tab-pane fade">
-    <br>
-    <div class="container text-center">
-    <div class="alert alert-info" role="alert">
-    Questions and Comments Are Only Recorded In Sitdown Mode
-    </div><hr>
-
-    <div class="row">
-
-    <div class="col-lg-6">
-      <h3>Questions</h3>
-      <hr>
-    <br>
-    <a class="btn btn-success" href="add-feedback" role="button">Add Question <i class="fas fa-plus"></i></a><hr><br>
-
-    {% for key_feed, feed in feedback.items() %}
-
-    <h4>{{feed.info.name|capitalize}} <a class="btn btn-sm btn-danger" href="rem-feedback~{{key_feed}}" role="button"><i class="fas fa-times-circle"></i></a><br></h4>
-    <br>
-    <h5>Daily</h5>
-    <h6>Current Score: {{feed.info.day.currentScore}}/{{feed.info.maxScore}} <br>Sample Size: {{feed.info.day.count}} </h6><br>
-    <br>
-
-    <h5>Weekly</h5>
-    <h6>Current Score: {{feed.info.week.currentScore}}/{{feed.info.maxScore}} <br>Sample Size: {{feed.info.week.count}} </h6><br>
-    <br>
-
-    <h5>Monthly</h5>
-    <h6>Current Score: {{feed.info.month.currentScore}}/{{feed.info.maxScore}} <br>Sample Size: {{feed.info.month.count}} </h6><br>
-    <br>
-
-
-    <h4>Answers</h4><br>
-    {% for key_ans, v_ans in feed.ans.items() %}
-    <h5>{{v_ans.name|capitalize}}  (Score: {{v_ans.score}})</h5>
-    {% endfor %}
-    <br>
-    <hr>
-    {% endfor %}
-
-  </div>
-<div class="col-lg-6">
-<h3>Comments</h3><hr>
-
-
-
-<ul class="nav nav-tabs" id="myTab" role="tablist">
-  <li class="nav-item">
-    <a class="nav-link active" id="home-tab" data-toggle="tab" href="#new-comment" role="tab" aria-controls="home" aria-selected="true">New</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#saved-comment" role="tab" aria-controls="profile" aria-selected="false">Saved</a>
-  </li>
-
-</ul>
-<div class="tab-content" id="myTabContent">
-  <div class="tab-pane fade show active" id="new-comment" role="tabpanel" aria-labelledby="home-tab"><br>
-    {% if comments.new %}
-    {% for key_new_comments, v_new_comments in comments.new.items() %}
-
-    <h3>{{v_new_comments.name}} @ {{v_new_comments.timeStamp}}</h3>
-    <h4>Comment: {{v_new_comments.comment}}</h4><h4><a class="btn btn-sm btn-danger" href="rem-new-comment~{{key_new_comments}}" role="button"><i class="fas fa-times-circle"></i></a>
-      <a class="btn btn-sm btn-secondary" href="save-comment~{{key_new_comments}}" role="button">Save <i class="fas fa-download"></i></i></a>
-    </h4>
-    <hr>
-
-    {% endfor %}
-    {% else %}
-    <h3>No New Comments</h3>
-    {% endif %}
-  </div>
-
-
-  <div class="tab-pane fade" id="saved-comment" role="tabpanel" aria-labelledby="profile-tab"><br>
-    {% if comments.saved %}
-    {% for key_saved_comments, v_saved_comments in comments.saved.items() %}
-
-    <h3>{{v_saved_comments.name}} @ {{v_saved_comments.timeStamp}}</h3>
-    <h4>Comment: {{v_saved_comments.comment}}</h4><h4><a class="btn btn-sm btn-danger" href="rem-saved-comment~{{key_saved_comments}}" role="button"><i class="fas fa-times-circle"></i></a></h4>
-    <hr>
-
-    {% endfor %}
-    {% else %}
-    <h3>No Saved Comments</h3>
-    {% endif %}
-  </div>
-
-</div>
-
-
-
-</div>
-
-    </div>
-
-  </div>
-
-    </div>
-
-    <div id="kiosk" class="container tab-pane fade">
-
-      <br>
-      <div class="container text-center">
-      <div class="alert alert-info" role="alert">
-      Kiosk Licenses For All Locations
-      </div><hr>
-      <a href="billing-addkiosk" class="btn btn-lg btn-success">Add Kiosk</a>
-      <hr>
-      {% for kiosk_key, kiosk_val in kiosks.items() %}
-      {% if kiosk_val.active == 1 %}
-        <h6 class="text-success">Active</h6>
-        <h5 class="text-success">Kiosk Code: <h4>{{kiosk_key}}</h4> <br> <h5 class="text-success">Location:</h5> <h4>{{kiosk_val.loc}}</h4> </h5><br>
-        <a href="deactivate-kiosk-{{kiosk_key}}" class="btn btn-lg btn-danger">Deactivate</a>
+        <div class="container text-center">
+          <div class="alert alert-info" role="alert">
+            Questions and Comments Are Only Recorded In Sitdown Mode
+          </div>
           <hr>
-      {% else %}
-        <h4 class="text-danger">Kiosk Code: <h4>{{kiosk_key}}</h4> <h6 class="text-danger">Inactive</h6></h4>
-      {% endif %}
-      <br>
-      {% endfor %}
+
+          <div class="row">
+
+            <div class="col-lg-6">
+              <h3>Questions</h3>
+              <hr>
+              <br>
+              <a class="btn btn-success" href="add-feedback" role="button">Add Question <i class="fas fa-plus"></i></a>
+              <hr><br>
+
+              {% for key_feed, feed in feedback.items() %}
+
+              <h4>{{feed.info.name|capitalize}} <a class="btn btn-sm btn-danger" href="rem-feedback~{{key_feed}}" role="button"><i class="fas fa-times-circle"></i></a><br></h4>
+              <br>
+              <h5>Daily</h5>
+              <h6>Current Score: {{feed.info.day.currentScore}}/{{feed.info.maxScore}} <br>Sample Size: {{feed.info.day.count}} </h6><br>
+              <br>
+
+              <h5>Weekly</h5>
+              <h6>Current Score: {{feed.info.week.currentScore}}/{{feed.info.maxScore}} <br>Sample Size: {{feed.info.week.count}} </h6><br>
+              <br>
+
+              <h5>Monthly</h5>
+              <h6>Current Score: {{feed.info.month.currentScore}}/{{feed.info.maxScore}} <br>Sample Size: {{feed.info.month.count}} </h6><br>
+              <br>
+
+
+              <h4>Answers</h4><br>
+              {% for key_ans, v_ans in feed.ans.items() %}
+              <h5>{{v_ans.name|capitalize}} (Score: {{v_ans.score}})</h5>
+              {% endfor %}
+              <br>
+              <hr>
+              {% endfor %}
+
+            </div>
+            <div class="col-lg-6">
+              <h3>Comments</h3>
+              <hr>
+
+
+
+              <ul class="nav nav-tabs" id="myTab" role="tablist">
+                <li class="nav-item">
+                  <a class="nav-link active" id="home-tab" data-toggle="tab" href="#new-comment" role="tab" aria-controls="home" aria-selected="true">New</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link" id="profile-tab" data-toggle="tab" href="#saved-comment" role="tab" aria-controls="profile" aria-selected="false">Saved</a>
+                </li>
+
+              </ul>
+              <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="new-comment" role="tabpanel" aria-labelledby="home-tab"><br>
+                  {% if comments.new %}
+                  {% for key_new_comments, v_new_comments in comments.new.items() %}
+
+                  <h3>{{v_new_comments.name}} @ {{v_new_comments.timeStamp}}</h3>
+                  <h4>Comment: {{v_new_comments.comment}}</h4>
+                  <h4><a class="btn btn-sm btn-danger" href="rem-new-comment~{{key_new_comments}}" role="button"><i class="fas fa-times-circle"></i></a>
+                    <a class="btn btn-sm btn-secondary" href="save-comment~{{key_new_comments}}" role="button">Save <i class="fas fa-download"></i></i></a>
+                  </h4>
+                  <hr>
+
+                  {% endfor %}
+                  {% else %}
+                  <h3>No New Comments</h3>
+                  {% endif %}
+                </div>
+
+
+                <div class="tab-pane fade" id="saved-comment" role="tabpanel" aria-labelledby="profile-tab"><br>
+                  {% if comments.saved %}
+                  {% for key_saved_comments, v_saved_comments in comments.saved.items() %}
+
+                  <h3>{{v_saved_comments.name}} @ {{v_saved_comments.timeStamp}}</h3>
+                  <h4>Comment: {{v_saved_comments.comment}}</h4>
+                  <h4><a class="btn btn-sm btn-danger" href="rem-saved-comment~{{key_saved_comments}}" role="button"><i class="fas fa-times-circle"></i></a></h4>
+                  <hr>
+
+                  {% endfor %}
+                  {% else %}
+                  <h3>No Saved Comments</h3>
+                  {% endif %}
+                </div>
+
+              </div>
+
+
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      <div id="kiosk" class="container tab-pane fade">
+
+        <br>
+        <div class="container text-center">
+          <div class="alert alert-info" role="alert">
+            Kiosk Licenses For All Locations
+          </div>
+          <hr>
+          <a href="billing-addkiosk" class="btn btn-lg btn-success">Add Kiosk</a>
+          <hr>
+          {% for kiosk_key, kiosk_val in kiosks.items() %}
+          {% if kiosk_val.active == 1 %}
+          <h6 class="text-success">Active</h6>
+          <h5 class="text-success">Kiosk Code: <h4>{{kiosk_key}}</h4> <br>
+            <h5 class="text-success">Location:</h5>
+            <h4>{{kiosk_val.loc}}</h4>
+          </h5><br>
+          <a href="deactivate-kiosk-{{kiosk_key}}" class="btn btn-lg btn-danger">Deactivate</a>
+          <hr>
+          {% else %}
+          <h4 class="text-danger">Kiosk Code: <h4>{{kiosk_key}}</h4>
+            <h6 class="text-danger">Inactive</h6>
+          </h4>
+          {% endif %}
+          <br>
+          {% endfor %}
+
+        </div>
+
+
+
+
+      </div>
+
+      <div id="billing" class="container tab-pane fade">
+
+        <br>
+
+        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="pills-all-tab" data-toggle="pill" href="#pills-loc" role="tab" aria-controls="pills-loc" aria-selected="true">This Location</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="pills-all-tab" data-toggle="pill" href="#pills-all" role="tab" aria-controls="pills-all" aria-selected="false">All Locations</a>
+          </li>
+        </ul>
+        <div class="tab-content" id="pills-tabContent-billing">
+          <div class="tab-pane fade show active" id="pills-loc" role="tabpanel" aria-labelledby="pills-loc-tab">
+
+            <div class="container text-center">
+              <div class="alert alert-info" role="alert">
+                Billing Info And Fees For {{locName}}
+              </div>
+              <hr>
+
+
+
+
+            </div>
+
+
+          </div>
+          <div class="tab-pane fade" id="pills-all" role="tabpanel" aria-labelledby="pills-all-tab">
+
+            <div class="container text-center">
+              <div class="alert alert-info" role="alert">
+                Billing Info And Fees For All Locations
+              </div>
+              <hr>
+
+
+
+
+
+
+            </div>
+
+
+          </div>
+        </div>
+
+
+      </div>
+
+      <div id="logs" class="container tab-pane fade">
+        log
+
+      </div>
+
+
+
 
     </div>
 
 
 
 
-  </div>
+    <!-- Core plugin JavaScript-->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
 
-  <div id="billing" class="container tab-pane fade">
-
-    <br>
-
-  <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-  <li class="nav-item">
-    <a class="nav-link active" id="pills-all-tab" data-toggle="pill" href="#pills-loc" role="tab" aria-controls="pills-loc" aria-selected="true">This Location</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" id="pills-all-tab" data-toggle="pill" href="#pills-all" role="tab" aria-controls="pills-all" aria-selected="false">All Locations</a>
-  </li>
-</ul>
-<div class="tab-content" id="pills-tabContent-billing">
-  <div class="tab-pane fade show active" id="pills-loc" role="tabpanel" aria-labelledby="pills-loc-tab">
-
-    <div class="container text-center">
-    <div class="alert alert-info" role="alert">
-    Billing Info And Fees For {{locName}}
-    </div><hr>
-
-
-
-
-    </div>
-
-
-  </div>
-  <div class="tab-pane fade" id="pills-all" role="tabpanel" aria-labelledby="pills-all-tab">
-
-    <div class="container text-center">
-    <div class="alert alert-info" role="alert">
-    Billing Info And Fees For All Locations
-    </div><hr>
-
-
-
-
-
-
-    </div>
-
-
-  </div>
-</div>
-
-
-  </div>
-
-  <div id="logs" class="container tab-pane fade">
-  log
-
-  </div>
-
-
-
-
-</div>
-
-
-
-
-<!-- Core plugin JavaScript-->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
-
-<!-- Custom scripts for all pages-->
+    <!-- Custom scripts for all pages-->
 
 </body>
+
 </html>

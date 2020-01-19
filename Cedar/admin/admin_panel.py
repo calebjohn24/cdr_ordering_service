@@ -236,6 +236,7 @@ def panel(estNameStr,location):
         comments = {}
     kioskRef = db.reference('/billing/' + estNameStr + '/kiosks')
     kiosks = dict(kioskRef.get())
+
     logo = 'https://storage.googleapis.com/cedarchatbot.appspot.com/'+estNameStr+'/logo.jpg'
     return render_template("POS/AdminMini/mainAdmin.html",
                            restName=str(estNameStr).capitalize(), feedback=feedback,comments=comments,
