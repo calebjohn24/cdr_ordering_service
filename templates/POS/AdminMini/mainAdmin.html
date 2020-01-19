@@ -375,11 +375,55 @@
 
       </div>
 
-      <div id="logs" class="container tab-pane fade">
-        log
+      <div id="log" class="container tab-pane fade">
+
+
+        <br>
+
+        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="pills-all-tab" data-toggle="pill" href="#pills-loc-log" role="tab" aria-controls="pills-loc-log" aria-selected="true">This Location</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="pills-all-tab" data-toggle="pill" href="#pills-all-log" role="tab" aria-controls="pills-all-log" aria-selected="false">All Locations</a>
+          </li>
+        </ul>
+        <div class="tab-content" id="pills-tabContent-log">
+          <div class="tab-pane fade show active" id="pills-loc-log" role="tabpanel" aria-labelledby="pills-loc-tab">
+
+            <div class="container text-center">
+              <div class="alert alert-info" role="alert">
+                Order Logs For {{locName}}
+              </div>
+              <hr>
+
+
+
+
+            </div>
+
+
+          </div>
+          <div class="tab-pane fade" id="pills-all-log" role="tabpanel" aria-labelledby="pills-all-log-tab">
+
+            <div class="container text-center">
+              <div class="alert alert-info" role="alert">
+                Order Logs All Locations
+              </div>
+              <hr>
+
+
+
+
+
+
+            </div>
+
+
+          </div>
+        </div>
 
       </div>
-
 
 
 
