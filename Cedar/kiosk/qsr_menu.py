@@ -128,7 +128,8 @@ def kiosk2QSR(estNameStr,location,cat,itm):
             try:
                 raw_arr = rsp[keys].split("~")
                 img = raw_arr[2]
-                if(str(raw_arr[0]) != "standard"):
+                print(raw_arr[0])
+                if(str(raw_arr[0]).lower() != "standard"):
                     dispStr += str(raw_arr[0]).capitalize() + " "
                 mods.append([raw_arr[0],raw_arr[1]])
                 unitPrice += float(raw_arr[1])
