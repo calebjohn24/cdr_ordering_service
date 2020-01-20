@@ -361,7 +361,25 @@
               <div class="alert alert-info" role="alert">
                 Billing Info And Fees For {{locName}}
               </div>
+
               <hr>
+              <!-- {{billingLoc}} -->
+
+
+              <h4>Transactions Fees</h4><br><br>
+              <h5>Transactions This Billing Cycle: {{billingLoc.transactions.count}}</h5>
+              <br>
+              <h5>Fees Billed This Cycle: {{"$%.2f"|format(billingLoc.transactions.fees)}}</h5>
+              <br>
+              <hr>
+              <h4>Kiosk Billing Info</h4><br><br>
+              {% for kiosk_key, kiosk_val in billingLoc.kiosk.items() %}
+              <h6>Kiosk Group {{kiosk_key}}</h6><br>
+              <h5>Number of Kiosks: {{kiosk_val.count}}</h5><br>
+              <h5>Monthly Fee: {{"$%.2f"|format(kiosk_val.fees)}}</h5><br>
+              <h5>Payments Remaining: {{kiosk_val.remaining}}</h5><br>
+              <h5>Total Payments: {{kiosk_val.term}}</h5><br><br>
+              {% endfor %}
 
 
 
@@ -376,7 +394,13 @@
               <div class="alert alert-info" role="alert">
                 Billing Info And Fees For All Locations
               </div>
-              <hr>
+              <br>
+              <a href="https://squareup.com/dashboard/" target="_blank" class="btn btn-lg btn-info">View Square Dashboard</a>
+              <br><br>
+              <a href="view-billing-info-login" class="btn btn-lg btn-secondary">View Billing Info</a>
+                <br><hr>
+
+              <!-- {{billing}} -->
 
 
 
