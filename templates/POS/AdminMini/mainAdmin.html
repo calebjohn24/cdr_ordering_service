@@ -25,14 +25,31 @@
   <meta name="description" content="">
   <meta name="author" content="Caleb John">
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-  <link href="../../../static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jq-3.3.1/jszip-2.5.0/dt-1.10.20/b-1.6.1/b-colvis-1.6.1/b-flash-1.6.1/b-html5-1.6.1/b-print-1.6.1/kt-2.5.1/r-2.2.3/sc-2.0.1/datatables.min.js"></script>
+  <script src="https://kit.fontawesome.com/80bbe0004b.js" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jq-3.3.1/jszip-2.5.0/dt-1.10.20/b-1.6.1/b-colvis-1.6.1/b-flash-1.6.1/b-html5-1.6.1/r-2.2.3/sc-2.0.1/datatables.min.js"></script>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   <title>Admin Panel</title>
 
+  <script type="text/javascript" class="init">
+    $(document).ready(function() {
+      // $('table.display').DataTable();
+      $('#log-table').DataTable();
+      $('#logloc-table').DataTable();
+    });
+  </script>
+  <script>
+    $(function() {
+      $('[data-toggle="popover"]').popover()
+    })
+  </script>
 </head>
 
 <body>
@@ -396,6 +413,128 @@
                 Order Logs For {{locName}}
               </div>
               <hr>
+              <table id="logloc-table" class="display" style="width:100%">
+                <thead>
+
+                  <tr>
+                    <th>Customer Name</th>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Menu</th>
+                    <th>Total</th>
+                    <th>Ticket</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for  k_log, v_log in logsLoc.items() %}
+                  <tr>
+                    <td>
+                      <button type="button" class="btn btn-light" data-toggle="modal" data-target="#usermodal{{k_log}}">
+                        {{v_log.info.name}} <i class="fas fa-user"></i>
+                      </button>
+                    </td>
+                    <td>{{v_log.info.time}}</td>
+                    <td>{{v_log.info.type}}</td>
+                    <td>{{v_log.info.menu}}</td>
+                    <td>
+                      <button type="button" class="btn btn-light" data-toggle="modal" data-target="#totalmodal{{k_log}}">
+                        {{"$%.2f"|format(v_log.info.total)}} <i class="fas fa-money-check-alt"></i>
+                      </button>
+
+                      <div class="modal" id="totalmodal{{k_log}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLongTitle">Order Breakdown</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                              Subtotal {{"$%.2f"|format(v_log.info.subtotal)}}
+                              <br>
+                              Taxes {{"$%.2f"|format(v_log.info.taxes)}}
+                              <br>
+                              Customer Fee {{"$%.2f"|format(v_log.info.feescustomer)}}
+                              <br>
+                              Total {{"$%.2f"|format(v_log.info.total)}}
+                              <br><br>
+                              Payment Method {{v_log.info.payment}}
+                              <hr>
+                              Restaurant Fee {{"$%.2f"|format(v_log.info.feesrestaurant)}}
+                              <br>
+                              Total Fees Billed {{"$%.2f"|format(v_log.info.feestotal)}}
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Done</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </td>
+                    <td>
+                      <button type="button" class="btn btn-light" data-toggle="modal" data-target="#ticketmodal{{k_log}}">
+                        View Ticket <i class="fas fa-receipt"></i>
+                      </button>
+
+                      <div class="modal" id="ticketmodal{{k_log}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLongTitle">Ticket Info</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                              {% for itm in v_log.order %}
+                              {{itm}}<hr>
+                              {% endfor %}
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Done</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+
+                      <div class="modal" id="usermodal{{k_log}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLongTitle">User Info</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                              Email ({{v_log.info.email}})<br>
+                              Phone ({{v_log.info.phone}})<br>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Done</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+
+
+
+                    </td>
+
+                  </tr>
+
+                  {% endfor %}
+
+
+                  <br>
+                </tbody>
+                <br>
+              </table>
+
 
 
 
@@ -412,6 +551,130 @@
               </div>
               <hr>
 
+
+              <table id="log-table" class="display" style="width:100%">
+                <thead>
+
+                  <tr>
+                    <th>Customer Name</th>
+                    <th>Location</th>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Menu</th>
+                    <th>Total</th>
+                    <th>Ticket</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for  k_log, v_log in logs.items() %}
+                  <tr>
+                    <td>
+                      <button type="button" class="btn btn-light" data-toggle="modal" data-target="#usermodal{{k_log}}">
+                        {{v_log.info.name}} <i class="fas fa-user"></i>
+                      </button>
+                    </td>
+                    <td>{{v_log.info.location}}</td>
+                    <td>{{v_log.info.time}}</td>
+                    <td>{{v_log.info.type}}</td>
+                    <td>{{v_log.info.menu}}</td>
+                    <td>
+                      <button type="button" class="btn btn-light" data-toggle="modal" data-target="#totalmodal{{k_log}}">
+                        {{"$%.2f"|format(v_log.info.total)}} <i class="fas fa-money-check-alt"></i>
+                      </button>
+
+                      <div class="modal" id="totalmodal{{k_log}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLongTitle">Order Breakdown</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                              Subtotal {{"$%.2f"|format(v_log.info.subtotal)}}
+                              <br>
+                              Taxes {{"$%.2f"|format(v_log.info.taxes)}}
+                              <br>
+                              Customer Fee {{"$%.2f"|format(v_log.info.feescustomer)}}
+                              <br>
+                              Total {{"$%.2f"|format(v_log.info.total)}}
+                              <br><br>
+                              Payment Method {{v_log.info.payment}}
+                              <hr>
+                              Restaurant Fee {{"$%.2f"|format(v_log.info.feesrestaurant)}}
+                              <br>
+                              Total Fees Billed {{"$%.2f"|format(v_log.info.feestotal)}}
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Done</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                    </td>
+                    <td>
+                      <button type="button" class="btn btn-light" data-toggle="modal" data-target="#ticketmodal{{k_log}}">
+                        View Ticket <i class="fas fa-receipt"></i>
+                      </button>
+
+                      <div class="modal" id="ticketmodal{{k_log}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLongTitle">Ticket Info</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                              {% for itm in v_log.order %}
+                              {{itm}}<hr>
+                              {% endfor %}
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Done</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+
+                      <div class="modal" id="usermodal{{k_log}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLongTitle">User Info</h5>
+                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                              </button>
+                            </div>
+                            <div class="modal-body">
+                              Email ({{v_log.info.email}})<br>
+                              Phone ({{v_log.info.phone}})<br>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Done</button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+
+
+
+                    </td>
+
+                  </tr>
+
+                  {% endfor %}
+
+
+                  <br>
+                </tbody>
+                <br>
+              </table>
 
 
 

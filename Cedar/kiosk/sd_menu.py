@@ -139,7 +139,8 @@ def kiosk2(estNameStr,location, cat, itm):
             try:
                 raw_arr = rsp[keys].split("~")
                 img = raw_arr[2]
-                dispStr += str(raw_arr[0]).capitalize() + "  "
+                if(str(raw_arr[0]) != "standard"):
+                    dispStr += str(raw_arr[0]).capitalize() + "  "
                 mods.append([raw_arr[0],raw_arr[1]])
                 unitPrice += float(raw_arr[1])
             except Exception as e:
