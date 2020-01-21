@@ -44,7 +44,7 @@
 
   <script>
   function goBack() {
-    window.history.back();
+    window.location.href = "qsr-menudisp";
   }
   </script>
 </head>
@@ -64,7 +64,7 @@
 <br>
 
 {% for i in range(items|count) %}
-<h5>{{items[i]}}</h5>
+<h6>{{items[i]}}</h6>
 <br>
 {% endfor %}
 <p>Order Fee {{"$%.2f"|format(fee)}}</p>

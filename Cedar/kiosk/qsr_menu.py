@@ -107,7 +107,6 @@ def qsrMenu(estNameStr,location):
         cart = dict(cartRef.get())
     except Exception as e:
         cart = {}
-    print(click)
     return(render_template("Customer/QSR/mainKiosk2.html", click=click, menu=menuInfo, restName=estNameStr.capitalize(), cart=cart, locName=location.capitalize()))
 
 @qsr_menu_blueprint.route('/<estNameStr>/<location>/qsr-additms~<cat>~<itm>', methods=["POST"])

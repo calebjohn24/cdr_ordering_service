@@ -38,7 +38,7 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
   <script>
   function goBack() {
-    window.location.href = "qsr-menudisp";
+      window.history.back();
   }
   </script>
 </head>
@@ -48,7 +48,7 @@
 <div class="text-center">
 <br><br><br><br>
 <form method="POST" action="recipt-qsr">
-<button class="btn-lg btn-primary" onclick="goBack()"><i class="fas fa-arrow-left"></i></button>  <br><br>
+<br><br>
   <h3>Email For Receipt <h6>(Optional)</h6></h3><br>
   <input class="email" name="email"><br><br>
   <input type="submit" value="Next" class="btn btn-lg btn-success">

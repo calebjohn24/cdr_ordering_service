@@ -78,7 +78,7 @@ def payQSR(estNameStr, location):
             kioskCode = session.get('kioskCode', None)
             return(render_template("Customer/QSR/Payment.html", locName=location.capitalize(), restName=str(estNameStr).capitalize(), cart=str(cart), items=items, subtotal=subtotalStr, tax=tax, fee=billingInfo['custFee'], total=total, sqTotal=sqTotal, kioskCode=kioskCode))
         else:
-            return(render_template("Customer/QSR/Payment-Online.html", locName=location.capitalize(), restName=str(estNameStr).capitalize(), cart=str(cart), items=items, subtotal=subtotalStr, tax=tax, total=total, orderToken=orderToken))
+            return(render_template("Customer/QSR/Payment-Online.html", locName=location.capitalize(), restName=str(estNameStr).capitalize(), cart=str(cart), items=items, subtotal=subtotalStr, fee=billingInfo['custFee'], tax=tax, total=total, orderToken=orderToken))
     else:
         billingRef = db.reference('/billing/' + estNameStr)
         billingInfo = dict(billingRef.get())
