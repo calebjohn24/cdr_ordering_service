@@ -3,282 +3,296 @@
 
 <head>
   <style>
-  input[type=radio] {
- zoom: 2.5;
-}
-
-   </style>
+    input[type=radio] {
+      zoom: 2.5;
+    }
+  </style>
   <!-- <link rel="manifest" href="manifest.json"> -->
   <link rel="manifest" href="../../../static/manifest.json">
   <link rel="apple-touch-icon" sizes="60x60" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="57x57" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="72x72" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="76x76" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="114x114" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="120x120" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="144x144" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="152x152" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="180x180" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="icon" type="image/png" sizes="192x192"  href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="icon" type="image/png" sizes="32x32" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="icon" type="image/png" sizes="96x96" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="icon" type="image/png" sizes="16x16" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="manifest" href="../../../static/manifest.json">
- <meta name="msapplication-TileColor" content="#000000">
- <meta name="msapplication-TileImage" content="../../../static/img/CedarRoboticsLogo.jpg">
- <meta name="theme-color" content="#000000">
-<meta charset="utf-8">
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
-<meta name="description" content="">
-<meta name="author" content="Caleb John">
-<link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="180x180" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="icon" type="image/png" sizes="192x192" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="icon" type="image/png" sizes="96x96" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="manifest" href="../../../static/manifest.json">
+  <meta name="msapplication-TileColor" content="#000000">
+  <meta name="msapplication-TileImage" content="../../../static/img/CedarRoboticsLogo.jpg">
+  <meta name="theme-color" content="#000000">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="description" content="">
+  <meta name="author" content="Caleb John">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 
-<title>Menu</title>
-<script>
-  var clickVal = '{{click}}';
-  if (clickVal != "None") {
-    jQuery(function() {
-      jQuery('{{click}}').click();
-    });
-  }
+  <title>Menu</title>
+  <script>
+    var clickVal = '{{click}}';
+    if (clickVal != "None") {
+      jQuery(function() {
+        jQuery('{{click}}').click();
+      });
+    }
   </script>
 
 </head>
+
 <body>
 
-<div class="container-fluid">
+  <div class="container-fluid">
 
-  <script>
-  $(function () {
-  $('[data-toggle="popover"]').popover()
-  })
-  </script>
+    <script>
+      $(function() {
+        $('[data-toggle="popover"]').popover()
+      })
+    </script>
 
-  <br>
-  <div class="row">
-    <div class="col-10">
-      <h1>{{restName}} {{locName}} </h1>
-    </div>
-
-    <div class="col-2">
-      <h6><img width="50" src="../../../static/img/CedarRoboticsLogo.jpg"></h6>
-
-    </div>
-  </div>
-<hr>
-<br>
-
-
-<ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-  <li class="nav-item">
-    <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true"><h2>Menu  </h2></a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false"><h2>  Cart</h2></a>
-  </li>
-
-</ul>
-<div class="tab-content" id="pills-tabContent">
-
-<div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab"><hr>
-  <div id="accordion">
-  {% for key_cat, value_cat in menu.items() %}
-  <!-- for loop Cat Here -->
-  <div class="card">
-  <div class="card-header" id="headingTwo">
-  <h5 class="mb-0">
-  <button class="btn btn-lg collapsed" data-toggle="collapse" id="#{{key_cat}}-cat" data-target="#{{key_cat}}" aria-expanded="false" aria-controls="{{key_cat}}">
-  {{key_cat}}
-
-  </button>
-  </h5>
-  </div>
-  <div id="{{key_cat}}" class="collapse" aria-labelledby="{{key_cat}}" data-parent="#accordion">
-  {% for key_item, item in value_cat.items() %}
-
-  {% if item.tmp %}
-  <div class="card-body">
+    <br>
     <div class="row">
-      <div class="col-lg-6">
-      <div class="card">
-      <div class="card-body">
-      <h5 class="card-title">{{key_item}}<br><h5 class="text-danger">ITEM UNAVAILABLE</h5></h5>
-      <h6 class="card-subtitle mb-2 text-muted">{{item.get('extra-info')}}</h6>
-      <p class="card-text">{{item.tmp}}</p>
-      <button type="button" class="btn btn-success" data-toggle="modal" data-target="#{{item.uuid}}" disabled>
-      Add Item
-      </button>
+      <div class="col-10">
+        <h1>{{restName}} {{locName}} </h1>
       </div>
-      <img class="card-img-top" loading="lazy"  data-src="{{item.img}}">
 
+      <div class="col-2">
+        <h6><img width="50" src="../../../static/img/CedarRoboticsLogo.jpg"></h6>
 
-
-    </div>
-    </div>
-  </div>
-  </div>
-  {% else %}
-  <div class="card-body">
-    <div class="row">
-      <div class="col-lg-6">
-      <div class="card">
-      <div class="card-body">
-      <h5 class="card-title">{{key_item}}</h5>
-      <h6 class="card-subtitle mb-2 text-muted">{{item.get('extra-info')}}</h6>
-      <p class="card-text">{{item.descrip}}</p>
-      <button type="button" class="btn btn-success" data-toggle="modal" data-target="#{{item.uuid}}">
-      Add Item
-      </button>
-      <div class="modal" data-backdrop="false" id="{{item.uuid}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-       <div class="container-fluid">
-      <div class="modal-dialog modal-dialog-centered" role="document">
-      <div class="modal-content">
-      <div class="modal-header">
-      <h5 class="modal-title" id="exampleModalLongTitle">{{key_item}}</h5>
-      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-      <span aria-hidden="true">&times;</span>
-      </button>
-      </div>
-      <form action="qsr-additms~{{key_cat}}~{{key_item}}" method="POST" id="{{key_cat}}--{{key_item}}">
-      <div class="modal-body">
-        {% for key_mod, mod in item.items() %}
-        {% if mod.info %}
-
-        {%for m in range(0, mod.min)%}
-
-        <h3>{{key_mod|capitalize}}</h3><hr>
-        {% for key_opt, opt in mod.info.items() %}
-        {% if mod.get('infoimg') %}
-        <h4>{{key_opt|capitalize}} <img  loading="lazy"  {{mod.get('infoimg')[key_opt]}} > <input type="radio" name="{{m}}~0" value="{{key_opt}}~{{opt}}~{{item.img}}" required></h4>
-        <h6>{{"$%.2f"|format(opt)}}</h6>
-        <br>
-        {% else %}
-        <h4>{{key_opt|capitalize}} <input type="radio" name="{{m}}~0" value="{{key_opt}}~{{opt}}~{{item.img}}" required></h4>
-        <h6>{{"$%.2f"|format(opt)}}</h6>
-        <br>
-        {% endif %}
-
-        {%endfor%}
-        <br>
-        {%endfor%}
-        {%for m in range(0, (mod.max-mod.min))%}
-        <h3>{{key_mod|capitalize}}</h3><hr>
-        {% for key_opt, opt in mod.info.items() %}
-        {% if mod.get('infoimg') %}
-        <h4>{{key_opt|capitalize}} <img loading="lazy" {{mod.get('infoimg')[key_opt]}} > <input type="radio" name="{{m}}~1" value="{{key_opt}}~{{opt}}~{{item.img}}" ></h4>
-        <h6>{{"$%.2f"|format(opt)}}</h6>
-        <br>
-        {% else %}
-        <h4>{{key_opt|capitalize}} <input type="radio" name="{{m}}~1" value="{{key_opt}}~{{opt}}~{{item.img}}" ></h4>
-        <h6>{{"$%.2f"|format(opt)}}</h6>
-        <br>
-        {% endif %}
-        {%endfor%}
-
-        {%endfor%}
-        {% endif %}
-        {% endfor %}
-      <hr>
-      <label for="exampleFormControlSelect0">Notes</label>
-      <input class="form-control" name="notes" type="text" placeholder="Notes" id="exampleFormControlSelect1">
-      <br>
-      <label for="validationDefault05">Quantity</label>
-      <input type="number" name="qty" class="form-control"  min="1" id="validationDefault05" placeholder="1">
-
-      </div>
-      <div class="modal-footer">
-      <button type="submit" form="{{key_cat}}--{{key_item}}" value="Submit" class="btn btn-success" data-trigger="hover" data-toggle="popover"data-content="Adding To Cart...">Add To Cart</button>
-      </div>
-      </form>
-
-
-      </div>
       </div>
     </div>
+    <hr>
+    <br>
+
+
+    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">
+          <h2>Menu </h2>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">
+          <h2> Cart</h2>
+        </a>
+      </li>
+
+    </ul>
+    <div class="tab-content" id="pills-tabContent">
+
+      <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+        <hr>
+        <div id="accordion">
+          {% for key_cat, value_cat in menu.items() %}
+          <!-- for loop Cat Here -->
+          <div class="card">
+            <button class="btn btn-lg collapsed" data-toggle="collapse" id="#{{key_cat}}-cat" data-target="#{{key_cat}}" aria-expanded="false" aria-controls="{{key_cat}}">
+            <div class="card-header" id="headingTwo">
+              <h4 class="mb-0">
+
+                  <h4 class="text-left">{{key_cat}}</h4>
+
+
+              </h4>
+            </div>
+            </button>
+            <div id="{{key_cat}}" class="collapse" aria-labelledby="{{key_cat}}" data-parent="#accordion">
+              {% for key_item, item in value_cat.items() %}
+
+              {% if item.tmp %}
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-lg-6">
+                    <div class="card">
+                      <div class="card-body">
+                        <h5 class="card-title">{{key_item}}<br>
+                          <h5 class="text-danger">ITEM UNAVAILABLE</h5>
+                        </h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{item.get('extra-info')}}</h6>
+                        <p class="card-text">{{item.tmp}}</p>
+                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#{{item.uuid}}" disabled>
+                          Add Item
+                        </button>
+                      </div>
+                      <img class="card-img-top" loading="lazy" data-src="{{item.img}}">
+
+
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% else %}
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-lg-6">
+                    <div class="card">
+                      <div class="card-body">
+                        <h5 class="card-title">{{key_item}}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{item.get('extra-info')}}</h6>
+                        <p class="card-text">{{item.descrip}}</p>
+                        <button type="button" class="btn btn-success" data-toggle="modal" data-target="#{{item.uuid}}">
+                          Add Item
+                        </button>
+                        <div class="modal" data-backdrop="false" id="{{item.uuid}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                          <div class="container-fluid">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5 class="modal-title" id="exampleModalLongTitle">{{key_item}}</h5>
+                                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                  </button>
+                                </div>
+                                <form action="qsr-additms~{{key_cat}}~{{key_item}}" method="POST" id="{{key_cat}}--{{key_item}}">
+                                  <div class="modal-body">
+                                    {% for key_mod, mod in item.items() %}
+                                    {% if mod.info %}
+
+                                    {%for m in range(0, mod.min)%}
+
+                                    <h3>{{key_mod|capitalize}}</h3>
+                                    <hr>
+                                    {% for key_opt, opt in mod.info.items() %}
+                                    {% if mod.get('infoimg') %}
+                                    <h4>{{key_opt|capitalize}} <img loading="lazy" {{mod.get('infoimg')[key_opt]}}> <input type="radio" name="{{m}}~0" value="{{key_opt}}~{{opt}}~{{item.img}}" required></h4>
+                                    <h6>{{"$%.2f"|format(opt)}}</h6>
+                                    <br>
+                                    {% else %}
+                                    <h4>{{key_opt|capitalize}} <input type="radio" name="{{m}}~0" value="{{key_opt}}~{{opt}}~{{item.img}}" required></h4>
+                                    <h6>{{"$%.2f"|format(opt)}}</h6>
+                                    <br>
+                                    {% endif %}
+
+                                    {%endfor%}
+                                    <br>
+                                    {%endfor%}
+                                    {%for m in range(0, (mod.max-mod.min))%}
+                                    <h3>{{key_mod|capitalize}}</h3>
+                                    <hr>
+                                    {% for key_opt, opt in mod.info.items() %}
+                                    {% if mod.get('infoimg') %}
+                                    <h4>{{key_opt|capitalize}} <img loading="lazy" {{mod.get('infoimg')[key_opt]}}> <input type="radio" name="{{m}}~1" value="{{key_opt}}~{{opt}}~{{item.img}}"></h4>
+                                    <h6>{{"$%.2f"|format(opt)}}</h6>
+                                    <br>
+                                    {% else %}
+                                    <h4>{{key_opt|capitalize}} <input type="radio" name="{{m}}~1" value="{{key_opt}}~{{opt}}~{{item.img}}"></h4>
+                                    <h6>{{"$%.2f"|format(opt)}}</h6>
+                                    <br>
+                                    {% endif %}
+                                    {%endfor%}
+
+                                    {%endfor%}
+                                    {% endif %}
+                                    {% endfor %}
+                                    <hr>
+                                    <label for="exampleFormControlSelect0">Notes</label>
+                                    <input class="form-control" name="notes" type="text" placeholder="Notes" id="exampleFormControlSelect1">
+                                    <br>
+                                    <label for="validationDefault05">Quantity</label>
+                                    <input type="number" name="qty" class="form-control" min="1" id="validationDefault05" placeholder="1">
+
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="submit" class="btn btn-lg btn-success" form="{{key_cat}}--{{key_item}}" value="Submit" class="btn btn-success" data-trigger="hover" data-toggle="popover" data-content="Adding To Cart...">Add To
+                                      Cart</button>
+                                  </div>
+                                </form>
+
+
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+
+                      </div>
+                      <img class="card-img-top" loading="lazy" src="{{item.img}}">
+
+
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+              {% endif %}
+              {% endfor %}
+            </div>
+          </div>
+          {% endfor %}
+
+        </div>
       </div>
 
+      <div class="tab-pane" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+        <hr>
+        <div class="text-center">
+          <br>
+          <div class="row">
+            <div class="col-lg-1">
+            </div>
+            <div class="col-lg-10">
+              {% for key_cart, cart_items in cart.items() %}
 
+              <div class="card">
+                <div class="card-header">
+                  <h3>{{cart_items.dispStr}}</h3>
+
+                </div>
+                <img class="card-img-top" loading="lazy" src="{{cart_items.img}}">
+                <div class="card-body">
+                  <p class="card-text">
+
+                </div>
+                <div class="card-footer text-muted">
+                  <form id="rem-{{key_cart}}" method="POST" action="qsr-itmRemove">
+                    <div class="p-2"><button class="btn btn-lg btn-danger" type="submit" form="rem-{{key_cart}}" name="remove" value="{{key_cart}}">Remove <i class="fas fa-times-circle"></i></button></div>
+                  </form>
+                </div>
+              </div>
+              <hr>
+              {% endfor %}
+              <br>
+              <hr>
+              <form method="POST" action="cartAdd-QSR">
+
+                {% if cart == {} %}
+                <button class="btn btn-success btn-circle btn-lg" name="add" , value="cart" data-toggle="popover" data-placement="top" data-content="Proceed To Checkout" disabled>
+                  <strong>Order Items </strong><i class="fas fa-arrow-right"></i>
+                </button>
+                {% else %}
+                <button class="btn btn-success btn-circle btn-lg" name="add" , value="cart" data-toggle="popover" data-placement="top" data-content="Proceed To Checkout">
+                  <strong>Order Items </strong><i class="fas fa-arrow-right"></i>
+                </button>
+                {% endif %}
+              </form>
+              <br>
+              <br>
+              <br>
+              <br>
+              <br><br>
+            </div>
+            <div class="col-lg-1">
+            </div>
+
+
+
+          </div>
+        </div>
       </div>
-      <img class="card-img-top" loading="lazy" src="{{item.img}}">
 
-
-
-    </div>
-    </div>
-  </div>
-  </div>
-  {% endif %}
-    {% endfor %}
-  </div>
-  </div>
-  {% endfor %}
-
-  </div>
-</div>
-
-<div class="tab-pane" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab"><hr>
-<div class="text-center">
-<br>
-<div class="row">
-  <div class="col-lg-1">
-  </div>
-  <div class="col-lg-10">
-{% for key_cart, cart_items in cart.items() %}
-
-<div class="card" >
-  <div class="card-header">
-    <h3>{{cart_items.dispStr}}</h3>
-
-  </div>
-  <img class="card-img-top" loading="lazy"  src="{{cart_items.img}}" >
-  <div class="card-body">
-    <p class="card-text">
-
-  </div>
-  <div class="card-footer text-muted">
-    <form id = "rem-{{key_cart}}" method="POST" action="qsr-itmRemove">
-    <div class="p-2"><button class="btn btn-lg btn-danger" type="submit" form="rem-{{key_cart}}" name="remove" value="{{key_cart}}">Remove <i class="fas fa-times-circle"></i></button></div>
-    </form>
-  </div>
-</div>
-<hr>
-{% endfor %}
-<br>
-<hr>
-<form method="POST" action="cartAdd-QSR">
-
-{% if cart == {} %}
-<button class="btn btn-success btn-circle btn-lg" name="add" , value="cart" data-toggle="popover" data-placement="top" data-content="Proceed To Checkout" disabled>
-  <strong>Order Items </strong><i class="fas fa-arrow-right"></i>
-</button>
-{% else %}
-<button class="btn btn-success btn-circle btn-lg" name="add" , value="cart" data-toggle="popover" data-placement="top" data-content="Proceed To Checkout">
-  <strong>Order Items </strong><i class="fas fa-arrow-right"></i>
-</button>
-{% endif %}
-</form>
-<br>
-<br>
-<br>
-<br>
-<br><br>
-</div>
-<div class="col-lg-1">
-</div>
-
-
-
-</div>
-</div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/lozad/dist/lozad.min.js"></script>
-<script src="https://kit.fontawesome.com/80bbe0004b.js" crossorigin="anonymous"></script>
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/lozad/dist/lozad.min.js"></script>
+      <script src="https://kit.fontawesome.com/80bbe0004b.js" crossorigin="anonymous"></script>
+      <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+      <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+      <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 </body>
+
 </html>

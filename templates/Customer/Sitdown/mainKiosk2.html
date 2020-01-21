@@ -152,13 +152,16 @@
           {% for key_cat, value_cat in menu.items() %}
           <!-- for loop Cat Here -->
           <div class="card">
+            <button class="btn btn-lg collapsed" id="{{key_cat}}-btn" data-toggle="collapse" data-target="#{{key_cat}}" aria-expanded="false" aria-controls="{{key_cat}}">
             <div class="card-header" id="headingTwo">
-              <h5 class="mb-0">
-                <button class="btn btn-lg collapsed" id="{{key_cat}}-btn" data-toggle="collapse" data-target="#{{key_cat}}" aria-expanded="false" aria-controls="{{key_cat}}">
-                  {{key_cat}}
-                </button>
-              </h5>
+              <h4 class="mb-0">
+
+                  <h4 class="text-left">{{key_cat}}</h4>
+
+              </h4>
             </div>
+              </button>
+
             <div id="{{key_cat}}" class="collapse" aria-labelledby="{{key_cat}}" data-parent="#accordion">
               {% for key_item, item in value_cat.items() %}
               {% if item.tmp %}

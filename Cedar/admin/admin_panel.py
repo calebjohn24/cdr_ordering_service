@@ -266,6 +266,18 @@ def panel(estNameStr, location):
         billing = dict(billingRef.get())
         if(billing == None):
             billing = {}
+        else:
+            total = 0
+            baseFee = billing['fees']['all']['base']
+            print(baseFee)
+            orderFees = billing['fees']['all']['transactions']['fees']
+            print(orderFees)
+            kioskKeys = list(dict(billing['fees']['all']['kiosk']).keys())
+            print(kioskKeys)
+            kioskFees = 0
+            for keys in kioskKeys:
+                kioskFees += float(billing['fees']['all']['kiosk'][keys]['fees'] * float(billing['fees']['all']['kiosk'][keys]['count']))
+            total = baseFee + orderFees + kioskFees
     except Exception as e:
         billing = {}
 
@@ -282,7 +294,7 @@ def panel(estNameStr, location):
         estNameStr + '/logo.jpg'
     return render_template("POS/AdminMini/mainAdmin.html",
                            restName=str(estNameStr).capitalize(), feedback=feedback, comments=comments,
-                           locName=location.capitalize(),
+                           locName=location.capitalize(), totalFee=total,
                            discounts=discDict, logo=logo, kiosks=kiosks, logs=logs, logsLoc=logsLoc, billing=billing, billingLoc=billingLoc)
 
 

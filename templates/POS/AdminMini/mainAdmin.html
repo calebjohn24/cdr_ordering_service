@@ -405,7 +405,20 @@
               <a href="view-billing-info-login" class="btn btn-lg btn-secondary">View Billing Info</a>
                 <br><hr>
 
-              <!-- {{billing}} -->
+                <!-- {{billing}} -->
+                <h5>Last Billing Date: {{billing.lastBill}}</h5>
+                <h5>Next Billing Date: {{billing.nextBill}}</h5>
+                <br>
+                <h4>Total Bill This Cycle: {{"$%.2f"|format(totalFee)}}</h4><br>
+                <h6>Breakdown</h6>
+                <h5>Base Fee: {{"$%.2f"|format(billing.fees.all.base)}}</h5>
+                <h6>Transaction Fees: {{"$%.2f"|format(billing.fees.all.transactions.fees)}}</h6>
+
+
+
+
+
+
 
 
 
