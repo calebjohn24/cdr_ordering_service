@@ -153,7 +153,8 @@ def payStaffConfirm(estNameStr, location):
         now = datetime.datetime.now(tzGl[location])
         write_str = "Your Meal From " + estNameStr.capitalize() + " " + \
             location.capitalize() + " on "
-        timeStamp = str(now.month) + "-" + str(now.day) + "-" + str(now.year) + " @ " +str(now.strftime("%H:%M"))
+        timeStamp = str(now.month) + "-" + str(now.day) + "-" + \
+            str(now.year) + " @ " + str(now.strftime("%H:%M"))
         write_str += timeStamp
         write_str += "\n \n"
         cart = dict(order["ticket"])
@@ -257,7 +258,8 @@ def payStaffQSR(estNameStr, location):
     now = datetime.datetime.now(tzGl[location])
     write_str = "Your Order From " + estNameStr.capitalize() + " " + \
         location.capitalize() + " on "
-    timeStamp = str(now.month) + "-" + str(now.day) + "-" + str(now.year) + " @ " +str(now.strftime("%H:%M"))
+    timeStamp = str(now.month) + "-" + str(now.day) + "-" + \
+        str(now.year) + " @ " + str(now.strftime("%H:%M"))
     write_str += timeStamp
     startTime = session.get('startTime', None)
     duration = time.time() - startTime
@@ -579,7 +581,8 @@ def verifyOrder(estNameStr, location, kioskCode):
         now = datetime.datetime.now(tzGl[location])
         write_str = "Your Order From " + estNameStr.capitalize() + " " + \
             location.capitalize() + " on "
-        timeStamp = str(now.month) + "-" + str(now.day) + "-" + str(now.year) + " @ " +str(now.strftime("%H:%M"))
+        timeStamp = str(now.month) + "-" + str(now.day) + "-" + \
+            str(now.year) + " @ " + str(now.strftime("%H:%M"))
         write_str += timeStamp
         write_str += "\n \n"
         cart = dict(order["cart"])
@@ -670,7 +673,8 @@ def verifyOrder(estNameStr, location, kioskCode):
         now = datetime.datetime.now(tzGl[location])
         write_str = "Your Meal From " + estNameStr.capitalize() + " " + \
             location.capitalize() + " on "
-        timeStamp = str(now.month) + "-" + str(now.day) + "-" + str(now.year) + " @ " +str(now.strftime("%H:%M"))
+        timeStamp = str(now.month) + "-" + str(now.day) + "-" + \
+            str(now.year) + " @ " + str(now.strftime("%H:%M"))
         write_str += timeStamp
         write_str += "\n \n"
         cart = dict(order["ticket"])

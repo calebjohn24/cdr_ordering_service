@@ -48,7 +48,7 @@
   <script>
   function goBack() {
     window.location.href = "collect-feedback";
-    
+
   }
   </script>
 </head>
@@ -67,10 +67,10 @@
 <br>
 
  {% for i in range(items|count) %}
- <h4>{{items[i]}}</h4>
+ <h5>{{items[i]}}</h5>
 <br>
 {% endfor %}
-<h6>Order Fee {{"$%.2f"|format(fee)}}</h6>
+<p>Order Fee {{"$%.2f"|format(fee)}}</p>
 <br>
 <hr>
 <h4>Subtotal {{subtotal}}</h4>

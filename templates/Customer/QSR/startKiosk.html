@@ -37,16 +37,17 @@
 
 <body>
   <br>
-  <div class="container">
+  <div class="container-fluid">
 
       <div class="row">
 
       <div class="col-10">
-      <h3 class="h3 mb-0 text-gray-800">Welcome to {{restName|capitalize}} {{locName|capitalize}}</h3>
+      <h3>Welcome to {{restName|capitalize}} {{locName|capitalize}}</h3>
       </div>
 
       <div class="col-2">
-        <p><img width="75" src="../../../static/img/CedarRoboticsLogo.jpg" loading="lazy"></p>
+        <h6><img width="50" src="../../../static/img/CedarRoboticsLogo.jpg"></h6>
+
       </div>
     </div>
     <div class="text-center">
@@ -57,7 +58,7 @@
     <div class="input-group-prepend">
       <span class="input-group-text" id="inputGroup-sizing-default">Phone Number</span>
     </div>
-    <input type="number" name="number" placeholder="1 555 555 5555" size="11" maxlength=11 class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" required>
+    <input type="number" name="number" id="phone" placeholder="1 555 555 5555" size="11" maxlength=11 class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" required>
   </div>
   <hr>
 
@@ -65,35 +66,55 @@
     <div class="input-group-prepend">
       <span class="input-group-text" id="inputGroup-sizing-default">Name</span>
     </div>
-    <input type="text" name="name" size="11" maxlength=11 class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" required>
+    <input type="text" name="name" id="name" size="11" maxlength=11 class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" required>
     <br>
-
+</form>
   </div><hr>
+
+{% if online == "False" %}
 <h4>Is This Order For Here or Togo?</h4>
   <br>
   <h1>
 
-    <input type="submit" name="togo"  value = "To Go" class="btn-lg btn-primary">
+    <input name="togo" type="submit" onclick="myFunction()" form="start" value = "To Go" class="btn-lg btn-primary">
 </h1>
   <br>
 
-    <button class="btn btn-lg btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
-    For Here
-    </button>
-    <div class="collapse" id="collapseExample">
+    <hr>
+    <br>
     <div>
-      <br>
-    <h3>Enter Table Number</h3><br>
-    <input class="number" min="1" type="number" name="table"><br><br>
-    <button type="submit" name="togo" value = "here" class="btn-lg btn-success">Next</button>
-    </div>
-    </div>
 
-</form>
+    <h3>Enter Table Number</h3><br>
+      <script>
+      function myFunction() {
+      document.getElementById("table").value = "1";
+      document.getElementById("start").setAttribute('togo','To Go');
+      var x = document.getElementById("phone").value;
+      var y = document.getElementById("name").value;
+      if(x != "" && y != ""){
+      document.getElementById("start").submit();
+    }
+      }
+      </script>
+    <input class="number" min="1" type="number" form="start" name="table" id="table" required><br><br>
+    <button type="submit" form= start name="togo" value = "here" class="btn-lg btn-primary">For Here</button>
+    <br>
+    {% else %}
+    <button type="submit" form= start name="togo" value = "online" class="btn-lg btn-primary">Start</button>
+
+
+
+
+    {% endif %}
+
+
+
   <br>
   <br>
+
 
   <img src="{{logo}}" width="300" loading="lazy">
+      </div>
 
   </div>
 </div>

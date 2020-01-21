@@ -151,7 +151,6 @@ def kiosk2(estNameStr,location, cat, itm):
     dispStr += "  ($" + "{:0,.2f}".format(price) + ")"
     menu = session.get('menu', None)
     orderToken = session.get('orderToken',None)
-    ##print(orderToken)
     pathCartitm = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken + "/cart/"
     pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu
     cartRefItm = db.reference(pathCartitm)

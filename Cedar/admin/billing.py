@@ -46,3 +46,7 @@ def updateTransactionFees(amt,estNameStr,location):
     newCount = fees['count'] + 1
     newFees = fees['fees'] + amt
     feesRef.update({"count":newCount, "fees":newFees})
+
+
+
+# @billing_blueprint.route('/<estNameStr>/<location>/')

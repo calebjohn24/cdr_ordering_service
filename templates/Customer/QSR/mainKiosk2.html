@@ -6,6 +6,7 @@
   input[type=radio] {
  zoom: 2.5;
 }
+
    </style>
   <!-- <link rel="manifest" href="manifest.json"> -->
   <link rel="manifest" href="../../../static/manifest.json">
@@ -32,19 +33,38 @@
 <meta name="author" content="Caleb John">
 <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
 <title>Menu</title>
+<script>
+  var clickVal = '{{click}}';
+  if (clickVal != "None") {
+    jQuery(function() {
+      jQuery('{{click}}').click();
+    });
+  }
+  </script>
+
 </head>
 <body>
+
 <div class="container-fluid">
+
+  <script>
+  $(function () {
+  $('[data-toggle="popover"]').popover()
+  })
+  </script>
+
   <br>
   <div class="row">
     <div class="col-10">
       <h1>{{restName}} {{locName}} </h1>
     </div>
 
-    <div class="col-1">
-      <h6><img width="75" src="../../../static/img/CedarRoboticsLogo.jpg"></h6>
+    <div class="col-2">
+      <h6><img width="50" src="../../../static/img/CedarRoboticsLogo.jpg"></h6>
 
     </div>
   </div>
@@ -122,7 +142,7 @@
       <span aria-hidden="true">&times;</span>
       </button>
       </div>
-      <form action="qsr-additms~{{key_cat}}~{{key_item}}" method="POST">
+      <form action="qsr-additms~{{key_cat}}~{{key_item}}" method="POST" id="{{key_cat}}--{{key_item}}">
       <div class="modal-body">
         {% for key_mod, mod in item.items() %}
         {% if mod.info %}
@@ -170,7 +190,7 @@
 
       </div>
       <div class="modal-footer">
-      <input type="submit" value="Add To Cart" class="btn btn-success">
+      <button type="submit" form="{{key_cat}}--{{key_item}}" value="Submit" class="btn btn-success" data-trigger="hover" data-toggle="popover"data-content="Adding To Cart...">Add To Cart</button>
       </div>
       </form>
 

@@ -15,7 +15,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="../../../static/img/CedarRoboticsLogo.jpg">
   <link rel="icon" type="image/png" sizes="96x96" href="../../../static/img/CedarRoboticsLogo.jpg">
   <link rel="icon" type="image/png" sizes="16x16" href="../../../static/img/CedarRoboticsLogo.jpg">
-  <link rel="manifest" href="/manifest.json">
+  <link rel="manifest" href="../../../static/manifest.json">
   <meta name="msapplication-TileColor" content="#000000">
   <meta name="msapplication-TileImage" content="../../../static/img/CedarRoboticsLogo.jpg">
   <meta name="theme-color" content="#000000">
@@ -372,13 +372,18 @@
               <h5>Fees Billed This Cycle: {{"$%.2f"|format(billingLoc.transactions.fees)}}</h5>
               <br>
               <hr>
-              <h4>Kiosk Billing Info</h4><br><br>
+              <h4>Kiosk Billing Info</h4><br>
               {% for kiosk_key, kiosk_val in billingLoc.kiosk.items() %}
-              <h6>Kiosk Group {{kiosk_key}}</h6><br>
               <h5>Number of Kiosks: {{kiosk_val.count}}</h5><br>
+              <h6>Kiosk Group: {{kiosk_val.group}}</h6><br>
+              {% for id in kiosk_val.kiosks %}
+              <h5 class="text-primary">Kiosk Id: {{id}}</h5>
+              {% endfor %}
+              <br>
               <h5>Monthly Fee: {{"$%.2f"|format(kiosk_val.fees)}}</h5><br>
               <h5>Payments Remaining: {{kiosk_val.remaining}}</h5><br>
-              <h5>Total Payments: {{kiosk_val.term}}</h5><br><br>
+              <h5>Total Payments: {{kiosk_val.term}}</h5><br><br><br>
+
               {% endfor %}
 
 

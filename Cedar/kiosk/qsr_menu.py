@@ -46,13 +46,14 @@ def startKiosk4(estNameStr,location,code):
     else:
         session['kioskCode'] = code
         logo = 'https://storage.googleapis.com/cedarchatbot.appspot.com/'+estNameStr+'/logo.jpg'
-        return(render_template("Customer/QSR/startKiosk.html",btn="qsr-startKiosk",restName=estNameStr,locName=location, logo=logo))
+        return(render_template("Customer/QSR/startKiosk.html",btn="qsr-startKiosk", online="False", restName=estNameStr,locName=location, logo=logo))
 
 
 @qsr_menu_blueprint.route('/<estNameStr>/<location>/qsr-startKiosk', methods=["POST"])
 def startKioskQsr(estNameStr,location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
+    print(rsp)
     phone = rsp["number"]
     name = rsp["name"]
     togo = rsp["togo"]
@@ -64,6 +65,7 @@ def startKioskQsr(estNameStr,location):
         table = "To Go"
     session['table'] = table
     session['name'] = name
+    session['click'] = "None"
     session['phone'] = phone
     session['startTime'] = time.time()
     path = '/restaurants/' + estNameStr + '/' + location + "/orders/"
@@ -96,6 +98,8 @@ def qsrMenu(estNameStr,location):
         return(redirect(url_for("find_page.findRestaurant")))
     menu = session.get('menu', None)
     orderToken = session.get('orderToken',None)
+    click = session.get('click',None)
+    session['click'] = "None"
     pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu + "/categories"
     menuInfo = dict(db.reference(pathMenu).get())
     cartRef = db.reference('/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken + "/cart")
@@ -103,8 +107,9 @@ def qsrMenu(estNameStr,location):
         cart = dict(cartRef.get())
     except Exception as e:
         cart = {}
+        click = "None"
     # print(cart)
-    return(render_template("Customer/QSR/mainKiosk2.html", menu=menuInfo, restName=estNameStr.capitalize(), cart=cart, locName=location.capitalize()))
+    return(render_template("Customer/QSR/mainKiosk2.html", click=click, menu=menuInfo, restName=estNameStr.capitalize(), cart=cart, locName=location.capitalize()))
 
 @qsr_menu_blueprint.route('/<estNameStr>/<location>/qsr-additms~<cat>~<itm>', methods=["POST"])
 def kiosk2QSR(estNameStr,location,cat,itm):
@@ -162,6 +167,7 @@ def kioskRemQSR(estNameStr,location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = dict((request.form))
     remItm = rsp["remove"]
+    session['click'] = "#pills-profile-tab"
     orderToken = session.get('orderToken',None)
     menu = session.get('menu',None)
     pathCartitm = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken +"/cart/"
