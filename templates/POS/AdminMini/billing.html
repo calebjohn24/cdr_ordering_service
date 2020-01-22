@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="180x180" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="icon" type="image/png" sizes="192x192" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="icon" type="image/png" sizes="96x96" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="manifest" href="../../../static/manifest.json">
+  <meta name="msapplication-TileColor" content="#000000">
+  <meta name="msapplication-TileImage" content="../../../static/img/CedarRoboticsLogo.jpg">
+  <meta name="theme-color" content="#000000">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Caleb John">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jq-3.3.1/jszip-2.5.0/dt-1.10.20/b-1.6.1/b-colvis-1.6.1/b-flash-1.6.1/b-html5-1.6.1/b-print-1.6.1/kt-2.5.1/r-2.2.3/sc-2.0.1/datatables.min.js"></script>
+  <script src="https://kit.fontawesome.com/80bbe0004b.js" crossorigin="anonymous"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+  <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/jq-3.3.1/jszip-2.5.0/dt-1.10.20/b-1.6.1/b-colvis-1.6.1/b-flash-1.6.1/b-html5-1.6.1/r-2.2.3/sc-2.0.1/datatables.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+  <title>Admin Panel</title>
+  <script type="text/javascript" class="init">
+    $(document).ready(function() {
+      $('#billing-table').DataTable();
+    });
+  </script>
+</head>
+
+<body>
+  <div class="container-fluid">
+    <br>
+    <h2>{{restName}} Billing Panel <a href="admin-panel" class="button btn-lg"><i class="fas fa-home"></i></a></h2>
+    <hr>
+
+
+
+    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Your Services</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Transaction Fees</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile-m" aria-selected="false">Download Invoices</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact-m" aria-selected="false">Location Comparison</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact-mm" aria-selected="false">Edit Payment Details</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact-p" aria-selected="false">Contact Customer Service</a>
+      </li>
+    </ul>
+    <div class="tab-content" id="pills-tabContent">
+      <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
+
+      </div>
+      <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+        <br>
+        <h5>Total Fee: {{"$%.2f"|format(billing.totalFee)}}</h5><br>
+        <h5>Current Split<h5>
+            <h6>Customer Fee: {{"$%.2f"|format(billing.custFee)}}</h6>
+            <h6>Restaurant Fee: {{"$%.2f"|format(billing.restFee)}}</h6>
+            <br>
+            <h5>Change Split</h5><br>
+            <form action="change-split" method='POST' id="change-split">
+            <h6 class="text-danger">0%/100% <input class="radio" type="radio" name="split" value="0.0" required></h6>
+            <p>
+              Customer Pays {{"$%.2f"|format(0)}} <br>
+              Restaurant Pays {{"$%.2f"|format(billing.totalFee)}} <br>
+            </p>
+            <br>
+            <h6 class="text-warning">10%/90% <input class="radio" type="radio" name="split" value="0.1" required></h6>
+            <p>
+              Customer Pays {{"$%.2f"|format(billing.totalFee * 0.1)}} <br>
+              Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.9)}} <br>
+            </p>
+            <br>
+            <h6 class="text-info">20%/80% <input class="radio" type="radio" name="split" value="0.2" required></h6>
+            <p>
+              Customer Pays {{"$%.2f"|format(billing.totalFee * 0.2)}} <br>
+              Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.8)}} <br>
+            </p>
+            <br>
+            <h6 class="text-primary">30%/70% <input class="radio" type="radio" name="split" value="0.3" required></h6>
+            <p>
+              Customer Pays {{"$%.2f"|format(billing.totalFee * 0.3)}} <br>
+              Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.7)}} <br>
+            </p>
+            <br>
+            <h6 class="text-secondary">40%/60% <input class="radio" type="radio" name="split" value="0.4" required></h6>
+            <p>
+              Customer Pays {{"$%.2f"|format(billing.totalFee * 0.4)}} <br>
+              Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.6)}} <br>
+            </p>
+            <br>
+            <h6 class="text-success">50%/50% <input class="radio" type="radio" name="split" value="0.5" required></h6>
+            <p>
+              Customer Pays {{"$%.2f"|format(billing.totalFee * 0.5)}} <br>
+              Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.5)}} <br>
+            </p>
+            <br>
+            <h6 class="text-secondary">60%/40% <input class="radio" type="radio" name="split" value="0.6" required></h6>
+            <p>
+              Customer Pays {{"$%.2f"|format(billing.totalFee * 0.6)}} <br>
+              Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.4)}} <br>
+            </p>
+            <br>
+            <h6 class="text-primary">70%/30% <input class="radio" type="radio" name="split" value="0.7" required></h6>
+            <p>
+              Customer Pays {{"$%.2f"|format(billing.totalFee * 0.7)}} <br>
+              Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.3)}} <br>
+            </p>
+            <br>
+            <h6 class="text-info">80%/20% <input class="radio" type="radio" name="split" value="0.8" required></h6>
+            <p>
+              Customer Pays {{"$%.2f"|format(billing.totalFee * 0.8)}} <br>
+              Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.2)}} <br>
+            </p>
+            <br>
+            <h6 class="text-warning">90%/10% <input class="radio" type="radio" name="split" value="0.9" required></h6>
+            <p>
+              Customer Pays {{"$%.2f"|format(billing.totalFee * 0.9)}} <br>
+              Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.1)}} <br>
+            </p>
+            <br>
+            <h6 class="text-danger">100%/0% <input class="radio" type="radio" name="split" value="1.0" required></h6>
+            <p>
+              Customer Pays {{"$%.2f"|format(billing.totalFee)}} <br>
+              Restaurant Pays {{"$%.2f"|format(0)}} <br>
+            </p>
+            <br>
+            <br>
+            <button class="btn btn-lg btn-success" type="submit" form="change-split">Change</button>
+            </form>
+
+
+
+
+      </div>
+      <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">...</div>
+    </div>
+
+
+
+
+<br><br>
+<br><br>
+<br><br>
+
+  </div>
+</body>
+
+</html>

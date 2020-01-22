@@ -55,7 +55,7 @@
 <body>
   <br>
 
-  <div class="container">
+  <div class="container-fluid">
     <h2>{{restName}} {{locName}} Admin Panel</h2>
     <br>
     <!-- Nav tabs -->
@@ -377,10 +377,10 @@
               <h5>Number of Kiosks: {{kiosk_val.count}}</h5><br>
               <h6>Kiosk Group: {{kiosk_val.group}}</h6><br>
               {% for id in kiosk_val.kiosks %}
-              <h5 class="text-primary">Kiosk Id: {{id}}</h5>
+              <h5 class="text-primary">Kiosk Id: {{id}} (Monthly Fee: {{"$%.2f"|format(kiosk_val.fees)}})</h5>
               {% endfor %}
+
               <br>
-              <h5>Monthly Fee: {{"$%.2f"|format(kiosk_val.fees)}}</h5><br>
               <h5>Payments Remaining: {{kiosk_val.remaining}}</h5><br>
               <h5>Total Payments: {{kiosk_val.term}}</h5><br><br><br>
 
@@ -402,7 +402,9 @@
               <br>
               <a href="https://squareup.com/dashboard/" target="_blank" class="btn btn-lg btn-info">View Square Dashboard</a>
               <br><br>
-              <a href="view-billing-info-login" class="btn btn-lg btn-secondary">View Billing Info</a>
+              <form action="billing-detail" method="POST" id="billPost">
+              <button type="ssubmit" class="btn btn-lg btn-secondary" form="billPost">View Detailed Billing Info</button>
+            </form>
                 <br><hr>
 
                 <!-- {{billing}} -->
@@ -412,7 +414,19 @@
                 <h4>Total Bill This Cycle: {{"$%.2f"|format(totalFee)}}</h4><br>
                 <h6>Breakdown</h6>
                 <h5>Base Fee: {{"$%.2f"|format(billing.fees.all.base)}}</h5>
-                <h6>Transaction Fees: {{"$%.2f"|format(billing.fees.all.transactions.fees)}}</h6>
+                <h5>Transaction Fees: {{"$%.2f"|format(billing.fees.all.transactions.fees)}} </h5>
+                <p>({{billing.fees.all.transactions.count}} Transactions)</p><br>
+                <h5>Kiosk Fees</h5><br>
+                {% for kiosk_key, kiosk_val in billing.fees.all.kiosk.items() %}
+                <h6>Kiosk Group: {{kiosk_val.group}}</h6><br>
+                {% for id in kiosk_val.kiosks %}
+                <h6 class="text-secondary">Kiosk Id: {{id}} (Monthly Fee: {{"$%.2f"|format(kiosk_val.fees)}})</h6>
+                {% endfor %}
+                <br>
+                <h6>Payments Remaining: {{kiosk_val.remaining}}</h6><br>
+                <h6>Total Payments: {{kiosk_val.term}}</h6><br><br>
+                {% endfor %}
+
 
 
 

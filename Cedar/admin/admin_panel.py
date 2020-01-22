@@ -266,6 +266,7 @@ def panel(estNameStr, location):
         billing = dict(billingRef.get())
         if(billing == None):
             billing = {}
+            total = 0
         else:
             total = 0
             baseFee = billing['fees']['all']['base']
@@ -279,6 +280,7 @@ def panel(estNameStr, location):
                 kioskFees += float(billing['fees']['all']['kiosk'][keys]['fees'] * float(billing['fees']['all']['kiosk'][keys]['count']))
             total = baseFee + orderFees + kioskFees
     except Exception as e:
+        total = 0
         billing = {}
 
     try:
