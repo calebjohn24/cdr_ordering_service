@@ -78,81 +78,100 @@
       </div>
       <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
         <br>
+
+        <h4>Transactions This Billing Cycle </h4>
+        <h6>{{billing.lastBill}}  to  {{billing.nextBill}}</h6>
+
+
+
+
+
+        <br>
+        <hr>
+        <h4>Fee Details</h4><br>
         <h5>Total Fee: {{"$%.2f"|format(billing.totalFee)}}</h5><br>
         <h5>Current Split<h5>
             <h6>Customer Fee: {{"$%.2f"|format(billing.custFee)}}</h6>
             <h6>Restaurant Fee: {{"$%.2f"|format(billing.restFee)}}</h6>
             <br>
             <h5>Change Split</h5><br>
+            <div class="row">
+              <div class="col-lg-6">
+            <div class="alert alert-primary" role="alert">
+              Note: You Will Still Be Billed The Total Fee Every For Every Order, The Form Below Will Change How Much We Add To The Customer's Bill On Checkout
+            </div>
+            </div>
+            </div>
+            <hr>
             <form action="change-split" method='POST' id="change-split">
-            <h6 class="text-danger">0%/100% <input class="radio" type="radio" name="split" value="0.0" required></h6>
-            <p>
-              Customer Pays {{"$%.2f"|format(0)}} <br>
-              Restaurant Pays {{"$%.2f"|format(billing.totalFee)}} <br>
-            </p>
-            <br>
-            <h6 class="text-warning">10%/90% <input class="radio" type="radio" name="split" value="0.1" required></h6>
-            <p>
-              Customer Pays {{"$%.2f"|format(billing.totalFee * 0.1)}} <br>
-              Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.9)}} <br>
-            </p>
-            <br>
-            <h6 class="text-info">20%/80% <input class="radio" type="radio" name="split" value="0.2" required></h6>
-            <p>
-              Customer Pays {{"$%.2f"|format(billing.totalFee * 0.2)}} <br>
-              Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.8)}} <br>
-            </p>
-            <br>
-            <h6 class="text-primary">30%/70% <input class="radio" type="radio" name="split" value="0.3" required></h6>
-            <p>
-              Customer Pays {{"$%.2f"|format(billing.totalFee * 0.3)}} <br>
-              Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.7)}} <br>
-            </p>
-            <br>
-            <h6 class="text-secondary">40%/60% <input class="radio" type="radio" name="split" value="0.4" required></h6>
-            <p>
-              Customer Pays {{"$%.2f"|format(billing.totalFee * 0.4)}} <br>
-              Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.6)}} <br>
-            </p>
-            <br>
-            <h6 class="text-success">50%/50% <input class="radio" type="radio" name="split" value="0.5" required></h6>
-            <p>
-              Customer Pays {{"$%.2f"|format(billing.totalFee * 0.5)}} <br>
-              Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.5)}} <br>
-            </p>
-            <br>
-            <h6 class="text-secondary">60%/40% <input class="radio" type="radio" name="split" value="0.6" required></h6>
-            <p>
-              Customer Pays {{"$%.2f"|format(billing.totalFee * 0.6)}} <br>
-              Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.4)}} <br>
-            </p>
-            <br>
-            <h6 class="text-primary">70%/30% <input class="radio" type="radio" name="split" value="0.7" required></h6>
-            <p>
-              Customer Pays {{"$%.2f"|format(billing.totalFee * 0.7)}} <br>
-              Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.3)}} <br>
-            </p>
-            <br>
-            <h6 class="text-info">80%/20% <input class="radio" type="radio" name="split" value="0.8" required></h6>
-            <p>
-              Customer Pays {{"$%.2f"|format(billing.totalFee * 0.8)}} <br>
-              Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.2)}} <br>
-            </p>
-            <br>
-            <h6 class="text-warning">90%/10% <input class="radio" type="radio" name="split" value="0.9" required></h6>
-            <p>
-              Customer Pays {{"$%.2f"|format(billing.totalFee * 0.9)}} <br>
-              Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.1)}} <br>
-            </p>
-            <br>
-            <h6 class="text-danger">100%/0% <input class="radio" type="radio" name="split" value="1.0" required></h6>
-            <p>
-              Customer Pays {{"$%.2f"|format(billing.totalFee)}} <br>
-              Restaurant Pays {{"$%.2f"|format(0)}} <br>
-            </p>
-            <br>
-            <br>
-            <button class="btn btn-lg btn-success" type="submit" form="change-split">Change</button>
+              <h6 class="text-danger">0%/100% <input class="radio" type="radio" name="split" value="0.0" required></h6>
+              <p>
+                Customer Pays {{"$%.2f"|format(0)}} <br>
+                Restaurant Pays {{"$%.2f"|format(billing.totalFee)}} <br>
+              </p>
+              <br>
+              <h6 class="text-warning">10%/90% <input class="radio" type="radio" name="split" value="0.1" required></h6>
+              <p>
+                Customer Pays {{"$%.2f"|format(billing.totalFee * 0.1)}} <br>
+                Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.9)}} <br>
+              </p>
+              <br>
+              <h6 class="text-info">20%/80% <input class="radio" type="radio" name="split" value="0.2" required></h6>
+              <p>
+                Customer Pays {{"$%.2f"|format(billing.totalFee * 0.2)}} <br>
+                Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.8)}} <br>
+              </p>
+              <br>
+              <h6 class="text-primary">30%/70% <input class="radio" type="radio" name="split" value="0.3" required></h6>
+              <p>
+                Customer Pays {{"$%.2f"|format(billing.totalFee * 0.3)}} <br>
+                Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.7)}} <br>
+              </p>
+              <br>
+              <h6 class="text-secondary">40%/60% <input class="radio" type="radio" name="split" value="0.4" required></h6>
+              <p>
+                Customer Pays {{"$%.2f"|format(billing.totalFee * 0.4)}} <br>
+                Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.6)}} <br>
+              </p>
+              <br>
+              <h6 class="text-success">50%/50% <input class="radio" type="radio" name="split" value="0.5" required></h6>
+              <p>
+                Customer Pays {{"$%.2f"|format(billing.totalFee * 0.5)}} <br>
+                Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.5)}} <br>
+              </p>
+              <br>
+              <h6 class="text-secondary">60%/40% <input class="radio" type="radio" name="split" value="0.6" required></h6>
+              <p>
+                Customer Pays {{"$%.2f"|format(billing.totalFee * 0.6)}} <br>
+                Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.4)}} <br>
+              </p>
+              <br>
+              <h6 class="text-primary">70%/30% <input class="radio" type="radio" name="split" value="0.7" required></h6>
+              <p>
+                Customer Pays {{"$%.2f"|format(billing.totalFee * 0.7)}} <br>
+                Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.3)}} <br>
+              </p>
+              <br>
+              <h6 class="text-info">80%/20% <input class="radio" type="radio" name="split" value="0.8" required></h6>
+              <p>
+                Customer Pays {{"$%.2f"|format(billing.totalFee * 0.8)}} <br>
+                Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.2)}} <br>
+              </p>
+              <br>
+              <h6 class="text-warning">90%/10% <input class="radio" type="radio" name="split" value="0.9" required></h6>
+              <p>
+                Customer Pays {{"$%.2f"|format(billing.totalFee * 0.9)}} <br>
+                Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.1)}} <br>
+              </p>
+              <br>
+              <h6 class="text-danger">100%/0% <input class="radio" type="radio" name="split" value="1.0" required></h6>
+              <p>
+                Customer Pays {{"$%.2f"|format(billing.totalFee)}} <br>
+                Restaurant Pays {{"$%.2f"|format(0)}} <br>
+              </p>
+              <br>
+              <br>
+              <button class="btn btn-lg btn-success" type="submit" form="change-split">Change</button>
             </form>
 
 
@@ -165,9 +184,9 @@
 
 
 
-<br><br>
-<br><br>
-<br><br>
+    <br><br>
+    <br><br>
+    <br><br>
 
   </div>
 </body>
