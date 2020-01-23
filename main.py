@@ -82,6 +82,7 @@ CSRFProtect(app)
 def page_not_found(e):
     return redirect(url_for('find_page.findRestaurant'))
 
+
 @app.errorhandler(CSRFError)
 def handle_csrf_error(e):
     return (str(e.description), 400)
@@ -97,6 +98,11 @@ if __name__ == '__main__':
         sess.permanent = True
         # app.permanent_session_lifetime = datetime.timedelta(minutes=240)
         app.debug = True
+        app.config.update(
+            SESSION_COOKIE_SECURE=True,
+            SESSION_COOKIE_HTTPONLY=True,
+            SESSION_COOKIE_SAMESITE='Lax',
+        )
         app.jinja_env.cache = {}
         app.run(host="0.0.0.0", port=5000)
     except KeyboardInterrupt:
