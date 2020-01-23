@@ -44,6 +44,7 @@ function goBack() {
 <h3>Menus <a href="admin-panel" class="button btn-lg"><i class="fas fa-home"></i></a> <button class="btn-lg btn-primary" onclick="goBack()"><i class="fas fa-arrow-left"></i></button></h3>
 <hr>
 <form action="addcatSubmit" id="f" method="POST" enctype="multipart/form-data">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 <br>
 <h4>Enter New Category Name</h4>
 <input type="text" name="cat" required>

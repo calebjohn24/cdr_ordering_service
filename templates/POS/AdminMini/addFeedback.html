@@ -45,6 +45,7 @@
 
 
 <form action="add-feedback-confirm" method="POST">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 <br>
 <h4>Enter Question Name</h4>
 <hr>

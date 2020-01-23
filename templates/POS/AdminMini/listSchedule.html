@@ -65,6 +65,7 @@ egrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
   Only Active Menus Are Shown</h5>
   </div><hr>
   <form method="POST" action="addTs~{{day}}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
   <div class="row">
   <div class="col-sm-4">
   Hour <input type="number" max="23" min="0" name="hour" required>
@@ -131,6 +132,7 @@ egrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
       Only Active Menus Are Shown</h5>
       </div><hr>
       <form method="POST" action="schedMenu~{{day}}~{{menus[i]}}~{{menuTimes[i]}}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
       {% for y in range(menuTotals|count) %}
       <input type="radio" name="menu" value="{{menuTotals[y]}}" required>  {{menuTotals[y]}}
       <br>
@@ -157,6 +159,7 @@ egrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
           </div>
           <div class="modal-body">
             <form method="POST" action="editMenuTime~{{day}}~{{menus[i]}}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <div class="row">
             <div class="col-sm-4">
             Hour <input type="number" max="23" min="0" name="hour" required>

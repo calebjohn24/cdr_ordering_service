@@ -54,6 +54,7 @@
 
   <hr>
   <form method="POST" id="start" action="{{btn}}">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
   <div class="input-group mb-3">
     <div class="input-group-prepend">
       <span class="input-group-text" id="inputGroup-sizing-default">Phone Number</span>

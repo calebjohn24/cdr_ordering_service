@@ -114,6 +114,7 @@
             <br>
             <hr>
             <h4>Total {{"$%.2f"|format(total)}}</h4>
+            <br>
             <br><br><br>
 
           </div>
@@ -135,6 +136,7 @@
                 </div>
                 <hr>
                 <form action="change-split" method='POST' id="change-split">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                   <h6 class="text-danger">0%/100% <input class="radio" type="radio" name="split" value="0.0" required></h6>
                   <p>
                     Customer Pays {{"$%.2f"|format(0)}} <br>

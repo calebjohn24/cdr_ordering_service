@@ -45,6 +45,7 @@
 <hr>
 <br>
 <form method="POST" action="addCpn2~{{menu}}~{{cat}}~{{item}}~{{modName}}~{{modItm}}">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
   <h4>Enter Coupon Code</h4>
   <br>
 <input type="text" class="form-control" name="name" required>

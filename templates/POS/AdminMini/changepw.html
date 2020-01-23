@@ -53,6 +53,7 @@ function goBack() {
 <br>
 <hr>
 <form method="POST" action="pw-reset-confirm~{{token}}~{{user}}">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 <p>Password:</p>
 <input name="password" required="required" type="password" minlength="8" id="password" />
 <p>Confirm Password:</p>

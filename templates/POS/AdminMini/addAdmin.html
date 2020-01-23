@@ -54,6 +54,7 @@
 <hr>
 <br>
 <form method="POST" action="confirmAdmin">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
   <h4>Enter Email</h4>
   <br>
 <input type="email" class="form-control" name="email" required>

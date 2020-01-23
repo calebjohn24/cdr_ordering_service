@@ -48,6 +48,7 @@
 <div class="text-center">
 <br><br><br><br>
 <form method="POST" action="recipt-qsr">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 <br><br>
   <h3>Email For Receipt <h6>(Optional)</h6></h3><br>
   <input class="email" name="email"><br><br>

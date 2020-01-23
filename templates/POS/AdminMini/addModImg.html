@@ -50,6 +50,7 @@ function goBack() {
 <hr>
 <br>
 <form method="POST" action="addModIcon2-{{menu}}~{{cat}}~{{item}}~{{mod}}~{{opt}}">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 <h3>Pick Icon Size</h3><hr>
 
 <h4><img width="70" src="https://img.icons8.com/carbon-copy/100/000000/rounded-square.png"> X-Large <input type="radio" name="size" value="75" required></h4><br>

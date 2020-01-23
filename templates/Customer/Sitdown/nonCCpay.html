@@ -47,6 +47,7 @@ z<!DOCTYPE html>
       <hr>
       <br>
       <form method="POST" action="payStaffConfirm">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
         <h4>Employee Code</h4>
         <br>
         <input type="password" class="form-control" name="code" required>

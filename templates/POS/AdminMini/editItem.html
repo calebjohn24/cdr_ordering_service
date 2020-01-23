@@ -60,6 +60,7 @@
             <h4 class="modal-title">Edit Description <button type="button" class="close" data-dismiss="modal">&times;</button></h4>
           </div>
           <form method="POST" action="editDescrip~{{menu}}~{{cat}}~{{item}}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <div class="modal-body">
               <input type="text" class="form-control" name="descrip" value="{{itemInfo.descrip}}" required>
             </div>

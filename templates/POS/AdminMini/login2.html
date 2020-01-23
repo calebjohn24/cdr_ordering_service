@@ -59,6 +59,7 @@
                     <h1 class="h4 text-gray-900 mb-4">Incorrect Email or Password Please Try Again</h1>
                   </div>
                   <form class="user" method="POST" action="{{btn}}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                     <div class="form-group">
                       <input name="emailAddr" type="email" class="form-control form-control-user" id="exampleInputEmail" aria-describedby="emailHelp" placeholder="Enter Email Address...">
                     </div>

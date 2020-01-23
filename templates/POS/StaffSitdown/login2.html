@@ -40,6 +40,7 @@
 <hr>
 <br>
 <form method="POST" action="employee-login">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
   <h4>Enter Employee Code</h4>
   <br>
 <input type="password" class="form-control" name="code" required>

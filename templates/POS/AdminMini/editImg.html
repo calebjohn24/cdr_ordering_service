@@ -46,6 +46,7 @@
     <hr>
     <hr>
     <form action="addImgX~{{menu}}~{{cat}}~{{item}}" id="f" method="POST" enctype="multipart/form-data">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
       <br>
       <label for="avatar">Upload New Image</label>
       <hr>

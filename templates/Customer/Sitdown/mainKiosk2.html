@@ -211,6 +211,7 @@
                                   </button>
                                 </div>
                                 <form action="sitdown-additms~{{key_cat}}~{{key_item}}" method="POST">
+                                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                                   <div class="modal-body">
                                     {% for key_mod, mod in item.items() %}
                                     {% if mod.info %}
@@ -313,6 +314,7 @@
                 </div>
                 <div class="card-footer text-muted">
                   <form id="rem-{{key_cart}}" method="POST" action="itmRemove">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                     <div class="p-2"><button class="btn btn-lg btn-danger" type="submit" form="rem-{{key_cart}}" name="remove" value="{{key_cart}}">Remove <i class="fas fa-times-circle"></i></button></div>
                   </form>
                 </div>
@@ -322,6 +324,7 @@
               <br>
               <hr>
               <form method="POST" action="cartAdd">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                 {% if cart == {} %}
                 <button class="btn btn-success btn-circle btn-lg" name="add" , value="cart" data-toggle="popover" data-placement="top" data-content="Proceed To Checkout" disabled>
                   <strong>Order Items </strong><i class="fas fa-arrow-right"></i>
@@ -372,6 +375,7 @@
                     </div>
                     <div class="modal-body">
                       <form method="POST" action="sendReq">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                         <div class="form-group">
                           <br>
                           <input type="text" class="form-control" name="drinks" placeholder="Enter Drink Names" required>
@@ -405,6 +409,7 @@
                     </div>
                     <div class="modal-body">
                       <form method="POST" action="sendReq">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                         <div class="form-group">
                         </div>
                         <button type="submit" name="napkins" value="ex" class="btn btn-lg btn-success">Next</button>
@@ -437,6 +442,7 @@
                     </div>
                     <div class="modal-body">
                       <form method="POST" action="sendReq">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                         <div class="form-group">
                         </div>
                         <button type="submit" name="cutlery" value="ex" class="btn btn-lg btn-success">Next</button>
@@ -466,6 +472,7 @@
                     </div>
                     <div class="modal-body">
                       <form method="POST" action="sendReq">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                         <div class="form-group">
                         </div>
                         <button type="submit" name="clear" value="ex" class="btn btn-lg btn-success">Next</button>
@@ -498,6 +505,7 @@
                     </div>
                     <div class="modal-body">
                       <form method="POST" action="sendReq">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                         <div class="form-group">
                           <br>
                           <input type="text" class="form-control" name="issue" placeholder="Enter Issue/Items to cancel" required>
@@ -531,6 +539,7 @@
                     </div>
                     <div class="modal-body">
                       <form method="POST" action="sendReq">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                         <div class="form-group">
                           <br>
                           <input type="number" class="form-control" name="box" placeholder="Number of boxes" required>
@@ -567,6 +576,7 @@
                     </div>
                     <div class="modal-body">
                       <form method="POST" action="sendReq">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                         <div class="form-group">
                           <br>
                           <input type="text" class="form-control" name="condiments" placeholder="Enter Condiment Names" required>
@@ -599,6 +609,7 @@
                     </div>
                     <div class="modal-body">
                       <form method="POST" action="sendReq">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                         <div class="form-group">
                           <br>
                           <input type="text" class="form-control" name="other" placeholder="Enter Request" required>
@@ -624,6 +635,7 @@
         <div class="text-center">
           <br><br>
           <form class="form-inline" method="GET" action="collect-feedback">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             {% if boolCheck == 0 %}
             <button type="submit" class="btn btn-lg btn-primary mb-2">Pay Now</button>
             {% else %}

@@ -44,6 +44,7 @@
 <h3>Create New Menu <a href="admin-panel" class="button btn-lg"><i class="fas fa-home"></i></a> </h3>
 <hr>
 <form method="POST" action="add-menu">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
   <input type="text" class="form-control" name="name" placeholder="Enter Menu Name" aria-label="Enter Menu Name" aria-describedby="basic-addon2">
   <br>
     <button class="btn-primary btn-lg" type="submit">Next</button>

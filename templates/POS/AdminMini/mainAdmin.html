@@ -142,6 +142,7 @@
                   <h4 class="modal-title">Enter Admin Password <button type="button" class="close" data-dismiss="modal">&times;</button></h4>
                 </div>
                 <form method="POST" action="editEmployee">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                   <div class="modal-body">
                     <input type="password" class="form-control" name="pw" required>
                   </div>
@@ -162,6 +163,7 @@
                   <h4 class="modal-title">Enter Admin Password <button type="button" class="close" data-dismiss="modal">&times;</button></h4>
                 </div>
                 <form method="POST" action="addAdmin">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                   <div class="modal-body">
                     <input type="password" class="form-control" name="pw" required>
                   </div>
@@ -174,6 +176,7 @@
           </div>
           <br>
           <form action="editLogo" id="f" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
             <br>
             <img src="{{logo}}" alt="Please Upload a Logo" width="150">
             <br>

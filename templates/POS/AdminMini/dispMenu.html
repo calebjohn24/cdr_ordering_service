@@ -39,6 +39,7 @@
   <h3>Menus <a href="admin-panel" class="button btn-lg"><i class="fas fa-home"></i></a></h3>
   <hr>
   <form action="importMenu" method="POST" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
     <h4><input type="submit" class="btn btn-lg btn-success" value="Import Menu"></h4>
     <input type="file"
            name="newMenu"

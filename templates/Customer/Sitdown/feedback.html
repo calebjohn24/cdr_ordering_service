@@ -47,6 +47,7 @@ function goBack() {
 <div class="container ">
   <div class="text-center"><br>
     <form action="collect-feedback-ans" id="feedback-form" method="POST">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
     <h2 class="text-light"><button class="btn-lg btn-light" onclick="goBack()"><i class="fas fa-arrow-left"></i></button>    Before You Checkout Please Answer a Few Questions</h2><hr><br>
     <hr>
 

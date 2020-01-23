@@ -55,6 +55,7 @@ document.getElementById("myText").value = "1";
 </script>
 <br>
 <form action="addModX2~{{menu}}~{{cat}}~{{item}}" method="POST" enctype="multipart/form-data">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
 <br>
 <h4>Enter Modifier Name</h4>
 <hr>

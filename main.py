@@ -15,6 +15,7 @@ from google.cloud import storage
 import pytz
 from flask import Flask, flash, request, session, jsonify
 from flask_compress import Compress
+from flask_wtf.csrf import CSRFProtect, CSRFError
 from werkzeug.utils import secure_filename
 from flask import redirect, url_for
 from flask import render_template, send_file
@@ -74,11 +75,16 @@ scKey = str(uuid.uuid4())
 app.secret_key = scKey
 sslify = SSLify(app)
 Compress(app)
+CSRFProtect(app)
 
 
 @app.errorhandler(404)
 def page_not_found(e):
     return redirect(url_for('find_page.findRestaurant'))
+
+@app.errorhandler(CSRFError)
+def handle_csrf_error(e):
+    return (str(e.description), 400)
 
 
 if __name__ == '__main__':
