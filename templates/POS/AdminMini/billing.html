@@ -54,13 +54,13 @@
 
     <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
       <li class="nav-item">
-        <a class="nav-link active" id="pills-home-tab" data-toggle="pill" href="#pills-home" role="tab" aria-controls="pills-home" aria-selected="true">Your Services</a>
+        <a class="nav-link active" id="pills-services-tab" data-toggle="pill" href="#pills-services" role="tab" aria-controls="pills-services" aria-selected="true">Your Services</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile" aria-selected="false">Transaction Fees</a>
+        <a class="nav-link" id="pills-transaction-tab" data-toggle="pill" href="#pills-transaction" role="tab" aria-controls="pills-transaction" aria-selected="false">Edit Transaction Fees</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" id="pills-profile-tab" data-toggle="pill" href="#pills-profile" role="tab" aria-controls="pills-profile-m" aria-selected="false">Download Invoices</a>
+        <a class="nav-link" id="pills-invoice-tab" data-toggle="pill" href="#pills-invoice" role="tab" aria-controls="pills-invoice" aria-selected="false">Download Invoices</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact-m" aria-selected="false">Location Comparison</a>
@@ -73,21 +73,45 @@
       </li>
     </ul>
     <div class="tab-content" id="pills-tabContent">
-      <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab">
-
-      </div>
-      <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab">
+      <div class="tab-pane fade show active" id="pills-services" role="tabpanel" aria-labelledby="pills-services-tab">
         <br>
+        <h3>Bill Breakdown</h3>
+        <h6>{{billing.lastBill}} to {{billing.nextBill}}</h6>
+        <br>
+        <h5>Base Fee {{"$%.2f"|format(billing.fees.all.base)}}</h5>
+        <br>
+        <h5>Kiosks</h5><br>
 
-        <h4>Transactions This Billing Cycle </h4>
-        <h6>{{billing.lastBill}}  to  {{billing.nextBill}}</h6>
+        {% for key_kiosk, kiosk_val in billing.fees.all.kiosk.items() %}
+        {% for kiosk_val_val in kiosk_val.kiosks %}
 
+        <h6>Kiosk ID {{kiosk_val_val}}</h6>
+        <p>Kiosk Software Fee {{"$%.2f"|format(kiosk_val.base)}}</p>
+        {% if kiosk_val.installment %}
 
+        <p>Kiosk Hardware Installment Fee {{"$%.2f"|format(kiosk_val.fees - kiosk_val.base)}}</p>
+        <p>{{kiosk_val.remaining}} of {{kiosk_val.term}} Payments Remaining</p><br>
+        <p>Total {{"$%.2f"|format(kiosk_val.fees)}}</p>
+        {% else %}
+        <br>
+        <p>Total {{"$%.2f"|format(kiosk_val.base)}}</p>
+        {% endif %}
+        <br><br>
+        {% endfor %}
+        {% endfor %}
 
-
-
+        <h5>Transactions Fees</h5>
+        <br>
+        <h6>Transactions Processed: {{billing.fees.all.transactions.count}}</h6><br>
+        <h6>Transaction Fees Billed: {{"$%.2f"|format(billing.fees.all.transactions.fees)}}</h6>
         <br>
         <hr>
+        <h4>Total {{"$%.2f"|format(total)}}</h4>
+        <br><br><br>
+
+      </div>
+      <div class="tab-pane fade" id="pills-transaction" role="tabpanel" aria-labelledby="pills-transaction-tab">
+        <br>
         <h4>Fee Details</h4><br>
         <h5>Total Fee: {{"$%.2f"|format(billing.totalFee)}}</h5><br>
         <h5>Current Split<h5>
@@ -97,10 +121,10 @@
             <h5>Change Split</h5><br>
             <div class="row">
               <div class="col-lg-6">
-            <div class="alert alert-primary" role="alert">
-              Note: You Will Still Be Billed The Total Fee Every For Every Order, The Form Below Will Change How Much We Add To The Customer's Bill On Checkout
-            </div>
-            </div>
+                <div class="alert alert-primary" role="alert">
+                  Note: You Will Still Be Billed The Total Fee Every For Every Order, The Form Below Will Change How Much We Add To The Customer's Bill On Checkout
+                </div>
+              </div>
             </div>
             <hr>
             <form action="change-split" method='POST' id="change-split">
@@ -178,7 +202,16 @@
 
 
       </div>
-      <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab">...</div>
+
+
+      <div class="tab-pane fade" id="pills-invoice" role="tabpanel" aria-labelledby="pills-invoice-tab">
+        <br>
+        <h3>Invoices</h3>
+        <br>
+      </div>
+
+
+
     </div>
 
 

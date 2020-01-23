@@ -244,6 +244,69 @@ def panel(estNameStr, location):
     kioskRef = db.reference('/billing/' + estNameStr + '/kiosks')
     kiosks = dict(kioskRef.get())
 
+
+    logo = 'https://storage.googleapis.com/cedarchatbot.appspot.com/' + \
+        estNameStr + '/logo.jpg'
+    return render_template("POS/AdminMini/mainAdmin.html",
+                           restName=str(estNameStr).capitalize(), feedback=feedback, comments=comments,
+                           locName=location.capitalize(),
+                           discounts=discDict, logo=logo, kiosks=kiosks)
+
+
+
+@admin_panel_blueprint.route('/<estNameStr>/<location>/admin-panel-logloc', methods=["GET"])
+def panellog(estNameStr, location):
+    if(checkLocation(estNameStr, location) == 1):
+        return(redirect(url_for("find_page.findRestaurant")))
+    getSquare(estNameStr, tzGl, locationsPaths)
+    idToken = session.get('token', None)
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    try:
+        user_ref = ref.get()[str(username)]
+    except Exception:
+        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
+    if (checkAdminToken(estNameStr, idToken, username) == 1):
+        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    user_ref = ref.child(str(username))
+    user_ref.update({
+        'time': time.time()
+    })
+    try:
+        logRefLoc = db.reference(
+            '/billing/' + estNameStr + '/fees/locations/' + location + '/log')
+        logsLoc = dict(logRefLoc.get())
+        if(logsLoc == None):
+            logsLoc = {}
+    except Exception as e:
+        print(e)
+        logsLoc = {}
+    return render_template("POS/AdminMini/logsloc.html",
+                           restName=str(estNameStr).capitalize(),
+                           locName=location.capitalize(), logsLoc=logsLoc)
+
+
+@admin_panel_blueprint.route('/<estNameStr>/<location>/admin-panel-log', methods=["GET"])
+def panellogloc(estNameStr, location):
+    if(checkLocation(estNameStr, location) == 1):
+        return(redirect(url_for("find_page.findRestaurant")))
+    getSquare(estNameStr, tzGl, locationsPaths)
+    idToken = session.get('token', None)
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    try:
+        user_ref = ref.get()[str(username)]
+    except Exception:
+        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
+    if (checkAdminToken(estNameStr, idToken, username) == 1):
+        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    user_ref = ref.child(str(username))
+    user_ref.update({
+        'time': time.time()
+    })
     try:
         logRef = db.reference('/billing/' + estNameStr + '/fees/all/log')
         logs = dict(logRef.get())
@@ -251,53 +314,10 @@ def panel(estNameStr, location):
             logs = {}
     except Exception as e:
         logs = {}
+    return render_template("POS/AdminMini/logsall.html",
+                           restName=str(estNameStr).capitalize(),
+                           locName=location.capitalize(), logs=logs)
 
-    try:
-        logRefLoc = db.reference(
-            '/billing/' + estNameStr + '/fees/locations/' + location + '/log')
-        logsLoc = dict(logRefLoc.get())
-        if(logs == None):
-            logsLoc = {}
-    except Exception as e:
-        logsLoc = {}
-
-    try:
-        billingRef = db.reference('/billing/' + estNameStr)
-        billing = dict(billingRef.get())
-        if(billing == None):
-            billing = {}
-            total = 0
-        else:
-            total = 0
-            baseFee = billing['fees']['all']['base']
-            print(baseFee)
-            orderFees = billing['fees']['all']['transactions']['fees']
-            print(orderFees)
-            kioskKeys = list(dict(billing['fees']['all']['kiosk']).keys())
-            print(kioskKeys)
-            kioskFees = 0
-            for keys in kioskKeys:
-                kioskFees += float(billing['fees']['all']['kiosk'][keys]['fees'] * float(billing['fees']['all']['kiosk'][keys]['count']))
-            total = baseFee + orderFees + kioskFees
-    except Exception as e:
-        total = 0
-        billing = {}
-
-    try:
-        billingLocRef = db.reference(
-            '/billing/' + estNameStr + '/fees/locations/' + location)
-        billingLoc = dict(billingLocRef.get())
-        if(billingLoc == None):
-            billingLoc = {}
-    except Exception as e:
-        billingLoc = {}
-
-    logo = 'https://storage.googleapis.com/cedarchatbot.appspot.com/' + \
-        estNameStr + '/logo.jpg'
-    return render_template("POS/AdminMini/mainAdmin.html",
-                           restName=str(estNameStr).capitalize(), feedback=feedback, comments=comments,
-                           locName=location.capitalize(), totalFee=total,
-                           discounts=discDict, logo=logo, kiosks=kiosks, logs=logs, logsLoc=logsLoc, billing=billing, billingLoc=billingLoc)
 
 
 @admin_panel_blueprint.route('/<estNameStr>/<location>/addAdmin', methods=["POST"])
