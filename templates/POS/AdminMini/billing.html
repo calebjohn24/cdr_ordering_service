@@ -46,180 +46,192 @@
 
 <body>
   <div class="container-fluid">
-    <br>
-    <h2>{{restName}} Billing Panel <a href="admin-panel" class="button btn-lg"><i class="fas fa-home"></i></a></h2>
-    <hr>
 
+    <div class="row">
+      <div class="col-lg-1"></div>
 
-
-    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-      <li class="nav-item">
-        <a class="nav-link active" id="pills-services-tab" data-toggle="pill" href="#pills-services" role="tab" aria-controls="pills-services" aria-selected="true">Your Services</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" id="pills-transaction-tab" data-toggle="pill" href="#pills-transaction" role="tab" aria-controls="pills-transaction" aria-selected="false">Edit Transaction Fees</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" id="pills-invoice-tab" data-toggle="pill" href="#pills-invoice" role="tab" aria-controls="pills-invoice" aria-selected="false">Download Invoices</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact-m" aria-selected="false">Location Comparison</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact-mm" aria-selected="false">Edit Payment Details</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact-p" aria-selected="false">Contact Customer Service</a>
-      </li>
-    </ul>
-    <div class="tab-content" id="pills-tabContent">
-      <div class="tab-pane fade show active" id="pills-services" role="tabpanel" aria-labelledby="pills-services-tab">
+      <div class="col-lg-10">
         <br>
-        <h3>Bill Breakdown</h3>
-        <h6>{{billing.lastBill}} to {{billing.nextBill}}</h6>
-        <br>
-        <h5>Base Fee {{"$%.2f"|format(billing.fees.all.base)}}</h5>
-        <br>
-        <h5>Kiosks</h5><br>
-
-        {% for key_kiosk, kiosk_val in billing.fees.all.kiosk.items() %}
-        {% for kiosk_val_val in kiosk_val.kiosks %}
-
-        <h6>Kiosk ID {{kiosk_val_val}}</h6>
-        <p>Kiosk Software Fee {{"$%.2f"|format(kiosk_val.base)}}</p>
-        {% if kiosk_val.installment %}
-
-        <p>Kiosk Hardware Installment Fee {{"$%.2f"|format(kiosk_val.fees - kiosk_val.base)}}</p>
-        <p>{{kiosk_val.remaining}} of {{kiosk_val.term}} Payments Remaining</p><br>
-        <p>Total {{"$%.2f"|format(kiosk_val.fees)}}</p>
-        {% else %}
-        <br>
-        <p>Total {{"$%.2f"|format(kiosk_val.base)}}</p>
-        {% endif %}
-        <br><br>
-        {% endfor %}
-        {% endfor %}
-
-        <h5>Transactions Fees</h5>
-        <br>
-        <h6>Transactions Processed: {{billing.fees.all.transactions.count}}</h6><br>
-        <h6>Transaction Fees Billed: {{"$%.2f"|format(billing.fees.all.transactions.fees)}}</h6>
-        <br>
+        <h2>{{restName}} Billing Panel <a href="admin-panel" class="button btn-lg"><i class="fas fa-home"></i></a></h2>
         <hr>
-        <h4>Total {{"$%.2f"|format(total)}}</h4>
-        <br><br><br>
 
-      </div>
-      <div class="tab-pane fade" id="pills-transaction" role="tabpanel" aria-labelledby="pills-transaction-tab">
-        <br>
-        <h4>Fee Details</h4><br>
-        <h5>Total Fee: {{"$%.2f"|format(billing.totalFee)}}</h5><br>
-        <h5>Current Split<h5>
-            <h6>Customer Fee: {{"$%.2f"|format(billing.custFee)}}</h6>
-            <h6>Restaurant Fee: {{"$%.2f"|format(billing.restFee)}}</h6>
+
+        <div class="text-center">
+          <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+            <li class="nav-item">
+              <a class="nav-link active" id="pills-services-tab" data-toggle="pill" href="#pills-services" role="tab" aria-controls="pills-services" aria-selected="true">Your Services</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="pills-transaction-tab" data-toggle="pill" href="#pills-transaction" role="tab" aria-controls="pills-transaction" aria-selected="false">Edit Transaction Fees</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="pills-invoice-tab" data-toggle="pill" href="#pills-invoice" role="tab" aria-controls="pills-invoice" aria-selected="false">Download Invoices</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact-m" aria-selected="false">Location Comparison</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact-mm" aria-selected="false">Edit Payment Details</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="https://squareup.com/dashboard/" target="_blank">View Square Dashboard</a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="tab-content" id="pills-tabContent">
+          <div class="tab-pane fade show active" id="pills-services" role="tabpanel" aria-labelledby="pills-services-tab">
             <br>
-            <h5>Change Split</h5><br>
-            <div class="row">
-              <div class="col-lg-6">
-                <div class="alert alert-primary" role="alert">
-                  Note: You Will Still Be Billed The Total Fee Every For Every Order, The Form Below Will Change How Much We Add To The Customer's Bill On Checkout
-                </div>
-              </div>
-            </div>
+            <h3>Bill Breakdown</h3>
+            <h6>{{billing.lastBill}} to {{billing.nextBill}}</h6>
+            <br>
+            <h5>Base Fee {{"$%.2f"|format(billing.fees.all.base)}}</h5>
+            <br>
+            <h5>Kiosks</h5><br>
+
+            {% for key_kiosk, kiosk_val in billing.fees.all.kiosk.items() %}
+            {% for kiosk_val_val in kiosk_val.kiosks %}
+
+            <h6>Kiosk ID {{kiosk_val_val}}</h6>
+            <p>Kiosk Software Fee {{"$%.2f"|format(kiosk_val.base)}}</p>
+            {% if kiosk_val.installment %}
+
+            <p>Kiosk Hardware Installment Fee {{"$%.2f"|format(kiosk_val.fees - kiosk_val.base)}}</p>
+            <p>{{kiosk_val.remaining}} of {{kiosk_val.term}} Payments Remaining</p><br>
+            <p>Total {{"$%.2f"|format(kiosk_val.fees)}}</p>
+            {% else %}
+            <br>
+            <p>Total {{"$%.2f"|format(kiosk_val.base)}}</p>
+            {% endif %}
+            <br><br>
+            {% endfor %}
+            {% endfor %}
+
+            <h5>Transactions Fees</h5>
+            <br>
+            <h6>Transactions Processed: {{billing.fees.all.transactions.count}}</h6><br>
+            <h6>Transaction Fees Billed: {{"$%.2f"|format(billing.fees.all.transactions.fees)}}</h6>
+            <br>
             <hr>
-            <form action="change-split" method='POST' id="change-split">
-              <h6 class="text-danger">0%/100% <input class="radio" type="radio" name="split" value="0.0" required></h6>
-              <p>
-                Customer Pays {{"$%.2f"|format(0)}} <br>
-                Restaurant Pays {{"$%.2f"|format(billing.totalFee)}} <br>
-              </p>
-              <br>
-              <h6 class="text-warning">10%/90% <input class="radio" type="radio" name="split" value="0.1" required></h6>
-              <p>
-                Customer Pays {{"$%.2f"|format(billing.totalFee * 0.1)}} <br>
-                Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.9)}} <br>
-              </p>
-              <br>
-              <h6 class="text-info">20%/80% <input class="radio" type="radio" name="split" value="0.2" required></h6>
-              <p>
-                Customer Pays {{"$%.2f"|format(billing.totalFee * 0.2)}} <br>
-                Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.8)}} <br>
-              </p>
-              <br>
-              <h6 class="text-primary">30%/70% <input class="radio" type="radio" name="split" value="0.3" required></h6>
-              <p>
-                Customer Pays {{"$%.2f"|format(billing.totalFee * 0.3)}} <br>
-                Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.7)}} <br>
-              </p>
-              <br>
-              <h6 class="text-secondary">40%/60% <input class="radio" type="radio" name="split" value="0.4" required></h6>
-              <p>
-                Customer Pays {{"$%.2f"|format(billing.totalFee * 0.4)}} <br>
-                Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.6)}} <br>
-              </p>
-              <br>
-              <h6 class="text-success">50%/50% <input class="radio" type="radio" name="split" value="0.5" required></h6>
-              <p>
-                Customer Pays {{"$%.2f"|format(billing.totalFee * 0.5)}} <br>
-                Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.5)}} <br>
-              </p>
-              <br>
-              <h6 class="text-secondary">60%/40% <input class="radio" type="radio" name="split" value="0.6" required></h6>
-              <p>
-                Customer Pays {{"$%.2f"|format(billing.totalFee * 0.6)}} <br>
-                Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.4)}} <br>
-              </p>
-              <br>
-              <h6 class="text-primary">70%/30% <input class="radio" type="radio" name="split" value="0.7" required></h6>
-              <p>
-                Customer Pays {{"$%.2f"|format(billing.totalFee * 0.7)}} <br>
-                Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.3)}} <br>
-              </p>
-              <br>
-              <h6 class="text-info">80%/20% <input class="radio" type="radio" name="split" value="0.8" required></h6>
-              <p>
-                Customer Pays {{"$%.2f"|format(billing.totalFee * 0.8)}} <br>
-                Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.2)}} <br>
-              </p>
-              <br>
-              <h6 class="text-warning">90%/10% <input class="radio" type="radio" name="split" value="0.9" required></h6>
-              <p>
-                Customer Pays {{"$%.2f"|format(billing.totalFee * 0.9)}} <br>
-                Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.1)}} <br>
-              </p>
-              <br>
-              <h6 class="text-danger">100%/0% <input class="radio" type="radio" name="split" value="1.0" required></h6>
-              <p>
-                Customer Pays {{"$%.2f"|format(billing.totalFee)}} <br>
-                Restaurant Pays {{"$%.2f"|format(0)}} <br>
-              </p>
-              <br>
-              <br>
-              <button class="btn btn-lg btn-success" type="submit" form="change-split">Change</button>
-            </form>
+            <h4>Total {{"$%.2f"|format(total)}}</h4>
+            <br><br><br>
+
+          </div>
+          <div class="tab-pane fade" id="pills-transaction" role="tabpanel" aria-labelledby="pills-transaction-tab">
+            <br>
+            <h4>Fee Details</h4><br>
+            <h5>Total Fee: {{"$%.2f"|format(billing.totalFee)}}</h5><br>
+            <h5>Current Split<h5>
+                <h6>Customer Fee: {{"$%.2f"|format(billing.custFee)}}</h6>
+                <h6>Restaurant Fee: {{"$%.2f"|format(billing.restFee)}}</h6>
+                <br>
+                <h5>Change Split</h5><br>
+                <div class="row">
+                  <div class="col-lg-6">
+                    <div class="alert alert-primary" role="alert">
+                      Note: You Will Still Be Billed The Total Fee Every For Every Order, The Form Below Will Change How Much We Add To The Customer's Bill On Checkout
+                    </div>
+                  </div>
+                </div>
+                <hr>
+                <form action="change-split" method='POST' id="change-split">
+                  <h6 class="text-danger">0%/100% <input class="radio" type="radio" name="split" value="0.0" required></h6>
+                  <p>
+                    Customer Pays {{"$%.2f"|format(0)}} <br>
+                    Restaurant Pays {{"$%.2f"|format(billing.totalFee)}} <br>
+                  </p>
+                  <br>
+                  <h6 class="text-warning">10%/90% <input class="radio" type="radio" name="split" value="0.1" required></h6>
+                  <p>
+                    Customer Pays {{"$%.2f"|format(billing.totalFee * 0.1)}} <br>
+                    Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.9)}} <br>
+                  </p>
+                  <br>
+                  <h6 class="text-info">20%/80% <input class="radio" type="radio" name="split" value="0.2" required></h6>
+                  <p>
+                    Customer Pays {{"$%.2f"|format(billing.totalFee * 0.2)}} <br>
+                    Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.8)}} <br>
+                  </p>
+                  <br>
+                  <h6 class="text-primary">30%/70% <input class="radio" type="radio" name="split" value="0.3" required></h6>
+                  <p>
+                    Customer Pays {{"$%.2f"|format(billing.totalFee * 0.3)}} <br>
+                    Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.7)}} <br>
+                  </p>
+                  <br>
+                  <h6 class="text-secondary">40%/60% <input class="radio" type="radio" name="split" value="0.4" required></h6>
+                  <p>
+                    Customer Pays {{"$%.2f"|format(billing.totalFee * 0.4)}} <br>
+                    Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.6)}} <br>
+                  </p>
+                  <br>
+                  <h6 class="text-success">50%/50% <input class="radio" type="radio" name="split" value="0.5" required></h6>
+                  <p>
+                    Customer Pays {{"$%.2f"|format(billing.totalFee * 0.5)}} <br>
+                    Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.5)}} <br>
+                  </p>
+                  <br>
+                  <h6 class="text-secondary">60%/40% <input class="radio" type="radio" name="split" value="0.6" required></h6>
+                  <p>
+                    Customer Pays {{"$%.2f"|format(billing.totalFee * 0.6)}} <br>
+                    Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.4)}} <br>
+                  </p>
+                  <br>
+                  <h6 class="text-primary">70%/30% <input class="radio" type="radio" name="split" value="0.7" required></h6>
+                  <p>
+                    Customer Pays {{"$%.2f"|format(billing.totalFee * 0.7)}} <br>
+                    Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.3)}} <br>
+                  </p>
+                  <br>
+                  <h6 class="text-info">80%/20% <input class="radio" type="radio" name="split" value="0.8" required></h6>
+                  <p>
+                    Customer Pays {{"$%.2f"|format(billing.totalFee * 0.8)}} <br>
+                    Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.2)}} <br>
+                  </p>
+                  <br>
+                  <h6 class="text-warning">90%/10% <input class="radio" type="radio" name="split" value="0.9" required></h6>
+                  <p>
+                    Customer Pays {{"$%.2f"|format(billing.totalFee * 0.9)}} <br>
+                    Restaurant Pays {{"$%.2f"|format(billing.totalFee * 0.1)}} <br>
+                  </p>
+                  <br>
+                  <h6 class="text-danger">100%/0% <input class="radio" type="radio" name="split" value="1.0" required></h6>
+                  <p>
+                    Customer Pays {{"$%.2f"|format(billing.totalFee)}} <br>
+                    Restaurant Pays {{"$%.2f"|format(0)}} <br>
+                  </p>
+                  <br>
+                  <br>
+                  <button class="btn btn-lg btn-success" type="submit" form="change-split">Change</button>
+                </form>
 
 
 
+
+          </div>
+
+
+          <div class="tab-pane fade" id="pills-invoice" role="tabpanel" aria-labelledby="pills-invoice-tab">
+            <br>
+            <h3>Invoices</h3>
+            <br>
+          </div>
+
+
+
+        </div>
+
+
+
+
+        <br><br>
+        <br><br>
+        <br><br>
 
       </div>
-
-
-      <div class="tab-pane fade" id="pills-invoice" role="tabpanel" aria-labelledby="pills-invoice-tab">
-        <br>
-        <h3>Invoices</h3>
-        <br>
-      </div>
-
-
-
     </div>
 
-
-
-
-    <br><br>
-    <br><br>
-    <br><br>
+    <div class="col-lg-1"></div>
 
   </div>
 </body>

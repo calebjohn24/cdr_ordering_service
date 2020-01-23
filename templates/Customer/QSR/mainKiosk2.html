@@ -253,7 +253,10 @@
                 </div>
                 <div class="card-footer text-muted">
                   <form id="rem-{{key_cart}}" method="POST" action="qsr-itmRemove">
-                    <div class="p-2"><button class="btn btn-lg btn-danger" type="submit" form="rem-{{key_cart}}" name="remove" value="{{key_cart}}">Remove <i class="fas fa-times-circle"></i></button></div>
+                    <div class="p-2">
+                      <button class="btn btn-lg btn-danger" type="submit" form="rem-{{key_cart}}" name="remove" value="{{key_cart}}"  data-trigger="hover" data-toggle="popover" data-content="Removing...">Add To
+                        Remove <i class="fas fa-times-circle"></i><</button>
+                    </div>
                   </form>
                 </div>
               </div>
