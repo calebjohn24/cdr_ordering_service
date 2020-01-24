@@ -6,6 +6,7 @@ import time
 import uuid
 import plivo
 import os
+from fpdf import FPDF
 import firebase_admin
 from passlib.hash import pbkdf2_sha256
 from firebase_admin import credentials
@@ -73,19 +74,20 @@ app.register_blueprint(register.register_kiosk_blueprint)
 app.register_blueprint(billing.billing_blueprint)
 scKey = str(uuid.uuid4())
 app.secret_key = scKey
-sslify = SSLify(app)
+sslify = SSLify(app, permanent=True)
 Compress(app)
 CSRFProtect(app)
 
 
+'''
 @app.errorhandler(404)
 def page_not_found(e):
     return redirect(url_for('find_page.findRestaurant'))
-
+'''
 
 @app.errorhandler(CSRFError)
 def handle_csrf_error(e):
-    return (str(e.description), 400)
+    return (str(e), 400)
 
 
 if __name__ == '__main__':
@@ -97,13 +99,14 @@ if __name__ == '__main__':
         sess.init_app(app)
         sess.permanent = True
         # app.permanent_session_lifetime = datetime.timedelta(minutes=240)
-        app.debug = True
+        # app.debug = True
         app.config.update(
             SESSION_COOKIE_SECURE=True,
             SESSION_COOKIE_HTTPONLY=True,
             SESSION_COOKIE_SAMESITE='Lax',
         )
         app.jinja_env.cache = {}
+        app.debug = True
         app.run(host="0.0.0.0", port=5000)
     except KeyboardInterrupt:
         sys.exit()

@@ -4,6 +4,7 @@ import smtplib
 import sys
 import time
 import uuid
+from fpdf import FPDF
 import plivo
 import os
 import firebase_admin
@@ -35,21 +36,22 @@ mainLink = info['mainLink']
 sender = 'cedarrestaurantsbot@gmail.com'
 emailPass = "cda33d07-f6bd-479e-806f-5d039ae2fa2d"
 
-def updateTransactionFees(amt,estNameStr,location):
+
+def updateTransactionFees(amt, estNameStr, location):
     feesRef = db.reference('/billing/' + estNameStr + '/fees/all/transactions')
     fees = dict(feesRef.get())
     newCount = fees['count'] + 1
     newFees = fees['fees'] + amt
-    feesRef.update({"count":newCount, "fees":newFees})
-    feesRef = db.reference('/billing/' + estNameStr + '/fees/locations/'+location+'/transactions')
+    feesRef.update({"count": newCount, "fees": newFees})
+    feesRef = db.reference('/billing/' + estNameStr +
+                           '/fees/locations/' + location + '/transactions')
     fees = dict(feesRef.get())
     newCount = fees['count'] + 1
     newFees = fees['fees'] + amt
-    feesRef.update({"count":newCount, "fees":newFees})
+    feesRef.update({"count": newCount, "fees": newFees})
 
 
-
-@billing_blueprint.route('/<estNameStr>/<location>/billing-detail', methods=['POST','GET'])
+@billing_blueprint.route('/<estNameStr>/<location>/billing-detail', methods=['POST', 'GET'])
 def billDetails(estNameStr, location):
     if(checkLocation(estNameStr, location) == 1):
         return(redirect(url_for("find_page.findRestaurant")))
@@ -65,7 +67,6 @@ def billDetails(estNameStr, location):
         return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
         return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
-    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -87,14 +88,13 @@ def billDetails(estNameStr, location):
             print(kioskKeys)
             kioskFees = 0
             for keys in kioskKeys:
-                kioskFees += float(billing['fees']['all']['kiosk'][keys]['fees'] * float(billing['fees']['all']['kiosk'][keys]['count']))
+                kioskFees += float(billing['fees']['all']['kiosk'][keys]['fees'] * float(
+                    billing['fees']['all']['kiosk'][keys]['count']))
             total = baseFee + orderFees + kioskFees
     except Exception as e:
         total = 0
         billing = {}
-    return(render_template("POS/AdminMini/billing.html", restName=estNameStr.capitalize() ,billing=billing, total=total))
-
-
+    return(render_template("POS/AdminMini/billing.html", restName=estNameStr.capitalize(), billing=billing, total=total))
 
 
 @billing_blueprint.route('/<estNameStr>/<location>/change-split', methods=['POST'])
@@ -105,8 +105,269 @@ def splitChange(estNameStr, location):
     billingRef = db.reference('/billing/' + estNameStr)
     billing = dict(billingRef.get())
     totalFee = billing['totalFee']
-    custFee = round(float(totalFee*splitPct),2)
+    custFee = round(float(totalFee * splitPct), 2)
     splitPctRest = 1.0 - splitPct
-    restFee = round(float(totalFee*splitPctRest),2)
-    billingRef.update({'split':splitPct, 'custFee':custFee, 'restFee':restFee})
+    restFee = round(float(totalFee * splitPctRest), 2)
+    billingRef.update(
+        {'split': splitPct, 'custFee': custFee, 'restFee': restFee})
     return(redirect(url_for('billing.billDetails', estNameStr=estNameStr, location=location)))
+
+
+@billing_blueprint.route('/<estNameStr>/<location>/donwloadinvoice-<key>')
+def genInvoice(estNameStr, location, key):
+    if(checkLocation(estNameStr, location) == 1):
+        return(redirect(url_for("find_page.findRestaurant")))
+    tzGl = {}
+    locationsPaths = {}
+    getSquare(estNameStr, tzGl, locationsPaths)
+    idToken = session.get('token', None)
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    try:
+        user_ref = ref.get()[str(username)]
+    except Exception:
+        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
+    if (checkAdminToken(estNameStr, idToken, username) == 1):
+        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    user_ref = ref.child(str(username))
+    user_ref.update({
+        'time': time.time()
+    })
+    billingRef = db.reference(
+        '/billing/' + estNameStr + '/bills/' + str(key))
+    billing = dict(billingRef.get())
+
+    infoRef = db.reference('/billing/' + estNameStr + '/info')
+    info = dict(infoRef.get())
+    base = billing['base']
+    date = billing['date']
+    pdf = FPDF()
+    pdf.add_page()
+
+    font_name = "Helvetica"
+    pdf.image(name=str('CedarRoboticsLogo.jpg'), h=30)
+
+    text = 'Cedar Robotics LLC'
+    pdf.set_font(font_name, size=16, style="B")
+    w = pdf.get_string_width(text)
+    pdf.cell(w, 15, txt=text, align="L")
+
+    pdf.set_font(font_name, size=24, style="B")
+    text = "Invoice"
+    pdf.multi_cell(0, 20, txt=text, align="R")
+
+    text = 'UBI #604 313 861'
+    pdf.set_font(font_name, size=10, style="I")
+    w = pdf.get_string_width(text)
+    pdf.cell(w, 15, txt=text, align="L")
+
+    text = "ID #CDR" + str(key)
+    w = pdf.get_string_width(text)
+    pdf.set_font(font_name, size=10, style="B")
+    pdf.multi_cell(0, 15, txt=text, align="R")
+
+    text = 'cedarrestaurants.com' + "     " + '17203269719'
+    pdf.set_font(font_name, size=12)
+    w = pdf.get_string_width(text)
+    pdf.cell(w, 15, txt=text, align="L")
+
+    text = "Date: " + str(date)
+    w = pdf.get_string_width(text)
+    pdf.set_font(font_name, size=12, style="B")
+    pdf.multi_cell(0, 15, txt=text, align="R")
+
+    text = "Bill To: "
+    pdf.set_font(font_name, size=12, style="B")
+    w = pdf.get_string_width(text)
+    pdf.cell(w, 15, txt=text, align="L")
+
+    text = info['legalname'] + \
+        ' (' + str(estNameStr.capitalize()).replace('-', ' ') + ')'
+    pdf.set_font(font_name, size=14)
+    pdf.multi_cell(200, 15, txt=text, align="L")
+
+    text = "Billing Address: "
+    pdf.set_font(font_name, size=10, style="B")
+    w = pdf.get_string_width(text)
+    pdf.cell(w, 15, txt=text, align="L")
+
+    text = str(info['addr'])
+    pdf.set_font(font_name, size=10)
+    pdf.multi_cell(200, 15, txt=text, align="L")
+
+    text = ''
+    pdf.set_font(font_name, size=10)
+    pdf.multi_cell(200, 15, txt=text, align="L")
+
+    text = "Item"
+    testStr = 'Quantity       Unit Price       Total Price'
+    testWidth = pdf.get_string_width(testStr)
+    wI = pdf.get_string_width(text)
+    pdf.set_font(font_name, size=12, style="B")
+    allWidth = (170-testWidth) + wI
+    pdf.cell(allWidth, 15, txt=text, align="L")
+
+
+    text = "Quantity"
+    wQ = pdf.get_string_width(text)
+    pdf.set_font(font_name, size=12, style="B")
+    pdf.cell((wQ), 15, txt=text, align="R")
+
+    space = "       "
+    wS = pdf.get_string_width(space)
+    pdf.set_font(font_name, size=12, style="B")
+    pdf.cell((wS), 15, txt=space, align="R")
+
+    allWidthQ = allWidth + wQ + wS
+
+    text = "Unit Price"
+    wU = pdf.get_string_width(text)
+    pdf.set_font(font_name, size=12, style="B")
+    pdf.cell(wU, 15, txt=text, align="R")
+
+    space = "       "
+    wS = pdf.get_string_width(space)
+    pdf.set_font(font_name, size=12, style="B")
+    pdf.cell((wS), 15, txt=space, align="R")
+
+    text = "Total Price"
+    wT = pdf.get_string_width(text)
+    pdf.set_font(font_name, size=12, style="B")
+    pdf.cell(wT, 15, txt=text, align="R")
+
+    text = ''
+    pdf.set_font(font_name, size=10)
+    pdf.multi_cell(200, 15, txt=text, align="L")
+
+
+
+
+    text = "Server Fee"
+    w = pdf.get_string_width(text)
+    pdf.set_font(font_name, size=12)
+    pdf.cell(allWidth-1, 15, txt=text, align="L")
+
+
+    text = "1"
+    w = pdf.get_string_width(text)
+    pdf.set_font(font_name, size=12)
+    pdf.cell((wQ), 15, txt=text, align="C")
+
+    space = "       "
+    wS = pdf.get_string_width(space)
+    pdf.set_font(font_name, size=12, style="B")
+    pdf.cell((wS), 15, txt=space, align="R")
+
+    text = '${:.2f}'.format((base))
+    w = pdf.get_string_width(text)
+    pdf.set_font(font_name, size=12)
+    pdf.cell((wU), 15, txt=text, align="C")
+
+    space = "       "
+    wS = pdf.get_string_width(space)
+    pdf.set_font(font_name, size=12, style="B")
+    pdf.cell((wS), 15, txt=space, align="R")
+
+    text = '${:.2f}'.format((base))
+    w = pdf.get_string_width(text)
+    pdf.set_font(font_name, size=12)
+    pdf.cell((wT), 15, txt=text, align="C")
+
+    text = ''
+    pdf.set_font(font_name, size=10)
+    pdf.multi_cell(200, 15, txt=text, align="L")
+
+
+    transactionFees = billing['transaction']['amt']
+
+    total = base['fee'] + billing['transaction']['amt']
+    transactionCount = billing['transaction']['count']
+    transactionUnit = float(billing['transaction']['amt']/billing['transaction']['count'])
+
+
+    text = "Transaction Fee"
+    w = pdf.get_string_width(text)
+    pdf.set_font(font_name, size=12)
+    pdf.cell(allWidth-1, 15, txt=text, align="L")
+
+
+    text = str(billing['transaction']['count'])
+    w = pdf.get_string_width(text)
+    pdf.set_font(font_name, size=12)
+    pdf.cell((wQ), 15, txt=text, align="C")
+
+    space = "       "
+    wS = pdf.get_string_width(space)
+    pdf.set_font(font_name, size=12, style="B")
+    pdf.cell((wS), 15, txt=space, align="R")
+
+    text = '${:.2f}'.format((transactionUnit))
+    w = pdf.get_string_width(text)
+    pdf.set_font(font_name, size=12)
+    pdf.cell((wU), 15, txt=text, align="C")
+
+    space = "       "
+    wS = pdf.get_string_width(space)
+    pdf.set_font(font_name, size=12, style="B")
+    pdf.cell((wS), 15, txt=space, align="R")
+
+    text = '${:.2f}'.format((transactionFees))
+    w = pdf.get_string_width(text)
+    pdf.set_font(font_name, size=12)
+    pdf.cell((wT), 15, txt=text, align="C")
+
+    text = ''
+    pdf.set_font(font_name, size=10)
+    pdf.multi_cell(200, 15, txt=text, align="L")
+
+
+    kiosks = dict(billing['kiosks'])
+
+    qty = 0
+    totalKioskSoftware = 0
+    
+
+
+
+    text = "Kiosk Software Fee"
+    w = pdf.get_string_width(text)
+    pdf.set_font(font_name, size=12)
+    pdf.cell(allWidth-1, 15, txt=text, align="L")
+
+
+    text = str(billing['kiosks']['softcount'])
+    w = pdf.get_string_width(text)
+    pdf.set_font(font_name, size=12)
+    pdf.cell((wQ), 15, txt=text, align="C")
+
+    space = "       "
+    wS = pdf.get_string_width(space)
+    pdf.set_font(font_name, size=12, style="B")
+    pdf.cell((wS), 15, txt=space, align="R")
+
+    text = '${:.2f}'.format((transactionUnit))
+    w = pdf.get_string_width(text)
+    pdf.set_font(font_name, size=12)
+    pdf.cell((wU), 15, txt=text, align="C")
+
+    space = "       "
+    wS = pdf.get_string_width(space)
+    pdf.set_font(font_name, size=12, style="B")
+    pdf.cell((wS), 15, txt=space, align="R")
+
+    text = '${:.2f}'.format((transactionFees))
+    w = pdf.get_string_width(text)
+    pdf.set_font(font_name, size=12)
+    pdf.cell((wT), 15, txt=text, align="C")
+
+    text = ''
+    pdf.set_font(font_name, size=10)
+    pdf.multi_cell(200, 15, txt=text, align="L")
+
+
+    tmp_filename = estNameStr + "/invoices/" + str(date) + "-invoice.pdf"
+    pdf.output(tmp_filename)
+
+    return('ok', 200)
+    # return send_file()

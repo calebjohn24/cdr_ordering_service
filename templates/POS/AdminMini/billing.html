@@ -85,7 +85,7 @@
             <h3>Bill Breakdown</h3>
             <h6>{{billing.lastBill}} to {{billing.nextBill}}</h6>
             <br>
-            <h5>Base Fee {{"$%.2f"|format(billing.fees.all.base)}}</h5>
+            <h5>Server Fee {{"$%.2f"|format(billing.fees.all.base)}}</h5>
             <br>
             <h5>Kiosks</h5><br>
 
@@ -136,7 +136,7 @@
                 </div>
                 <hr>
                 <form action="change-split" method='POST' id="change-split">
-                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                   <h6 class="text-danger">0%/100% <input class="radio" type="radio" name="split" value="0.0" required></h6>
                   <p>
                     Customer Pays {{"$%.2f"|format(0)}} <br>
@@ -215,8 +215,19 @@
 
           <div class="tab-pane fade" id="pills-invoice" role="tabpanel" aria-labelledby="pills-invoice-tab">
             <br>
-            <h3>Invoices</h3>
+            <h3>Download Invoices</h3>
+            <hr>
             <br>
+            {% if billing.bills %}
+            {% for bill_key, bill_val in billing.bills.items() %}
+
+            <a target="_blank" href="donwloadinvoice-{{bill_key}}"><h4>{{bill_val.startdate}} to {{bill_val.date}} <i class="fas fa-file-download"></i></h4><a><br>
+
+
+            {% endfor %}
+            {% else %}
+            <h4>No Invoices have beeen generated at this time, please check back after your first billing cycle is complete</h4>
+            {% endif %}
           </div>
 
 

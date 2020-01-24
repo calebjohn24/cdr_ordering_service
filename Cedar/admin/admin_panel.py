@@ -191,8 +191,11 @@ def loginPageCheck(estNameStr, location):
                 'token': LoginToken,
                 'time': time.time()
             })
+            print("loggedin")
             session['user'] = email
             session['token'] = LoginToken
+            print('loggedin-2')
+
             return redirect(url_for('admin_panel.panel', estNameStr=estNameStr, location=location))
         else:
             return render_template("POS/AdminMini/login2.html", btn=str("admin"), restName=estNameStr, locName=location)
