@@ -92,7 +92,8 @@
             {% for key_kiosk, kiosk_val in billing.fees.all.kiosk.items() %}
             {% for kiosk_val_val in kiosk_val.kiosks %}
 
-            <h6>Kiosk ID {{kiosk_val_val}}</h6>
+            <h6>Kiosk ID {{kiosk_val_val}}  </h6>
+            <p>Group {{kiosk_val.group}}</p>
             <p>Kiosk Software Fee {{"$%.2f"|format(kiosk_val.base)}}</p>
             {% if kiosk_val.installment %}
 
@@ -103,7 +104,7 @@
             <br>
             <p>Total {{"$%.2f"|format(kiosk_val.base)}}</p>
             {% endif %}
-            <br><br>
+            <br><br><hr>
             {% endfor %}
             {% endfor %}
 
@@ -113,8 +114,11 @@
             <h6>Transaction Fees Billed: {{"$%.2f"|format(billing.fees.all.transactions.fees)}}</h6>
             <br>
             <hr>
-            <h4>Total {{"$%.2f"|format(total)}}</h4>
+            <h5>Subtotal {{"$%.2f"|format(total)}}</h5>
             <br>
+            <h6>Tax {{"$%.2f"|format(total * taxRate)}}</h6>
+            <br>
+            <h4>Total {{"$%.2f"|format(total * (1+taxRate) )}}</h4>
             <br><br><br>
 
           </div>
@@ -221,7 +225,7 @@
             {% if billing.bills %}
             {% for bill_key, bill_val in billing.bills.items() %}
 
-            <a target="_blank" href="donwloadinvoice-{{bill_key}}"><h4>{{bill_val.startdate}} to {{bill_val.date}} <i class="fas fa-file-download"></i></h4><a><br>
+            <a href="donwloadinvoice-{{bill_key}}"><h4>{{bill_val.startdate}} to {{bill_val.date}} <i class="fas fa-file-download"></i></h4><a><br>
 
 
             {% endfor %}

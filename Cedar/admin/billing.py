@@ -11,7 +11,7 @@ import firebase_admin
 from passlib.hash import pbkdf2_sha256
 from firebase_admin import credentials
 from firebase_admin import db
-from flask import Blueprint, render_template, abort
+from flask import Blueprint, render_template, abort, send_file
 from google.cloud import storage
 import pytz
 from flask import Flask, flash, request, session, jsonify
@@ -94,7 +94,10 @@ def billDetails(estNameStr, location):
     except Exception as e:
         total = 0
         billing = {}
-    return(render_template("POS/AdminMini/billing.html", restName=estNameStr.capitalize(), billing=billing, total=total))
+    infoRef = db.reference('/billing/' + estNameStr + '/info')
+    info = dict(infoRef.get())
+    taxRate = float(info['tax'])/100.0
+    return(render_template("POS/AdminMini/billing.html", restName=estNameStr.capitalize(), billing=billing, total=total, taxRate=taxRate))
 
 
 @billing_blueprint.route('/<estNameStr>/<location>/change-split', methods=['POST'])
@@ -205,9 +208,8 @@ def genInvoice(estNameStr, location, key):
     testWidth = pdf.get_string_width(testStr)
     wI = pdf.get_string_width(text)
     pdf.set_font(font_name, size=12, style="B")
-    allWidth = (170-testWidth) + wI
+    allWidth = (170 - testWidth) + wI
     pdf.cell(allWidth, 15, txt=text, align="L")
-
 
     text = "Quantity"
     wQ = pdf.get_string_width(text)
@@ -240,14 +242,10 @@ def genInvoice(estNameStr, location, key):
     pdf.set_font(font_name, size=10)
     pdf.multi_cell(200, 15, txt=text, align="L")
 
-
-
-
     text = "Server Fee"
     w = pdf.get_string_width(text)
     pdf.set_font(font_name, size=12)
-    pdf.cell(allWidth-1, 15, txt=text, align="L")
-
+    pdf.cell(allWidth - 1, 15, txt=text, align="L")
 
     text = "1"
     w = pdf.get_string_width(text)
@@ -278,19 +276,16 @@ def genInvoice(estNameStr, location, key):
     pdf.set_font(font_name, size=10)
     pdf.multi_cell(200, 15, txt=text, align="L")
 
-
     transactionFees = billing['transaction']['amt']
-
-    total = base['fee'] + billing['transaction']['amt']
+    totalVal = base
+    totalVal += billing['transaction']['amt']
     transactionCount = billing['transaction']['count']
-    transactionUnit = float(billing['transaction']['amt']/billing['transaction']['count'])
-
+    transactionUnit = float(billing['transaction']['amt'] / float(billing['transaction']['count']))
 
     text = "Transaction Fee"
     w = pdf.get_string_width(text)
     pdf.set_font(font_name, size=12)
-    pdf.cell(allWidth-1, 15, txt=text, align="L")
-
+    pdf.cell(allWidth - 1, 15, txt=text, align="L")
 
     text = str(billing['transaction']['count'])
     w = pdf.get_string_width(text)
@@ -321,53 +316,117 @@ def genInvoice(estNameStr, location, key):
     pdf.set_font(font_name, size=10)
     pdf.multi_cell(200, 15, txt=text, align="L")
 
-
-    kiosks = dict(billing['kiosks'])
-
-    qty = 0
-    totalKioskSoftware = 0
-    
+    kiosks = dict(billing['kiosks']['ids'])
 
 
 
-    text = "Kiosk Software Fee"
-    w = pdf.get_string_width(text)
-    pdf.set_font(font_name, size=12)
-    pdf.cell(allWidth-1, 15, txt=text, align="L")
+    for kioskKeys in kiosks:
+        # print(kiosks[kioskKeys])
+
+        if(kiosks[kioskKeys]['hardware'] != 0):
+            text = "Kiosk Hardware Installment (Group id "  + kiosks[kioskKeys]['group'] + ")"
+            w = pdf.get_string_width(text)
+            pdf.set_font(font_name, size=12)
+            pdf.cell(allWidth - 1, 15, txt=text, align="L")
+
+            text = str(kiosks[kioskKeys]['count'])
+            w = pdf.get_string_width(text)
+            pdf.set_font(font_name, size=12)
+            pdf.cell((wQ), 15, txt=text, align="C")
+
+            space = "       "
+            wS = pdf.get_string_width(space)
+            pdf.set_font(font_name, size=12, style="B")
+            pdf.cell((wS), 15, txt=space, align="R")
 
 
-    text = str(billing['kiosks']['softcount'])
-    w = pdf.get_string_width(text)
-    pdf.set_font(font_name, size=12)
-    pdf.cell((wQ), 15, txt=text, align="C")
+            text = '${:.2f}'.format((kiosks[kioskKeys]['hardware']))
+            w = pdf.get_string_width(text)
+            pdf.set_font(font_name, size=12)
+            pdf.cell((wU), 15, txt=text, align="C")
 
-    space = "       "
-    wS = pdf.get_string_width(space)
-    pdf.set_font(font_name, size=12, style="B")
-    pdf.cell((wS), 15, txt=space, align="R")
+            space = "       "
+            wS = pdf.get_string_width(space)
+            pdf.set_font(font_name, size=12, style="B")
+            pdf.cell((wS), 15, txt=space, align="R")
 
-    text = '${:.2f}'.format((transactionUnit))
-    w = pdf.get_string_width(text)
-    pdf.set_font(font_name, size=12)
-    pdf.cell((wU), 15, txt=text, align="C")
+            text = '${:.2f}'.format((kiosks[kioskKeys]['hardware'] * kiosks[kioskKeys]['count']))
+            totalVal += float(kiosks[kioskKeys]['hardware'] * kiosks[kioskKeys]['count'])
+            w = pdf.get_string_width(text)
+            pdf.set_font(font_name, size=12)
+            pdf.cell((wT), 15, txt=text, align="C")
 
-    space = "       "
-    wS = pdf.get_string_width(space)
-    pdf.set_font(font_name, size=12, style="B")
-    pdf.cell((wS), 15, txt=space, align="R")
+            text = ''
+            pdf.set_font(font_name, size=10)
+            pdf.multi_cell(200, 15, txt=text, align="L")
 
-    text = '${:.2f}'.format((transactionFees))
-    w = pdf.get_string_width(text)
-    pdf.set_font(font_name, size=12)
-    pdf.cell((wT), 15, txt=text, align="C")
+
+        text = "Kiosk Software Fee (Group id "  + kiosks[kioskKeys]['group'] + ")"
+        w = pdf.get_string_width(text)
+        pdf.set_font(font_name, size=12)
+        pdf.cell(allWidth - 1, 15, txt=text, align="L")
+
+        text = str(kiosks[kioskKeys]['count'])
+        w = pdf.get_string_width(text)
+        pdf.set_font(font_name, size=12)
+        pdf.cell((wQ), 15, txt=text, align="C")
+
+        space = "       "
+        wS = pdf.get_string_width(space)
+        pdf.set_font(font_name, size=12, style="B")
+        pdf.cell((wS), 15, txt=space, align="R")
+
+
+        text = '${:.2f}'.format((kiosks[kioskKeys]['software']))
+        w = pdf.get_string_width(text)
+        pdf.set_font(font_name, size=12)
+        pdf.cell((wU), 15, txt=text, align="C")
+
+        space = "       "
+        wS = pdf.get_string_width(space)
+        pdf.set_font(font_name, size=12, style="B")
+        pdf.cell((wS), 15, txt=space, align="R")
+
+        text = '${:.2f}'.format((kiosks[kioskKeys]['software'] * kiosks[kioskKeys]['count']))
+        totalVal += (kiosks[kioskKeys]['software'] * kiosks[kioskKeys]['count'])
+        w = pdf.get_string_width(text)
+        pdf.set_font(font_name, size=12)
+        pdf.cell((wT), 15, txt=text, align="C")
+
+        text = ''
+        pdf.set_font(font_name, size=10)
+        pdf.multi_cell(200, 15, txt=text, align="L")
+
 
     text = ''
-    pdf.set_font(font_name, size=10)
+    pdf.set_font(font_name, size=10, style="B")
+    pdf.multi_cell(200, 5, txt=text, align="L")
+
+    subtotal = totalVal
+    taxRate = float(info['tax'])/100.0
+    tax = totalVal * taxRate
+    total = subtotal + tax
+
+    text = 'Subtotal: ' + '${:.2f}'.format(subtotal)
+    pdf.set_font(font_name, size=12, style="B")
     pdf.multi_cell(200, 15, txt=text, align="L")
+
+    text = 'Sales Tax (' + '{:.2f}'.format(info['tax']) +'%): ' + '${:.2f}'.format(tax)
+    pdf.set_font(font_name, size=12, style="B")
+    pdf.multi_cell(200, 15, txt=text, align="L")
+
+
+    text = 'Total: ' + '${:.2f}'.format(total)
+    pdf.set_font(font_name, size=12, style="B")
+    pdf.multi_cell(200, 15, txt=text, align="L")
+
+
+
+
 
 
     tmp_filename = estNameStr + "/invoices/" + str(date) + "-invoice.pdf"
     pdf.output(tmp_filename)
 
-    return('ok', 200)
-    # return send_file()
+    # return('ok', 200)
+    return send_file(tmp_filename, attachment_filename=str(str(date) + "-cedar-invoice.pdf"), as_attachment=True,mimetype='application/pdf')
