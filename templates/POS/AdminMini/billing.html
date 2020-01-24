@@ -68,10 +68,10 @@
               <a class="nav-link" id="pills-invoice-tab" data-toggle="pill" href="#pills-invoice" role="tab" aria-controls="pills-invoice" aria-selected="false">Download Invoices</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact-m" aria-selected="false">Location Comparison</a>
+              <a class="nav-link" id="pills-location-tab" data-toggle="pill" href="#pills-location" role="tab" aria-controls="pills-location" aria-selected="false">Location Comparison</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" id="pills-contact-tab" data-toggle="pill" href="#pills-contact" role="tab" aria-controls="pills-contact-mm" aria-selected="false">Edit Payment Details</a>
+              <a class="nav-link" id="pills-payment-tab" data-toggle="pill" href="#pills-payment" role="tab" aria-controls="pills-payment" aria-selected="false">Edit Payment Details</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" href="https://squareup.com/dashboard/" target="_blank">View Square Dashboard</a>
@@ -80,6 +80,8 @@
         </div>
 
         <div class="tab-content" id="pills-tabContent">
+
+
           <div class="tab-pane fade show active" id="pills-services" role="tabpanel" aria-labelledby="pills-services-tab">
             <br>
             <h3>Bill Breakdown</h3>
@@ -122,6 +124,59 @@
             <br><br><br>
 
           </div>
+
+          <div class="tab-pane fade" id="pills-location" role="tabpanel" aria-labelledby="pills-location-tab">
+
+          {% for key, val in billing.fees.locations.items() %}
+
+
+          <br>
+          <h4>Location: {{key|capitalize}}</h4><br>
+          <h5>Transactions</h5>
+          <h6>{{val.transactions.count}} Transactions Processed</h6>
+          <h6>Transaction Fees Billed: {{"$%.2f"|format(val.transactions.fees)}}</h6>
+          <br>
+          <h5>Kiosks</h5>
+          {% for key_kiosk, val_kiosk in billing.kiosks.items() %}
+
+          {% if val_kiosk.loc == key %}
+
+          {% if val_kiosk.active == 1 %}
+          <h6 class="text-success">Active Kiosk: {{key_kiosk}}</h6>
+
+          {% else %}
+
+          <h6 class="text-danger">Inactive Kiosk: {{key_kiosk}}</h6>
+
+          {% endif %}
+
+
+          {% else %}
+
+          <p></p>
+
+          {% endif %}
+
+
+          {% endfor %}
+          <hr><br>
+          <!-- <h6>Transactions Processed: {{billing.fees.all.transactions.count}}</h6><br> -->
+          <!-- <h6>Transaction Fees Billed: {{"$%.2f"|format(billing.fees.all.transactions.fees)}}</h6> -->
+
+          {% endfor %}
+
+
+          </div>
+
+
+          <div class="tab-pane fade" id="pills-payment" role="tabpanel" aria-labelledby="pills-payment-tab">
+
+          <p>payment tab</p>
+
+
+          </div>
+
+
           <div class="tab-pane fade" id="pills-transaction" role="tabpanel" aria-labelledby="pills-transaction-tab">
             <br>
             <h4>Fee Details</h4><br>
@@ -211,11 +266,7 @@
                   <button class="btn btn-lg btn-success" type="submit" form="change-split">Change</button>
                 </form>
 
-
-
-
           </div>
-
 
           <div class="tab-pane fade" id="pills-invoice" role="tabpanel" aria-labelledby="pills-invoice-tab">
             <br>
@@ -233,6 +284,9 @@
             <h4>No Invoices have beeen generated at this time, please check back after your first billing cycle is complete</h4>
             {% endif %}
           </div>
+
+
+
 
 
 
