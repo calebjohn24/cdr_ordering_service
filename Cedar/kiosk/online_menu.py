@@ -44,6 +44,7 @@ def startKiosk5(estNameStr,location):
 def startOnline(estNameStr,location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
+    menu = findMenu(estNameStr,location)
     phone = rsp["number"]
     name = rsp["name"]
     togo = rsp["togo"]
@@ -51,10 +52,13 @@ def startOnline(estNameStr,location):
     session['table'] = ""
     session['name'] = name
     session['phone'] = phone
+    session["menu"] = menu
     path = '/restaurants/' + estNameStr + '/' + location + "/orders/"
     orderToken = str(uuid.uuid4())
     ref = db.reference(path)
     newOrd = ref.push({
+        'start':time.time(),
+        "menu":menu,
         "togo":togo,
         "QSR":0,
         "cpn":1,
@@ -69,8 +73,6 @@ def startOnline(estNameStr,location):
         })
     #print(newOrd.key)
     session['orderToken'] = newOrd.key
-    menu = findMenu(estNameStr,location)
     print(menu)
-    session["menu"] = menu
     ##print(menu)
     return(redirect(url_for('qsr_menu.qsrMenu',estNameStr=estNameStr,location=location)))

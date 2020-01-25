@@ -29,6 +29,14 @@ from Cedar.admin import admin_panel, menu, pw_reset, feedback, schedule, billing
 from Cedar.kiosk import online_menu, payments, qsr_menu, sd_menu, register
 from Cedar.employee import qsr_employee, sd_employee
 from Cedar.main_page import find_page
+import atexit
+from apscheduler.schedulers.background import BackgroundScheduler
+import stripe
+
+
+stripe.api_key = "sk_test_Sr1g0u9XZ2txPiq8XENOQjCd00pjjrscNp"
+
+
 
 infoFile = open("info.json")
 info = json.load(infoFile)
@@ -56,6 +64,15 @@ emailPass = "cda33d07-f6bd-479e-806f-5d039ae2fa2d"
 dayNames = ["MON", "TUE", "WED", "THURS", "FRI", "SAT", "SUN"]
 global locationsPaths
 locationsPaths = {}
+
+def checkBilling():
+    """ Function for test purposes. """
+    print("billing checked")
+
+sched = BackgroundScheduler(daemon=True)
+sched.add_job(checkBilling,'interval',hours=12)
+sched.start()
+
 
 app = Flask(__name__)
 app.register_blueprint(admin_panel.admin_panel_blueprint)
@@ -87,8 +104,11 @@ def page_not_found(e):
 
 @app.errorhandler(CSRFError)
 def handle_csrf_error(e):
-    
     return (str(e), 400)
+
+
+
+
 
 
 if __name__ == '__main__':
@@ -109,7 +129,7 @@ if __name__ == '__main__':
         )
         '''
         app.jinja_env.cache = {}
-        app.debug = True
-        app.run(host="0.0.0.0", port=5000)
+        # app.debug = True
+        app.run(host="0.0.0.0", port=5000, debug=True)
     except KeyboardInterrupt:
         sys.exit()

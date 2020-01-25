@@ -145,6 +145,7 @@ def EmployeeSuccess(estNameStr,location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     reqToken = rsp["req"]
+    print(reqToken)
     pathRequest = '/restaurants/' + estNameStr + '/' + location + "/requests/" + reqToken
     reqRef = db.reference(pathRequest)
     reqData = dict(reqRef.get())

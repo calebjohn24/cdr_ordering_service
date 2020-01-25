@@ -68,7 +68,7 @@
               <a class="nav-link" id="pills-invoice-tab" data-toggle="pill" href="#pills-invoice" role="tab" aria-controls="pills-invoice" aria-selected="false">Download Invoices</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" id="pills-location-tab" data-toggle="pill" href="#pills-location" role="tab" aria-controls="pills-location" aria-selected="false">Location Comparison</a>
+              <a class="nav-link" id="pills-location-tab" data-toggle="pill" href="#pills-location" role="tab" aria-controls="pills-location" aria-selected="false">Locations</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" id="pills-payment-tab" data-toggle="pill" href="#pills-payment" role="tab" aria-controls="pills-payment" aria-selected="false">Edit Payment Details</a>
@@ -126,6 +126,8 @@
           </div>
 
           <div class="tab-pane fade" id="pills-location" role="tabpanel" aria-labelledby="pills-location-tab">
+
+            <a class="btn btn-lg btn-success">Add Location <i class="fas fa-plus"></i></a>
 
           {% for key, val in billing.fees.locations.items() %}
 

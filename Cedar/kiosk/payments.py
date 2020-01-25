@@ -465,6 +465,22 @@ def onlineVerify(estNameStr, location, orderToken):
                 }
             })
 
+            pathRequest = '/restaurants/' + estNameStr + '/' + location + "/requests"
+            reqRef = db.reference('/restaurants/' + estNameStr + '/' + location + "/requests")
+            newReq = reqRef.push({
+                "online":"True",
+                "cart": dict(order['cart']),
+                "info": {"name": order["name"],
+                         "number": order['phone'],
+                         "paid": "PAID",
+                         "token":orderToken,
+                         "type":"online",
+                         "subtotal": float(order['subtotal'] + 0.25),
+                         "total": order['total'],
+                         'table': order['table']
+                         }
+            })
+
             updateTransactionFees(0.5, estNameStr, location)
             tzGl = {}
             locationsPaths = {}
@@ -472,12 +488,17 @@ def onlineVerify(estNameStr, location, orderToken):
             now = datetime.datetime.now(tzGl[location])
             write_str = "Your Order From " + estNameStr.capitalize() + " " + \
                 location.capitalize() + " @"
-            write_str += str(now.strftime("%H:%M")) + " on " + \
-                str(now.month) + "-" + str(now.day) + "-" + str(now.year)
+
+            timeStamp = str(now.month) + "-" + str(now.day) + "-" + \
+                str(now.year) + " @ " + str(now.strftime("%H:%M"))
+
+            write_str += timeStamp
+
             write_str += "\n \n"
             cart = dict(order["cart"])
+            print(order)
             startTime = session.get('startTime', None)
-            duration = time.time() - startTime
+            duration = order['start'] - time.time()
             subtotal = 0
             logOrd = {
                 "info": {
@@ -534,7 +555,7 @@ def onlineVerify(estNameStr, location, orderToken):
                 SUBJECT = "Your Order From " + estNameStr.capitalize() + " " + \
                     location.capitalize()
                 message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
-                sendEmail(sender, order['email'], mesg)
+                sendEmail(sender, order['email'], message)
         updateTransactionFees(billingInfo['totalFee'], estNameStr, location)
         return(render_template("Customer/QSR/Payment-Success.html"))
     else:

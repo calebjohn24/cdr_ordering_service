@@ -167,7 +167,7 @@ def checkAdminToken(estNameStr, idToken, username):
 @admin_panel_blueprint.route('/<estNameStr>/<location>/admin-login')
 def login(estNameStr, location):
     if(checkLocation(estNameStr, location) == 1):
-        return(redirect(url_for("find_page.findRestaurant")))
+        return(redirect(url_for(  "find_page.findRestaurant")))
     logo = 'https://storage.googleapis.com/cedarchatbot.appspot.com/' + \
         estNameStr + '/logo.jpg'
     return render_template("POS/AdminMini/login.html", btn=str("admin"), restName=estNameStr, locName=location, logo=logo)
@@ -193,7 +193,7 @@ def loginPageCheck(estNameStr, location):
             })
             session['user'] = email
             session['token'] = LoginToken
-            return redirect(url_for('admin_panel.panel', estNameStr=estNameStr, location=location))
+            return redirect(url_for(  'admin_panel.panel', estNameStr=estNameStr, location=location))
         else:
             return render_template("POS/AdminMini/login2.html", btn=str("admin"), restName=estNameStr, locName=location)
     except Exception as e:
@@ -206,7 +206,7 @@ def loginPageCheck(estNameStr, location):
 @admin_panel_blueprint.route('/<estNameStr>/<location>/admin-panel', methods=["GET"])
 def panel(estNameStr, location):
     if(checkLocation(estNameStr, location) == 1):
-        return(redirect(url_for("find_page.findRestaurant")))
+        return(redirect(url_for(  "find_page.findRestaurant")))
     getSquare(estNameStr, tzGl, locationsPaths)
     idToken = session.get('token', None)
     username = session.get('user', None)
@@ -214,9 +214,9 @@ def panel(estNameStr, location):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
+        return redirect(url_for(  'admin_panel.login', estNameStr=estNameStr, location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
+        return redirect(url_for(  'admin_panel.login', estNameStr=estNameStr, location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
@@ -257,7 +257,7 @@ def panel(estNameStr, location):
 @admin_panel_blueprint.route('/<estNameStr>/<location>/admin-panel-logloc', methods=["GET"])
 def panellog(estNameStr, location):
     if(checkLocation(estNameStr, location) == 1):
-        return(redirect(url_for("find_page.findRestaurant")))
+        return(redirect(url_for(  "find_page.findRestaurant")))
     getSquare(estNameStr, tzGl, locationsPaths)
     idToken = session.get('token', None)
     username = session.get('user', None)
@@ -265,9 +265,9 @@ def panellog(estNameStr, location):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
+        return redirect(url_for(  'admin_panel.login', estNameStr=estNameStr, location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
+        return redirect(url_for(  'admin_panel.login', estNameStr=estNameStr, location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
@@ -291,7 +291,7 @@ def panellog(estNameStr, location):
 @admin_panel_blueprint.route('/<estNameStr>/<location>/admin-panel-log', methods=["GET"])
 def panellogloc(estNameStr, location):
     if(checkLocation(estNameStr, location) == 1):
-        return(redirect(url_for("find_page.findRestaurant")))
+        return(redirect(url_for(  "find_page.findRestaurant")))
     getSquare(estNameStr, tzGl, locationsPaths)
     idToken = session.get('token', None)
     username = session.get('user', None)
@@ -299,9 +299,9 @@ def panellogloc(estNameStr, location):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
+        return redirect(url_for(  'admin_panel.login', estNameStr=estNameStr, location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
+        return redirect(url_for(  'admin_panel.login', estNameStr=estNameStr, location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -335,9 +335,9 @@ def addAdmin(estNameStr, location):
         if ((pbkdf2_sha256.verify(pw, user["password"])) == True):
             return(render_template("POS/AdminMini/addAdmin.html", users=users))
         else:
-            return redirect(url_for('admin_panel.panel', estNameStr=estNameStr, location=location))
+            return redirect(url_for(  'admin_panel.panel', estNameStr=estNameStr, location=location))
     except Exception:
-        return redirect(url_for('admin_panel.panel', estNameStr=estNameStr, location=location))
+        return redirect(url_for(  'admin_panel.panel', estNameStr=estNameStr, location=location))
 
 
 @admin_panel_blueprint.route('/<estNameStr>/<location>/confirmAdmin', methods=["POST"])
@@ -357,7 +357,7 @@ def confirmAdmin(estNameStr, location):
             "token": "uuid"
         }
     })
-    return redirect(url_for('admin_panel.panel', estNameStr=estNameStr, location=location))
+    return redirect(url_for(  'admin_panel.panel', estNameStr=estNameStr, location=location))
 
 
 @admin_panel_blueprint.route('/<estNameStr>/<location>/editEmployee', methods=["POST"])
@@ -373,9 +373,9 @@ def editEmployee(estNameStr, location):
         if ((pbkdf2_sha256.verify(pw, user["password"])) == True):
             return(render_template("POS/AdminMini/editEmp.html"))
         else:
-            return redirect(url_for('admin_panel.panel', estNameStr=estNameStr, location=location))
+            return redirect(url_for(  'admin_panel.panel', estNameStr=estNameStr, location=location))
     except Exception:
-        return redirect(url_for('admin_panel.panel', estNameStr=estNameStr, location=location))
+        return redirect(url_for(  'admin_panel.panel', estNameStr=estNameStr, location=location))
 
 
 @admin_panel_blueprint.route('/<estNameStr>/<location>/confirmEmpCode', methods=["POST"])
@@ -390,7 +390,7 @@ def confirmEmployeeCode(estNameStr, location):
     ref.update({
         'code': hash
     })
-    return redirect(url_for('admin_panel.panel', estNameStr=estNameStr, location=location))
+    return redirect(url_for(  'admin_panel.panel', estNameStr=estNameStr, location=location))
 
 
 @admin_panel_blueprint.route('/<estNameStr>/<location>/editLogo', methods=["POST"])
@@ -407,22 +407,22 @@ def editImgX(estNameStr, location):
         str(str(UPLOAD_FOLDER) + "/" + str('logo.jpg')), content_type='image/jpeg')
     url = str(d.public_url)
     print(url)
-    return redirect(url_for('admin_panel.panel', estNameStr=estNameStr, location=location))
+    return redirect(url_for(  'admin_panel.panel', estNameStr=estNameStr, location=location))
 
 
 @admin_panel_blueprint.route('/<estNameStr>/<location>/remUser~<user>')
 def remUser(estNameStr, location, user):
     if(checkLocation(estNameStr, location) == 1):
-        return(redirect(url_for("find_page.findRestaurant")))
+        return(redirect(url_for(  "find_page.findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
+        return redirect(url_for(  'admin_panel.login', estNameStr=estNameStr, location=location))
     if (checkAdminToken(idToken, username) == 1):
-        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
+        return redirect(url_for(  'admin_panel.login', estNameStr=estNameStr, location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -432,4 +432,4 @@ def remUser(estNameStr, location, user):
         rem_ref = db.reference(
             '/restaurants/' + estNameStr + '/admin-info/' + user)
         rem_ref.delete()
-    return redirect(url_for('admin_panel.panel', estNameStr=estNameStr, location=location))
+    return redirect(url_for(  'admin_panel.panel', estNameStr=estNameStr, location=location))
