@@ -129,7 +129,7 @@ def kiosk2(estNameStr,location, cat, itm):
     if(qty_str == ""):
         qty = 1
     else:
-        qty = int(qty_str)
+        qty = abs(int(qty_str))
     dispStr += str(qty) + " x " + itm + " "
     dict_keys = list(rsp.keys())
     mods = []

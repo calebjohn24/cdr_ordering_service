@@ -340,6 +340,8 @@ def payStaffQSR(estNameStr, location):
 def payOnline(estNameStr, location):
     orderToken = session.get('orderToken', None)
     subtotal = session.get('subtotal', None)
+    billingRef = db.reference('/billing/' + estNameStr)
+    billingInfo = dict(billingRef.get())
     pathOrder = '/restaurants/' + estNameStr + \
         '/' + location + "/orders/" + orderToken
     orderInfo = dict(db.reference(pathOrder).get())
@@ -379,7 +381,7 @@ def payOnline(estNameStr, location):
                     body['order']['line_items'][0]['name'] = 'Order Fee'
                     body['order']['line_items'][0]['quantity'] = '1'
                     body['order']['line_items'][0]['base_price_money'] = {}
-                    body['order']['line_items'][0]['base_price_money']['amount'] = 25
+                    body['order']['line_items'][0]['base_price_money']['amount'] = int(billingInfo['custFee']*100)
                     body['order']['line_items'][0]['base_price_money']['currency'] = "USD"
 
                     cart = dict(orderInfo["cart"])
@@ -459,7 +461,7 @@ def onlineVerify(estNameStr, location, orderToken):
                     "info": {"name": order["name"],
                              "number": order['phone'],
                              "paid": "PAID",
-                             "subtotal": float(order['subtotal'] + 0.25),
+                             "subtotal": float(order['subtotal'] + billingInfo['custFee']),
                              "total": order['total'],
                              'table': order['table']
                              }
@@ -476,13 +478,13 @@ def onlineVerify(estNameStr, location, orderToken):
                          "paid": "PAID",
                          "token":orderToken,
                          "type":"online",
-                         "subtotal": float(order['subtotal'] + 0.25),
+                         "subtotal": float(order['subtotal'] + billingInfo['custFee']),
                          "total": order['total'],
                          'table': order['table']
                          }
             })
 
-            updateTransactionFees(0.5, estNameStr, location)
+            updateTransactionFees(billingInfo['totalFee'], estNameStr, location)
             tzGl = {}
             locationsPaths = {}
             getSquare(estNameStr, tzGl, locationsPaths)
