@@ -185,7 +185,7 @@ def payStaffConfirm(estNameStr, location):
                 "feescustomer": billingInfo['custFee'],
                 "feesrestaurant": billingInfo['restFee'],
                 "feestotal": billingInfo['totalFee'],
-                "taxes": float(subtotal * taxRate),
+                "taxes": float(subtotal) * float(taxRate),
                 "total": float(subtotal * (1 + taxRate))
             },
             "order": [],
@@ -306,6 +306,7 @@ def payStaffQSR(estNameStr, location):
                                  estNameStr + '/' + location + '/taxrate').get())
     tax = "Tax ${:0,.2f}".format(subtotal * taxRate)
     tax += " (" + str(float(taxRate * 100)) + "%)"
+    logOrd['info'].update({'taxes':float(subtotal * taxRate)})
     total = "Total ${:0,.2f}".format(subtotal * (1 + taxRate))
     logOrd['info'].update({"total": float(subtotal * (1 + taxRate))})
     logRef = db.reference('/billing/' + estNameStr + '/fees/all/log')
@@ -487,7 +488,7 @@ def onlineVerify(estNameStr, location, orderToken):
             getSquare(estNameStr, tzGl, locationsPaths)
             now = datetime.datetime.now(tzGl[location])
             write_str = "Your Order From " + estNameStr.capitalize() + " " + \
-                location.capitalize() + " @"
+                location.capitalize() + " on "
 
             timeStamp = str(now.month) + "-" + str(now.day) + "-" + \
                 str(now.year) + " @ " + str(now.strftime("%H:%M"))
@@ -538,6 +539,7 @@ def onlineVerify(estNameStr, location, orderToken):
                 '/restaurants/' + estNameStr + '/' + location + '/taxrate').get())
             tax = "Tax ${:0,.2f}".format(subtotal * taxRate)
             tax += " (" + str(float(taxRate * 100)) + "%)"
+            logOrd['info'].update({'taxes':float(subtotal * taxRate)})
             total = "Total ${:0,.2f}".format(subtotal * (1 + taxRate))
             logOrd['info'].update({"total": float(subtotal * (1 + taxRate))})
             logRef = db.reference('/billing/' + estNameStr + '/fees/all/log')
@@ -556,11 +558,15 @@ def onlineVerify(estNameStr, location, orderToken):
                     location.capitalize()
                 message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
                 sendEmail(sender, order['email'], message)
-        updateTransactionFees(billingInfo['totalFee'], estNameStr, location)
-        return(render_template("Customer/QSR/Payment-Success.html"))
+        return(redirect(url_for('payments.successonline', estNameStr=estNameStr, location=location)))
+
     else:
         return(redirect(url_for('online_menu.startOnline', estNameStr=estNameStr, location=location)))
 
+
+@payments_blueprint.route('/<estNameStr>/<location>/onlinesuccess')
+def successonline(estNameStr,location):
+    return(render_template("Customer/QSR/Payment-Success.html"))
 
 @payments_blueprint.route('/<estNameStr>/<location>/verify-kiosk-payment~<kioskCode>', methods=["POST"])
 def verifyOrder(estNameStr, location, kioskCode):
@@ -726,7 +732,7 @@ def verifyOrder(estNameStr, location, kioskCode):
                 "feescustomer": billingInfo['custFee'],
                 "feesrestaurant": billingInfo['restFee'],
                 "feestotal": billingInfo['totalFee'],
-                "taxes": float(subtotal * taxRate),
+                "taxes": float(subtotal) * float(taxRate),
                 "total": float(subtotal * (1 + taxRate))
             },
             "order": [],

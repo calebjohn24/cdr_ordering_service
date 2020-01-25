@@ -68,14 +68,15 @@
         <div class="col-lg-8">
         <div class="card">
         <div class="card-body">
-        <h3 class="card-title">{{ord.info.name|capitalize}}<br> {{ord.info.table}}<br> ({{ord.info.number}})</h3></h3><br><h3>{{ord.info.paid}}</h3>
+        <h3 class="card-title">{{ord.info.table}}<br> Name: {{ord.info.name|capitalize}}<br>  Phone: {{ord.info.number}}</h3></h3><br><h3>{{ord.info.paid}}</h3>
         <h3 class="card-text">
           {% for key_itm, itm in ord.cart.items() %}
           <h3>{{itm.dispStr}} <input type="checkbox"></h3>
-          {%endfor%}<br>
-          <h3>Subtotal {{"$%.2f"|format(ord.info.subtotal)}}
-        </h3>
-        <h3>Total {{"$%.2f"|format(ord.info.total)}}<br>
+          {%endfor%}
+          <br>
+          <h4>Subtotal  (w/ order fee) {{"$%.2f"|format(ord.info.subtotal)}}</h4>
+          <h5>Taxes {{"$%.2f"|format(ord.info.total - ord.info.subtotal)}}</h5>
+        <h4>Total {{"$%.2f"|format(ord.info.total)}}</h4><br>
       </h3><br><br>
         <div class="row">
         <div class="col-lg-3">

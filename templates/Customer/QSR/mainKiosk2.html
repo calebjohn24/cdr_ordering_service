@@ -94,14 +94,14 @@
           <!-- for loop Cat Here -->
           <div class="card">
             <button class="btn btn-lg btn-secondary collapsed" data-toggle="collapse" id="#{{key_cat}}-cat" data-target="#{{key_cat}}" aria-expanded="false" aria-controls="{{key_cat}}">
-            <div class="card-header" id="headingTwo">
-              <h4 class="mb-0">
+              <div class="card-header" id="headingTwo">
+                <h4 class="mb-0">
 
                   <h4 class="text-left">{{key_cat}}</h4>
 
 
-              </h4>
-            </div>
+                </h4>
+              </div>
             </button>
             <div id="{{key_cat}}" class="collapse" aria-labelledby="{{key_cat}}" data-parent="#accordion">
               {% for key_item, item in value_cat.items() %}
@@ -152,15 +152,15 @@
                                   </button>
                                 </div>
                                 <form action="qsr-additms~{{key_cat}}~{{key_item}}" method="POST" id="{{key_cat}}--{{key_item}}">
-                                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                                   <div class="modal-body">
                                     {% for key_mod, mod in item.items() %}
                                     {% if mod.info %}
 
                                     {%for m in range(0, mod.min)%}
-
-                                    <h3>{{key_mod|capitalize}}</h3>
                                     <hr>
+                                    <h3>{{key_mod|capitalize}}</h3>
+                                    <br>
                                     {% for key_opt, opt in mod.info.items() %}
                                     {% if mod.get('infoimg') %}
                                     <h4>{{key_opt|capitalize}} <img loading="lazy" {{mod.get('infoimg')[key_opt]}}> <input type="radio" name="{{m}}~0" value="{{key_opt}}~{{opt}}~{{item.img}}" required></h4>
@@ -176,8 +176,9 @@
                                     <br>
                                     {%endfor%}
                                     {%for m in range(0, (mod.max-mod.min))%}
-                                    <h3>{{key_mod|capitalize}}</h3>
                                     <hr>
+                                    <h3>{{key_mod|capitalize}} </h3><small>(optional)</small>
+                                    <br>
                                     {% for key_opt, opt in mod.info.items() %}
                                     {% if mod.get('infoimg') %}
                                     <h4>{{key_opt|capitalize}} <img loading="lazy" {{mod.get('infoimg')[key_opt]}}> <input type="radio" name="{{m}}~1" value="{{key_opt}}~{{opt}}~{{item.img}}"></h4>
@@ -186,6 +187,8 @@
                                     {% else %}
                                     <h4>{{key_opt|capitalize}} <input type="radio" name="{{m}}~1" value="{{key_opt}}~{{opt}}~{{item.img}}"></h4>
                                     <h6>{{"$%.2f"|format(opt)}}</h6>
+
+                                    <br>
                                     <br>
                                     {% endif %}
                                     {%endfor%}
@@ -254,9 +257,9 @@
                 </div>
                 <div class="card-footer text-muted">
                   <form id="rem-{{key_cart}}" method="POST" action="qsr-itmRemove">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                     <div class="p-2">
-                      <button class="btn btn-lg btn-danger" type="submit" form="rem-{{key_cart}}" name="remove" value="{{key_cart}}"  data-trigger="hover" data-toggle="popover" data-content="Removing...">
+                      <button class="btn btn-lg btn-danger" type="submit" form="rem-{{key_cart}}" name="remove" value="{{key_cart}}" data-trigger="hover" data-toggle="popover" data-content="Removing...">
                         Remove <i class="fas fa-times-circle"></i></button>
                     </div>
                   </form>
@@ -267,7 +270,7 @@
               <br>
               <hr>
               <form method="POST" action="cartAdd-QSR">
-                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 
                 {% if cart == {} %}
                 <button class="btn btn-success btn-circle btn-lg" name="add" , value="cart" data-toggle="popover" data-placement="top" data-content="Proceed To Checkout" disabled>

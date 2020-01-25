@@ -25,8 +25,10 @@ from werkzeug.datastructures import ImmutableOrderedMultiDict
 from flask import Blueprint, render_template, abort
 from Cedar import collect_menu
 from Cedar.admin.admin_panel import checkLocation, sendEmail, getSquare, checkAdminToken
+import stripe
 
 
+stripe.api_key = "sk_test_Sr1g0u9XZ2txPiq8XENOQjCd00pjjrscNp"
 billing_blueprint = Blueprint('billing', __name__, template_folder='templates')
 
 infoFile = open("info.json")
@@ -100,6 +102,7 @@ def billDetails(estNameStr, location):
     return(render_template("POS/AdminMini/billing.html", restName=estNameStr.capitalize(), billing=billing, total=total, taxRate=taxRate))
 
 
+
 @billing_blueprint.route('/<estNameStr>/<location>/change-split', methods=['POST'])
 def splitChange(estNameStr, location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
@@ -114,6 +117,10 @@ def splitChange(estNameStr, location):
     billingRef.update(
         {'split': splitPct, 'custFee': custFee, 'restFee': restFee})
     return(redirect(url_for('billing.billDetails', estNameStr=estNameStr, location=location)))
+
+
+
+
 
 
 @billing_blueprint.route('/<estNameStr>/<location>/donwloadinvoice-<key>')

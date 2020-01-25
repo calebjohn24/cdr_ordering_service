@@ -228,9 +228,9 @@
                                     <!-- <h6>{{mod.max}}</h6><br> -->
                                     <!-- <h6>{{mod.min}}</h6><br> -->
                                     {%for m in range(0, mod.min)%}
-
+                                    <br>
                                     <h3>{{key_mod|capitalize}}</h3>
-                                    <hr>
+                                    <br>
                                     {% for key_opt, opt in mod.info.items() %}
                                     {% if mod.get('infoimg') %}
                                     <h4>{{key_opt|capitalize}} <img loading="lazy" {{mod.get('infoimg')[key_opt]}}> <input type="radio" name="{{m}}~0" value="{{key_opt}}~{{opt}}~{{item.img}}" required></h4>
@@ -246,8 +246,9 @@
                                     {%endfor%}
                                     <!-- <h3>{{key_mod|capitalize}}</h3><hr> -->
                                     {%for m in range(0, (mod.max-mod.min))%}
-                                    <h3>{{key_mod|capitalize}}</h3>
                                     <hr>
+                                    <h3>{{key_mod|capitalize}}</h3><small>(optional)</small>
+                                    <br>
                                     {% for key_opt, opt in mod.info.items() %}
                                     {% if mod.get('infoimg') %}
                                     <h4>{{key_opt|capitalize}} <img loading="lazy" {{mod.get('infoimg')[key_opt]}}> <input type="radio" name="{{m}}~1" value="{{key_opt}}~{{opt}}~{{item.img}}"></h4>
@@ -256,6 +257,7 @@
                                     {% else %}
                                     <h4>{{key_opt|capitalize}} <input type="radio" name="{{m}}~1" value="{{key_opt}}~{{opt}}~{{item.img}}"></h4>
                                     <h6>{{"$%.2f"|format(opt)}}</h6>
+                                    <br>
                                     <br>
                                     {% endif %}
                                     {%endfor%}

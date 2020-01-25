@@ -29,6 +29,7 @@ from Cedar.admin import admin_panel, menu, pw_reset, feedback, schedule, billing
 from Cedar.kiosk import online_menu, payments, qsr_menu, sd_menu, register
 from Cedar.employee import qsr_employee, sd_employee
 from Cedar.main_page import find_page
+from Cedar.signup import signup_start
 import atexit
 from apscheduler.schedulers.background import BackgroundScheduler
 import stripe
@@ -89,6 +90,7 @@ app.register_blueprint(qsr_employee.qsr_employee_blueprint)
 app.register_blueprint(sd_employee.sd_employee_blueprint)
 app.register_blueprint(register.register_kiosk_blueprint)
 app.register_blueprint(billing.billing_blueprint)
+app.register_blueprint(signup_start.signup_start_blueprint)
 scKey = str(uuid.uuid4())
 app.secret_key = scKey
 sslify = SSLify(app)
