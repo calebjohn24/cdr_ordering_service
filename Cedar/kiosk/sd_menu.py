@@ -262,8 +262,10 @@ def kioskClear(estNameStr,location):
 @sd_menu_blueprint.route('/<estNameStr>/<location>/sendReq', methods=["POST"])
 def kioskSendReq(estNameStr,location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
-    rsp = ((request.form))
+    rsp = dict((request.form))
+    del rsp['csrf_token']
     rspKey = list(rsp.keys())[0]
+    print(rspKey)
     if(rspKey == "condiments"):
         requestId = "extra condiments-" + rsp["condiments"]
     elif(rspKey == "drinks"):

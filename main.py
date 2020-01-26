@@ -26,11 +26,15 @@ from square.client import Client
 from werkzeug.datastructures import ImmutableOrderedMultiDict
 from flask import Blueprint, render_template, abort
 from Cedar.admin import admin_panel, menu, pw_reset, feedback, schedule, billing
+from Cedar.admin.admin_panel import getSquare, sendEmail
+from Cedar.admin.billing import updateTransactionFees
 from Cedar.kiosk import online_menu, payments, qsr_menu, sd_menu, register
 from Cedar.employee import qsr_employee, sd_employee
 from Cedar.main_page import find_page
 from Cedar.signup import signup_start
+from Cedar.kioskApi import kioskApi
 import atexit
+from werkzeug.local import Local, LocalManager
 from apscheduler.schedulers.background import BackgroundScheduler
 import stripe
 
@@ -67,15 +71,16 @@ global locationsPaths
 locationsPaths = {}
 
 def checkBilling():
-    """ Function for test purposes. """
     print("billing checked")
 
 sched = BackgroundScheduler(daemon=True)
 sched.add_job(checkBilling,'interval',hours=12)
 sched.start()
 
-
+csrf = CSRFProtect()
+csrf.exempt(kioskApi.kioskApi_blueprint)
 app = Flask(__name__)
+
 app.register_blueprint(admin_panel.admin_panel_blueprint)
 app.register_blueprint(find_page.find_page_blueprint)
 app.register_blueprint(menu.menu_panel_blueprint)
@@ -91,11 +96,14 @@ app.register_blueprint(sd_employee.sd_employee_blueprint)
 app.register_blueprint(register.register_kiosk_blueprint)
 app.register_blueprint(billing.billing_blueprint)
 app.register_blueprint(signup_start.signup_start_blueprint)
+app.register_blueprint(kioskApi.kioskApi_blueprint)
+
 scKey = str(uuid.uuid4())
 app.secret_key = scKey
 sslify = SSLify(app)
 Compress(app)
-CSRFProtect(app)
+
+
 
 
 
@@ -111,8 +119,6 @@ def handle_csrf_error(e):
 
 
 
-
-
 if __name__ == '__main__':
     try:
         app.secret_key = scKey
@@ -120,6 +126,9 @@ if __name__ == '__main__':
         app.config['SESSION_TYPE'] = 'filesystem'
         sess = Session()
         sess.init_app(app)
+        csrf.exempt(kioskApi.kioskApi_blueprint)
+        csrf.init_app(app)
+        csrf.exempt(kioskApi.kioskApi_blueprint)
         sess.permanent = True
         # app.permanent_session_lifetime = datetime.timedelta(minutes=240)
         # app.debug = True

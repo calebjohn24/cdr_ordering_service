@@ -178,10 +178,7 @@
 
                   {%endfor%}
                   <br>
-
-                  <h4>Subtotal (w/ order fee) {{"$%.2f"|format(req.info.subtotal)}}</h4>
-                  <h5>Taxes {{"$%.2f"|format(req.info.total - req.info.subtotal)}}</h5>
-                <h4>Total {{"$%.2f"|format(req.info.total)}}</h4><br>
+                <h4>Total (w/ Taxes and Fees){{"$%.2f"|format(req.info.total)}}</h4><br>
 
                   <form method="POST" action="view-success">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />

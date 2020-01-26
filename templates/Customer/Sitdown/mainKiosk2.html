@@ -275,7 +275,16 @@
                                   </div>
                                   <div class="modal-footer">
                                     <input type="submit" value="Add To Cart" class="btn btn-success btn-lg">
+
                                   </div>
+                                  <br><br>
+                                  <br><br>
+                                  <br><br>
+                                  <br><br>
+                                  <br><br>
+                                  <br><br>
+                                  <br><br>
+                                  <br><br>
                                 </form>
 
 
@@ -649,11 +658,12 @@
           <form class="form-inline" method="GET" action="collect-feedback">
             <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
             {% if boolCheck == 0 %}
-            <button type="submit" class="btn btn-lg btn-primary mb-2">Pay Now</button>
+            <button type="submit" class="btn btn-lg btn-primary">Pay Now</button>
+            </form>
             {% else %}
-            <button type="submit" class="btn btn-lg btn-primary mb-2" disabled>Pay Now</button>
+            </form>
+            <button onclick="window.location.reload()" class="btn btn-lg btn-danger">Pay Now</button>
             {% endif %}
-          </form>
         </div>
       </div>
 

@@ -5,9 +5,11 @@ import sys
 import time
 import uuid
 import plivo
+from flask_wtf.csrf import CSRFProtect, CSRFError
 import os
 import firebase_admin
 from passlib.hash import pbkdf2_sha256
+from flask_wtf import csrf
 from firebase_admin import credentials
 from google.cloud import storage
 from firebase_admin import db
@@ -24,6 +26,8 @@ from square.client import Client
 from werkzeug.datastructures import ImmutableOrderedMultiDict
 from flask import Blueprint, render_template, abort
 import Cedar
+
+
 
 
 infoFile = open("info.json")
@@ -48,82 +52,3 @@ def deactivateKiosk(estNameStr, location, kioskCode):
         {"active":0,
          "loc":location}})
     return redirect(url_for('admin_panel.panel',estNameStr=estNameStr,location=location))
-
-@register_kiosk_blueprint.route('/<estNameStr>/<locationX>/kiosksetup/<type>', methods=["POST"])
-def GenReaderCode(estNameStr,locationX,type):
-    locationX = str(locationX).lower()
-    rsp = request.get_json()
-    print(rsp, locationX)
-    code = rsp['code']
-    kioskRef = db.reference('/billing/' + estNameStr.lower() + '/kiosks/' + code)
-    try:
-        check = kioskRef.get()
-        print(check, "check")
-        if(check == None):
-            packet = {
-                "success":"no",
-                "code":"Invlaid Kiosk code"
-            }
-            return jsonify(packet)
-        elif(check['active'] == 1):
-            print(check)
-            packet = {
-                "success":"no",
-                "code":"Kiosk Already In Use. Please Deauthorize In The Admin Panel"
-            }
-            return jsonify(packet)
-        else:
-            kioskType = ["qsr-startKiosk","sitdown-startKiosk"]
-            sqRef = db.reference(str('/restaurants/' + estNameStr))
-            squareToken = dict(sqRef.get())["sq-token"]
-            print(squareToken)
-            client = Client(
-                access_token=squareToken,
-                environment='production',
-            )
-            api_locations = client.locations
-            mobile_authorization_api = client.mobile_authorization
-            # Call list_locatio
-            result = api_locations.list_locations()
-            if result.is_success():
-            	# The body property is a list of locations
-                locations = result.body['locations']
-            	# Iterate over the list
-                for location in locations:
-                    if((dict(location.items())["status"]) == "ACTIVE"):
-                        # print(dict(location.items()))
-                        locationName = (dict(location.items())["name"]).replace(" ","-")
-                        # print(locationName)
-                        locationId = dict(location.items())["id"]
-                        if(str(locationName).lower() == locationX):
-                            body = {}
-                            body['location_id'] = locationId
-                            result = mobile_authorization_api.create_mobile_authorization_code(body)
-                            if result.is_success():
-                                code = dict(result.body)['authorization_code']
-                                print(code)
-                                kioskRef = db.reference('/billing/' + estNameStr + '/kiosks')
-                                kioskRef.update({str(rsp['code']):
-                                    {"active":1,
-                                     "loc":locationX}})
-                                packet = {
-                                    "success":"yes",
-                                    "code":code ,
-                                    "link": str(mainLink+estNameStr+'/'+ locationX + "/" + str(kioskType[int(type)]) + "-" + str(rsp['code']))
-                                }
-                                return jsonify(packet)
-                            elif result.is_error():
-                                print('err')
-                                packet = {
-                                    "success":"no",
-                                    "code":"invlaid location"
-                                }
-                                return jsonify(packet)
-    except Exception as e:
-        print(e)
-        print(2)
-        packet = {
-            "success":"no",
-            "code":"Invlaid Kiosk code"
-        }
-        return jsonify(packet)
