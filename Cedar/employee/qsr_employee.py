@@ -104,7 +104,7 @@ def EmployeePanelQSR(estNameStr,location):
             else:
                 appItem = str(cats) + "~" + str(itm)
                 inactiveItems.append(appItem)
-    return(render_template("POS/StaffQSR/View.html", location=location.capitalize(), restName=str(estNameStr.capitalize()), menu=menu, activeItems=activeItems, inactiveItems=inactiveItems, orders=ordsGet))
+    return(render_template("POS/StaffQSR/View.html", location=getDispNameLoc(estNameStr,location), restName=getDispNameEst(estNameStr), menu=menu, activeItems=activeItems, inactiveItems=inactiveItems, orders=ordsGet))
 
 
 @qsr_employee_blueprint.route('/<estNameStr>/<location>/qsr-activate-item~<cat>~<item>~<menu>')

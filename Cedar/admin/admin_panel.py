@@ -170,7 +170,7 @@ def login(estNameStr, location):
         return(redirect(url_for(  "find_page.findRestaurant")))
     logo = 'https://storage.googleapis.com/cedarchatbot.appspot.com/' + \
         estNameStr + '/logo.jpg'
-    return render_template("POS/AdminMini/login.html", btn=str("admin"), restName=estNameStr, locName=location, logo=logo)
+    return render_template("POS/AdminMini/login.html", btn=str("admin"), restName=getDispNameEst(estNameStr), locName=getDispNameLoc(estNameStr,location), logo=logo)
 
 
 @admin_panel_blueprint.route('/<estNameStr>/<location>/admin', methods=["POST"])
@@ -195,12 +195,12 @@ def loginPageCheck(estNameStr, location):
             session['token'] = LoginToken
             return redirect(url_for(  'admin_panel.panel', estNameStr=estNameStr, location=location))
         else:
-            return render_template("POS/AdminMini/login2.html", btn=str("admin"), restName=estNameStr, locName=location)
+            return render_template("POS/AdminMini/login2.html", btn=str("admin"), restName=getDispNameEst(estNameStr), locName=getDispNameLoc(estNameStr,location))
     except Exception as e:
         print(e)
         logo = 'https://storage.googleapis.com/cedarchatbot.appspot.com/' + \
             estNameStr + '/logo.jpg'
-        return render_template("POS/AdminMini/login2.html", btn=str("admin"), restName=estNameStr, locName=location, logo=logo)
+        return render_template("POS/AdminMini/login2.html", btn=str("admin"), restName=getDispNameEst(estNameStr), locName=getDispNameLoc(estNameStr,location), logo=logo)
 
 
 @admin_panel_blueprint.route('/<estNameStr>/<location>/admin-panel', methods=["GET"])
@@ -248,8 +248,8 @@ def panel(estNameStr, location):
     logo = 'https://storage.googleapis.com/cedarchatbot.appspot.com/' + \
         estNameStr + '/logo.jpg'
     return render_template("POS/AdminMini/mainAdmin.html",
-                           restName=str(estNameStr).capitalize(), feedback=feedback, comments=comments,
-                           locName=location.capitalize(),
+                           restName=getDispNameEst(estNameStr) feedback=feedback, comments=comments,
+                           locName=getDispNameLoc(estNameStr,location),
                            discounts=discDict, logo=logo, kiosks=kiosks)
 
 
@@ -284,8 +284,8 @@ def panellog(estNameStr, location):
         print(e)
         logsLoc = {}
     return render_template("POS/AdminMini/logsloc.html",
-                           restName=str(estNameStr).capitalize(),
-                           locName=location.capitalize(), logsLoc=logsLoc)
+                           restName=getDispNameEst(estNameStr),
+                           locName=getDispNameEst(estNameStr,location), logsLoc=logsLoc)
 
 
 @admin_panel_blueprint.route('/<estNameStr>/<location>/admin-panel-log', methods=["GET"])
@@ -315,8 +315,8 @@ def panellogloc(estNameStr, location):
     except Exception as e:
         logs = {}
     return render_template("POS/AdminMini/logsall.html",
-                           restName=str(estNameStr).capitalize(),
-                           locName=location.capitalize(), logs=logs)
+                           restName=getDispNameEst(estNameStr),
+                           locName=getDispNameLoc(estNameStr,location), logs=logs)
 
 
 

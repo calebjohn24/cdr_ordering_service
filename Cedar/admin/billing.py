@@ -99,7 +99,7 @@ def billDetails(estNameStr, location):
     infoRef = db.reference('/billing/' + estNameStr + '/info')
     info = dict(infoRef.get())
     taxRate = float(info['tax'])/100.0
-    return(render_template("POS/AdminMini/billing.html", restName=estNameStr.capitalize(), billing=billing, total=total, taxRate=taxRate))
+    return(render_template("POS/AdminMini/billing.html", restName=getDispNameEst(estNameStr), billing=billing, total=total, taxRate=taxRate))
 
 
 

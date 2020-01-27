@@ -46,7 +46,7 @@ def startKiosk4(estNameStr,location,code):
     else:
         session['kioskCode'] = code
         logo = 'https://storage.googleapis.com/cedarchatbot.appspot.com/'+estNameStr+'/logo.jpg'
-        return(render_template("Customer/QSR/startKiosk.html",btn="qsr-startKiosk", online="False", restName=estNameStr,locName=location, logo=logo))
+        return(render_template("Customer/QSR/startKiosk.html",btn="qsr-startKiosk", online="False", restName=getDispNameEst(estNameStr),locName=location, logo=logo))
 
 
 @qsr_menu_blueprint.route('/<estNameStr>/<location>/qsr-startKiosk', methods=["POST"])
@@ -107,7 +107,7 @@ def qsrMenu(estNameStr,location):
         cart = dict(cartRef.get())
     except Exception as e:
         cart = {}
-    return(render_template("Customer/QSR/mainKiosk2.html", click=click, menu=menuInfo, restName=estNameStr.capitalize(), cart=cart, locName=location.capitalize()))
+    return(render_template("Customer/QSR/mainKiosk2.html", click=click, menu=menuInfo, restName=getDispNameEst(estNameStr), cart=cart, locName=location.capitalize()))
 
 @qsr_menu_blueprint.route('/<estNameStr>/<location>/qsr-additms~<cat>~<itm>', methods=["POST"])
 def kiosk2QSR(estNameStr,location,cat,itm):

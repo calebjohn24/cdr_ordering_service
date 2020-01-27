@@ -82,7 +82,7 @@ def pwResetCheck(estNameStr,location,token,user):
 def pwReset(estNameStr,location):
     if(checkLocation(estNameStr,location) == 1):
         return(redirect(url_for("find_page.findRestaurant")))
-    return render_template("POS/AdminMini/forgot-password.html", btn=str("admin"), restName=estNameStr)
+    return render_template("POS/AdminMini/forgot-password.html", btn=str("admin"), restName=getDispNameEst(estNameStr))
 
 
 @pw_reset_blueprint.route('/<estNameStr>/<location>/forgot-password', methods=["POST"])

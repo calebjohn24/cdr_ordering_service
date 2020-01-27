@@ -78,9 +78,9 @@ def payQSR(estNameStr, location):
             estNameStr + "/" + location
         if(orderInfo['kiosk'] == 0):
             kioskCode = session.get('kioskCode', None)
-            return(render_template("Customer/QSR/Payment.html", locName=location.capitalize(), restName=str(estNameStr).capitalize(), cart=str(cart), items=items, subtotal=subtotalStr, tax=tax, fee=billingInfo['custFee'], total=total, sqTotal=sqTotal, kioskCode=kioskCode))
+            return(render_template("Customer/QSR/Payment.html", locName=location.getDispNameLoc(estNameStr, location), restName=getDispNameEst(estNameStr), cart=str(cart), items=items, subtotal=subtotalStr, tax=tax, fee=billingInfo['custFee'], total=total, sqTotal=sqTotal, kioskCode=kioskCode))
         else:
-            return(render_template("Customer/QSR/Payment-Online.html", locName=location.capitalize(), restName=str(estNameStr).capitalize(), cart=str(cart), items=items, subtotal=subtotalStr, fee=billingInfo['custFee'], tax=tax, total=total, orderToken=orderToken))
+            return(render_template("Customer/QSR/Payment-Online.html", locName=getDispNameLoc(estNameStr, location), restName=getDispNameEst(estNameStr), cart=str(cart), items=items, subtotal=subtotalStr, fee=billingInfo['custFee'], tax=tax, total=total, orderToken=orderToken))
     else:
         billingRef = db.reference('/billing/' + estNameStr)
         billingInfo = dict(billingRef.get())
@@ -110,7 +110,7 @@ def payQSR(estNameStr, location):
         sqTotal = str(int(round(subtotal * (1 + taxRate), 2) * 100)) + \
             "~" + str(session.get('orderToken', None)) + "~" + mainLink + \
             estNameStr + "/" + location
-        return(render_template("Customer/Sitdown/Payment.html", locName=location.capitalize(), fee=billingInfo['custFee'], restName=str(estNameStr).capitalize(),
+        return(render_template("Customer/Sitdown/Payment.html", locName=getDispNameLoc(estNameStr, location), fee=billingInfo['custFee'], restName=getDispNameEst(estNameStr),
                                items=items, subtotal=subtotalStr, tax=tax, total=total, sqTotal=sqTotal, kioskCode=kioskCode))
 
 

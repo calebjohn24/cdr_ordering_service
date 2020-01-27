@@ -22,7 +22,7 @@ from flask_sslify import SSLify
 from square.client import Client
 from werkzeug.datastructures import ImmutableOrderedMultiDict
 from flask import Blueprint, render_template, abort
-from Cedar.collect_menu import findMenu
+from Cedar.collect_menu import findMenu, getDispNameEst, getDispNameLoc
 from Cedar.admin.admin_panel import checkLocation, sendEmail, getSquare
 
 
@@ -32,12 +32,13 @@ infoFile = open("info.json")
 info = json.load(infoFile)
 mainLink = info['mainLink']
 
+
 @online_menu_blueprint.route('/<estNameStr>/<location>/order', methods=["GET"])
 def startKiosk5(estNameStr,location):
     if(checkLocation(estNameStr,location) == 1):
         return(redirect(url_for("find_page.findRestaurant")))
     logo = 'https://storage.googleapis.com/cedarchatbot.appspot.com/'+estNameStr+'/logo.jpg'
-    return(render_template("Customer/QSR/startKiosk.html",btn="startOnline", online="True", restName=estNameStr,locName=location,logo=logo))
+    return(render_template("Customer/QSR/startKiosk.html",btn="startOnline", online="True", restName=getDispNameEst(estNameStr),locName=getDispNameLoc(estNameStr,location),logo=logo))
 
 
 @online_menu_blueprint.route('/<estNameStr>/<location>/startOnline', methods=["POST"])

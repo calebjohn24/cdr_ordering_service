@@ -114,7 +114,7 @@ def EmployeePanel(estNameStr,location):
             else:
                 appItem = str(cats) + "~" + str(itm)
                 inactiveItems.append(appItem)
-    return(render_template("POS/StaffSitdown/View.html", location=location.capitalize(), restName=str(estNameStr.capitalize()), menu=menu, activeItems=activeItems, inactiveItems=inactiveItems, reqData=reqData, orders=ordsGet))
+    return(render_template("POS/StaffSitdown/View.html", location=location.capitalize(), restName=getDispNameEst(estNameStr), menu=menu, activeItems=activeItems, inactiveItems=inactiveItems, reqData=reqData, orders=ordsGet))
 
 
 @sd_employee_blueprint.route('/<estNameStr>/<location>/activate-item~<cat>~<item>~<menu>')

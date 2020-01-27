@@ -1,4 +1,4 @@
-import datetime
+restName=getDispNameEst(estNameStr)import datetime
 import json
 import smtplib
 import sys
@@ -46,7 +46,7 @@ def startKiosk2(estNameStr,location,code):
         if(checkLocation(estNameStr,location) == 1):
             return(redirect(url_for("find_page.findRestaurant")))
         logo = 'https://storage.googleapis.com/cedarchatbot.appspot.com/'+estNameStr+'/logo.jpg'
-        return(render_template("Customer/Sitdown/startKiosk.html",btn="sitdown-startKiosk",restName=estNameStr,locName=location, logo=logo))
+        return(render_template("Customer/Sitdown/startKiosk.html",btn="sitdown-startKiosk",restName=getDispNameEst(estNameStr),locName=location, logo=logo))
 
 
 
@@ -114,7 +114,7 @@ def sitdownMenu(estNameStr,location):
     # print(cart)
     session["msg"] = "None"
     session["click"] = "None"
-    return(render_template("Customer/Sitdown/mainKiosk2.html", menu=menuInfo, restName=estNameStr.capitalize(), cart=cart, locName=location.capitalize(), msg=msg, click=click, boolCheck=boolCheck))
+    return(render_template("Customer/Sitdown/mainKiosk2.html", menu=menuInfo, restName=getDispNameEst(estNameStr), cart=cart, locName=location.capitalize(), msg=msg, click=click, boolCheck=boolCheck))
 
 
 @sd_menu_blueprint.route('/<estNameStr>/<location>/sitdown-additms~<cat>~<itm>', methods=["POST"])

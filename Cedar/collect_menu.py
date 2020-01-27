@@ -107,3 +107,21 @@ def findMenu(estNameStr,location):
         if(sortedHr[menuKey] == schedule[schedlist[sh2]]):
             menu = (schedlist[sh2])
             return(str(menu))
+
+
+
+def getDispNameEst(estNameStr):
+    try:
+        restName = db.reference('/billing/' + estNameStr + '/dispname').get()
+        return(restName)
+    except Exception as e:
+        return('invalid')
+
+
+
+def getDispNameLoc(estNameStr,location):
+    try:
+        locName = db.reference('/restaurants/' + estNameStr + '/' + location + '/dispname').get()
+        return(locName)
+    except Exception as e:
+        return('invalid')

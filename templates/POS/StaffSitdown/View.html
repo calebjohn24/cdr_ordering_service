@@ -161,7 +161,6 @@
                   <h4>Name: {{req.info.name}}</h4>
                   <h4>Phone: {{req.info.number}}</h4>
 
-                  <h5>Ticket</h5>
                   {% for key_itms, itms in req.cart.items() %}
 
                   {% if key_itms == 'info' %}
@@ -178,7 +177,7 @@
 
                   {%endfor%}
                   <br>
-                <h4>Total (w/ Taxes and Fees){{"$%.2f"|format(req.info.total)}}</h4><br>
+                <h4>Total <small>(w/ Taxes and Fees)</small> {{"$%.2f"|format(req.info.total)}}</h4><br>
 
                   <form method="POST" action="view-success">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
