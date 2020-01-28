@@ -30,7 +30,11 @@ global locationsPaths
 tzGl = {}
 locationsPaths = {}
 dayNames = ["MON", "TUE", "WED", "THURS", "FRI", "SAT", "SUN"]
-
+infoFile = open("info.json")
+info = json.load(infoFile)
+mainLink = info['mainLink']
+restaurants = dict(info['restaurants'])
+print(restaurants)
 def getSquare(estNameStr):
     sqRef = db.reference(str('/restaurants/' + estNameStr))
     ##print(sqRef.get())
@@ -112,7 +116,7 @@ def findMenu(estNameStr,location):
 
 def getDispNameEst(estNameStr):
     try:
-        restName = db.reference('/billing/' + estNameStr + '/dispname').get()
+        restName = restaurants[estNameStr]['dispname']
         return(restName)
     except Exception as e:
         return('invalid')
@@ -121,7 +125,20 @@ def getDispNameEst(estNameStr):
 
 def getDispNameLoc(estNameStr,location):
     try:
-        locName = db.reference('/restaurants/' + estNameStr + '/' + location + '/dispname').get()
+        restName = dict(restaurants[estNameStr])
+        locName = restName[location]
         return(locName)
     except Exception as e:
         return('invalid')
+
+
+def updateEst(estNameStr, new):
+    restaurants[estNameStr].update({"dispname":new})
+    print("updated")
+    return
+
+
+def updateLoc(estNameStr,location, new):
+    restaurants[estNameStr].update({location:new})
+    print("updated")
+    return

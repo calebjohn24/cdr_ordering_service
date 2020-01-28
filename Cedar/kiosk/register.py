@@ -23,6 +23,7 @@ from flask import render_template
 from flask_session import Session
 from flask_sslify import SSLify
 from square.client import Client
+from Cedar.collect_menu import findMenu, getDispNameEst, getDispNameLoc
 from werkzeug.datastructures import ImmutableOrderedMultiDict
 from flask import Blueprint, render_template, abort
 import Cedar

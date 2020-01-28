@@ -30,11 +30,27 @@ import stripe
 
 stripe.api_key = "sk_test_Sr1g0u9XZ2txPiq8XENOQjCd00pjjrscNp"
 
+
+infoFile = open("info.json")
+info = json.load(infoFile)
+mainLink = info['mainLink']
+
+botNumber = info['number']
+
+
+
 signup_start_blueprint = Blueprint('signup_start', __name__, template_folder='templates')
 
 
 
 
 @signup_start_blueprint.route('/signup')
-def collectRestInfo():
+def signupstart():
     return(render_template('Signup/singupstart.html'))
+
+
+
+@signup_start_blueprint.route('/signupstart', methods=['POST'])
+def collectRestInfo():
+    rsp = dict(request.form)
+    return(rsp,200)

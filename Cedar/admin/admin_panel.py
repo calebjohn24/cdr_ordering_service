@@ -23,6 +23,7 @@ from flask_sslify import SSLify
 from square.client import Client
 from werkzeug.datastructures import ImmutableOrderedMultiDict
 from flask import Blueprint, render_template, abort
+from Cedar.collect_menu import findMenu, getDispNameEst, getDispNameLoc, updateEst, updateLoc
 import Cedar
 
 infoFile = open("info.json")
@@ -248,7 +249,7 @@ def panel(estNameStr, location):
     logo = 'https://storage.googleapis.com/cedarchatbot.appspot.com/' + \
         estNameStr + '/logo.jpg'
     return render_template("POS/AdminMini/mainAdmin.html",
-                           restName=getDispNameEst(estNameStr) feedback=feedback, comments=comments,
+                           restName=getDispNameEst(estNameStr), feedback=feedback, comments=comments,
                            locName=getDispNameLoc(estNameStr,location),
                            discounts=discDict, logo=logo, kiosks=kiosks)
 
@@ -268,7 +269,6 @@ def panellog(estNameStr, location):
         return redirect(url_for(  'admin_panel.login', estNameStr=estNameStr, location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
         return redirect(url_for(  'admin_panel.login', estNameStr=estNameStr, location=location))
-    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -318,6 +318,42 @@ def panellogloc(estNameStr, location):
                            restName=getDispNameEst(estNameStr),
                            locName=getDispNameLoc(estNameStr,location), logs=logs)
 
+
+
+@admin_panel_blueprint.route('/<estNameStr>/<location>/editDispName', methods=["POST"])
+def editDispEst(estNameStr, location):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    new = rsp['name']
+    idToken = session.get('token', None)
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    try:
+        user_ref = ref.get()[str(username)]
+    except Exception:
+        return redirect(url_for(  'admin_panel.login', estNameStr=estNameStr, location=location))
+    if (checkAdminToken(estNameStr, idToken, username) == 1):
+        return redirect(url_for(  'admin_panel.login', estNameStr=estNameStr, location=location))
+    updateEst(estNameStr, new)
+    return redirect(url_for(  'admin_panel.panel', estNameStr=estNameStr, location=location))
+
+
+@admin_panel_blueprint.route('/<estNameStr>/<location>/editDispNameLoc', methods=["POST"])
+def editDispEstLoc(estNameStr, location):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    new = rsp['name']
+    idToken = session.get('token', None)
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    try:
+        user_ref = ref.get()[str(username)]
+    except Exception:
+        return redirect(url_for(  'admin_panel.login', estNameStr=estNameStr, location=location))
+    if (checkAdminToken(estNameStr, idToken, username) == 1):
+        return redirect(url_for(  'admin_panel.login', estNameStr=estNameStr, location=location))
+    updateLoc(estNameStr,location, new)
+    return redirect(url_for(  'admin_panel.panel', estNameStr=estNameStr, location=location))
 
 
 @admin_panel_blueprint.route('/<estNameStr>/<location>/addAdmin', methods=["POST"])

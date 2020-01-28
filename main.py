@@ -105,8 +105,6 @@ Compress(app)
 
 
 
-
-
 @app.errorhandler(404)
 def page_not_found(e):
     return redirect(url_for('find_page.findRestaurant'))
@@ -114,7 +112,9 @@ def page_not_found(e):
 
 @app.errorhandler(CSRFError)
 def handle_csrf_error(e):
-    return (str(e), 400)
+    referrer = request.headers.get("Referer")
+    return(redirect(referrer), 302)
+    # return (str(e), 400)
 
 
 
