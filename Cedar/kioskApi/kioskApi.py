@@ -162,8 +162,8 @@ def verifyOrder(estNameStr, location, kioskCode):
         billingInfo = dict(billingRef.get())
         getSquare(estNameStr, tzGl, locationsPaths)
         now = datetime.datetime.now(tzGl[location])
-        write_str = "Your Order From " + estNameStr.capitalize() + " " + \
-            location.capitalize() + " on "
+        write_str = "Your Order From " + getDispNameEst(estNameStr) + " " + \
+            getDispNameLoc(estNameStr,location) + " on "
         timeStamp = str(now.month) + "-" + str(now.day) + "-" + \
             str(now.year) + " @ " + str(now.strftime("%H:%M"))
         write_str += timeStamp
@@ -226,8 +226,8 @@ def verifyOrder(estNameStr, location, kioskCode):
                 "Tax " + tax + "\n" + "Total " + total + "\n \n \n"
             write_str += 'Thank You For Your Order ' + \
                 str(order['name']).capitalize() + " !"
-            SUBJECT = "Your Order From " + estNameStr.capitalize() + " " + \
-                location.capitalize()
+            SUBJECT = "Your Order From " + getDispNameEst(estNameStr) + " " + \
+                getDispNameLoc(estNameStr,location)
             message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
             sendEmail(sender, order['email'], message)
         kioskCode = session.get('kioskCode', None)
@@ -254,8 +254,8 @@ def verifyOrder(estNameStr, location, kioskCode):
         })
 
         now = datetime.datetime.now(tzGl[location])
-        write_str = "Your Meal From " + estNameStr.capitalize() + " " + \
-            location.capitalize() + " on "
+        write_str = "Your Meal From " + getDispNameEst(estNameStr) + " " + \
+            getDispNameLoc(estNameStr, location) + " on "
         timeStamp = str(now.month) + "-" + str(now.day) + "-" + \
             str(now.year) + " @ " + str(now.strftime("%H:%M"))
         write_str += timeStamp
@@ -315,8 +315,8 @@ def verifyOrder(estNameStr, location, kioskCode):
             write_str += subtotalStr + "\n" + tax + "\n" + total + "\n \n \n"
             write_str += 'Thank You For Dining with us ' + \
                 str(order['name']).capitalize() + " !"
-            SUBJECT = "Thank You For Dining at " + estNameStr.capitalize() + " " + \
-                location.capitalize()
+            SUBJECT = "Thank You For Dining at " + getDispNameEst(estNameStr)+ " " + \
+                getDispNameEst(estNameStr, location)
             message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
             sendEmail(sender, order['email'], message)
         orderRef.delete()

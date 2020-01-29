@@ -79,7 +79,7 @@ def payQSR(estNameStr, location):
             estNameStr + "/" + location
         if(orderInfo['kiosk'] == 0):
             kioskCode = session.get('kioskCode', None)
-            return(render_template("Customer/QSR/Payment.html", locName=location.getDispNameLoc(estNameStr, location), restName=getDispNameEst(estNameStr), cart=str(cart), items=items, subtotal=subtotalStr, tax=tax, fee=billingInfo['custFee'], total=total, sqTotal=sqTotal, kioskCode=kioskCode))
+            return(render_template("Customer/QSR/Payment.html", locName=getDispNameLoc(estNameStr, location), restName=getDispNameEst(estNameStr), cart=str(cart), items=items, subtotal=subtotalStr, tax=tax, fee=billingInfo['custFee'], total=total, sqTotal=sqTotal, kioskCode=kioskCode))
         else:
             return(render_template("Customer/QSR/Payment-Online.html", locName=getDispNameLoc(estNameStr, location), restName=getDispNameEst(estNameStr), cart=str(cart), items=items, subtotal=subtotalStr, fee=billingInfo['custFee'], tax=tax, total=total, orderToken=orderToken))
     else:
@@ -154,8 +154,8 @@ def payStaffConfirm(estNameStr, location):
         })
 
         now = datetime.datetime.now(tzGl[location])
-        write_str = "Your Meal From " + estNameStr.capitalize() + " " + \
-            location.capitalize() + " on "
+        write_str = "Your Meal From " + getDispNameEst(estNameStr) + " " + \
+            getDispNameLoc(estNameStr, location) + " on "
         timeStamp = str(now.month) + "-" + str(now.day) + "-" + \
             str(now.year) + " @ " + str(now.strftime("%H:%M"))
         write_str += timeStamp
@@ -215,8 +215,8 @@ def payStaffConfirm(estNameStr, location):
                 "Tax " + tax + "\n" + "Total " + total + "\n \n \n"
             write_str += 'Thank You For Dining with us ' + \
                 str(order['name']).capitalize() + " !"
-            SUBJECT = "Thank You For Dining at " + estNameStr.capitalize() + " " + \
-                location.capitalize()
+            SUBJECT = "Thank You For Dining at " + getDispNameEst(estNameStr) + " " + \
+                getDispNameLoc(estNameStr, location)
             message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
             sendEmail(sender, order['email'], message)
         orderRef.delete()
@@ -259,8 +259,8 @@ def payStaffQSR(estNameStr, location):
     locationsPaths = {}
     getSquare(estNameStr, tzGl, locationsPaths)
     now = datetime.datetime.now(tzGl[location])
-    write_str = "Your Order From " + estNameStr.capitalize() + " " + \
-        location.capitalize() + " on "
+    write_str = "Your Order From " + getDispNameEst(estNameStr) + " " + \
+        getDispNameLoc(estNameStr, location) + " on "
     timeStamp = str(now.month) + "-" + str(now.day) + "-" + \
         str(now.year) + " @ " + str(now.strftime("%H:%M"))
     write_str += timeStamp
@@ -325,8 +325,8 @@ def payStaffQSR(estNameStr, location):
             "Tax " + tax + "\n" + "Total " + total + "\n \n \n"
         write_str += 'Thank You For Your Order ' + \
             str(order['name']).capitalize() + " !"
-        SUBJECT = "Your Order From " + estNameStr.capitalize() + " " + \
-            location.capitalize()
+        SUBJECT = "Your Order From " + getDispNameEst(estNameStr) + " " + \
+            getDispNameLoc(estNameStr, location)
         message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
         sendEmail(sender, order['email'], message)
     updateTransactionFees(billingInfo['totalFee'], estNameStr, location)
@@ -492,8 +492,8 @@ def onlineVerify(estNameStr, location, orderToken):
             locationsPaths = {}
             getSquare(estNameStr, tzGl, locationsPaths)
             now = datetime.datetime.now(tzGl[location])
-            write_str = "Your Order From " + estNameStr.capitalize() + " " + \
-                location.capitalize() + " on "
+            write_str = "Your Order From " + getDispNameEst(estNameStr) + " " + \
+                getDispNameLoc(estNameStr, location) + " on "
 
             timeStamp = str(now.month) + "-" + str(now.day) + "-" + \
                 str(now.year) + " @ " + str(now.strftime("%H:%M"))
@@ -559,8 +559,8 @@ def onlineVerify(estNameStr, location, orderToken):
                 write_str += subtotalStr + "\n" + tax + "\n" + total + "\n \n \n"
                 write_str += 'Thank You For Your Order ' + \
                     str(order['name']).capitalize() + " !"
-                SUBJECT = "Your Order From " + estNameStr.capitalize() + " " + \
-                    location.capitalize()
+                SUBJECT = "Your Order From " + getDispNameEst(estNameStr) + " " + \
+                    getDispNameLoc(estNameStr, location)
                 message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
                 sendEmail(sender, order['email'], message)
         return(redirect(url_for('payments.successonline', estNameStr=estNameStr, location=location)))

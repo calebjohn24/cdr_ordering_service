@@ -34,7 +34,6 @@ infoFile = open("info.json")
 info = json.load(infoFile)
 mainLink = info['mainLink']
 restaurants = dict(info['restaurants'])
-print(restaurants)
 def getSquare(estNameStr):
     sqRef = db.reference(str('/restaurants/' + estNameStr))
     ##print(sqRef.get())
@@ -134,11 +133,33 @@ def getDispNameLoc(estNameStr,location):
 
 def updateEst(estNameStr, new):
     restaurants[estNameStr].update({"dispname":new})
+    nameRef = db.reference('/billing/' + estNameStr)
+    nameRef.update({"dispname":new})
     print("updated")
     return
 
 
 def updateLoc(estNameStr,location, new):
     restaurants[estNameStr].update({location:new})
+    nameRef = db.reference('/restaurants/' + estNameStr + '/' + location)
+    nameRef.update({"dispname":new})
     print("updated")
+    return
+
+
+
+def addEst(estNameStr, dispname):
+    restaurants['restaurants'].update({
+        estNameStr:{
+            "dispname":dispname
+        }
+    })
+    print("added")
+    return
+
+
+
+def addLoc(estNameStr,location, dispname):
+    restaurants['restaurants'][estNameStr].update({location:dispname})
+    print("added")
     return

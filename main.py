@@ -31,7 +31,7 @@ from Cedar.admin.billing import updateTransactionFees
 from Cedar.kiosk import online_menu, payments, qsr_menu, sd_menu, register
 from Cedar.employee import qsr_employee, sd_employee
 from Cedar.main_page import find_page
-from Cedar.signup import signup_start
+from Cedar.signup import signup_start, squareoauth
 from Cedar.kioskApi import kioskApi
 import atexit
 from werkzeug.local import Local, LocalManager
@@ -96,6 +96,7 @@ app.register_blueprint(sd_employee.sd_employee_blueprint)
 app.register_blueprint(register.register_kiosk_blueprint)
 app.register_blueprint(billing.billing_blueprint)
 app.register_blueprint(signup_start.signup_start_blueprint)
+app.register_blueprint(squareoauth.oauth_api_blueprint)
 app.register_blueprint(kioskApi.kioskApi_blueprint)
 
 scKey = str(uuid.uuid4())
@@ -114,7 +115,6 @@ def page_not_found(e):
 def handle_csrf_error(e):
     referrer = request.headers.get("Referer")
     return(redirect(referrer), 302)
-    # return (str(e), 400)
 
 
 

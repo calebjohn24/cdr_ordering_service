@@ -7,6 +7,7 @@ import uuid
 from fpdf import FPDF
 import plivo
 import os
+import random
 import firebase_admin
 from passlib.hash import pbkdf2_sha256
 from firebase_admin import credentials
@@ -32,16 +33,14 @@ stripe.api_key = "sk_test_Sr1g0u9XZ2txPiq8XENOQjCd00pjjrscNp"
 
 
 infoFile = open("info.json")
-info = json.load(infoFile)
+info = dict(json.load(infoFile))
 mainLink = info['mainLink']
 
 botNumber = info['number']
 
 
-
-signup_start_blueprint = Blueprint('signup_start', __name__, template_folder='templates')
-
-
+signup_start_blueprint = Blueprint(
+    'signup_start', __name__, template_folder='templates')
 
 
 @signup_start_blueprint.route('/signup')
@@ -49,8 +48,51 @@ def signupstart():
     return(render_template('Signup/singupstart.html'))
 
 
-
 @signup_start_blueprint.route('/signupstart', methods=['POST'])
 def collectRestInfo():
     rsp = dict(request.form)
-    return(rsp,200)
+    email = rsp['email']
+    email = email.replace('.','-')
+    password = rsp['password']
+    restname = rsp['restname']
+    phone = rsp['phone']
+    restnameDb = restname.replace(' ','-')
+    restnameDb = restnameDb.replace("'", "")
+    restnameDb = restnameDb.replace("&",'-')
+    restnameDb = restnameDb.lower()
+    restnameLegal = rsp['restname-legal']
+    sq = rsp['sq']
+    state = rsp['state']
+    hash = pbkdf2_sha256.hash(password)
+    checkRef = db.reference('/restaurants')
+    billingRef = db.reference('/billing')
+    try:
+        if(dict(checkRef.get())[restnameDb] != None):
+            restnameDb += '-' + str(random.randint(0,1000))
+    except Exception as e:
+        pass
+    checkRef.update({
+        restnameDb :{
+            "admin-info":{
+                email:{
+                    "password":hash,
+                    "time":time.time(),
+                    "token":str(uuid.uuid4())
+                }
+            },
+            "sq-token":"token"
+        }
+    })
+    billingRef.update({
+        restnameDb:{
+            "info":{
+                "legalname":restnameLegal,
+                "phone":phone,
+                "state":rsp['state']
+            },
+            "trial":True,
+            "dispname":str(rsp['restname'])
+        }
+    })
+    collect_menu.addEst(restnameDb, str(rsp['restname']))
+    return(render_template('Signup/squarecheck.html'))
