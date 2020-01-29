@@ -43,8 +43,7 @@ oauth_api_blueprint = Blueprint(
 
 @oauth_api_blueprint.route('/sqacct-check-rd')
 def redirectSq():
-
-    return(redirect('https://connect.squareup.com/oauth2/authorize?client_id='+application_id+'&scope=ORDERS_WRITE%20PAYMENTS_WRITE%20PAYMENTS_WRITE_IN_PERSON'))
+    return(redirect('https://connect.squareup.com/oauth2/authorize?client_id='+application_id+'&scope=ORDERS_WRITE%20PAYMENTS_WRITE%20PAYMENTS_WRITE_IN_PERSON%20MERCHANT_PROFILE_READ'))
 
 
 
@@ -52,10 +51,6 @@ def redirectSq():
 
 @oauth_api_blueprint.route('/callback', methods=['GET'])
 def callback():
-
-  # Extract the returned authorization code from the URL
-  print(request)
-
   authorization_code = request.args.get('code', None)
   if authorization_code:
 
@@ -72,8 +67,12 @@ def callback():
 
       # Here, instead of printing the access token, your application server should store it securely
       # and use it in subsequent requests to the Connect API on behalf of the merchant.
-      print ('Access token: ' + response.access_token)
-      return 'Authorization succeeded!'
+      token = response.access_token
+      estNameStr= session.get('restnameDb', None)
+
+      ref = db.reference('/restaurants/' + estNameStr)
+      ref.update({"sq-token":token})
+      return(redirect(url_for('signup_start.genLoc')))
 
     # The response from the Obtain Token endpoint did not include an access token. Something went wrong.
     else:

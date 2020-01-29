@@ -94,5 +94,15 @@ def collectRestInfo():
             "dispname":str(rsp['restname'])
         }
     })
+    session['restnameDb'] = restnameDb
     collect_menu.addEst(restnameDb, str(rsp['restname']))
     return(render_template('Signup/squarecheck.html'))
+
+@signup_start_blueprint.route('/signupstart', methods=['GET'])
+def genLoc():
+    estNameStr= session.get('restnameDb', None)
+    tzGl = {}
+    locationsPaths = {}
+    getSquare(estNameStr,tzGl,locationsPaths)
+    # print(locationsPaths)
+    return(render_template('Signup/signup3.html', estNameStr=estNameStr))

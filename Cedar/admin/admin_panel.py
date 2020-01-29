@@ -75,18 +75,30 @@ def getSquare(estNameStr, tzGl, locationsPaths):
     api_locations = squareClient.locations
     mobile_authorization_api = squareClient.mobile_authorization
     result = api_locations.list_locations()
+    # print(result)
     if result.is_success():
         # The body property is a list of locations
         locations = result.body['locations']
+        # print(locations)
         # Iterate over the list
+        # print(locations)
+        print(type(locations))
+
         for location in locations:
-            if ((dict(location.items())["status"]) == "ACTIVE"):
-                # #print((dict(location.items())))
+            print(location)
+            print((location['status']) == 'ACTIVE')
+            print((location['status']))
+            print('####')
+
+        for location in locations:
+            # print((dict(location.items())))
+            if ((dict(location)["status"]) == "ACTIVE"):
+                print('--------')
+                print(location)
                 addrNumber = ""
                 street = ""
                 for ltrAddr in range(len(dict(location.items())["address"]['address_line_1'])):
-                    currentLtr = dict(location.items())[
-                        "address"]['address_line_1'][ltrAddr]
+                    currentLtr = dict(location.items())["address"]['address_line_1'][ltrAddr]
                     try:
                         int(currentLtr)
                         addrNumber += currentLtr
@@ -113,6 +125,7 @@ def getSquare(estNameStr, tzGl, locationsPaths):
                         "id": locationId, "OCtimes": dict(location.items())["business_hours"]["periods"],
                         "sqEmail": dict(location.items())['business_email'],
                         "sqNumber": numb, "name": locationName}})
+                return(locationsPaths)
 
 
 def findMenu(estNameStr, location):

@@ -149,7 +149,7 @@ def updateLoc(estNameStr,location, new):
 
 
 def addEst(estNameStr, dispname):
-    restaurants['restaurants'].update({
+    restaurants.update({
         estNameStr:{
             "dispname":dispname
         }
@@ -160,6 +160,6 @@ def addEst(estNameStr, dispname):
 
 
 def addLoc(estNameStr,location, dispname):
-    restaurants['restaurants'][estNameStr].update({location:dispname})
+    restaurants[estNameStr].update({location:dispname})
     print("added")
     return
