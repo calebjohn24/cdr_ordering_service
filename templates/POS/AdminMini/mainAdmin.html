@@ -154,6 +154,18 @@
               <button type="submit" class="btn btn-success">Change</button>
 
             </form>
+            <br>
+
+            <h4>Change Sales Tax Rate <a data-toggle="modal" data-target="#empCode_dispnameLoc" class="button btn-lg btn-light"><i class="fas fa-edit"></i></a></h4>
+            <!-- <p>Current Tax Rate {{tax}}%</p> -->
+
+            <form method="POST" action="editTax">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+              <input type="number" class="number" name="tax" required>
+              <br><br>
+              <button type="submit" class="btn btn-success">Change</button>
+
+            </form>
 
 
             <br>

@@ -52,13 +52,13 @@ def signupstart():
 def collectRestInfo():
     rsp = dict(request.form)
     email = rsp['email']
-    email = email.replace('.','-')
+    email = email.replace('.', '-')
     password = rsp['password']
     restname = rsp['restname']
     phone = rsp['phone']
-    restnameDb = restname.replace(' ','-')
+    restnameDb = restname.replace(' ', '-')
     restnameDb = restnameDb.replace("'", "")
-    restnameDb = restnameDb.replace("&",'-')
+    restnameDb = restnameDb.replace("&", '-')
     restnameDb = restnameDb.lower()
     restnameLegal = rsp['restname-legal']
     sq = rsp['sq']
@@ -68,41 +68,94 @@ def collectRestInfo():
     billingRef = db.reference('/billing')
     try:
         if(dict(checkRef.get())[restnameDb] != None):
-            restnameDb += '-' + str(random.randint(0,1000))
+            restnameDb += '-' + str(random.randint(0, 1000))
     except Exception as e:
         pass
     checkRef.update({
-        restnameDb :{
-            "admin-info":{
-                email:{
-                    "password":hash,
-                    "time":time.time(),
-                    "token":str(uuid.uuid4())
+        restnameDb: {
+            "admin-info": {
+                email: {
+                    "password": hash,
+                    "time": time.time(),
+                    "token": str(uuid.uuid4())
                 }
             },
-            "sq-token":"token"
+            "sq-token": "token"
         }
     })
     billingRef.update({
-        restnameDb:{
-            "info":{
-                "legalname":restnameLegal,
-                "phone":phone,
-                "state":rsp['state']
+        restnameDb: {
+            "info": {
+                "legalname": restnameLegal,
+                "phone": phone,
+                "state": rsp['state']
             },
-            "trial":True,
-            "dispname":str(rsp['restname'])
+            "trial": True,
+            "dispname": str(rsp['restname'])
         }
     })
     session['restnameDb'] = restnameDb
     collect_menu.addEst(restnameDb, str(rsp['restname']))
     return(render_template('Signup/squarecheck.html'))
 
-@signup_start_blueprint.route('/signupstart', methods=['GET'])
+
+@signup_start_blueprint.route('/signupgenloc', methods=['GET'])
 def genLoc():
-    estNameStr= session.get('restnameDb', None)
+    estNameStr = session.get('restnameDb', None)
     tzGl = {}
     locationsPaths = {}
-    getSquare(estNameStr,tzGl,locationsPaths)
-    # print(locationsPaths)
-    return(render_template('Signup/signup3.html', estNameStr=estNameStr))
+    getSquare(estNameStr, tzGl, locationsPaths)
+    print(locationsPaths)
+    if(locationsPaths == {}):
+        return(render_template('Signup/addlocs.html', estNameStr=estNameStr, locations=locationsPaths))
+    else:
+        return(render_template('Signup/signup3.html', estNameStr=estNameStr, locations=locationsPaths))
+
+
+@signup_start_blueprint.route('/genloc2', methods=['POST'])
+def genLoc2():
+    estNameStr = session.get('restnameDb', None)
+    restRef = db.reference('/restaurants/' + estNameStr)
+    billingRef = db.reference('/billing/' + estNameStr)
+    billingRef.update({"fees":
+                       {
+                           "all": {
+                               "transactions": {
+                                   "count": 0,
+                                   "fees": 0
+                               }
+                           }
+                       }
+                       })
+    rsp = dict(request.form)
+    print(rsp)
+    del rsp['csrf_token']
+    testData = db.reference('/restaurants/testraunt/cedar-location-1').get()
+    for locKey, locVal in rsp.items():
+        restRef = db.reference('/restaurants/' + estNameStr)
+        collect_menu.addLoc(estNameStr, locKey, locVal)
+        billingRef = db.reference(
+            '/billing/' + estNameStr + '/fees/locations/' + locKey)
+
+        restRef.update({
+            locKey:testData
+        })
+        restRef = db.reference('/restaurants/' + estNameStr + '/' + locKey)
+        restRef.update({
+            "dispname":locVal
+        })
+
+        billingRef.update({"fees":
+                           {
+                               "transactions": {
+                                   "count": 0,
+                                   "fees": 0
+                               }
+
+                           }
+                           })
+
+    tzGl = {}
+    locationsPaths = {}
+    getSquare(estNameStr, tzGl, locationsPaths)
+    return ("done", 200)

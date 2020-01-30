@@ -41,7 +41,7 @@
     <div class="row">
 
       <div class="col-10">
-        <h3>App Authorized</h3>
+        <h3>Please Add/Activate Locations in Your Square Account</h3>
       </div>
 
       <div class="col-2">
@@ -50,37 +50,17 @@
       </div>
     </div>
     <hr>
-    <form method="POST" action="genloc2">
 
-      <h4>Restaurant ID: {{estNameStr}}</h4>
+
+      <h4>Click <a href="https://squareup.com/help/us/en/article/5580-manage-multiple-locations-with-square" target="_blank">Here</a> For Instructions </h4>
       <br>
-      <hr>
-      <h5>Locations:</h5><br>
-      <form method="POST" action="addloc-disp">
-      {% for key, val in locations.items() %}
-
-        <h6>Id: {{key}}</h6>
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon1">Enter Display Name</span>
-          </div>
-          <input type="text" class="form-control" name="{{key}}" required>
-        </div>
-        <br>
-
-      {% endfor %}
-      <br>
-      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
-      <input class="btn btn-success btn-success" value="Next" type="submit">
-    </form>
+      <a class="btn btn-lg btn-success" href="sqacct-check-rd">I've Added Locations</a>
 
 
 
 
 
 
-
-    </form>
 
 
 

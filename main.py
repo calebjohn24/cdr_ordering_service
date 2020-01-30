@@ -85,6 +85,7 @@ app.register_blueprint(admin_panel.admin_panel_blueprint)
 app.register_blueprint(find_page.find_page_blueprint)
 app.register_blueprint(menu.menu_panel_blueprint)
 app.register_blueprint(pw_reset.pw_reset_blueprint)
+
 app.register_blueprint(feedback.feedback_blueprint)
 app.register_blueprint(schedule.schedule_blueprint)
 app.register_blueprint(online_menu.online_menu_blueprint)

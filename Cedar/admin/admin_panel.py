@@ -79,22 +79,8 @@ def getSquare(estNameStr, tzGl, locationsPaths):
     if result.is_success():
         # The body property is a list of locations
         locations = result.body['locations']
-        # print(locations)
-        # Iterate over the list
-        # print(locations)
-        print(type(locations))
-
         for location in locations:
-            print(location)
-            print((location['status']) == 'ACTIVE')
-            print((location['status']))
-            print('####')
-
-        for location in locations:
-            # print((dict(location.items())))
-            if ((dict(location)["status"]) == "ACTIVE"):
-                print('--------')
-                print(location)
+            if((location['status']) == 'ACTIVE'):
                 addrNumber = ""
                 street = ""
                 for ltrAddr in range(len(dict(location.items())["address"]['address_line_1'])):
@@ -114,6 +100,7 @@ def getSquare(estNameStr, tzGl, locationsPaths):
                 tz = pytz.timezone(timez)
                 locationName = (dict(location.items())[
                                 "name"]).replace(" ", "-")
+                locationName = locationName.lower()
                 tzGl.update({locationName: pytz.timezone(timez)})
                 locationId = dict(location.items())["id"]
                 numb = dict(location.items())['phone_number']
@@ -125,7 +112,7 @@ def getSquare(estNameStr, tzGl, locationsPaths):
                         "id": locationId, "OCtimes": dict(location.items())["business_hours"]["periods"],
                         "sqEmail": dict(location.items())['business_email'],
                         "sqNumber": numb, "name": locationName}})
-                return(locationsPaths)
+    return(locationsPaths)
 
 
 def findMenu(estNameStr, location):
@@ -257,6 +244,9 @@ def panel(estNameStr, location):
         comments = {}
     kioskRef = db.reference('/billing/' + estNameStr + '/kiosks')
     kiosks = dict(kioskRef.get())
+    taxRef = db.reference('/restaurants/' + estNameStr + '/' + location + '/taxrate')
+    tax = round((taxRef.get()*100.0),2)
+
 
 
     logo = 'https://storage.googleapis.com/cedarchatbot.appspot.com/' + \
@@ -264,7 +254,7 @@ def panel(estNameStr, location):
     return render_template("POS/AdminMini/mainAdmin.html",
                            restName=getDispNameEst(estNameStr), feedback=feedback, comments=comments,
                            locName=getDispNameLoc(estNameStr,location),
-                           discounts=discDict, logo=logo, kiosks=kiosks)
+                           discounts=discDict, logo=logo, kiosks=kiosks, tax=tax)
 
 
 
@@ -366,6 +356,26 @@ def editDispEstLoc(estNameStr, location):
     if (checkAdminToken(estNameStr, idToken, username) == 1):
         return redirect(url_for(  'admin_panel.login', estNameStr=estNameStr, location=location))
     updateLoc(estNameStr,location, new)
+    return redirect(url_for(  'admin_panel.panel', estNameStr=estNameStr, location=location))
+
+@admin_panel_blueprint.route('/<estNameStr>/<location>/editTax', methods=["POST"])
+def editTax(estNameStr, location):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    new = rsp['tax']
+    idToken = session.get('token', None)
+    username = session.get('user', None)
+    ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    try:
+        user_ref = ref.get()[str(username)]
+    except Exception:
+        return redirect(url_for(  'admin_panel.login', estNameStr=estNameStr, location=location))
+    if (checkAdminToken(estNameStr, idToken, username) == 1):
+        return redirect(url_for(  'admin_panel.login', estNameStr=estNameStr, location=location))
+    taxRef = db.reference('/restaurants/' + estNameStr + '/' + location )
+    taxRef.update({
+        "taxrate":(float(new)/100.0)
+    })
     return redirect(url_for(  'admin_panel.panel', estNameStr=estNameStr, location=location))
 
 

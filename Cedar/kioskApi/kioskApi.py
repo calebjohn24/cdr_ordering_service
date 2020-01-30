@@ -218,6 +218,7 @@ def verifyOrder(estNameStr, location, kioskCode):
         logRef = db.reference('/billing/' + estNameStr +
                               '/fees/locations/' + location + '/log')
         logRef.push(logOrd)
+        sendSQpos2(estNameStr, location, token)
         if(order['email'] != "no-email"):
             write_str += "\n \n"
             write_str += "Order Fee " + \

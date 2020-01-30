@@ -39,6 +39,17 @@ sender = 'cedarrestaurantsbot@gmail.com'
 emailPass = "cda33d07-f6bd-479e-806f-5d039ae2fa2d"
 
 
+def sendSQpos(estNameStr, location):
+    print('-')
+    return
+
+
+
+def sendSQpos2(estNameStr, location, token):
+    print('-')
+    return
+
+
 @payments_blueprint.route('/<estNameStr>/<location>/pay')
 def payQSR(estNameStr, location):
     if(checkLocation(estNameStr, location) == 1):
@@ -209,6 +220,7 @@ def payStaffConfirm(estNameStr, location):
         logRef = db.reference('/billing/' + estNameStr +
                               '/fees/locations/' + location + '/log')
         logRef.push(logOrd)
+        sendSQpos(estNameStr, location)
         if(order['email'] != "no-email"):
             write_str += "\n"
             write_str += "Subtotal " + subtotalStr + "\n" + \
@@ -309,7 +321,7 @@ def payStaffQSR(estNameStr, location):
                                  estNameStr + '/' + location + '/taxrate').get())
     tax = "Tax ${:0,.2f}".format(subtotal * taxRate)
     tax += " (" + str(float(taxRate * 100)) + "%)"
-    logOrd['info'].update({'taxes':float(subtotal * taxRate)})
+    logOrd['info'].update({'taxes': float(subtotal * taxRate)})
     total = "Total ${:0,.2f}".format(subtotal * (1 + taxRate))
     logOrd['info'].update({"total": float(subtotal * (1 + taxRate))})
     logRef = db.reference('/billing/' + estNameStr + '/fees/all/log')
@@ -317,6 +329,7 @@ def payStaffQSR(estNameStr, location):
     logRef = db.reference('/billing/' + estNameStr +
                           '/fees/locations/' + location + '/log')
     logRef.push(logOrd)
+    sendSQpos(estNameStr, location)
     if(order['email'] != "no-email"):
         write_str += "\n \n"
         write_str += "Order Fee " + \
@@ -384,7 +397,8 @@ def payOnline(estNameStr, location):
                     body['order']['line_items'][0]['name'] = 'Order Fee'
                     body['order']['line_items'][0]['quantity'] = '1'
                     body['order']['line_items'][0]['base_price_money'] = {}
-                    body['order']['line_items'][0]['base_price_money']['amount'] = int(billingInfo['custFee']*100)
+                    body['order']['line_items'][0]['base_price_money']['amount'] = int(
+                        billingInfo['custFee'] * 100)
                     body['order']['line_items'][0]['base_price_money']['currency'] = "USD"
 
                     cart = dict(orderInfo["cart"])
@@ -472,22 +486,24 @@ def onlineVerify(estNameStr, location, orderToken):
             })
 
             pathRequest = '/restaurants/' + estNameStr + '/' + location + "/requests"
-            reqRef = db.reference('/restaurants/' + estNameStr + '/' + location + "/requests")
+            reqRef = db.reference(
+                '/restaurants/' + estNameStr + '/' + location + "/requests")
             newReq = reqRef.push({
-                "online":"True",
+                "online": "True",
                 "cart": dict(order['cart']),
                 "info": {"name": order["name"],
                          "number": order['phone'],
                          "paid": "PAID",
-                         "token":orderToken,
-                         "type":"online",
+                         "token": orderToken,
+                         "type": "online",
                          "subtotal": float(order['subtotal'] + billingInfo['custFee']),
                          "total": order['total'],
                          'table': order['table']
                          }
             })
 
-            updateTransactionFees(billingInfo['totalFee'], estNameStr, location)
+            updateTransactionFees(
+                billingInfo['totalFee'], estNameStr, location)
             tzGl = {}
             locationsPaths = {}
             getSquare(estNameStr, tzGl, locationsPaths)
@@ -544,7 +560,7 @@ def onlineVerify(estNameStr, location, orderToken):
                 '/restaurants/' + estNameStr + '/' + location + '/taxrate').get())
             tax = "Tax ${:0,.2f}".format(subtotal * taxRate)
             tax += " (" + str(float(taxRate * 100)) + "%)"
-            logOrd['info'].update({'taxes':float(subtotal * taxRate)})
+            logOrd['info'].update({'taxes': float(subtotal * taxRate)})
             total = "Total ${:0,.2f}".format(subtotal * (1 + taxRate))
             logOrd['info'].update({"total": float(subtotal * (1 + taxRate))})
             logRef = db.reference('/billing/' + estNameStr + '/fees/all/log')
@@ -552,6 +568,7 @@ def onlineVerify(estNameStr, location, orderToken):
             logRef = db.reference(
                 '/billing/' + estNameStr + '/fees/locations/' + location + '/log')
             logRef.push(logOrd)
+            sendSQpos(estNameStr, location)
             if(order['email'] != "no-email"):
                 write_str += "\n \n"
                 write_str += "Order Fee " + \
@@ -570,9 +587,8 @@ def onlineVerify(estNameStr, location, orderToken):
 
 
 @payments_blueprint.route('/<estNameStr>/<location>/onlinesuccess')
-def successonline(estNameStr,location):
+def successonline(estNameStr, location):
     return(render_template("Customer/QSR/Payment-Success.html"))
-
 
 
 @payments_blueprint.route('/<estNameStr>/<location>/applyCpn', methods=["POST"])

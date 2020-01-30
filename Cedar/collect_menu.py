@@ -34,9 +34,11 @@ infoFile = open("info.json")
 info = json.load(infoFile)
 mainLink = info['mainLink']
 restaurants = dict(info['restaurants'])
+
+
 def getSquare(estNameStr):
     sqRef = db.reference(str('/restaurants/' + estNameStr))
-    ##print(sqRef.get())
+    # print(sqRef.get())
     squareToken = dict(sqRef.get())["sq-token"]
     squareClient = Client(
         access_token=squareToken,
@@ -55,13 +57,14 @@ def getSquare(estNameStr):
                 addrNumber = ""
                 street = ""
                 for ltrAddr in range(len(dict(location.items())["address"]['address_line_1'])):
-                    currentLtr = dict(location.items())["address"]['address_line_1'][ltrAddr]
+                    currentLtr = dict(location.items())[
+                        "address"]['address_line_1'][ltrAddr]
                     try:
                         int(currentLtr)
                         addrNumber += currentLtr
                     except Exception as e:
                         street = dict(location.items())["address"]['address_line_1'][
-                                 ltrAddr + 1:len(dict(location.items())["address"]['address_line_1'])]
+                            ltrAddr + 1:len(dict(location.items())["address"]['address_line_1'])]
                         break
 
                 addrP = str(addrNumber + "," + street + "," + dict(location.items())["address"]['locality'] + "," +
@@ -69,8 +72,9 @@ def getSquare(estNameStr):
                             dict(location.items())["address"]['postal_code'][:5])
                 timez = dict(location.items())["timezone"]
                 tz = pytz.timezone(timez)
-                locationName = (dict(location.items())["name"]).replace(" ", "-")
-                tzGl.update({locationName:pytz.timezone(timez)})
+                locationName = (dict(location.items())[
+                                "name"]).replace(" ", "-")
+                tzGl.update({locationName: pytz.timezone(timez)})
                 locationId = dict(location.items())["id"]
                 numb = dict(location.items())['phone_number']
                 numb = numb.replace("-", "")
@@ -83,8 +87,7 @@ def getSquare(estNameStr):
                         "sqNumber": numb, "name": locationName}})
 
 
-
-def findMenu(estNameStr,location):
+def findMenu(estNameStr, location):
     getSquare(estNameStr)
     day = dayNames[int(datetime.datetime.now(tzGl[location]).weekday())]
     curMin = float(datetime.datetime.now(tzGl[location]).minute) / 100.0
@@ -102,7 +105,7 @@ def findMenu(estNameStr,location):
     sortedHr.sort()
     sortedHr.append(24)
     for sh in range(len(sortedHr) - 1):
-        if((sortedHr[sh]< curTime < sortedHr[sh+1])== True):
+        if((sortedHr[sh] < curTime < sortedHr[sh + 1]) == True):
             menuKey = sh
             break
 
@@ -110,7 +113,6 @@ def findMenu(estNameStr,location):
         if(sortedHr[menuKey] == schedule[schedlist[sh2]]):
             menu = (schedlist[sh2])
             return(str(menu))
-
 
 
 def getDispNameEst(estNameStr):
@@ -121,8 +123,7 @@ def getDispNameEst(estNameStr):
         return('invalid')
 
 
-
-def getDispNameLoc(estNameStr,location):
+def getDispNameLoc(estNameStr, location):
     try:
         restName = dict(restaurants[estNameStr])
         locName = restName[location]
@@ -132,34 +133,47 @@ def getDispNameLoc(estNameStr,location):
 
 
 def updateEst(estNameStr, new):
-    restaurants[estNameStr].update({"dispname":new})
+    restaurants[estNameStr].update({"dispname": new})
     nameRef = db.reference('/billing/' + estNameStr)
-    nameRef.update({"dispname":new})
+    nameRef.update({"dispname": new})
     print("updated")
     return
 
 
-def updateLoc(estNameStr,location, new):
-    restaurants[estNameStr].update({location:new})
+def updateLoc(estNameStr, location, new):
+    restaurants[estNameStr].update({location: new})
     nameRef = db.reference('/restaurants/' + estNameStr + '/' + location)
-    nameRef.update({"dispname":new})
+    nameRef.update({"dispname": new})
     print("updated")
     return
-
 
 
 def addEst(estNameStr, dispname):
     restaurants.update({
-        estNameStr:{
-            "dispname":dispname
+        estNameStr: {
+            "dispname": dispname
         }
+    })
+    dispnameEst = db.reference('/billing/' + estNameStr)
+    dispnameEst.update({
+        "dispname": dispname
     })
     print("added")
     return
 
 
+def addLoc(estNameStr, location, dispname):
+    try:
+        restaurants[estNameStr].update({location: dispname})
+    except Exception as e:
+        dispnameEst = db.reference(
+            '/billing/' + estNameStr + '/dispname').get()
+        restaurants.update({
+            estNameStr: {
+                "dispname": dispnameEst
+            }
+        })
+        restaurants[estNameStr].update({location: dispname})
 
-def addLoc(estNameStr,location, dispname):
-    restaurants[estNameStr].update({location:dispname})
     print("added")
     return
