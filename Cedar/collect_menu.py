@@ -22,18 +22,12 @@ from flask_sslify import SSLify
 from square.client import Client
 from werkzeug.datastructures import ImmutableOrderedMultiDict
 from flask import Blueprint, render_template, abort
-
-
 global tzGl
 adminSessTime = 3599
 global locationsPaths
 tzGl = {}
 locationsPaths = {}
 dayNames = ["MON", "TUE", "WED", "THURS", "FRI", "SAT", "SUN"]
-infoFile = open("info.json")
-info = json.load(infoFile)
-mainLink = info['mainLink']
-restaurants = dict(info['restaurants'])
 
 
 def getSquare(estNameStr):
@@ -116,39 +110,79 @@ def findMenu(estNameStr, location):
 
 
 def getDispNameEst(estNameStr):
+    infoFile = open("info.json")
+    info = json.load(infoFile)
+    restaurants = dict(info['restaurants'])
+    print(restaurants)
     try:
         restName = restaurants[estNameStr]['dispname']
         return(restName)
     except Exception as e:
-        return('invalid')
+        dispnameEst = db.reference(
+            '/billing/' + estNameStr + '/dispname').get()
+        restaurants.update({
+            estNameStr: {
+                "dispname": dispnameEst
+            }
+        })
+        restaurants[estNameStr].update({"dispname": dispnameEst})
+        with open('data.txt', 'w') as outfile:
+            json.dump(info, outfile)
+        return str(dispnameEst)
 
 
 def getDispNameLoc(estNameStr, location):
+    infoFile = open("info.json")
+    info = json.load(infoFile)
+    restaurants = dict(info['restaurants'])
     try:
         restName = dict(restaurants[estNameStr])
         locName = restName[location]
         return(locName)
     except Exception as e:
-        return('invalid')
+        dispnameEst = db.reference(
+            '/restaurants/' + estNameStr +'/'+location +'/dispname').get()
+        restaurants.update({
+            estNameStr: {
+                location: dispnameEst
+            }
+        })
+        with open('data.txt', 'w') as outfile:
+            json.dump(info, outfile)
+        return str(dispnameEst)
 
 
 def updateEst(estNameStr, new):
+    infoFile = open("info.json")
+    info = json.load(infoFile)
+    restaurants = dict(info['restaurants'])
     restaurants[estNameStr].update({"dispname": new})
     nameRef = db.reference('/billing/' + estNameStr)
     nameRef.update({"dispname": new})
     print("updated")
+    with open('data.txt', 'w') as outfile:
+        json.dump(info, outfile)
     return
 
 
 def updateLoc(estNameStr, location, new):
+    infoFile = open("info.json")
+    info = json.load(infoFile)
+    restaurants = dict(info['restaurants'])
     restaurants[estNameStr].update({location: new})
     nameRef = db.reference('/restaurants/' + estNameStr + '/' + location)
     nameRef.update({"dispname": new})
     print("updated")
+    with open('data.txt', 'w') as outfile:
+        json.dump(info, outfile)
     return
 
 
 def addEst(estNameStr, dispname):
+    infoFile = open("info.json")
+    info = json.load(infoFile)
+    mainLink = info['mainLink']
+    restaurants = dict(info['restaurants'])
     restaurants.update({
         estNameStr: {
             "dispname": dispname
@@ -159,10 +193,15 @@ def addEst(estNameStr, dispname):
         "dispname": dispname
     })
     print("added")
+    with open('data.txt', 'w') as outfile:
+        json.dump(info, outfile)
     return
 
 
 def addLoc(estNameStr, location, dispname):
+    infoFile = open("info.json")
+    info = json.load(infoFile)
+    restaurants = dict(info['restaurants'])
     try:
         restaurants[estNameStr].update({location: dispname})
     except Exception as e:
@@ -174,6 +213,7 @@ def addLoc(estNameStr, location, dispname):
             }
         })
         restaurants[estNameStr].update({location: dispname})
-
+    with open('data.txt', 'w') as outfile:
+        json.dump(info, outfile)
     print("added")
     return

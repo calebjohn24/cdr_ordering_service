@@ -242,12 +242,15 @@ def panel(estNameStr, location):
         comments = dict(comment_ref.get())
     except Exception as e:
         comments = {}
-    kioskRef = db.reference('/billing/' + estNameStr + '/kiosks')
-    kiosks = dict(kioskRef.get())
+    try:
+        kioskRef = db.reference('/billing/' + estNameStr + '/kiosks')
+        kiosks = dict(kioskRef.get())
+    except Exception as e:
+        kiosks = {}
+
     taxRef = db.reference('/restaurants/' + estNameStr + '/' + location + '/taxrate')
     tax = round((taxRef.get()*100.0),2)
-
-
+    print(tax)
 
     logo = 'https://storage.googleapis.com/cedarchatbot.appspot.com/' + \
         estNameStr + '/logo.jpg'
@@ -288,7 +291,7 @@ def panellog(estNameStr, location):
         logsLoc = {}
     return render_template("POS/AdminMini/logsloc.html",
                            restName=getDispNameEst(estNameStr),
-                           locName=getDispNameEst(estNameStr,location), logsLoc=logsLoc)
+                           locName=getDispNameLoc(estNameStr,location), logsLoc=logsLoc)
 
 
 @admin_panel_blueprint.route('/<estNameStr>/<location>/admin-panel-log', methods=["GET"])
