@@ -199,10 +199,13 @@ def kioskSelect():
     kiosks = dict(kioskRef.get())
     groups = {}
     tablets = {"8":180.0,"10":250.0}
+    tabletsDisp = {"8":"8 in tablet w/ card reader", "10":"10 inch Tablet w/ Card Reader"}
     cases = {"folio":0.0,"floor":20.0}
+    casesDisp = {"folio":"folio case","floor":"floor stand"}
     kioskKeys = list(kiosks.keys())
     groupId = str(uuid.uuid4())[:8]
     kiosksPrce = {}
+    kiosksDisp = {}
     for n in range(len(kioskKeys)):
         kioskId = kioskKeys[n]
         kiosktotal = 0
@@ -210,12 +213,15 @@ def kioskSelect():
         keyCase = rsp['case-'+str(n)]
         kiosktotal += tablets[str(keyTablet)]
         kiosktotal += cases[str(keyCase)]
+        dispStr = tabletsDisp[str(keyTablet)] + " and " +casesDisp[str(keyCase)]
         kiosksPrce.update({kioskId:kiosktotal})
+        kiosksDisp.update({kioskId:dispStr})
     groups = [{"rem-group":{
     "val":101010.0,
     "count":0,
     "kiosks":["remKiosk"]}
     }]
+    kioskTotal = 0
     for keyKiosk, valKiosk in kiosksPrce.items():
         for g in range(len(groups)):
             for key, val in groups[g].items():
@@ -225,17 +231,22 @@ def kioskSelect():
                     groups[g][key].update({'count':int(count+1)})
                     groups[g][key]['kiosks'].append(keyKiosk)
                     filled = 1
+                    kioskTotal += valKiosk
         if(len(groups) - 1 == g and filled == 0):
             newGroupId = str(uuid.uuid4())[:8]
             groups.append({
                 newGroupId:{
                     "val":valKiosk,
                     "count":1,
-                    'kiosks':[keyKiosk]
+                    'kiosks':[keyKiosk],
+                    "dispName":kiosksDisp[keyKiosk]
                 }
             })
+            kioskTotal += valKiosk
     groups.pop(0)
     session['groups'] = groups
+    session['countKiosk'] = len(kiosksPrce)
+    session['kioskTotal'] = kioskTotal
     return(redirect(url_for('signup_start.kioskFinDisp')))
 
 
@@ -244,4 +255,6 @@ def kioskSelect():
 @signup_start_blueprint.route('/kioskFinDisp', methods=['GET'])
 def kioskFinDisp():
     groups = session.get('groups', None)
-    return(render_template('Signup/kioskFinance.html', groups=groups))
+    countKiosk = session.get('countKiosk', None)
+    kioskTotal = session.get('kioskTotal', None)
+    return(render_template('Signup/kioskFinance.html', groups=groups, countKiosk=countKiosk, kioskTotal=kioskTotal))
