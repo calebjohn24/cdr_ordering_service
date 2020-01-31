@@ -1,1 +1,1 @@
-{"number": "14255992978", "mainLink": "https://c7f1ee62.ngrok.io/", "restaurants": {"testraunt": {"dispname": "Testraunt", "cedar-location-1": "Test Location", "loc-2": "Location 2"}}}
+{"number": "14255992978", "mainLink": "https://a76a24bc.ngrok.io /", "restaurants": {"testraunt": {"dispname": "Testraunt", "cedar-location-1": "Test Location", "loc-2": "Location 2"}}}

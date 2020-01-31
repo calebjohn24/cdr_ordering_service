@@ -4,7 +4,6 @@ import smtplib
 import sys
 import time
 import uuid
-import plivo
 import os
 from fpdf import FPDF
 import firebase_admin
@@ -49,8 +48,9 @@ mainLink = info['mainLink']
 
 botNumber = info['number']
 adminSessTime = 3599
-client = plivo.RestClient(auth_id='MAYTVHN2E1ZDY4ZDA2YZ',
-                          auth_token='ODgzZDA1OTFiMjE2ZTRjY2U4ZTVhYzNiODNjNDll')
+
+
+
 cred = credentials.Certificate('CedarChatbot-b443efe11b73.json')
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://cedarchatbot.firebaseio.com/',
@@ -131,8 +131,6 @@ if __name__ == '__main__':
         csrf.init_app(app)
         csrf.exempt(kioskApi.kioskApi_blueprint)
         sess.permanent = True
-        # app.permanent_session_lifetime = datetime.timedelta(minutes=240)
-        # app.debug = True
         '''
         app.config.update(
             SESSION_COOKIE_SECURE=True,
@@ -141,7 +139,7 @@ if __name__ == '__main__':
         )
         '''
         app.jinja_env.cache = {}
-        # app.debug = True
+
         app.run(host="0.0.0.0", port=5000, debug=True)
     except KeyboardInterrupt:
         sys.exit()
