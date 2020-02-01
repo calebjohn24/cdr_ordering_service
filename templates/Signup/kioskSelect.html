@@ -42,9 +42,11 @@
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
     </script>
     <title>Sign Up</title>
+
 </head>
 
 <body>
+
     <div class="container-fluid">
         <br>
         <div class="row">
@@ -61,7 +63,7 @@
         </div>
         <hr>
         <form method="POST" id="addKiosk" action="kioskSelect">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
             {% for n in range(numKiosks) %}
             <h4>Tablet #{{n+1}}</h4>
             <h5>Pick Tablet Size</h5>
@@ -69,32 +71,37 @@
             <div class="row">
                 <div class="col">
                     <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            8 Inch Tablet w/ Card Reader ($5/mo + $180) <input class="radio" type="radio" name="tablet-{{n}}" value="8" required>
-                        </h5>
-                    <img class="card-img-top"
-                        src="https://image-us.samsung.com/SamsungUS/home/mobile/tablets/sm-t290-taba-8/gallery/Gallery-TabA8-Black-1.jpg?$product-details-jpg$" src="https://image-us.samsung.com/SamsungUS/home/mobile/tablets/sm-t290-taba-8/gallery/Gallery-TabA8-Black-1.jpg?$product-details-jpg$"
-                        alt="8 Inch Tablet">
-                        <img width="50" class="card-img-top" src="https://officedepot.scene7.com/is/image/officedepot/128846_p_square_magstripe_front?$OD%2DLarge$&wid=450&hei=450">
-                </div>
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                8 Inch Tablet w/ Card Reader ($5/mo + $180) <input class="radio" type="radio"
+                                    name="tablet-{{n}}" value="8" required>
+                            </h5>
+                            <img class="card-img-top"
+                                src="https://image-us.samsung.com/SamsungUS/home/mobile/tablets/sm-t290-taba-8/gallery/Gallery-TabA8-Black-1.jpg?$product-details-jpg$"
+                                src="https://image-us.samsung.com/SamsungUS/home/mobile/tablets/sm-t290-taba-8/gallery/Gallery-TabA8-Black-1.jpg?$product-details-jpg$"
+                                alt="8 Inch Tablet">
+                            <img width="50" class="card-img-top"
+                                src="https://officedepot.scene7.com/is/image/officedepot/128846_p_square_magstripe_front?$OD%2DLarge$&wid=450&hei=450">
+                        </div>
                     </div>
-            </div>
-
-            <div class="col">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            10 Inch Tablet w/ Card Reader ($5/mo + $250) <input class="radio" type="radio" name="tablet-{{n}}" value="10" required>
-                        </h5>
-
-                    </div>
-                    <img class="card-img-top"
-                        src="https://image-us.samsung.com/SamsungUS/home/mobile/tablets/pdp/tab-a/black/sm-t510_tab_a_10_1_bk_v_LockUp_rgb.jpg?$product-details-jpg$"
-                        alt="10 Inch Tablet">
-                        <img width="50" class="card-img-top" src="https://officedepot.scene7.com/is/image/officedepot/128846_p_square_magstripe_front?$OD%2DLarge$&wid=450&hei=450">
                 </div>
-            </div>
+
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                10 Inch Tablet w/ Card Reader ($5/mo + $250) <input class="radio" type="radio"
+                                    name="tablet-{{n}}" value="10" required>
+                            </h5>
+
+                        </div>
+                        <img class="card-img-top"
+                            src="https://image-us.samsung.com/SamsungUS/home/mobile/tablets/pdp/tab-a/black/sm-t510_tab_a_10_1_bk_v_LockUp_rgb.jpg?$product-details-jpg$"
+                            alt="10 Inch Tablet">
+                        <img width="50" class="card-img-top"
+                            src="https://officedepot.scene7.com/is/image/officedepot/128846_p_square_magstripe_front?$OD%2DLarge$&wid=450&hei=450">
+                    </div>
+                </div>
 
             </div>
             <br>
@@ -103,30 +110,32 @@
             <div class="row">
                 <div class="col">
                     <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            Folio Case (Free) <input class="radio" type="radio" name="case-{{n}}" value="folio" required>
-                        </h5>
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                Folio Case (Free) <input class="radio" type="radio" name="case-{{n}}" value="folio"
+                                    required>
+                            </h5>
+                        </div>
+                        <img class="card-img-top"
+                            src="https://images-na.ssl-images-amazon.com/images/I/81f8QbAMneL._AC_SL1500_.jpg"
+                            alt="Folio">
                     </div>
-                    <img class="card-img-top"
-                        src="https://images-na.ssl-images-amazon.com/images/I/81f8QbAMneL._AC_SL1500_.jpg"
-                        alt="Folio">
                 </div>
-            </div>
 
-            <div class="col">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">
-                            Floor Stand ($20) <input class="radio" type="radio" name="case-{{n}}" value="floor" required>
-                        </h5>
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">
+                                Floor Stand ($20) <input class="radio" type="radio" name="case-{{n}}" value="floor"
+                                    required>
+                            </h5>
 
+                        </div>
+                        <img class="card-img-top"
+                            src="https://images-na.ssl-images-amazon.com/images/I/61LOl9pSe3L._AC_SL1500_.jpg"
+                            alt="Floor Stand">
                     </div>
-                    <img class="card-img-top"
-                    src="https://images-na.ssl-images-amazon.com/images/I/61LOl9pSe3L._AC_SL1500_.jpg"
-                        alt="Floor Stand">
                 </div>
-            </div>
 
             </div>
             <br>

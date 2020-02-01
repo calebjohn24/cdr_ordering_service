@@ -89,7 +89,7 @@
             <div class="tab-pane fade show active" id="pill-upfront" role="tabpanel" aria-labelledby="pill-upfront-tab">
                 <h4>Pay For Hardware Upfront</h4>
                 <br>
-                <h5>Monthly Kiosk Software Fee $5.00 x {{countKiosk}} </h5><br>
+                <h5>Monthly Kiosk Software Fee $5.00 x {{countKiosk}} ({{ "$%.2f"|format((countKiosk*5)) }})</h5>
                 <h5>Monthly Server Fee $50.00</h5>
                 <br><h6>Montly Bill:</h6><br> <h5>{{ "$%.2f"|format(50+(5*countKiosk)) }} + $0.00-0.50 per transaction</h5>
 
@@ -108,10 +108,9 @@
                 <h5>Total Due Today: {{ "$%.2f"|format(kioskTotal) }}</h5>
                 <hr>
                 <br>
-                <form method="POST" action="payment-upfront">
+                <form method="POST" action="payment-kiosk">
                     <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-                    <input type="hidden" name="month" value="{{ (50+(5*countKiosk)) }}"/>
-                    <input type="hidden" name="today" value="{{kioskTotal}}">
+                    <input type="hidden" name="type" value="upfront">
                     <input class="btn btn-lg btn-success" type="submit" name="payment-type" value="Pay Upfront">
                 </form>
             </div>
@@ -120,12 +119,57 @@
                 <h4>18 Month Installment</h4>
                 <p>After 18 months we'll upgrade your hardware for free</p>
                 <br>
+                <br>
+                <h5>Monthly Kiosk Software Fee $5.00 x {{countKiosk}} ({{ "$%.2f"|format((countKiosk*5)) }})</h5>
+                <h5>Monthly Server Fee $50.00</h5>
+                <h5>Kiosk Hardware Fee {{ "$%.2f"|format((kioskTotal/18.0)) }}</h5>
+                <br><h6>Montly Bill:</h6><br> <h5>{{ "$%.2f"|format(50+(5*countKiosk) + (kioskTotal/18.0) ) }} + $0.00-0.50 per transaction</h5>
+
+                <br>
+                {% for g in range(groups|count)%}
+                {% for k,v in groups[g].items() %}
+                <h6>{{groups[g][k]['dispName']|capitalize}} x {{groups[g][k]['count']}}</h6>
+                <p>{{ "$%.2f"|format(groups[g][k]['val'] * groups[g][k]['count']) }}</p>
+                <br>
+                {% endfor %}
+                {% endfor %}
+                <br>
+                <h5>Total Due Today: {{ "$%.2f"|format(0) }}</h5>
+                <hr>
+                <br>
+                <form method="POST" action="payment-kiosk">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <input type="hidden" name="type" value="18">
+                    <input class="btn btn-lg btn-success" type="submit" name="payment-type" value="Start 18 Month Installment">
+                </form>
             </div>
 
             <div class="tab-pane fade" id="pill-mo-24" role="tabpanel" aria-labelledby="pill-mo-24-tab">
                 <h4>24 Month Installment</h4>
                 <p>After 24 months we'll upgrade your hardware for free</p>
                 <br>
+                <br>
+                <h5>Monthly Kiosk Software Fee $5.00 x {{countKiosk}} ({{ "$%.2f"|format((countKiosk*5)) }})</h5>
+                <h5>Monthly Server Fee $50.00</h5>
+                <h5>Kiosk Hardware Fee {{ "$%.2f"|format((kioskTotal/24.0)) }}</h5>
+                <br><h6>Montly Bill:</h6><br> <h5>{{ "$%.2f"|format(50+(5*countKiosk) + (kioskTotal/24.0) )  }} + $0.00-0.50 per transaction</h5>
+                <br>
+                {% for g in range(groups|count)%}
+                {% for k,v in groups[g].items() %}
+                <h6>{{groups[g][k]['dispName']|capitalize}} x {{groups[g][k]['count']}}</h6>
+                <p>{{ "$%.2f"|format(groups[g][k]['val'] * groups[g][k]['count']) }}</p>
+                <br>
+                {% endfor %}
+                {% endfor %}
+                <br>
+                <h5>Total Due Today: {{ "$%.2f"|format(0) }}</h5>
+                <hr>
+                <br>
+                <form method="POST" action="payment-kiosk">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <input type="hidden" name="type" value="24">
+                    <input class="btn btn-lg btn-success" type="submit" name="payment-type" value="Start 24 Month Installment">
+                </form>
             </div>
 
 

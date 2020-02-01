@@ -257,4 +257,34 @@ def kioskFinDisp():
     groups = session.get('groups', None)
     countKiosk = session.get('countKiosk', None)
     kioskTotal = session.get('kioskTotal', None)
+    session['restnameDb'] = session.get('restnameDb', None)
     return(render_template('Signup/kioskFinance.html', groups=groups, countKiosk=countKiosk, kioskTotal=kioskTotal))
+
+
+
+@signup_start_blueprint.route('/payment-kiosk', methods=['POST'])
+def kioskPay():
+    groups = session.get('groups', None)
+    countKiosk = session.get('countKiosk', None)
+    kioskTotal = session.get('kioskTotal', None)
+    estNameStr = session.get('restnameDb', None)
+    rsp = dict(request.form)
+    if(rsp['type'] == 'upfront'):
+        print('-')
+        session['kioskFin'] = 'upfront'
+    elif(rsp['type'] == '18'):
+        session['kioskFin'] = '18'
+    elif(rsp['type'] == '24'):
+        session['kioskFin'] = '24'
+    return(redirect(url_for('signup_start.setTransactionFee')))
+
+
+
+@signup_start_blueprint.route('/set-transact-fee', methods=['GET'])
+def setTransactionFee():
+    groups = session.get('groups', None)
+    countKiosk = session.get('countKiosk', None)
+    kioskTotal = session.get('kioskTotal', None)
+    estNameStr = session.get('restnameDb', None)
+    kioskFin = session.get('kioskFin', None)
+    return(render_template('Signup/setFees.html'))
