@@ -27,14 +27,14 @@
             appearance: none;
             width: 25px;
             height: 25px;
-            background: #4CAF50;
+            background: rgb(27, 82, 231);
             cursor: pointer;
         }
 
         .slider::-moz-range-thumb {
             width: 25px;
             height: 25px;
-            background: #4CAF50;
+            background: rgb(27, 82, 231);
             cursor: pointer;
         }
     </style>
@@ -109,9 +109,11 @@
         </div>
         <hr>
         <div class="slidecontainer">
-            <input type="range" min="0" max="50" value="50" class="slider" id="myRange">
+
+            <p>Slide To Change Fee Amount</p>
+            <input type="range" min="0" max="50" value="50" class="slider" id="myRange"><br><br>
             <p>Transaction Fee: <span id="demo"></span></p>
-            <p>Minimum Number of Transactions: <span id="demo2"></span></p>
+            <p>Minimum Number of Monthly Transactions: <span id="demo2"></span></p>
             <p>Minimum Monthly Transaction Fees: <span id="demo3"></span></p>
         </div>
 
@@ -125,18 +127,22 @@
             output3.innerHTML = "$0.00"
             slider.oninput = function () {
 
-                var val = "$" + String((parseFloat(this.value)/100.0).toFixed(2));
+                var val = "$" + String((parseFloat(this.value) / 100.0).toFixed(2));
                 output.innerHTML = val;
 
-                var val2 = String( (50 - parseInt(this.value)) * 5);
-                output2.innerHTML = val2;
+                var val2 = String((50 - parseInt(this.value)) * 5);
 
-                var val3a = parseFloat(( (parseInt(this.value)-50.0) * -2.5));
-                var val3b = "$" + String( (parseFloat(val3a)).toFixed(2))
-                output3.innerHTML = val3b;
-                }
 
+                var val3a = Math.abs(Math.round(  (50.0 - parseFloat(this.value))*150     ))
+                var val3b = "$" + String( parseFloat(  val3a*((1.0- (((50.0 - parseFloat(this.value) )/50.0) * 0.5)) *0.5)  ).toFixed(2)) + " ( $" + String((parseFloat(  val3a*((1.0- (((50.0 - parseFloat(this.value) )/50.0) * 0.5)) *0.5)  )/30.0).toFixed(2)) +" per day)";
+
+
+                output2.innerHTML = String(val3a) + " ( " + String(Math.round(val3a/30.0)) + " transactions per day )"  ;
+                output3.innerHTML = val3b + "<br> (Monthly Savings of $" + String( ( (val3a*0.5) - parseFloat(  val3a*((1.0- (((50.0 - parseFloat(this.value) )/50.0) * 0.5)) *0.5)  ) ).toFixed(2)) + ")";
+            }
         </script>
+        <br><br>
+        <p>Don't Worry You can Always Change This At The End of Your Next Billing Cycle</p>
 
 
 

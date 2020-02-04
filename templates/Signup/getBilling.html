@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="apple-touch-icon" sizes="60x60" href="../../../static/img/CedarRoboticsLogo.jpg">
+    <link rel="apple-touch-icon" sizes="57x57" href="../../../static/img/CedarRoboticsLogo.jpg">
+    <link rel="apple-touch-icon" sizes="72x72" href="../../../static/img/CedarRoboticsLogo.jpg">
+    <link rel="apple-touch-icon" sizes="76x76" href="../../../static/img/CedarRoboticsLogo.jpg">
+    <link rel="apple-touch-icon" sizes="114x114" href="../../../static/img/CedarRoboticsLogo.jpg">
+    <link rel="apple-touch-icon" sizes="120x120" href="../../../static/img/CedarRoboticsLogo.jpg">
+    <link rel="apple-touch-icon" sizes="144x144" href="../../../static/img/CedarRoboticsLogo.jpg">
+    <link rel="apple-touch-icon" sizes="152x152" href="../../../static/img/CedarRoboticsLogo.jpg">
+    <link rel="apple-touch-icon" sizes="180x180" href="../../../static/img/CedarRoboticsLogo.jpg">
+    <link rel="icon" type="image/png" sizes="192x192" href="../../../static/img/CedarRoboticsLogo.jpg">
+    <link rel="icon" type="image/png" sizes="32x32" href="../../../static/img/CedarRoboticsLogo.jpg">
+    <link rel="icon" type="image/png" sizes="96x96" href="../../../static/img/CedarRoboticsLogo.jpg">
+    <link rel="icon" type="image/png" sizes="16x16" href="../../../static/img/CedarRoboticsLogo.jpg">
+    <link rel="manifest" href="../../../static/manifest.json">
+    <meta name="msapplication-TileColor" content="#000000">
+    <meta name="msapplication-TileImage" content="../../../static/img/CedarRoboticsLogo.jpg">
+    <meta name="theme-color" content="#000000">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="Caleb John">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet'>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+    </script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+    </script>
+    <script src="https://kit.fontawesome.com/80bbe0004b.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+        integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+    </script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+        integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>
+        .StripeElement {
+            background-color: white;
+            height: 40px;
+            padding: 10px 12px;
+            border-radius: 4px;
+            border: 1px solid transparent;
+            box-shadow: 0 1px 3px 0 #e6ebf1;
+            -webkit-transition: box-shadow 150ms ease;
+            transition: box-shadow 150ms ease;
+        }
+
+        .StripeElement--focus {
+            box-shadow: 0 1px 3px 0 #cfd7df;
+        }
+
+        .StripeElement--invalid {
+            border-color: #fa755a;
+        }
+
+        .StripeElement--webkit-autofill {
+            background-color: #fefde5 !important;
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="container-fluid">
+        <br>
+        <div class="row">
+
+            <div class="col-10">
+                <h4>Check Out</h4>
+                <br>
+            </div>
+
+            <div class="col-2">
+                <h6><img width="50" src="../../static/img/CedarRoboticsLogo.jpg"></h6>
+
+            </div>
+        </div>
+        <hr>
+
+    <script src="https://js.stripe.com/v3/"></script>
+
+<form action="/getBillingInfox" method="post" id="payment-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+  <div class="form-row">
+    <label for="card-element">
+      Credit or debit card
+    </label>
+    <div id="card-element" class="w-100">
+      <!-- A Stripe Element will be inserted here. -->
+    </div>
+
+    <!-- Used to display form errors. -->
+    <div id="card-errors" role="alert"></div>
+  </div>
+<br><br>
+  <button class="btn btn-lg btn-success">Submit Payment</button>
+</form>
+    </div>
+
+
+    <script nonce="">
+        var stripe = Stripe('pk_test_BkYMqnMIGmHqlCNK2AG8HrpC00RZMvmzUu')
+        // Create a Stripe client.
+        var elements = stripe.elements();
+
+        // Custom styling can be passed to options when creating an Element.
+        // (Note that this demo uses a wider set of styles than the guide below.)
+        var style = {
+            base: {
+                color: '#32325d',
+                lineHeight: '18px',
+                fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                fontSmoothing: 'antialiased',
+                fontSize: '16px',
+                '::placeholder': {
+                    color: '#aab7c4'
+                }
+            },
+            invalid: {
+                color: '#fa755a',
+                iconColor: '#fa755a'
+            }
+        };
+
+        // Create an instance of the card Element.
+        var card = elements.create('card', {
+            style: style
+        });
+
+        // Add an instance of the card Element into the `card-element` <div>.
+        card.mount('#card-element');
+
+        // Handle real-time validation errors from the card Element.
+        card.addEventListener('change', function (event) {
+            var displayError = document.getElementById('card-errors');
+            if (event.error) {
+                displayError.textContent = event.error.message;
+            } else {
+                displayError.textContent = '';
+            }
+        });
+
+        // Handle form submission.
+        var form = document.getElementById('payment-form');
+        form.addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            stripe.createToken(card).then(function (result) {
+                if (result.error) {
+                    // Inform the user if there was an error.
+                    var errorElement = document.getElementById('card-errors');
+                    errorElement.textContent = result.error.message;
+                } else {
+                    // Send the token to your server.
+                    stripeTokenHandler(result.token);
+                }
+            });
+        });
+
+        // Submit the form with the token ID.
+        function stripeTokenHandler(token) {
+            // Insert the token ID into the form so it gets submitted to the server
+            var form = document.getElementById('payment-form');
+            var hiddenInput = document.createElement('input');
+            hiddenInput.setAttribute('type', 'hidden');
+            hiddenInput.setAttribute('name', 'stripeToken');
+            hiddenInput.setAttribute('value', token.id);
+            form.appendChild(hiddenInput);
+
+            // Submit the form
+            form.submit();
+        }
+    </script>
+
+</body>
+
+</html>

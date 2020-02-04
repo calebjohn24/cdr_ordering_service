@@ -80,35 +80,73 @@
                 <h5>Enter Number Of Cashiers</h5>
                 <input type="number" min="1" id="numb">
 
-                <button type="button" class="btn btn-primary" onclick="myFunction()">Next</button>
+                <button type="button" class="btn btn-primary" onclick="myFunctionQsr()">Next</button>
+                <br><br>
 
                 <p id="qsr-cashier"></p>
 
                 <script>
-                  function myFunction() {
+                  function myFunctionQsr() {
                     var x, text;
 
                     // Get the value of the input field with id="numb"
                     x = document.getElementById("numb").value;
 
                     // If x is Not a Number or less than one or greater than 10
-                    if (isNaN(x) || x < 1 ) {
+                    if (isNaN(x) || x < 1) {
                       text = "Enter Number Of Cashiers";
                     } else {
 
-                      if
+                      if (x < 3) {
 
-                      text = "Input OK";
+                        text = "We Recommend You Add 3 Kiosks";
+                        xStr = '3';
+                      } else {
+                        xStr = String(Math.round((parseFloat(x) * 1.25)));
+
+                        text = "We Recommend You Add " + xStr + " Kiosks";
+                      }
+
                     }
                     document.getElementById("qsr-cashier").innerHTML = text;
+                    document.getElementById("addKiodkNum").setAttribute('value', xStr);
                   }
                 </script>
-                <p></p>
 
               </div>
               <div class="col">
                 <h4>Sitdown</h4>
                 <br>
+                <h5>Enter Number Of Tables</h5>
+                <input type="number" min="1" id="numb2">
+
+                <button type="button" class="btn btn-primary" onclick="myFunctionSd()">Next</button>
+                <br><br>
+
+                <p id="sd-cashier"></p>
+
+                <script>
+                  function myFunctionSd() {
+                    var x, text;
+
+                    // Get the value of the input field with id="numb"
+                    x = document.getElementById("numb2").value;
+
+                    // If x is Not a Number or less than one or greater than 10
+                    if (isNaN(x) || x < 1) {
+                      text = "Enter Number Of Tables";
+                    } else {
+
+
+                      xStr = String(Math.round((parseFloat(x) * 1.05) + 1));
+                      text = "We Recommend You Add " + xStr + " Kiosks";
+
+
+                    }
+                    document.getElementById("sd-cashier").innerHTML = text;
+                    document.getElementById("addKiodkNum").setAttribute('value', xStr);
+                  }
+                </script>
 
 
               </div>
@@ -128,7 +166,7 @@
         <div class="input-group-prepend">
           <span class="input-group-text" id="basic-addon1">Number of Kiosks To Add</span>
         </div>
-        <input type="number" min="1" step="1" class="form-control" name="numkiosk" required>
+        <input type="number" id="addKiodkNum" min="1" step="1" class="form-control" name="numkiosk" required>
         <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
       </div>
 

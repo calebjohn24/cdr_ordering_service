@@ -39,9 +39,6 @@
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
     </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous">
-    </script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
     </script>
@@ -91,8 +88,8 @@
                 <br>
                 <h5>Monthly Kiosk Software Fee $5.00 x {{countKiosk}} ({{ "$%.2f"|format((countKiosk*5)) }})</h5>
                 <h5>Monthly Server Fee $50.00</h5>
-                <br><h6>Montly Bill:</h6><br> <h5>{{ "$%.2f"|format(50+(5*countKiosk)) }} + $0.00-0.50 per transaction</h5>
-
+                <br><h6>Monthly Bill:</h6><br> <h5>{{ "$%.2f"|format(50+(5*countKiosk)) }} + $0.50 per transaction</h5>
+                <hr>
                 <br>
                 <br>
                 <h5>Due Today:</h5>
@@ -117,14 +114,14 @@
 
             <div class="tab-pane fade" id="pill-mo-18" role="tabpanel" aria-labelledby="pill-mo-18-tab">
                 <h4>18 Month Installment</h4>
-                <p>After 18 months we'll upgrade your hardware for free</p>
+                <p>After 18 months we'll upgrade your hardware for no additional cost</p>
                 <br>
                 <br>
                 <h5>Monthly Kiosk Software Fee $5.00 x {{countKiosk}} ({{ "$%.2f"|format((countKiosk*5)) }})</h5>
                 <h5>Monthly Server Fee $50.00</h5>
-                <h5>Kiosk Hardware Fee {{ "$%.2f"|format((kioskTotal/18.0)) }}</h5>
-                <br><h6>Montly Bill:</h6><br> <h5>{{ "$%.2f"|format(50+(5*countKiosk) + (kioskTotal/18.0) ) }} + $0.00-0.50 per transaction</h5>
-
+                <h5>Monthly Kiosk Hardware Fee {{ "$%.2f"|format((kioskTotal/18.0)) }}</h5>
+                <br><h6>Monthly Bill:</h6><br> <h5>{{ "$%.2f"|format(50+(5*countKiosk) + (kioskTotal/18.0) ) }} + $0.50 per transaction</h5>
+                <hr>
                 <br>
                 {% for g in range(groups|count)%}
                 {% for k,v in groups[g].items() %}
@@ -146,14 +143,14 @@
 
             <div class="tab-pane fade" id="pill-mo-24" role="tabpanel" aria-labelledby="pill-mo-24-tab">
                 <h4>24 Month Installment</h4>
-                <p>After 24 months we'll upgrade your hardware for free</p>
+                <p>After 24 months we'll upgrade your hardware for no additional cost</p>
                 <br>
                 <br>
                 <h5>Monthly Kiosk Software Fee $5.00 x {{countKiosk}} ({{ "$%.2f"|format((countKiosk*5)) }})</h5>
                 <h5>Monthly Server Fee $50.00</h5>
-                <h5>Kiosk Hardware Fee {{ "$%.2f"|format((kioskTotal/24.0)) }}</h5>
-                <br><h6>Montly Bill:</h6><br> <h5>{{ "$%.2f"|format(50+(5*countKiosk) + (kioskTotal/24.0) )  }} + $0.00-0.50 per transaction</h5>
-                <br>
+                <h5>Monthly Kiosk Hardware Installment {{ "$%.2f"|format((kioskTotal/24.0)) }}</h5>
+                <br><h6>Monthly Bill:</h6><br> <h5>{{ "$%.2f"|format(50+(5*countKiosk) + (kioskTotal/24.0) )  }} + $0.50 per transaction</h5>
+                <hr><br>
                 {% for g in range(groups|count)%}
                 {% for k,v in groups[g].items() %}
                 <h6>{{groups[g][k]['dispName']|capitalize}} x {{groups[g][k]['count']}}</h6>

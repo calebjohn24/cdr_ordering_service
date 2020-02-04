@@ -138,11 +138,11 @@ def genLoc2():
             '/billing/' + estNameStr + '/fees/locations/' + locKey)
 
         restRef.update({
-            locKey:testData
+            locKey: testData
         })
         restRef = db.reference('/restaurants/' + estNameStr + '/' + locKey)
         restRef.update({
-            "dispname":locVal
+            "dispname": locVal
         })
 
         billingRef.update({"fees":
@@ -177,9 +177,9 @@ def addKiosksStart():
     for n in range(numKiosks):
         uid = str(uuid.uuid4())[:8]
         billingRef.update({
-            uid:{
-                'active':0,
-                'loc':'inactive'
+            uid: {
+                'active': 0,
+                'loc': 'inactive'
             }
         })
     return(redirect(url_for('signup_start.pickKiosksDisp', numKiosks=numKiosks)))
@@ -187,8 +187,7 @@ def addKiosksStart():
 
 @signup_start_blueprint.route('/signupAddKiosksDisp-<numKiosks>', methods=['GET'])
 def pickKiosksDisp(numKiosks):
-    return(render_template('Signup/kioskSelect.html',numKiosks=int(numKiosks)))
-
+    return(render_template('Signup/kioskSelect.html', numKiosks=int(numKiosks)))
 
 
 @signup_start_blueprint.route('/kioskSelect', methods=['POST'])
@@ -198,10 +197,11 @@ def kioskSelect():
     kioskRef = db.reference('/billing/' + estNameStr + '/kiosks')
     kiosks = dict(kioskRef.get())
     groups = {}
-    tablets = {"8":180.0,"10":250.0}
-    tabletsDisp = {"8":"8 in tablet w/ card reader", "10":"10 inch Tablet w/ Card Reader"}
-    cases = {"folio":0.0,"floor":20.0}
-    casesDisp = {"folio":"folio case","floor":"floor stand"}
+    tablets = {"8": 180.0, "10": 250.0}
+    tabletsDisp = {"8": "8 in tablet w/ card reader",
+                   "10": "10 inch Tablet w/ Card Reader"}
+    cases = {"folio": 0.0, "floor": 20.0}
+    casesDisp = {"folio": "folio case", "floor": "floor stand"}
     kioskKeys = list(kiosks.keys())
     groupId = str(uuid.uuid4())[:8]
     kiosksPrce = {}
@@ -213,13 +213,14 @@ def kioskSelect():
         keyCase = rsp['case-'+str(n)]
         kiosktotal += tablets[str(keyTablet)]
         kiosktotal += cases[str(keyCase)]
-        dispStr = tabletsDisp[str(keyTablet)] + " and " +casesDisp[str(keyCase)]
-        kiosksPrce.update({kioskId:kiosktotal})
-        kiosksDisp.update({kioskId:dispStr})
-    groups = [{"rem-group":{
-    "val":101010.0,
-    "count":0,
-    "kiosks":["remKiosk"]}
+        dispStr = tabletsDisp[str(keyTablet)] + \
+            " and " + casesDisp[str(keyCase)]
+        kiosksPrce.update({kioskId: kiosktotal})
+        kiosksDisp.update({kioskId: dispStr})
+    groups = [{"rem-group": {
+        "val": 101010.0,
+        "count": 0,
+        "kiosks": ["remKiosk"]}
     }]
     kioskTotal = 0
     for keyKiosk, valKiosk in kiosksPrce.items():
@@ -228,18 +229,18 @@ def kioskSelect():
                 filled = 0
                 if(val['val'] == valKiosk):
                     count = groups[g][key]['count']
-                    groups[g][key].update({'count':int(count+1)})
+                    groups[g][key].update({'count': int(count+1)})
                     groups[g][key]['kiosks'].append(keyKiosk)
                     filled = 1
                     kioskTotal += valKiosk
         if(len(groups) - 1 == g and filled == 0):
             newGroupId = str(uuid.uuid4())[:8]
             groups.append({
-                newGroupId:{
-                    "val":valKiosk,
-                    "count":1,
-                    'kiosks':[keyKiosk],
-                    "dispName":kiosksDisp[keyKiosk]
+                newGroupId: {
+                    "val": valKiosk,
+                    "count": 1,
+                    'kiosks': [keyKiosk],
+                    "dispName": kiosksDisp[keyKiosk]
                 }
             })
             kioskTotal += valKiosk
@@ -250,8 +251,6 @@ def kioskSelect():
     return(redirect(url_for('signup_start.kioskFinDisp')))
 
 
-
-
 @signup_start_blueprint.route('/kioskFinDisp', methods=['GET'])
 def kioskFinDisp():
     groups = session.get('groups', None)
@@ -259,7 +258,6 @@ def kioskFinDisp():
     kioskTotal = session.get('kioskTotal', None)
     session['restnameDb'] = session.get('restnameDb', None)
     return(render_template('Signup/kioskFinance.html', groups=groups, countKiosk=countKiosk, kioskTotal=kioskTotal))
-
 
 
 @signup_start_blueprint.route('/payment-kiosk', methods=['POST'])
@@ -276,15 +274,46 @@ def kioskPay():
         session['kioskFin'] = '18'
     elif(rsp['type'] == '24'):
         session['kioskFin'] = '24'
-    return(redirect(url_for('signup_start.setTransactionFee')))
+    return(redirect(url_for('signup_start.getBillingInfo')))
 
 
+@signup_start_blueprint.route('/getBillingInfo', methods=['GET'])
+def getBillingInfo():
+    return(render_template('Signup/getBilling.html'))
 
-@signup_start_blueprint.route('/set-transact-fee', methods=['GET'])
-def setTransactionFee():
+
+@signup_start_blueprint.route('/getBillingInfox', methods=['POST'])
+def getBillingInfoRead():
+    rsp = dict(request.form)
+    print(rsp)
+    paymentMethod = stripe.PaymentMethod.create(
+        type="card",
+        card={
+            "token": rsp['stripeToken']
+        }
+    )
+    print(paymentMethod)
+    return(rsp)
+    # return(redirect(url_for('signup_start.checkoutStandard')))
+
+
+@signup_start_blueprint.route('/checkout-standard', methods=['GET'])
+def checkoutStandard():
     groups = session.get('groups', None)
     countKiosk = session.get('countKiosk', None)
     kioskTotal = session.get('kioskTotal', None)
     estNameStr = session.get('restnameDb', None)
     kioskFin = session.get('kioskFin', None)
-    return(render_template('Signup/setFees.html'))
+    restRef = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    billingRef = db.reference('/billing/' + estNameStr + '/info')
+    billingInfo = billingRef.get()
+    emailDict = list(dict(restRef.get()).keys())
+    email = emailDict[0].replace('-', '.')
+    newCust = stripe.Customer.create(
+        description="Standard Acct",
+        name=str(estNameStr),
+        email=email,
+        phone=billingInfo['phone']
+    )
+    print(newCust)
+    return(render_template('Signup/checkout.html'))

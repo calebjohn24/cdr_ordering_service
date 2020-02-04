@@ -107,10 +107,11 @@ Compress(app)
 
 
 
+'''
 @app.errorhandler(404)
 def page_not_found(e):
     return redirect(url_for('find_page.findRestaurant'))
-
+'''
 
 @app.errorhandler(CSRFError)
 def handle_csrf_error(e):
@@ -139,7 +140,6 @@ if __name__ == '__main__':
         )
         '''
         app.jinja_env.cache = {}
-
-        app.run(host="0.0.0.0", port=5000, debug=True)
+        app.run(host='0.0.0.0', port=5000, debug=True)
     except KeyboardInterrupt:
         sys.exit()
