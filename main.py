@@ -102,7 +102,6 @@ app.register_blueprint(kioskApi.kioskApi_blueprint)
 
 scKey = str(uuid.uuid4())
 app.secret_key = scKey
-sslify = SSLify(app)
 Compress(app)
 
 
@@ -124,7 +123,7 @@ def handle_csrf_error(e):
 if __name__ == '__main__':
     try:
         app.secret_key = scKey
-        sslify = SSLify(app)
+        sslify = SSLify(app, permanent=True)
         app.config['SESSION_TYPE'] = 'filesystem'
         sess = Session()
         sess.init_app(app)

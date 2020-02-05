@@ -336,3 +336,12 @@ def verifyOrder(estNameStr, location, kioskCode):
             }
         updateTransactionFees(billingInfo['totalFee'], estNameStr, location)
         return jsonify(packet)
+
+
+
+
+@kioskApi_blueprint.route('/signup-card', methods=['POST'])
+def cardAdded():
+    rsp = request.json
+    print(rsp)
+    return("200")

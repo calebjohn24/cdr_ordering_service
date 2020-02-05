@@ -28,7 +28,6 @@ from Cedar import collect_menu
 from Cedar.admin.admin_panel import checkLocation, sendEmail, getSquare, checkAdminToken
 import stripe
 
-
 stripe.api_key = "sk_test_Sr1g0u9XZ2txPiq8XENOQjCd00pjjrscNp"
 
 
@@ -284,17 +283,75 @@ def getBillingInfo():
 
 @signup_start_blueprint.route('/getBillingInfox', methods=['POST'])
 def getBillingInfoRead():
+    groups = session.get('groups', None)
+    countKiosk = session.get('countKiosk', None)
+    kioskTotal = session.get('kioskTotal', None)
+    estNameStr = session.get('restnameDb', None)
+    kioskFin = session.get('kioskFin', None)
     rsp = dict(request.form)
     print(rsp)
-    paymentMethod = stripe.PaymentMethod.create(
-        type="card",
-        card={
-            "token": rsp['stripeToken']
+    restRef = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    billingRef = db.reference('/billing/' + estNameStr + '/info')
+    billingInfo = billingRef.get()
+    emailDict = list(dict(restRef.get()).keys())
+    email = emailDict[0].replace('-', '.')
+
+    newCust = stripe.Customer.create(
+        description="Standard Acct",
+        name=str(estNameStr),
+        email=email,
+        phone=billingInfo['phone'],
+        address={
+            "line1": rsp['line1'],
+            "line2": rsp['line2'],
+            "city": rsp['city'],
+            "state": rsp['state'],
+            "postal_code": rsp['zip'],
+            "country": "US"
         }
     )
-    print(paymentMethod)
-    return(rsp)
-    # return(redirect(url_for('signup_start.checkoutStandard')))
+    print(newCust)
+    addrStr = rsp['line1'] + ' ' + rsp['line2'] + ' ' + \
+        rsp['city'] + ' ' + rsp['state'] + ' ' + rsp['zip']
+    addrDict = {
+        "line1": rsp['line1'],
+        "line2": rsp['line2'],
+        "city": rsp['city'],
+        "state": rsp['state'],
+        "postal_code": rsp['zip'],
+        "country": "US"
+    }
+    if(rsp["shipSame"] == "no"):
+        shipAddrStr = rsp['ship-line1'] + ' ' + rsp['ship-line2'] + ' ' + \
+            rsp['ship-city'] + ' ' + rsp['ship-state'] + ' ' + rsp['ship-zip']
+        shipAddrDict = {
+            "line1": rsp['ship-line1'],
+            "line2": rsp['ship-line2'],
+            "city": rsp['ship-city'],
+            "state": rsp['ship-state'],
+            "postal_code": rsp['ship-zip'],
+            "country": "US"
+        }
+    else:
+        shipAddrStr = addrStr
+        shipAddrDict = addrDict
+    billingRef.update({
+        "stripeId": newCust.id,
+        "addr": addrStr,
+        "billAddr": addrDict,
+        "shipAddr": shipAddrDict,
+        "shipAddrStr": shipAddrStr,
+        "tax": 10
+    })
+    billingRef = db.reference('/billing/' + estNameStr)
+    billingRef.update({
+        "restFee": 0.25,
+        "custFee": 0.25,
+        "split": 0.5,
+        "totalFee": 0.5
+    })
+    session['custId'] = newCust.id
+    return(redirect(url_for('signup_start.checkoutStandard')))
 
 
 @signup_start_blueprint.route('/checkout-standard', methods=['GET'])
@@ -304,16 +361,120 @@ def checkoutStandard():
     kioskTotal = session.get('kioskTotal', None)
     estNameStr = session.get('restnameDb', None)
     kioskFin = session.get('kioskFin', None)
-    restRef = db.reference('/restaurants/' + estNameStr + '/admin-info')
+    print(kioskFin)
+    return(render_template('Signup/checkout.html', subscription=kioskFin, countKiosk=countKiosk, groups=groups, kioskTotal=kioskTotal))
+
+
+@signup_start_blueprint.route('/checkout-standard-confirm', methods=['POST'])
+def checkoutStandardconfirm():
+    groups = session.get('groups', None)
+    countKiosk = session.get('countKiosk', None)
+    kioskTotal = session.get('kioskTotal', None)
+    estNameStr = session.get('restnameDb', None)
+    kioskFin = session.get('kioskFin', None)
+    custId = session.get('custId', None)
+    rsp = dict(request.form)
     billingRef = db.reference('/billing/' + estNameStr + '/info')
-    billingInfo = billingRef.get()
-    emailDict = list(dict(restRef.get()).keys())
-    email = emailDict[0].replace('-', '.')
-    newCust = stripe.Customer.create(
-        description="Standard Acct",
-        name=str(estNameStr),
-        email=email,
-        phone=billingInfo['phone']
-    )
-    print(newCust)
-    return(render_template('Signup/checkout.html'))
+    try:
+        paymentMethod = stripe.PaymentMethod.create(
+            type="card",
+            card={
+                "token": rsp['stripeToken']
+            }
+        )
+        print(paymentMethod)
+        pmId = paymentMethod.id
+        stripe.PaymentMethod.attach(
+            pmId,
+            customer=custId,
+        )
+    except Exception as e:
+        print(e)
+        return(render_template('Signup/card-declined.html'))
+    finally:
+        billingRef.update({
+            "paymentId": pmId
+        })
+        billingRef = db.reference('/billing/' + estNameStr)
+        currDate = datetime.datetime.now()
+        delta0 = datetime.timedelta(days=10)
+        currDate = currDate + delta0
+        delta = datetime.timedelta(days=30)
+        nextDate = currDate + delta
+        currStr = str(currDate.month) + "-" + str(currDate.day) + "-" + str(currDate.year)
+        nextStr = str(nextDate.month) + "-" + str(nextDate.day) + "-" + str(nextDate.year)
+        billingRef.update({
+            "lastBillTime": time.time(),
+            "billDate": currDate.day,
+            "billMonth": currDate.month,
+            "billYear":currDate.year,
+            "lastBill":currStr,
+            "nextBill":nextStr
+        })
+        billingRef = db.reference('/billing/' + estNameStr + '/fees/all')
+        billingRef.update({
+            "base":50
+        })
+        billingRef = db.reference('/billing/' + estNameStr + '/fees/all/kiosk')
+        if(kioskFin == '18'):
+            for g in groups:
+                print(g)
+                print("---18")
+                for k,v in g.items():
+                    print(v)
+                    dictKiosk = {
+                        "base":5,
+                        'group':k,
+                        "count":v['count'],
+                        "fees":(v['val']/18.0),
+                        "kiosks":v['kiosks'],
+                        'remaining':18,
+                        'term':18,
+                        'installment':"True"
+                    }
+                    billingRef.push(dictKiosk)
+        elif(kioskFin == '24'):
+            for g in groups:
+                for k,v in g.items():
+                    dictKiosk = {
+                        "base":5,
+                        'group':k,
+                        "count":v['count'],
+                        "fees":(v['val']/24.0),
+                        "kiosks":v['kiosks'],
+                        'remaining':24,
+                        'term':24,
+                        'installment':"True"
+                    }
+                    billingRef.push(dictKiosk)
+        else:
+            for g in groups:
+                for k,v in g.items():
+                    dictKiosk = {
+                        "base":5,
+                        'group':k,
+                        "count":v['count'],
+                        "fees":5,
+                        "kiosks":v['kiosks'],
+                        'term':18,
+                    }
+                    billingRef.push(dictKiosk)
+
+        return(redirect(url_for('signup_start.confirmSignup')))
+
+
+@signup_start_blueprint.route('/confirm-signup', methods=['GET'])
+def confirmSignup():
+
+    return("done", 200)
+    # return(render_template("signup-congrats.html"))
+
+
+@signup_start_blueprint.route('/view-tos', methods=['GET'])
+def tos():
+    return(render_template('Signup/tos.html'))
+
+
+@signup_start_blueprint.route('/view-priv-policy', methods=['GET'])
+def priv():
+    return(render_template('Signup/privacy.html'))
