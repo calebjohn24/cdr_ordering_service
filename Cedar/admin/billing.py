@@ -41,17 +41,26 @@ emailPass = "cda33d07-f6bd-479e-806f-5d039ae2fa2d"
 
 
 def updateTransactionFees(amt, estNameStr, location):
+    print(location)
+    print(estNameStr)
     feesRef = db.reference('/billing/' + estNameStr + '/fees/all/transactions')
     fees = dict(feesRef.get())
+    feeId = fees['id']
     newCount = fees['count'] + 1
     newFees = fees['fees'] + amt
     feesRef.update({"count": newCount, "fees": newFees})
     feesRef = db.reference('/billing/' + estNameStr +
-                           '/fees/locations/' + location + '/transactions')
+                           '/fees/locations/' + location + '/fees/transactions')
     fees = dict(feesRef.get())
     newCount = fees['count'] + 1
     newFees = fees['fees'] + amt
     feesRef.update({"count": newCount, "fees": newFees})
+    stripe.SubscriptionItem.create_usage_record(
+        feeId,
+        quantity=1,
+        timestamp=int(time.time()),
+        action='increment'
+    )
 
 
 @billing_blueprint.route('/<estNameStr>/<location>/billing-detail', methods=['POST', 'GET'])
@@ -103,7 +112,6 @@ def billDetails(estNameStr, location):
     return(render_template("POS/AdminMini/billing.html", restName=getDispNameEst(estNameStr), billing=billing, total=total, taxRate=taxRate))
 
 
-
 @billing_blueprint.route('/<estNameStr>/<location>/change-split', methods=['POST'])
 def splitChange(estNameStr, location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
@@ -118,10 +126,6 @@ def splitChange(estNameStr, location):
     billingRef.update(
         {'split': splitPct, 'custFee': custFee, 'restFee': restFee})
     return(redirect(url_for('billing.billDetails', estNameStr=estNameStr, location=location)))
-
-
-
-
 
 
 @billing_blueprint.route('/<estNameStr>/<location>/donwloadinvoice-<key>')
@@ -288,7 +292,8 @@ def genInvoice(estNameStr, location, key):
     totalVal = base
     totalVal += billing['transaction']['amt']
     transactionCount = billing['transaction']['count']
-    transactionUnit = float(billing['transaction']['amt'] / float(billing['transaction']['count']))
+    transactionUnit = float(
+        billing['transaction']['amt'] / float(billing['transaction']['count']))
 
     text = "Transaction Fee"
     w = pdf.get_string_width(text)
@@ -326,13 +331,12 @@ def genInvoice(estNameStr, location, key):
 
     kiosks = dict(billing['kiosks']['ids'])
 
-
-
     for kioskKeys in kiosks:
         # print(kiosks[kioskKeys])
 
         if(kiosks[kioskKeys]['hardware'] != 0):
-            text = "Kiosk Hardware Installment (Group id "  + kiosks[kioskKeys]['group'] + ")"
+            text = "Kiosk Hardware Installment (Group id " + \
+                kiosks[kioskKeys]['group'] + ")"
             w = pdf.get_string_width(text)
             pdf.set_font(font_name, size=12)
             pdf.cell(allWidth - 1, 15, txt=text, align="L")
@@ -347,7 +351,6 @@ def genInvoice(estNameStr, location, key):
             pdf.set_font(font_name, size=12, style="B")
             pdf.cell((wS), 15, txt=space, align="R")
 
-
             text = '${:.2f}'.format((kiosks[kioskKeys]['hardware']))
             w = pdf.get_string_width(text)
             pdf.set_font(font_name, size=12)
@@ -358,8 +361,10 @@ def genInvoice(estNameStr, location, key):
             pdf.set_font(font_name, size=12, style="B")
             pdf.cell((wS), 15, txt=space, align="R")
 
-            text = '${:.2f}'.format((kiosks[kioskKeys]['hardware'] * kiosks[kioskKeys]['count']))
-            totalVal += float(kiosks[kioskKeys]['hardware'] * kiosks[kioskKeys]['count'])
+            text = '${:.2f}'.format(
+                (kiosks[kioskKeys]['hardware'] * kiosks[kioskKeys]['count']))
+            totalVal += float(kiosks[kioskKeys]['hardware']
+                              * kiosks[kioskKeys]['count'])
             w = pdf.get_string_width(text)
             pdf.set_font(font_name, size=12)
             pdf.cell((wT), 15, txt=text, align="C")
@@ -368,8 +373,8 @@ def genInvoice(estNameStr, location, key):
             pdf.set_font(font_name, size=10)
             pdf.multi_cell(200, 15, txt=text, align="L")
 
-
-        text = "Kiosk Software Fee (Group id "  + kiosks[kioskKeys]['group'] + ")"
+        text = "Kiosk Software Fee (Group id " + \
+            kiosks[kioskKeys]['group'] + ")"
         w = pdf.get_string_width(text)
         pdf.set_font(font_name, size=12)
         pdf.cell(allWidth - 1, 15, txt=text, align="L")
@@ -384,7 +389,6 @@ def genInvoice(estNameStr, location, key):
         pdf.set_font(font_name, size=12, style="B")
         pdf.cell((wS), 15, txt=space, align="R")
 
-
         text = '${:.2f}'.format((kiosks[kioskKeys]['software']))
         w = pdf.get_string_width(text)
         pdf.set_font(font_name, size=12)
@@ -395,8 +399,10 @@ def genInvoice(estNameStr, location, key):
         pdf.set_font(font_name, size=12, style="B")
         pdf.cell((wS), 15, txt=space, align="R")
 
-        text = '${:.2f}'.format((kiosks[kioskKeys]['software'] * kiosks[kioskKeys]['count']))
-        totalVal += (kiosks[kioskKeys]['software'] * kiosks[kioskKeys]['count'])
+        text = '${:.2f}'.format(
+            (kiosks[kioskKeys]['software'] * kiosks[kioskKeys]['count']))
+        totalVal += (kiosks[kioskKeys]['software']
+                     * kiosks[kioskKeys]['count'])
         w = pdf.get_string_width(text)
         pdf.set_font(font_name, size=12)
         pdf.cell((wT), 15, txt=text, align="C")
@@ -404,7 +410,6 @@ def genInvoice(estNameStr, location, key):
         text = ''
         pdf.set_font(font_name, size=10)
         pdf.multi_cell(200, 15, txt=text, align="L")
-
 
     text = ''
     pdf.set_font(font_name, size=10, style="B")
@@ -419,22 +424,17 @@ def genInvoice(estNameStr, location, key):
     pdf.set_font(font_name, size=12, style="B")
     pdf.multi_cell(200, 15, txt=text, align="L")
 
-    text = 'Sales Tax (' + '{:.2f}'.format(info['tax']) +'%): ' + '${:.2f}'.format(tax)
+    text = 'Sales Tax (' + \
+        '{:.2f}'.format(info['tax']) + '%): ' + '${:.2f}'.format(tax)
     pdf.set_font(font_name, size=12, style="B")
     pdf.multi_cell(200, 15, txt=text, align="L")
-
 
     text = 'Total: ' + '${:.2f}'.format(total)
     pdf.set_font(font_name, size=12, style="B")
     pdf.multi_cell(200, 15, txt=text, align="L")
 
-
-
-
-
-
     tmp_filename = estNameStr + "/invoices/" + str(date) + "-invoice.pdf"
     pdf.output(tmp_filename)
 
     # return('ok', 200)
-    return send_file(tmp_filename, attachment_filename=str(str(date) + "-cedar-invoice.pdf"), as_attachment=True,mimetype='application/pdf')
+    return send_file(tmp_filename, attachment_filename=str(str(date) + "-cedar-invoice.pdf"), as_attachment=True, mimetype='application/pdf')

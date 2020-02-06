@@ -297,7 +297,7 @@ def getBillingInfoRead():
     email = emailDict[0].replace('-', '.')
 
     newCust = stripe.Customer.create(
-        description="Standard Acct",
+        description="Standard Acct-"+str(estNameStr),
         name=str(estNameStr),
         email=email,
         phone=billingInfo['phone'],
@@ -404,7 +404,7 @@ def checkoutStandardconfirm():
         currStr = str(currDate.month) + "-" + str(currDate.day) + "-" + str(currDate.year)
         nextStr = str(nextDate.month) + "-" + str(nextDate.day) + "-" + str(nextDate.year)
         billingRef.update({
-            "lastBillTime": time.time(),
+            "lastBillTime": float(time.time())+864000.0,
             "billDate": currDate.day,
             "billMonth": currDate.month,
             "billYear":currDate.year,
@@ -416,23 +416,47 @@ def checkoutStandardconfirm():
             "base":50
         })
         billingRef = db.reference('/billing/' + estNameStr + '/fees/all/kiosk')
+        items = []
         if(kioskFin == '18'):
             for g in groups:
-                print(g)
-                print("---18")
+                amt = 0
                 for k,v in g.items():
-                    print(v)
                     dictKiosk = {
                         "base":5,
                         'group':k,
                         "count":v['count'],
-                        "fees":(v['val']/18.0),
+                        "fees":((v['val']/18.0)+5.0),
                         "kiosks":v['kiosks'],
                         'remaining':18,
                         'term':18,
                         'installment':"True"
                     }
+                    amt = int((v['val']/18.0) * 100)
                     billingRef.push(dictKiosk)
+                    plans = stripe.Plan.list()
+                    for p in plans:
+                        if(p.amount == amt):
+                            items.append({"plan":p.id,"quantity":int(v['count'])})
+                            break
+            items.append({"plan":"server-st-fee"})
+            items.append({"plan":"transact-standard"})
+            items.append({"plan":"kiosk-sw-st","quantity":int(countKiosk)})
+            subscription = stripe.Subscription.create(
+                customer=custId,
+                default_tax_rates=['txr_1G8iRHLYFr9rSSIK7V0Byizd'],
+                items=items
+                )
+            print(subscription)
+            billingRef = db.reference('/billing/' + estNameStr + '/info')
+            billingRef.update({"subId":subscription.id})
+            feesRef = db.reference('/billing/' + estNameStr + '/fees/all/transactions')
+            items = dict(subscription)['items']
+            for i in items:
+                print(i.plan.usage_type)
+                print(i.id)
+                if(i.plan.usage_type == "metered"):
+                    feesRef.update({"id":str(i.id)})
+                    break
         elif(kioskFin == '24'):
             for g in groups:
                 for k,v in g.items():
@@ -440,13 +464,37 @@ def checkoutStandardconfirm():
                         "base":5,
                         'group':k,
                         "count":v['count'],
-                        "fees":(v['val']/24.0),
+                        "fees":((v['val']/24.0) + 5.0),
                         "kiosks":v['kiosks'],
                         'remaining':24,
                         'term':24,
                         'installment':"True"
                     }
                     billingRef.push(dictKiosk)
+                    plans = stripe.Plan.list()
+                    for p in plans:
+                        if(p.amount == amt):
+                            items.append({"plan":p.id,"quantity":int(v['count'])})
+                            break
+            items.append({"plan":"server-st-fee"})
+            items.append({"plan":"transact-standard"})
+            items.append({"plan":"kiosk-sw-st","quantity":int(countKiosk)})
+            subscription = stripe.Subscription.create(
+                customer=custId,
+                default_tax_rates=['txr_1G8iRHLYFr9rSSIK7V0Byizd'],
+                items=items
+                )
+            print(subscription)
+            billingRef = db.reference('/billing/' + estNameStr + '/info')
+            billingRef.update({"subId":subscription.id})
+            feesRef = db.reference('/billing/' + estNameStr + '/fees/all/transactions')
+            items = dict(subscription)['items']
+            for i in items:
+                print(i.plan.usage_type)
+                print(i.id)
+                if(i.plan.usage_type == "metered"):
+                    feesRef.update({"id":str(i.id)})
+                    break
         else:
             for g in groups:
                 for k,v in g.items():
@@ -459,15 +507,42 @@ def checkoutStandardconfirm():
                         'term':18,
                     }
                     billingRef.push(dictKiosk)
-
+            items.append({"plan":"server-st-fee"})
+            items.append({"plan":"transact-standard"})
+            items.append({"plan":"kiosk-sw-st","quantity":int(countKiosk)})
+            subscription = stripe.Subscription.create(
+                customer=custId,
+                default_tax_rates=['txr_1G8iRHLYFr9rSSIK7V0Byizd'],
+                items=items
+                )
+            print(subscription)
+            billingRef = db.reference('/billing/' + estNameStr + '/info')
+            billingRef.update({"subId":subscription.id})
+            feesRef = db.reference('/billing/' + estNameStr + '/fees/all/transactions')
+            items = dict(subscription)['items']
+            for i in items:
+                print(i.plan.usage_type)
+                print(i.id)
+                if(i.plan.usage_type == "metered"):
+                    feesRef.update({"id":str(i.id)})
+                    break
+        os.mkdir(estNameStr)
+        os.mkdir(estNameStr + "/imgs")
+        os.mkdir(estNameStr + "/invoices")
+        os.mkdir(estNameStr + "/menus")
         return(redirect(url_for('signup_start.confirmSignup')))
 
 
 @signup_start_blueprint.route('/confirm-signup', methods=['GET'])
 def confirmSignup():
-
-    return("done", 200)
-    # return(render_template("signup-congrats.html"))
+    infoFile = open("info.json")
+    info = dict(json.load(infoFile))
+    mainLink = info['mainLink']
+    estNameStr = session.get('restnameDb', None)
+    locations = dict(db.reference('/restaurants/' + estNameStr).get())
+    del locations['admin-info']
+    del locations['sq-token']
+    return(render_template("Signup/signup-congrats.html", estNameStr=estNameStr, mainLink=mainLink, locations=locations))
 
 
 @signup_start_blueprint.route('/view-tos', methods=['GET'])

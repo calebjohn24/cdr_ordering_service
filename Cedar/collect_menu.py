@@ -30,7 +30,7 @@ locationsPaths = {}
 dayNames = ["MON", "TUE", "WED", "THURS", "FRI", "SAT", "SUN"]
 
 
-def getSquare(estNameStr):
+def getSquare(estNameStr, tzGl, locationsPaths):
     sqRef = db.reference(str('/restaurants/' + estNameStr))
     # print(sqRef.get())
     squareToken = dict(sqRef.get())["sq-token"]
@@ -41,13 +41,12 @@ def getSquare(estNameStr):
     api_locations = squareClient.locations
     mobile_authorization_api = squareClient.mobile_authorization
     result = api_locations.list_locations()
+    # print(result)
     if result.is_success():
         # The body property is a list of locations
         locations = result.body['locations']
-        # Iterate over the list
         for location in locations:
-            if ((dict(location.items())["status"]) == "ACTIVE"):
-                # #print((dict(location.items())))
+            if((location['status']) == 'ACTIVE'):
                 addrNumber = ""
                 street = ""
                 for ltrAddr in range(len(dict(location.items())["address"]['address_line_1'])):
@@ -68,6 +67,7 @@ def getSquare(estNameStr):
                 tz = pytz.timezone(timez)
                 locationName = (dict(location.items())[
                                 "name"]).replace(" ", "-")
+                locationName = locationName.lower()
                 tzGl.update({locationName: pytz.timezone(timez)})
                 locationId = dict(location.items())["id"]
                 numb = dict(location.items())['phone_number']
@@ -79,10 +79,14 @@ def getSquare(estNameStr):
                         "id": locationId, "OCtimes": dict(location.items())["business_hours"]["periods"],
                         "sqEmail": dict(location.items())['business_email'],
                         "sqNumber": numb, "name": locationName}})
+    return(locationsPaths)
 
 
 def findMenu(estNameStr, location):
-    getSquare(estNameStr)
+    tzGl={}
+    locationsPaths={}
+    getSquare(estNameStr,tzGl,locationsPaths)
+    print(tzGl)
     day = dayNames[int(datetime.datetime.now(tzGl[location]).weekday())]
     curMin = float(datetime.datetime.now(tzGl[location]).minute) / 100.0
     curHr = float(datetime.datetime.now(tzGl[location]).hour)
@@ -113,7 +117,6 @@ def getDispNameEst(estNameStr):
     infoFile = open("info.json")
     info = json.load(infoFile)
     restaurants = dict(info['restaurants'])
-    print(restaurants)
     try:
         restName = restaurants[estNameStr]['dispname']
         return(restName)

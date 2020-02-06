@@ -30,6 +30,8 @@ infoFile = open("info.json")
 info = json.load(infoFile)
 mainLink = info['mainLink']
 
+
+@find_page_blueprint.route('/find')
 @find_page_blueprint.route('/find-restaurant')
 def findRestaurant():
     restaurantsDict = dict(db.reference('/restaurants').get())

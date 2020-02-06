@@ -136,8 +136,8 @@
           <br>
           <h4>Location: {{key|capitalize}}</h4><br>
           <h5>Transactions</h5>
-          <h6>{{val.transactions.count}} Transactions Processed</h6>
-          <h6>Transaction Fees Billed: {{"$%.2f"|format(val.transactions.fees)}}</h6>
+          <h6>{{val.fees.transactions.count}} Transactions Processed</h6>
+          <h6>Transaction Fees Billed: {{"$%.2f"|format(val.fees.transactions.fees)}}</h6>
           <br>
           <h5>Kiosks</h5>
           {% for key_kiosk, val_kiosk in billing.kiosks.items() %}

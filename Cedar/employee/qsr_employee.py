@@ -25,7 +25,7 @@ from flask import Blueprint, render_template, abort
 from Cedar.collect_menu import findMenu
 from Cedar.admin import admin_panel
 from Cedar.admin.admin_panel import checkLocation, sendEmail, getSquare
-
+from Cedar.collect_menu import findMenu, getDispNameEst, getDispNameLoc, updateEst, updateLoc
 
 
 qsr_employee_blueprint = Blueprint('qsr_employee', __name__,template_folder='templates')
@@ -57,7 +57,10 @@ def EmployeeLoginCheckQSR(estNameStr,location):
     code = rsp['code']
     loginRef = db.reference('/restaurants/' + estNameStr + '/' + location + "/employee")
     loginData = dict(loginRef.get())
-    hashCheck = pbkdf2_sha256.verify(code, loginData['code'])
+    try:
+        hashCheck = pbkdf2_sha256.verify(code, loginData['code'])
+    except Exception as e:
+        return(render_template("POS/AdminMini/pwsent.html", alert="Please Set An Employee Code in the Admin Panel", type="danger"))
     if(hashCheck == True):
         token = str(uuid.uuid4())
         loginRef.update({

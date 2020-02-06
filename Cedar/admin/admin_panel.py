@@ -253,8 +253,6 @@ def panel(estNameStr, location):
     taxRef = db.reference('/restaurants/' + estNameStr +
                           '/' + location + '/taxrate')
     tax = round((taxRef.get()*100.0), 2)
-    print(tax)
-
     logo = 'https://storage.googleapis.com/cedarchatbot.appspot.com/' + \
         estNameStr + '/logo.jpg'
     return render_template("POS/AdminMini/mainAdmin.html",
@@ -458,19 +456,37 @@ def confirmEmployeeCode(estNameStr, location):
 
 
 @admin_panel_blueprint.route('/<estNameStr>/<location>/editLogo', methods=["POST"])
-def editImgX(estNameStr, location):
-    UPLOAD_FOLDER = estNameStr + "/imgs/"
-    file = request.files['logo']
-    filename = secure_filename(file.filename)
-    file.save(os.path.join(UPLOAD_FOLDER, 'logo.jpg'))
-    upName = "/" + estNameStr + "/imgs/" + 'logo.jpg'
-    blob = bucket.blob(upName)
-    d = estNameStr + "/logo.jpg"
-    d = bucket.blob(d)
-    d.upload_from_filename(
-        str(str(UPLOAD_FOLDER) + "/" + str('logo.jpg')), content_type='image/jpeg')
-    url = str(d.public_url)
-    print(url)
+def editLogoX(estNameStr, location):
+    try:
+        UPLOAD_FOLDER = estNameStr + "/imgs/"
+        file = request.files['logo']
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(UPLOAD_FOLDER, 'logo.jpg'))
+        upName = "/" + estNameStr + "/imgs/" + 'logo.jpg'
+        blob = bucket.blob(upName)
+        d = estNameStr + "/logo.jpg"
+        d = bucket.blob(d)
+        d.upload_from_filename(
+            str(str(UPLOAD_FOLDER) + "/" + str('logo.jpg')), content_type='image/jpeg')
+        url = str(d.public_url)
+        print(url)
+    except Exception as e:
+        print(e)
+        os.mkdir(estNameStr)
+        os.mkdir(estNameStr+ "/imgs")
+        UPLOAD_FOLDER = estNameStr + "/imgs/"
+        file = request.files['logo']
+        filename = secure_filename(file.filename)
+        file.save(os.path.join(UPLOAD_FOLDER, 'logo.jpg'))
+        upName = "/" + estNameStr + "/imgs/" + 'logo.jpg'
+        blob = bucket.blob(upName)
+        d = estNameStr + "/logo.jpg"
+        d = bucket.blob(d)
+        d.upload_from_filename(
+            str(str(UPLOAD_FOLDER) + "/" + str('logo.jpg')), content_type='image/jpeg')
+        url = str(d.public_url)
+        print(url)
+    print("done", url)
     return redirect(url_for('admin_panel.panel', estNameStr=estNameStr, location=location))
 
 

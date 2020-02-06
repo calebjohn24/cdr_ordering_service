@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Thank You</title>
+  <link rel="apple-touch-icon" sizes="60x60" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="180x180" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="icon" type="image/png" sizes="192x192" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="icon" type="image/png" sizes="96x96" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="manifest" href="../../../static/manifest.json">
+  <meta name="msapplication-TileColor" content="#000000">
+  <meta name="msapplication-TileImage" content="../../../static/img/CedarRoboticsLogo.jpg">
+  <meta name="theme-color" content="#000000">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="Caleb John">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link href='https://fonts.googleapis.com/css?family=Raleway' rel='stylesheet'>
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
+  </script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+    integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
+  </script>
+  <script src="https://kit.fontawesome.com/80bbe0004b.js" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
+  </script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
+  </script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <style>
+    .StripeElement {
+      background-color: white;
+      height: 40px;
+      padding: 10px 12px;
+      border-radius: 4px;
+      border: 1px solid transparent;
+      box-shadow: 0 1px 3px 0 #e6ebf1;
+      -webkit-transition: box-shadow 150ms ease;
+      transition: box-shadow 150ms ease;
+    }
+
+    .StripeElement--focus {
+      box-shadow: 0 1px 3px 0 #cfd7df;
+    }
+
+    .StripeElement--invalid {
+      border-color: #fa755a;
+    }
+
+    .StripeElement--webkit-autofill {
+      background-color: #fefde5 !important;
+    }
+  </style>
+</head>
+
+  <body>
+    <div class="container-fluid">
+
+      <br>
+      <div class="row">
+
+        <div class="col-10">
+          <h4>Sign Up Complete</h4>
+          <br>
+        </div>
+
+        <div class="col-2">
+          <h6><img width="50" src="../../static/img/CedarRoboticsLogo.jpg"></h6>
+
+        </div>
+      </div>
+      <hr>
+      <h3>Save These Links</h3>
+      <br>
+
+      {% for k,v in locations.items() %}
+      <h4>Location: {{v.dispname}}</h4>
+      <br>
+      <h5>Admin Panel: <a target="_blank" href="{{mainLink}}{{estNameStr}}/{{k}}/admin-login">{{mainLink}}{{estNameStr}}/{{k}}/admin-login</a></h5>
+      <br>
+      <h5>Employee Panel (Sitdown Mode): <a target="_blank" href="{{mainLink}}{{estNameStr}}/{{k}}/view">{{mainLink}}{{estNameStr}}/{{k}}/view</a></h5>
+      <br>
+      <h5>Employee Panel (QSR Mode): <a target="_blank" href="{{mainLink}}{{estNameStr}}/{{k}}/qsr-view">{{mainLink}}{{estNameStr}}/{{k}}/qsr-view</a></h5>
+      <br>
+      <h5>Online Ordering: <a target="_blank" href="{{mainLink}}{{estNameStr}}/{{k}}/order">{{mainLink}}{{estNameStr}}/{{k}}/order</a></h5>
+      <br>
+      <h5>Kiosk App Download: <a target="_blank" href="{{mainLink}}downloadApk">{{mainLink}}downloadApk</a></h5>
+      <br>
+      <hr>
+      {% endfor %}
+      <h3>You can Find These Links Anytime By Visiting: <a target="_blank" href="{{mainLink}}find">{{mainLink}}find</a></h3>
+      <br>
+      <br>
+      <h3>Next Steps</h3>
+      <br>
+      <h5>Set An Employee Code in Your Admin Panel</h5>
+      <br>
+      <h5>Build And Schedule Your Menus</h5>
+      <br>
+      <h5>Upload a Logo</h5>
+      <br>
+      <h5>Set Sales Tax Rate For Each Location</h5>
+      <br>
+      <h5><a target="_blank" href="new-contact">Contact</a> A Customer Success Agent To Book a Staff Training Session, and Answer Any Questions</h5>
+      <br>
+      <hr>
+      <h5>You Will Receive an Order Confirmation Email Immediately, and an Order Tracking Email Within 24 Hours</h5>
+
+
+
+
+
+
+
+
+
+
+      <br>
+      <br>
+      <br>
+      <br>
+    </div>
+  </body>
+</html>
