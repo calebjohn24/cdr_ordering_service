@@ -34,9 +34,8 @@ mainLink = info['mainLink']
 @find_page_blueprint.route('/find')
 @find_page_blueprint.route('/find-restaurant')
 def findRestaurant():
-    restaurantsDict = dict(db.reference('/restaurants').get())
-    restaurants = list(restaurantsDict.keys())
-    return(render_template("Global/findrestaurant.html", restaurants=restaurants))
+    restaurantsDict = dict(db.reference('/billing').get())
+    return(render_template("Global/findrestaurant.html", restaurants=restaurantsDict))
 
 
 @find_page_blueprint.route('/restname~<restaurant>')
@@ -44,7 +43,7 @@ def findRestaurantLocation(restaurant):
     restaurantsDict = dict(db.reference('/restaurants/' + restaurant).get())
     del restaurantsDict['admin-info']
     del restaurantsDict['sq-token']
-    locations = list(restaurantsDict.keys())
+    locations = restaurantsDict
     return(render_template("Global/findrestaurantloc.html",restaurant=restaurant,locations=locations))
 
 @find_page_blueprint.route('/pickscreen-<restaurant>~<location>')

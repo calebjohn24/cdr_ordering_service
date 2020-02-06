@@ -58,9 +58,9 @@
       <input class="form-control" id="myInput" type="text" placeholder="Search..">
       <hr>
       <ul class="list-group" id="myList">
-        {% for r in range(restaurants|count) %}
+        {% for r,v in restaurants.items() %}
         <li class="list-group-item">
-          <a href="restname~{{restaurants[r]}}" class="button btn-lg">{{restaurants[r]|capitalize}} <i class="fas fa-store-alt"></i></a><br>
+          <a href="restname~{{r}}" class="button btn-lg">{{v.dispname}} <i class="fas fa-store-alt"></i></a><br>
         </li>
         {% endfor %}
       </ul>

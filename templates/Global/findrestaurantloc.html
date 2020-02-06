@@ -56,9 +56,9 @@ function goBack() {
   <input class="form-control" id="myInput" type="text" placeholder="Search..">
   <hr>
 <ul class="list-group" id="myList">
-{% for l in range(locations|count) %}
+{% for l,v in locations.items() %}
   <li class="list-group-item">
-<a href="pickscreen-{{restaurant}}~{{locations[l]}}" class="button btn-lg">{{locations[l]|capitalize}} <i class="fas fa-map-marker-alt"></i></a><br>
+<a href="pickscreen-{{restaurant}}~{{l}}" class="button btn-lg">{{v.dispname}} <i class="fas fa-map-marker-alt"></i></a><br>
   </li>
 {% endfor %}
 </ul>
