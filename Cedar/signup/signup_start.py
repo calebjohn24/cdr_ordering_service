@@ -376,161 +376,230 @@ def checkoutStandardconfirm():
     rsp = dict(request.form)
     billingRef = db.reference('/billing/' + estNameStr + '/info')
     try:
+        card = stripe.Customer.create_source(
+            custId,
+            source=rsp['stripeToken'],
+        )
+        '''
         paymentMethod = stripe.PaymentMethod.create(
             type="card",
-            card={
-                "token": rsp['stripeToken']
-            }
+            card={"token":rsp['stripeToken']}
         )
-        print(paymentMethod)
         pmId = paymentMethod.id
+        '''
+        '''
         stripe.PaymentMethod.attach(
-            pmId,
+            card.id,
             customer=custId,
         )
+        '''
+        billingRef = db.reference('/billing/' + estNameStr + '/info')
+        billingRef.update({
+            "paymentId": card.id
+        })
+        print(card.id)
     except Exception as e:
-        print(e)
+        print(e, "error")
         return(render_template('Signup/card-declined.html'))
-    finally:
-        billingRef.update({
-            "paymentId": pmId
-        })
-        billingRef = db.reference('/billing/' + estNameStr)
-        currDate = datetime.datetime.now()
-        delta0 = datetime.timedelta(days=10)
-        currDate = currDate + delta0
-        delta = datetime.timedelta(days=30)
-        nextDate = currDate + delta
-        currStr = str(currDate.month) + "-" + str(currDate.day) + "-" + str(currDate.year)
-        nextStr = str(nextDate.month) + "-" + str(nextDate.day) + "-" + str(nextDate.year)
-        billingRef.update({
-            "lastBillTime": float(time.time())+864000.0,
-            "billDate": currDate.day,
-            "billMonth": currDate.month,
-            "billYear":currDate.year,
-            "lastBill":currStr,
-            "nextBill":nextStr
-        })
-        billingRef = db.reference('/billing/' + estNameStr + '/fees/all')
-        billingRef.update({
-            "base":50
-        })
-        billingRef = db.reference('/billing/' + estNameStr + '/fees/all/kiosk')
-        items = []
-        if(kioskFin == '18'):
-            for g in groups:
-                amt = 0
-                for k,v in g.items():
-                    dictKiosk = {
-                        "base":5,
-                        'group':k,
-                        "count":v['count'],
-                        "fees":((v['val']/18.0)+5.0),
-                        "kiosks":v['kiosks'],
-                        'remaining':18,
-                        'term':18,
-                        'installment':"True"
-                    }
-                    amt = int((v['val']/18.0) * 100)
-                    billingRef.push(dictKiosk)
-                    plans = stripe.Plan.list()
-                    for p in plans:
-                        if(p.amount == amt):
-                            items.append({"plan":p.id,"quantity":int(v['count'])})
-                            break
-            items.append({"plan":"server-st-fee"})
-            items.append({"plan":"transact-standard"})
-            items.append({"plan":"kiosk-sw-st","quantity":int(countKiosk)})
-            subscription = stripe.Subscription.create(
-                customer=custId,
-                default_tax_rates=['txr_1G8iRHLYFr9rSSIK7V0Byizd'],
-                items=items
-                )
-            print(subscription)
-            billingRef = db.reference('/billing/' + estNameStr + '/info')
-            billingRef.update({"subId":subscription.id})
-            feesRef = db.reference('/billing/' + estNameStr + '/fees/all/transactions')
-            items = dict(subscription)['items']
-            for i in items:
-                print(i.plan.usage_type)
-                print(i.id)
-                if(i.plan.usage_type == "metered"):
-                    feesRef.update({"id":str(i.id)})
-                    break
-        elif(kioskFin == '24'):
-            for g in groups:
-                for k,v in g.items():
-                    dictKiosk = {
-                        "base":5,
-                        'group':k,
-                        "count":v['count'],
-                        "fees":((v['val']/24.0) + 5.0),
-                        "kiosks":v['kiosks'],
-                        'remaining':24,
-                        'term':24,
-                        'installment':"True"
-                    }
-                    billingRef.push(dictKiosk)
-                    plans = stripe.Plan.list()
-                    for p in plans:
-                        if(p.amount == amt):
-                            items.append({"plan":p.id,"quantity":int(v['count'])})
-                            break
-            items.append({"plan":"server-st-fee"})
-            items.append({"plan":"transact-standard"})
-            items.append({"plan":"kiosk-sw-st","quantity":int(countKiosk)})
-            subscription = stripe.Subscription.create(
-                customer=custId,
-                default_tax_rates=['txr_1G8iRHLYFr9rSSIK7V0Byizd'],
-                items=items
-                )
-            print(subscription)
-            billingRef = db.reference('/billing/' + estNameStr + '/info')
-            billingRef.update({"subId":subscription.id})
-            feesRef = db.reference('/billing/' + estNameStr + '/fees/all/transactions')
-            items = dict(subscription)['items']
-            for i in items:
-                print(i.plan.usage_type)
-                print(i.id)
-                if(i.plan.usage_type == "metered"):
-                    feesRef.update({"id":str(i.id)})
-                    break
-        else:
-            for g in groups:
-                for k,v in g.items():
-                    dictKiosk = {
-                        "base":5,
-                        'group':k,
-                        "count":v['count'],
-                        "fees":5,
-                        "kiosks":v['kiosks'],
-                        'term':18,
-                    }
-                    billingRef.push(dictKiosk)
-            items.append({"plan":"server-st-fee"})
-            items.append({"plan":"transact-standard"})
-            items.append({"plan":"kiosk-sw-st","quantity":int(countKiosk)})
-            subscription = stripe.Subscription.create(
-                customer=custId,
-                default_tax_rates=['txr_1G8iRHLYFr9rSSIK7V0Byizd'],
-                items=items
-                )
-            print(subscription)
-            billingRef = db.reference('/billing/' + estNameStr + '/info')
-            billingRef.update({"subId":subscription.id})
-            feesRef = db.reference('/billing/' + estNameStr + '/fees/all/transactions')
-            items = dict(subscription)['items']
-            for i in items:
-                print(i.plan.usage_type)
-                print(i.id)
-                if(i.plan.usage_type == "metered"):
-                    feesRef.update({"id":str(i.id)})
-                    break
-        os.mkdir(estNameStr)
-        os.mkdir(estNameStr + "/imgs")
-        os.mkdir(estNameStr + "/invoices")
-        os.mkdir(estNameStr + "/menus")
-        return(redirect(url_for('signup_start.confirmSignup')))
+    customer = stripe.Customer.retrieve(custId)
+    custId = customer.id
+    billingRef = db.reference('/billing/' + estNameStr)
+    currDate = datetime.datetime.now()
+    delta0 = datetime.timedelta(days=10)
+    currDate = currDate + delta0
+    delta = datetime.timedelta(days=30)
+    nextDate = currDate + delta
+    currStr = str(currDate.month) + "-" + \
+        str(currDate.day) + "-" + str(currDate.year)
+    nextStr = str(nextDate.month) + "-" + \
+        str(nextDate.day) + "-" + str(nextDate.year)
+    billingRef.update({
+        "lastBillTime": float(time.time())+864000.0,
+        "billDate": currDate.day,
+        "billMonth": currDate.month,
+        "billYear": currDate.year,
+        "lastBill": currStr,
+        "nextBill": nextStr
+    })
+    billingRef = db.reference('/billing/' + estNameStr + '/fees/all')
+    billingRef.update({
+        "base": 50
+    })
+    billingRef = db.reference('/billing/' + estNameStr + '/fees/all/kiosk')
+    items = []
+    if(kioskFin == '18'):
+        for g in groups:
+            amt = 0
+            for k, v in g.items():
+                dictKiosk = {
+                    "base": 5,
+                    'group': k,
+                    "count": v['count'],
+                    "fees": ((v['val']/18.0)+5.0),
+                    "kiosks": v['kiosks'],
+                    'remaining': 18,
+                    'term': 18,
+                    'installment': "True"
+                }
+                amt = int((v['val']/18.0) * 100)
+                billingRef.push(dictKiosk)
+                plans = stripe.Plan.list()
+                for p in plans:
+                    if(p.amount == amt):
+                        items.append(
+                            {"plan": p.id, "quantity": int(v['count'])})
+                        break
+        items.append({"plan": "server-st-fee"})
+        items.append({"plan": "transact-standard"})
+        items.append({"plan": "kiosk-sw-st", "quantity": int(countKiosk)})
+        subscription = stripe.Subscription.create(
+            customer=custId,
+            default_tax_rates=['txr_1G8iRHLYFr9rSSIK7V0Byizd'],
+            items=items
+        )
+        print(subscription)
+        billingRef = db.reference('/billing/' + estNameStr + '/info')
+        billingRef.update({"subId": subscription.id})
+        feesRef = db.reference(
+            '/billing/' + estNameStr + '/fees/all/transactions')
+        items = dict(subscription)['items']
+        for i in items:
+            print(i.plan.usage_type)
+            print(i.id)
+            if(i.plan.usage_type == "metered"):
+                feesRef.update({"id": str(i.id)})
+                break
+    elif(kioskFin == '24'):
+        for g in groups:
+            for k, v in g.items():
+                dictKiosk = {
+                    "base": 5,
+                    'group': k,
+                    "count": v['count'],
+                    "fees": ((v['val']/24.0) + 5.0),
+                    "kiosks": v['kiosks'],
+                    'remaining': 24,
+                    'term': 24,
+                    'installment': "True"
+                }
+                billingRef.push(dictKiosk)
+                plans = stripe.Plan.list()
+                for p in plans:
+                    if(p.amount == amt):
+                        items.append(
+                            {"plan": p.id, "quantity": int(v['count'])})
+                        break
+        items.append({"plan": "server-st-fee"})
+        items.append({"plan": "transact-standard"})
+        items.append({"plan": "kiosk-sw-st", "quantity": int(countKiosk)})
+        subscription = stripe.Subscription.create(
+            customer=custId,
+            default_tax_rates=['txr_1G8iRHLYFr9rSSIK7V0Byizd'],
+            items=items
+        )
+        print(subscription)
+        billingRef = db.reference('/billing/' + estNameStr + '/info')
+        billingRef.update({"subId": subscription.id})
+        feesRef = db.reference(
+            '/billing/' + estNameStr + '/fees/all/transactions')
+        items = dict(subscription)['items']
+        for i in items:
+            print(i.plan.usage_type)
+            print(i.id)
+            if(i.plan.usage_type == "metered"):
+                feesRef.update({"id": str(i.id)})
+                break
+    else:
+        for g in groups:
+            for k, v in g.items():
+                dictKiosk = {
+                    "base": 5,
+                    'group': k,
+                    "count": v['count'],
+                    "fees": 5,
+                    "kiosks": v['kiosks'],
+                    'term': 18,
+                }
+                billingRef.push(dictKiosk)
+                amt = int((v['val']) * 100)
+                skus = stripe.SKU.list().data
+                billingRef.push(dictKiosk)
+                for s in skus:
+                    if(s.price == amt):
+                        items.append(
+                            {"type": "sku", "parent": s.id, "quantity": int(v['count'])})
+                        break
+        billingRef = db.reference('/billing/' + estNameStr + '/info')
+        billingInfo = billingRef.get()
+        order = stripe.Order.create(
+            currency="usd",
+            customer=custId,
+            items=items,
+            shipping={
+                "name": billingInfo['legalname'],
+                "address": {
+                    "line1": billingInfo['shipAddr']['line1'],
+                    "line2": billingInfo['shipAddr']['line2'],
+                    "city": billingInfo['shipAddr']['city'],
+                    "state": billingInfo['shipAddr']['state'],
+                    "country": "US",
+                    "postal_code": billingInfo['shipAddr']['postal_code'],
+                },
+            },
+        )
+        '''
+        charge = stripe.Charge.create(
+            amount=int((kioskTotal*1.1)*100),
+            customer=custId,
+            currency="usd",
+            card=card.id,
+            description="Kiosk Hardware Order From Cedar Restaurants",
+        )
+        '''
+        stripe.Order.pay(
+            order.id,
+            customer=custId,
+            source=card.id
+        )
+
+        itemSub = []
+        itemSub.append({"plan": "server-st-fee"})
+        itemSub.append({"plan": "transact-standard"})
+        itemSub.append(
+            {"plan": "kiosk-sw-st", "quantity": int(countKiosk)})
+        subscription = stripe.Subscription.create(
+            customer=custId,
+            default_tax_rates=['txr_1G8iRHLYFr9rSSIK7V0Byizd'],
+            items=itemSub
+        )
+        print(subscription)
+        billingRef = db.reference('/billing/' + estNameStr + '/info')
+        billingRef.update({"subId": subscription.id})
+        feesRef = db.reference(
+            '/billing/' + estNameStr + '/fees/all/transactions')
+        items = dict(subscription)['items']
+        for i in items:
+            print(i.plan.usage_type)
+            print(i.id)
+            if(i.plan.usage_type == "metered"):
+                feesRef.update({"id": str(i.id)})
+                break
+
+        dictKiosk = {
+            "base": 5,
+            'group': k,
+            "count": v['count'],
+            "fees": ((v['val']/18.0)+5.0),
+            "kiosks": v['kiosks'],
+            'remaining': 18,
+            'term': 18,
+            'installment': "True"
+        }
+    os.mkdir(estNameStr)
+    os.mkdir(estNameStr + "/imgs")
+    os.mkdir(estNameStr + "/invoices")
+    os.mkdir(estNameStr + "/menus")
+    return(redirect(url_for('signup_start.confirmSignup')))
 
 
 @signup_start_blueprint.route('/confirm-signup', methods=['GET'])

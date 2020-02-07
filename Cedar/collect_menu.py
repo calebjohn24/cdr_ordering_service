@@ -144,17 +144,14 @@ def addEst(estNameStr, dispname):
         "dispname": dispname
     })
     print("added")
-    with open('data.txt', 'w') as outfile:
-        json.dump(info, outfile)
-    return
 
 
 def addLoc(estNameStr, location, dispname):
-    dispnameEst = db.reference(
-        '/billing/' + estNameStr + '/dispname').get()
+    restaurants = db.reference(
+        '/restaurants/' + estNameStr)
     restaurants.update({
         estNameStr: {
-            "dispname": dispnameEst
+            "dispname": dispname
         }
     })
     print("added")

@@ -102,7 +102,7 @@
                 {% endfor %}
                 {% endfor %}
                 <br>
-                <h5>Total Due Today: {{ "$%.2f"|format(kioskTotal) }}</h5>
+                <h5>Total Due Today: {{ "$%.2f"|format(kioskTotal) }} + Sales Tax</h5>
                 <hr>
                 <br>
                 <form method="POST" action="payment-kiosk">

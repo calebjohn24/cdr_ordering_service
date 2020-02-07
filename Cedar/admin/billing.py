@@ -114,34 +114,32 @@ def billDetails(estNameStr, location):
     return(render_template("POS/AdminMini/billing.html", restName=getDispNameEst(estNameStr), billing=billing, total=total, taxRate=taxRate, cardBrand=cardBrand, cardLast4=cardLast4))
 
 
-
 @billing_blueprint.route('/<estNameStr>/<location>/changeCard', methods=['POST'])
-def changeCard(estNameStr,location):
+def changeCard(estNameStr, location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     infoRef = db.reference('/billing/' + estNameStr + '/info')
     info = dict(infoRef.get())
     custId = info['stripeId']
+    oldPm = info['paymentId']
     try:
-        paymentMethod = stripe.PaymentMethod.create(
-            type="card",
-            card={
-                "token": rsp['stripeToken']
-            }
-        )
-        pmId = paymentMethod.id
-        stripe.PaymentMethod.attach(
-            pmId,
-            customer=custId,
+        card = stripe.Customer.create_source(
+            custId,
+            source=rsp['stripeToken'],
         )
         infoRef = db.reference('/billing/' + estNameStr + '/info')
         infoRef.update({
-            "paymentId": pmId
+            "paymentId": card.id
         })
+        stripe.Customer.delete_source(
+            custId,
+            oldPm,
+        )
     except Exception as e:
         print(e)
         return(render_template('POS/AdminMini/card-declined.html'))
     return(redirect(url_for('billing.billDetails', estNameStr=estNameStr, location=location)))
+
 
 @billing_blueprint.route('/<estNameStr>/<location>/change-split', methods=['POST'])
 def splitChange(estNameStr, location):
@@ -355,13 +353,10 @@ def genInvoice(estNameStr, location, key):
     w = pdf.get_string_width(text)
     pdf.set_font(font_name, size=12)
     pdf.cell((wT), 15, txt=text, align="C")
-
     text = ''
     pdf.set_font(font_name, size=10)
     pdf.multi_cell(200, 15, txt=text, align="L")
-
     kiosks = dict(billing['kiosks']['ids'])
-
     for kioskKeys in kiosks:
         if(kiosks[kioskKeys]['hardware'] != 0):
             text = "Kiosk Hardware Installment (Group id " + \

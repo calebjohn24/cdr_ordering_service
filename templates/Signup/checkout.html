@@ -194,9 +194,10 @@
 
       {% endfor %}
       {% endfor %}
-      <p>Sales Tax {{ "$%.2f"|format(kioskTotal *0.1)}}</p>
+      <p>Wa Sales Tax {{ "$%.2f"|format(kioskTotal *0.1)}}</p>
       <br>
       <h6>{{ "$%.2f"|format(kioskTotal *1.1)}}</h6>
+      <input type="hidden" name="billTotal" value="{{kioskTotal *1.1}}" />
       <br>
 
 
