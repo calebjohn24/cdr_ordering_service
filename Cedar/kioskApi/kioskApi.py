@@ -27,6 +27,7 @@ from Cedar.admin import admin_panel
 from Cedar.admin.admin_panel import checkLocation, sendEmail, getSquare
 from Cedar import collect_menu
 from Cedar.admin.billing import updateTransactionFees
+from Cedar.collect_menu import findMenu, getDispNameEst, getDispNameLoc, updateEst, updateLoc
 
 infoFile = open("info.json")
 info = json.load(infoFile)
@@ -313,11 +314,11 @@ def verifyOrder(estNameStr, location, kioskCode):
             write_str += "Order Fee " + \
                 "${:0,.2f}".format(billingInfo['custFee'])
             write_str += "\n"
-            write_str += subtotalStr + "\n" + tax + "\n" + total + "\n \n \n"
+            write_str += "Subtotal: " +subtotalStr + "\n" + "Sales Tax: "+tax + "\n" + "Total: " +total + "\n \n \n"
             write_str += 'Thank You For Dining with us ' + \
                 str(order['name']).capitalize() + " !"
             SUBJECT = "Thank You For Dining at " + getDispNameEst(estNameStr)+ " " + \
-                getDispNameEst(estNameStr, location)
+                getDispNameLoc(estNameStr, location)
             message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
             sendEmail(sender, order['email'], message)
         orderRef.delete()

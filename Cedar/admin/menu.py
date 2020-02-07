@@ -24,7 +24,7 @@ from werkzeug.datastructures import ImmutableOrderedMultiDict
 from flask import Blueprint, render_template, abort
 from Cedar.collect_menu import findMenu, getDispNameEst, getDispNameLoc
 from Cedar.admin.admin_panel import getSquare, checkAdminToken, checkLocation
-
+import random
 
 infoFile = open("info.json")
 info = json.load(infoFile)

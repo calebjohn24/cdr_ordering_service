@@ -41,8 +41,6 @@ emailPass = "cda33d07-f6bd-479e-806f-5d039ae2fa2d"
 
 
 def updateTransactionFees(amt, estNameStr, location):
-    print(location)
-    print(estNameStr)
     feesRef = db.reference('/billing/' + estNameStr + '/fees/all/transactions')
     fees = dict(feesRef.get())
     feeId = fees['id']
@@ -93,11 +91,9 @@ def billDetails(estNameStr, location):
         else:
             total = 0
             baseFee = billing['fees']['all']['base']
-            print(baseFee)
             orderFees = billing['fees']['all']['transactions']['fees']
-            print(orderFees)
+
             kioskKeys = list(dict(billing['fees']['all']['kiosk']).keys())
-            print(kioskKeys)
             kioskFees = 0
             for keys in kioskKeys:
                 kioskFees += float(billing['fees']['all']['kiosk'][keys]['fees'] * float(
@@ -109,8 +105,43 @@ def billDetails(estNameStr, location):
     infoRef = db.reference('/billing/' + estNameStr + '/info')
     info = dict(infoRef.get())
     taxRate = float(info['tax'])/100.0
-    return(render_template("POS/AdminMini/billing.html", restName=getDispNameEst(estNameStr), billing=billing, total=total, taxRate=taxRate))
+    pmId = info['paymentId']
+    pm = stripe.PaymentMethod.retrieve(
+        pmId
+    )
+    cardBrand = str(pm.card.brand).capitalize()
+    cardLast4 = pm.card.last4
+    return(render_template("POS/AdminMini/billing.html", restName=getDispNameEst(estNameStr), billing=billing, total=total, taxRate=taxRate, cardBrand=cardBrand, cardLast4=cardLast4))
 
+
+
+@billing_blueprint.route('/<estNameStr>/<location>/changeCard', methods=['POST'])
+def changeCard(estNameStr,location):
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+    rsp = ((request.form))
+    infoRef = db.reference('/billing/' + estNameStr + '/info')
+    info = dict(infoRef.get())
+    custId = info['stripeId']
+    try:
+        paymentMethod = stripe.PaymentMethod.create(
+            type="card",
+            card={
+                "token": rsp['stripeToken']
+            }
+        )
+        pmId = paymentMethod.id
+        stripe.PaymentMethod.attach(
+            pmId,
+            customer=custId,
+        )
+        infoRef = db.reference('/billing/' + estNameStr + '/info')
+        infoRef.update({
+            "paymentId": pmId
+        })
+    except Exception as e:
+        print(e)
+        return(render_template('POS/AdminMini/card-declined.html'))
+    return(redirect(url_for('billing.billDetails', estNameStr=estNameStr, location=location)))
 
 @billing_blueprint.route('/<estNameStr>/<location>/change-split', methods=['POST'])
 def splitChange(estNameStr, location):
@@ -332,8 +363,6 @@ def genInvoice(estNameStr, location, key):
     kiosks = dict(billing['kiosks']['ids'])
 
     for kioskKeys in kiosks:
-        # print(kiosks[kioskKeys])
-
         if(kiosks[kioskKeys]['hardware'] != 0):
             text = "Kiosk Hardware Installment (Group id " + \
                 kiosks[kioskKeys]['group'] + ")"

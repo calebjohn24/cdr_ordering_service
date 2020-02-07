@@ -83,9 +83,9 @@ def getSquare(estNameStr, tzGl, locationsPaths):
 
 
 def findMenu(estNameStr, location):
-    tzGl={}
-    locationsPaths={}
-    getSquare(estNameStr,tzGl,locationsPaths)
+    tzGl = {}
+    locationsPaths = {}
+    getSquare(estNameStr, tzGl, locationsPaths)
     print(tzGl)
     day = dayNames[int(datetime.datetime.now(tzGl[location]).weekday())]
     curMin = float(datetime.datetime.now(tzGl[location]).minute) / 100.0
@@ -114,83 +114,31 @@ def findMenu(estNameStr, location):
 
 
 def getDispNameEst(estNameStr):
-    infoFile = open("info.json")
-    info = json.load(infoFile)
-    restaurants = dict(info['restaurants'])
-    try:
-        restName = restaurants[estNameStr]['dispname']
-        return(restName)
-    except Exception as e:
-        dispnameEst = db.reference(
-            '/billing/' + estNameStr + '/dispname').get()
-        restaurants.update({
-            estNameStr: {
-                "dispname": dispnameEst
-            }
-        })
-        restaurants[estNameStr].update({"dispname": dispnameEst})
-        with open('data.txt', 'w') as outfile:
-            json.dump(info, outfile)
-        return str(dispnameEst)
+    dispnameEst = db.reference(
+        '/billing/' + estNameStr + '/dispname').get()
+    return str(dispnameEst)
 
 
 def getDispNameLoc(estNameStr, location):
-    infoFile = open("info.json")
-    info = json.load(infoFile)
-    restaurants = dict(info['restaurants'])
-    try:
-        restName = dict(restaurants[estNameStr])
-        locName = restName[location]
-        return(locName)
-    except Exception as e:
-        dispnameEst = db.reference(
-            '/restaurants/' + estNameStr +'/'+location +'/dispname').get()
-        restaurants.update({
-            estNameStr: {
-                location: dispnameEst
-            }
-        })
-        with open('data.txt', 'w') as outfile:
-            json.dump(info, outfile)
-        return str(dispnameEst)
+    dispnameEst = db.reference(
+        '/restaurants/' + estNameStr + '/'+location + '/dispname').get()
+    return str(dispnameEst)
 
 
 def updateEst(estNameStr, new):
-    infoFile = open("info.json")
-    info = json.load(infoFile)
-    restaurants = dict(info['restaurants'])
-    restaurants[estNameStr].update({"dispname": new})
     nameRef = db.reference('/billing/' + estNameStr)
     nameRef.update({"dispname": new})
     print("updated")
-    with open('data.txt', 'w') as outfile:
-        json.dump(info, outfile)
     return
 
 
 def updateLoc(estNameStr, location, new):
-    infoFile = open("info.json")
-    info = json.load(infoFile)
-    restaurants = dict(info['restaurants'])
-    restaurants[estNameStr].update({location: new})
     nameRef = db.reference('/restaurants/' + estNameStr + '/' + location)
     nameRef.update({"dispname": new})
-    print("updated")
-    with open('data.txt', 'w') as outfile:
-        json.dump(info, outfile)
     return
 
 
 def addEst(estNameStr, dispname):
-    infoFile = open("info.json")
-    info = json.load(infoFile)
-    mainLink = info['mainLink']
-    restaurants = dict(info['restaurants'])
-    restaurants.update({
-        estNameStr: {
-            "dispname": dispname
-        }
-    })
     dispnameEst = db.reference('/billing/' + estNameStr)
     dispnameEst.update({
         "dispname": dispname
@@ -202,21 +150,12 @@ def addEst(estNameStr, dispname):
 
 
 def addLoc(estNameStr, location, dispname):
-    infoFile = open("info.json")
-    info = json.load(infoFile)
-    restaurants = dict(info['restaurants'])
-    try:
-        restaurants[estNameStr].update({location: dispname})
-    except Exception as e:
-        dispnameEst = db.reference(
-            '/billing/' + estNameStr + '/dispname').get()
-        restaurants.update({
-            estNameStr: {
-                "dispname": dispnameEst
-            }
-        })
-        restaurants[estNameStr].update({location: dispname})
-    with open('data.txt', 'w') as outfile:
-        json.dump(info, outfile)
+    dispnameEst = db.reference(
+        '/billing/' + estNameStr + '/dispname').get()
+    restaurants.update({
+        estNameStr: {
+            "dispname": dispnameEst
+        }
+    })
     print("added")
     return

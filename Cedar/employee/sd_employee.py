@@ -117,7 +117,7 @@ def EmployeePanel(estNameStr,location):
             else:
                 appItem = str(cats) + "~" + str(itm)
                 inactiveItems.append(appItem)
-    return(render_template("POS/StaffSitdown/View.html", location=location.capitalize(), restName=getDispNameEst(estNameStr), menu=menu, activeItems=activeItems, inactiveItems=inactiveItems, reqData=reqData, orders=ordsGet))
+    return(render_template("POS/StaffSitdown/View.html", location=getDispNameLoc(estNameStr, location), restName=getDispNameEst(estNameStr), menu=menu, activeItems=activeItems, inactiveItems=inactiveItems, reqData=reqData, orders=ordsGet))
 
 
 @sd_employee_blueprint.route('/<estNameStr>/<location>/activate-item~<cat>~<item>~<menu>')
@@ -218,7 +218,7 @@ def EmployeeReject(estNameStr,location):
     reqData = dict(reqRef.get())
     orderToken = reqData["info"]["token"]
     pathUser = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
-    AlertSend = db.reference(pathUser).update({"alert":str("Staff Message: Items Not Added To Bill: "+alert)})
+    AlertSend = db.reference(pathUser).update({"alert":str("Staff Message: "+alert)})
     AlertTime = db.reference(pathUser).update({"alertTime":time.time()})
     reqRef.delete()
     return(redirect(url_for("sd_employee.EmployeePanel",estNameStr=estNameStr,location=location)))

@@ -46,7 +46,7 @@ def startKiosk2(estNameStr,location,code):
         if(checkLocation(estNameStr,location) == 1):
             return(redirect(url_for("find_page.findRestaurant")))
         logo = 'https://storage.googleapis.com/cedarchatbot.appspot.com/'+estNameStr+'/logo.jpg'
-        return(render_template("Customer/Sitdown/startKiosk.html",btn="sitdown-startKiosk",restName=getDispNameEst(estNameStr),locName=location, logo=logo))
+        return(render_template("Customer/Sitdown/startKiosk.html",btn="sitdown-startKiosk",restName=getDispNameEst(estNameStr),locName=getDispNameLoc(estNameStr, location), logo=logo))
 
 
 
@@ -82,7 +82,7 @@ def startKiosk(estNameStr,location):
         })
     #print(newOrd.key)
     session['orderToken'] = newOrd.key
-    msg = "Welcome to " + estNameStr.capitalize() + ". You can use this tablet to browse the menu, order food, ask for drink refills, and contact the staff.  Enjoy Your Meal!"
+    msg = "Welcome to " + getDispNameEst(estNameStr) + ". You can use this tablet to browse the menu, order food, ask for drink refills, and contact the staff.  Enjoy Your Meal!"
     session["msg"] = msg
     session["startTime"] = time.time()
     session["click"] = "None"
@@ -114,7 +114,7 @@ def sitdownMenu(estNameStr,location):
     # print(cart)
     session["msg"] = "None"
     session["click"] = "None"
-    return(render_template("Customer/Sitdown/mainKiosk2.html", menu=menuInfo, restName=getDispNameEst(estNameStr), cart=cart, locName=location.capitalize(), msg=msg, click=click, boolCheck=boolCheck))
+    return(render_template("Customer/Sitdown/mainKiosk2.html", menu=menuInfo, restName=getDispNameEst(estNameStr), cart=cart, locName=getDispNameLoc(estNameStr, location), msg=msg, click=click, boolCheck=boolCheck))
 
 
 @sd_menu_blueprint.route('/<estNameStr>/<location>/sitdown-additms~<cat>~<itm>', methods=["POST"])
