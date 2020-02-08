@@ -48,4 +48,4 @@ def findRestaurantLocation(restaurant):
 
 @find_page_blueprint.route('/pickscreen-<restaurant>~<location>')
 def pickScreen(restaurant, location):
-    return(render_template("Global/pickScreen.html",restaurant=restaurant,location=location))
+    return(render_template("Global/pickscreen.html",restaurant=restaurant,location=location))

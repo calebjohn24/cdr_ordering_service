@@ -28,7 +28,7 @@ from Cedar import collect_menu
 from Cedar.admin.admin_panel import checkLocation, sendEmail, getSquare, checkAdminToken
 import stripe
 
-stripe.api_key = "sk_test_Sr1g0u9XZ2txPiq8XENOQjCd00pjjrscNp"
+stripe.api_key = "sk_live_sRI03xt3QaCpWZahwnybqnPe007xtcIzKe"
 
 
 infoFile = open("info.json")
@@ -449,12 +449,12 @@ def checkoutStandardconfirm():
                         items.append(
                             {"plan": p.id, "quantity": int(v['count'])})
                         break
-        items.append({"plan": "server-st-fee"})
-        items.append({"plan": "transact-standard"})
-        items.append({"plan": "kiosk-sw-st", "quantity": int(countKiosk)})
+        items.append({"plan": "plan_GgHGo3gFH4zsBA"})
+        items.append({"plan": "plan_GgHGgVAJmMlkrQ"})
+        items.append({"plan": "plan_GgHGeI5cXGDfEM", "quantity": int(countKiosk)})
         subscription = stripe.Subscription.create(
             customer=custId,
-            default_tax_rates=['txr_1G8iRHLYFr9rSSIK7V0Byizd'],
+            default_tax_rates=['txr_1G9QLFLYFr9rSSIKx4JornAL'],
             items=items
         )
         print(subscription)
@@ -482,6 +482,7 @@ def checkoutStandardconfirm():
                     'term': 24,
                     'installment': "True"
                 }
+                amt = int((v['val']/24.0) * 100)
                 billingRef.push(dictKiosk)
                 plans = stripe.Plan.list()
                 for p in plans:
@@ -489,12 +490,12 @@ def checkoutStandardconfirm():
                         items.append(
                             {"plan": p.id, "quantity": int(v['count'])})
                         break
-        items.append({"plan": "server-st-fee"})
-        items.append({"plan": "transact-standard"})
-        items.append({"plan": "kiosk-sw-st", "quantity": int(countKiosk)})
+        items.append({"plan": "plan_GgHGo3gFH4zsBA"})
+        items.append({"plan": "plan_GgHGgVAJmMlkrQ"})
+        items.append({"plan": "plan_GgHGeI5cXGDfEM", "quantity": int(countKiosk)})
         subscription = stripe.Subscription.create(
             customer=custId,
-            default_tax_rates=['txr_1G8iRHLYFr9rSSIK7V0Byizd'],
+            default_tax_rates=['txr_1G9QLFLYFr9rSSIKx4JornAL'],
             items=items
         )
         print(subscription)
@@ -547,15 +548,6 @@ def checkoutStandardconfirm():
                 },
             },
         )
-        '''
-        charge = stripe.Charge.create(
-            amount=int((kioskTotal*1.1)*100),
-            customer=custId,
-            currency="usd",
-            card=card.id,
-            description="Kiosk Hardware Order From Cedar Restaurants",
-        )
-        '''
         stripe.Order.pay(
             order.id,
             customer=custId,
@@ -563,13 +555,12 @@ def checkoutStandardconfirm():
         )
 
         itemSub = []
-        itemSub.append({"plan": "server-st-fee"})
-        itemSub.append({"plan": "transact-standard"})
-        itemSub.append(
-            {"plan": "kiosk-sw-st", "quantity": int(countKiosk)})
+        itemSub.append({"plan": "plan_GgHGo3gFH4zsBA"})
+        itemSub.append({"plan": "plan_GgHGgVAJmMlkrQ"})
+        itemSub.append({"plan": "plan_GgHGeI5cXGDfEM", "quantity": int(countKiosk)})
         subscription = stripe.Subscription.create(
             customer=custId,
-            default_tax_rates=['txr_1G8iRHLYFr9rSSIK7V0Byizd'],
+            default_tax_rates=['txr_1G9QLFLYFr9rSSIKx4JornAL'],
             items=itemSub
         )
         print(subscription)
@@ -595,10 +586,10 @@ def checkoutStandardconfirm():
             'term': 18,
             'installment': "True"
         }
-    os.mkdir(estNameStr)
-    os.mkdir(estNameStr + "/imgs")
-    os.mkdir(estNameStr + "/invoices")
-    os.mkdir(estNameStr + "/menus")
+    os.mkdir('/tmp/' + estNameStr)
+    os.mkdir('/tmp/' + estNameStr + "/imgs")
+    os.mkdir('/tmp/' + estNameStr + "/invoices")
+    os.mkdir('/tmp/' + estNameStr + "/menus")
     return(redirect(url_for('signup_start.confirmSignup')))
 
 

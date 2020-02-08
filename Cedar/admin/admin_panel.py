@@ -54,6 +54,7 @@ def sendEmail(sender, rec, msg):
         smtpObj.sendmail(sender, [rec], msg)
         smtpObj.close()
     except Exception as e:
+        print(e)
         try:
             sender = 'cedarrestaurantsbot@gmail.com'
             emailPass = "cda33d07-f6bd-479e-806f-5d039ae2fa2d"
@@ -458,7 +459,7 @@ def confirmEmployeeCode(estNameStr, location):
 @admin_panel_blueprint.route('/<estNameStr>/<location>/editLogo', methods=["POST"])
 def editLogoX(estNameStr, location):
     try:
-        UPLOAD_FOLDER = estNameStr + "/imgs/"
+        UPLOAD_FOLDER = '/tmp/' + estNameStr + "/imgs/"
         file = request.files['logo']
         filename = secure_filename(file.filename)
         file.save(os.path.join(UPLOAD_FOLDER, 'logo.jpg'))
@@ -472,9 +473,12 @@ def editLogoX(estNameStr, location):
         print(url)
     except Exception as e:
         print(e)
-        os.mkdir(estNameStr)
-        os.mkdir(estNameStr+ "/imgs")
-        UPLOAD_FOLDER = estNameStr + "/imgs/"
+        try:
+            os.mkdir('/tmp/' + estNameStr + '/')
+        except expression as identifier:
+            pass
+        os.mkdir('/tmp/' + estNameStr+ "/imgs/")
+        UPLOAD_FOLDER = '/tmp/' + estNameStr + "/imgs/"
         file = request.files['logo']
         filename = secure_filename(file.filename)
         file.save(os.path.join(UPLOAD_FOLDER, 'logo.jpg'))
@@ -486,6 +490,7 @@ def editLogoX(estNameStr, location):
             str(str(UPLOAD_FOLDER) + "/" + str('logo.jpg')), content_type='image/jpeg')
         url = str(d.public_url)
         print(url)
+    os.remove('/tmp/' + estNameStr + "/imgs/logo.jpg")
     print("done", url)
     return redirect(url_for('admin_panel.panel', estNameStr=estNameStr, location=location))
 

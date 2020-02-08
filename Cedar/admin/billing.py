@@ -29,7 +29,7 @@ from Cedar.admin.admin_panel import checkLocation, sendEmail, getSquare, checkAd
 import stripe
 
 
-stripe.api_key = "sk_test_Sr1g0u9XZ2txPiq8XENOQjCd00pjjrscNp"
+stripe.api_key = "sk_live_sRI03xt3QaCpWZahwnybqnPe007xtcIzKe"
 billing_blueprint = Blueprint('billing', __name__, template_folder='templates')
 
 infoFile = open("info.json")
@@ -321,9 +321,11 @@ def genInvoice(estNameStr, location, key):
     totalVal = base
     totalVal += billing['transaction']['amt']
     transactionCount = billing['transaction']['count']
-    transactionUnit = float(
-        billing['transaction']['amt'] / float(billing['transaction']['count']))
-
+    if(billing['transaction']['count'] != 0):
+        transactionUnit = float(
+            billing['transaction']['amt'] / float(billing['transaction']['count']))
+    else:
+        transactionUnit = 0.5
     text = "Transaction Fee"
     w = pdf.get_string_width(text)
     pdf.set_font(font_name, size=12)
@@ -457,8 +459,18 @@ def genInvoice(estNameStr, location, key):
     pdf.set_font(font_name, size=12, style="B")
     pdf.multi_cell(200, 15, txt=text, align="L")
 
-    tmp_filename = estNameStr + "/invoices/" + str(date) + "-invoice.pdf"
-    pdf.output(tmp_filename)
-
+    try:
+        tmp_filename = '/tmp/' + estNameStr + "/invoices/" + str(date) + "-invoice.pdf"
+        pdf.output(tmp_filename)
+    except Exception as e:
+        try:
+            os.mkdir('/tmp/' + estNameStr + '/')
+            os.mkdir('/tmp/' + estNameStr + '/invoices/')
+            tmp_filename = '/tmp/' + estNameStr + "/invoices/" + str(date) + "-invoice.pdf"
+            pdf.output(tmp_filename)
+        except Exception as e:
+            os.mkdir('/tmp/' + estNameStr + '/invoices/')
+            tmp_filename = '/tmp/' + estNameStr + "/invoices/" + str(date) + "-invoice.pdf"
+            pdf.output(tmp_filename)
     # return('ok', 200)
     return send_file(tmp_filename, attachment_filename=str(str(date) + "-cedar-invoice.pdf"), as_attachment=True, mimetype='application/pdf')
