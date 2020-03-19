@@ -88,10 +88,57 @@ def getSquare(estNameStr, tzGl, locationsPaths):
         authorization = 'Authorization: Client sq0csp-oW3f74ovaUjZfC6Y_wVNrNQFg6sZVS7D12LfvWTl8Iw'
         resultRenew = o_auth_api.renew_token(client_id, body, authorization)
         if result.is_success():
-            squareToken =
+            squareToken = dict(resultRenew.body)['access_token']
             print(result.body)
             ref = db.reference('/restaurants/' + estNameStr)
             ref.update({"sq-token": token})
+            squareClient = Client(
+                access_token=squareToken,
+                environment='production',
+            )
+    api_locations = squareClient.locations
+    mobile_authorization_api = squareClient.mobile_authorization
+    result = api_locations.list_locations()
+    print(result)
+    # print(result)
+    if result.is_success():
+        # The body property is a list of locations
+        locations = result.body['locations']
+        for location in locations:
+            if((location['status']) == 'ACTIVE'):
+                addrNumber = ""
+                street = ""
+                for ltrAddr in range(len(dict(location.items())["address"]['address_line_1'])):
+                    currentLtr = dict(location.items())[
+                        "address"]['address_line_1'][ltrAddr]
+                    try:
+                        int(currentLtr)
+                        addrNumber += currentLtr
+                    except Exception as e:
+                        street = dict(location.items())["address"]['address_line_1'][
+                            ltrAddr + 1:len(dict(location.items())["address"]['address_line_1'])]
+                        break
+
+                addrP = str(addrNumber + "," + street + "," + dict(location.items())["address"]['locality'] + "," +
+                            dict(location.items())["address"]['administrative_district_level_1'] + "," +
+                            dict(location.items())["address"]['postal_code'][:5])
+                timez = dict(location.items())["timezone"]
+                tz = pytz.timezone(timez)
+                locationName = (dict(location.items())[
+                                "name"]).replace(" ", "-")
+                locationName = locationName.lower()
+                tzGl.update({locationName: pytz.timezone(timez)})
+                locationId = dict(location.items())["id"]
+                numb = dict(location.items())['phone_number']
+                numb = numb.replace("-", "")
+                numb = numb.replace(" ", "")
+                numb = numb.replace("+", "")
+                locationsPaths.update(
+                    {locationName: {
+                        "id": locationId, "OCtimes": dict(location.items())["business_hours"]["periods"],
+                        "sqEmail": dict(location.items())['business_email'],
+                        "sqNumber": numb, "name": locationName}})
+        return(locationsPaths)
 
 
 def findMenu(estNameStr, location):
