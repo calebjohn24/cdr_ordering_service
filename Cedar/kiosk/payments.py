@@ -573,7 +573,7 @@ def onlineVerify(estNameStr, location, orderToken):
                 write_str += "\n \n"
                 write_str += "Order Fee " + \
                     "${:0,.2f}".format(billingInfo['custFee']) + "\n"
-                write_str += subtotalStr + "\n" + tax + "\n" + total + "\n \n \n"
+                write_str += "Subtotal: " + subtotalStr + "\n "+ "Tax: " + tax + "\n" + "Total: " +total + "\n \n \n"
                 write_str += 'Thank You For Your Order ' + \
                     str(order['name']).capitalize() + " !"
                 SUBJECT = "Your Order From " + getDispNameEst(estNameStr) + " " + \
@@ -581,12 +581,11 @@ def onlineVerify(estNameStr, location, orderToken):
                 message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
                 sendEmail(sender, order['email'], message)
         return(redirect(url_for('payments.successonline', estNameStr=estNameStr, location=location)))
-
     else:
         return(redirect(url_for('online_menu.startOnline', estNameStr=estNameStr, location=location)))
 
 
-@payments_blueprint.route('/<estNameStr>/<location>/onlinesuccess')
+@payments_blueprint.route('/<estNameStr>/<location>/onlinesuccess', methods=['GET'])
 def successonline(estNameStr, location):
     return(render_template("Customer/QSR/Payment-Success.html"))
 

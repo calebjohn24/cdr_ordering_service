@@ -475,9 +475,9 @@ def editLogoX(estNameStr, location):
         print(e)
         try:
             os.mkdir('/tmp/' + estNameStr + '/')
-        except expression as identifier:
+        except Exception:
             pass
-        os.mkdir('/tmp/' + estNameStr+ "/imgs/")
+        os.mkdir('/tmp/' + estNameStr + "/imgs/")
         UPLOAD_FOLDER = '/tmp/' + estNameStr + "/imgs/"
         file = request.files['logo']
         filename = secure_filename(file.filename)

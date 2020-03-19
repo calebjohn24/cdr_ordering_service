@@ -41,6 +41,7 @@ def getSquare(estNameStr, tzGl, locationsPaths):
     api_locations = squareClient.locations
     mobile_authorization_api = squareClient.mobile_authorization
     result = api_locations.list_locations()
+    print(result)
     # print(result)
     if result.is_success():
         # The body property is a list of locations
@@ -79,7 +80,18 @@ def getSquare(estNameStr, tzGl, locationsPaths):
                         "id": locationId, "OCtimes": dict(location.items())["business_hours"]["periods"],
                         "sqEmail": dict(location.items())['business_email'],
                         "sqNumber": numb, "name": locationName}})
-    return(locationsPaths)
+        return(locationsPaths)
+    else:
+        client_id = 'sq0idp-taGpJk5rPAp_ragT6WZW4w'
+        body = {}
+        body['access_token'] = squareToken
+        authorization = 'Authorization: Client sq0csp-oW3f74ovaUjZfC6Y_wVNrNQFg6sZVS7D12LfvWTl8Iw'
+        resultRenew = o_auth_api.renew_token(client_id, body, authorization)
+        if result.is_success():
+            squareToken =
+            print(result.body)
+            ref = db.reference('/restaurants/' + estNameStr)
+            ref.update({"sq-token": token})
 
 
 def findMenu(estNameStr, location):
@@ -87,6 +99,7 @@ def findMenu(estNameStr, location):
     locationsPaths = {}
     getSquare(estNameStr, tzGl, locationsPaths)
     print(tzGl)
+    print(getSquare(estNameStr, tzGl, locationsPaths))
     day = dayNames[int(datetime.datetime.now(tzGl[location]).weekday())]
     curMin = float(datetime.datetime.now(tzGl[location]).minute) / 100.0
     curHr = float(datetime.datetime.now(tzGl[location]).hour)

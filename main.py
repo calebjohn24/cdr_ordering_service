@@ -90,17 +90,17 @@ def checkBilling():
                 dictBill.update({"tax": tax})
                 dictBill.update({"paid": "no"})
                 kioskDict = {'kiosks':
-                 {"ids": {}}
-                }
+                             {"ids": {}}
+                             }
                 billingRef = db.reference('/billing/' + estNameStr)
                 billInfo = dict(billingRef.get())
                 for kioskKey, kioskVal in dict(billInfo['fees']['all']['kiosk']).items():
                     print(kioskKey)
                     print(dict(kioskVal).keys())
                     kioskTmpDict = {kioskKey: {"count": kioskVal['count'],
-                                            "software": kioskVal['base'],
-                                            "group": kioskVal['group']}
-                                            }
+                                               "software": kioskVal['base'],
+                                               "group": kioskVal['group']}
+                                    }
                     if(kioskVal['fees'] != 5):
                         kioskTmpDict[kioskKey].update({
                             "term": kioskVal['term'],
@@ -119,12 +119,11 @@ def checkBilling():
                                 '/billing/' + estNameStr + '/fees/all/kiosk/' + kioskKey)
                             changeRef.update({
                                 "remaining": 0,
-                                'fees':5
+                                'fees': 5
                             })
                             changeRef = db.reference(
                                 '/billing/' + estNameStr + '/fees/all/kiosk/' + kioskKey + '/installment')
                             changeRef.delete()
-
 
                     elif(kioskVal['fees'] != 5):
                         kioskTmpDict[kioskKey].update({
@@ -152,12 +151,12 @@ def checkBilling():
                 })
                 locations = db.reference(
                     '/billing/' + estNameStr + '/fees/locations').get()
-                for l,v in locations.items():
-                    changeRef =  db.reference(
-                    '/billing/' + estNameStr + '/fees/locations/' + str(l) + '/fees/transactions')
+                for l, v in locations.items():
+                    changeRef = db.reference(
+                        '/billing/' + estNameStr + '/fees/locations/' + str(l) + '/fees/transactions')
                     changeRef.update({
-                        'count':0,
-                        'fees':0
+                        'count': 0,
+                        'fees': 0
                     })
                 currDate = datetime.datetime.now()
                 delta = datetime.timedelta(days=30)
@@ -177,9 +176,10 @@ def checkBilling():
                 SUBJECT = 'Your Cedar Invoice Is Ready'
                 write_str = "View your Cedar billing panel to view this month's invoice"
                 message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
-                emails = list(dict(db.reference('/restaurants/' + estNameStr + '/admin-info').get()).keys())
+                emails = list(
+                    dict(db.reference('/restaurants/' + estNameStr + '/admin-info').get()).keys())
                 for e in emails:
-                    sendEmail(sender, str(e).replace('-','.'), message)
+                    sendEmail(sender, str(e).replace('-', '.'), message)
                 print('done ' + estNameStr)
             except Exception as e:
                 print(e, ' error')
@@ -216,13 +216,14 @@ Compress(app)
 csrf = CSRFProtect(app)
 csrf.exempt(kioskApi.kioskApi_blueprint)
 
-
+'''
 @app.before_request
 def before_request():
     if request.url.startswith('http://'):
         url = request.url.replace('http://', 'https://', 1)
         code = 301
         return redirect(url, code=code)
+'''
 
 
 @app.errorhandler(404)

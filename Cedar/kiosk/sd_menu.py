@@ -322,11 +322,12 @@ def collectFeedback(estNameStr,location):
     curr_feedback = dict(feedback_ref.get())
     comment_ref = db.reference('/restaurants/' + estNameStr + '/'+ location + '/comments/new')
     comments = str(rsp['comment']) + " "
-    comment_ref.push({
-        "comment":comments,
-        "name":orderInfo['name'],
-        "timeStamp":str(now.hour) + ":" + str(now.minute) + " " + str(now.month) + "-" + str(now.day) + "-" + str(now.year)
-    })
+    if(str(rsp['comment']) != ""):
+        comment_ref.push({
+            "comment":comments,
+            "name":orderInfo['name'],
+            "timeStamp":str(now.hour) + ":" + str(now.minute) + " " + str(now.month) + "-" + str(now.day) + "-" + str(now.year)
+        })
     del rsp['comment']
     newFeedKeys = list(rsp.keys())
     feedKeys = list(curr_feedback.keys())
