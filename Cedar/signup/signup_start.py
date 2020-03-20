@@ -520,12 +520,7 @@ def checkoutStandardconfirm():
                         items.append(
                             {"type": "sku", "parent": s.id, "quantity": int(v['count'])})
                         break
-        items.append({
-            "type": "tax",
-            "amount": int(totalTmp*0.1),
-            "description": "WA Sales Tax",
-            "parent": null,
-        })
+
         billingRef = db.reference('/billing/' + estNameStr + '/info')
         billingInfo = billingRef.get()
         order = stripe.Order.create(
@@ -540,7 +535,7 @@ def checkoutStandardconfirm():
                     "city": billingInfo['shipAddr']['city'],
                     "state": billingInfo['shipAddr']['state'],
                     "country": "US",
-                    "postal_code": billingInfo['shipAddr']['postal_code'],
+                    "postal_code": str(billingInfo['shipAddr']['postal_code']),
                 },
             },
         )

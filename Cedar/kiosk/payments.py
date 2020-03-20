@@ -44,7 +44,6 @@ def sendSQpos(estNameStr, location):
     return
 
 
-
 def sendSQpos2(estNameStr, location, token):
     print('-')
     return
@@ -442,7 +441,7 @@ def payOnline(estNameStr, location):
 
                     body['ask_for_shipping_address'] = False
                     body['redirect_url'] = mainLink + estNameStr + \
-                        '/' + location + '/online-confirm~' + orderToken
+                        '/' + location + '/online-confirm/' + orderToken
                     print(body)
                     result = checkout_api.create_checkout(locationId, body)
 
@@ -459,130 +458,127 @@ def payOnline(estNameStr, location):
                         return(redirect(url_for('payments.payQSR', estNameStr=estNameStr, location=location)))
 
 
-@payments_blueprint.route('/<estNameStr>/<location>/online-confirm~<orderToken>')
+@payments_blueprint.route('/<estNameStr>/<location>/online-confirm/<orderToken>')
 def onlineVerify(estNameStr, location, orderToken):
-    orderTokenCheck = session.get('orderToken', None)
-    if(orderToken == orderTokenCheck):
-        billingRef = db.reference('/billing/' + estNameStr)
-        billingInfo = dict(billingRef.get())
-        pathOrder = '/restaurants/' + estNameStr + \
-            '/' + location + "/orders/" + orderToken
-        orderRef = db.reference(pathOrder)
-        order = dict(orderRef.get())
-        if(order['QSR'] == 0):
-            qsrOrderPath = '/restaurants/' + estNameStr + '/' + location + '/orderQSR'
-            qsrOrderRef = db.reference(qsrOrderPath)
-            qsrOrderRef.update({
-                orderToken: {
-                    "cart": dict(order['cart']),
-                    "info": {"name": order["name"],
-                             "number": order['phone'],
-                             "paid": "PAID",
-                             "subtotal": float(order['subtotal'] + billingInfo['custFee']),
-                             "total": order['total'],
-                             'table': order['table']
-                             }
-                }
-            })
-
-            pathRequest = '/restaurants/' + estNameStr + '/' + location + "/requests"
-            reqRef = db.reference(
-                '/restaurants/' + estNameStr + '/' + location + "/requests")
-            newReq = reqRef.push({
-                "online": "True",
+    billingRef = db.reference('/billing/' + estNameStr)
+    billingInfo = dict(billingRef.get())
+    pathOrder = '/restaurants/' + estNameStr + \
+        '/' + location + "/orders/" + orderToken
+    orderRef = db.reference(pathOrder)
+    order = dict(orderRef.get())
+    if(order['QSR'] == 0):
+        qsrOrderPath = '/restaurants/' + estNameStr + '/' + location + '/orderQSR'
+        qsrOrderRef = db.reference(qsrOrderPath)
+        qsrOrderRef.update({
+            orderToken: {
                 "cart": dict(order['cart']),
                 "info": {"name": order["name"],
                          "number": order['phone'],
                          "paid": "PAID",
-                         "token": orderToken,
-                         "type": "online",
                          "subtotal": float(order['subtotal'] + billingInfo['custFee']),
                          "total": order['total'],
                          'table': order['table']
                          }
-            })
-
-            updateTransactionFees(
-                billingInfo['totalFee'], estNameStr, location)
-            tzGl = {}
-            locationsPaths = {}
-            getSquare(estNameStr, tzGl, locationsPaths)
-            now = datetime.datetime.now(tzGl[location])
-            write_str = "Your Order From " + getDispNameEst(estNameStr) + " " + \
-                getDispNameLoc(estNameStr, location) + " on "
-
-            timeStamp = str(now.month) + "-" + str(now.day) + "-" + \
-                str(now.year) + " @ " + str(now.strftime("%H:%M"))
-
-            write_str += timeStamp
-
-            write_str += "\n \n"
-            cart = dict(order["cart"])
-            print(order)
-            startTime = session.get('startTime', None)
-            duration = order['start'] - time.time()
-            subtotal = 0
-            logOrd = {
-                "info": {
-                    "location": location,
-                    "menu": order['menu'],
-                    "time": timeStamp,
-                    "duartion": duration,
-                    "name": order['name'],
-                    "phone": order['phone'],
-                    "payment": "square-online-cc",
-                    "type": "Online",
-                    "email": order['email'],
-                    "subtotal": 0,
-                    "feescustomer": billingInfo['custFee'],
-                    "feesrestaurant": billingInfo['restFee'],
-                    "feestotal": billingInfo['totalFee'],
-                    "taxes": 0,
-                    "total": 0
-                },
-                "order": [],
-                "orderDict": []
             }
-            items = []
-            cartKeys = list(cart.keys())
-            for keys in cartKeys:
-                subtotal += cart[keys]["price"]
-                dispStr = cart[keys]["dispStr"]
-                write_str += dispStr + "\n"
-                logOrd['order'].append(dispStr)
-                logOrd['orderDict'].append(cart[keys])
-            billingRef = db.reference('/billing/' + estNameStr)
-            billingInfo = dict(billingRef.get())
-            logOrd['info'].update({"subtotal": subtotal})
-            subtotal += billingInfo['custFee']
-            subtotalStr = "Subtotal ${:0,.2f}".format(subtotal)
-            taxRate = float(db.reference(
-                '/restaurants/' + estNameStr + '/' + location + '/taxrate').get())
-            tax = "Tax ${:0,.2f}".format(subtotal * taxRate)
-            tax += " (" + str(float(taxRate * 100)) + "%)"
-            logOrd['info'].update({'taxes': float(subtotal * taxRate)})
-            total = "Total ${:0,.2f}".format(subtotal * (1 + taxRate))
-            logOrd['info'].update({"total": float(subtotal * (1 + taxRate))})
-            logRef = db.reference('/billing/' + estNameStr + '/fees/all/log')
-            logRef.push(logOrd)
-            logRef = db.reference(
-                '/billing/' + estNameStr + '/fees/locations/' + location + '/log')
-            logRef.push(logOrd)
-            sendSQpos(estNameStr, location)
-            if(order['email'] != "no-email"):
-                write_str += "\n \n"
-                write_str += "Order Fee " + \
-                    "${:0,.2f}".format(billingInfo['custFee']) + "\n"
-                write_str += "Subtotal: " + subtotalStr + "\n "+ "Tax: " + tax + "\n" + "Total: " +total + "\n \n \n"
-                write_str += 'Thank You For Your Order ' + \
-                    str(order['name']).capitalize() + " !"
-                SUBJECT = "Your Order From " + getDispNameEst(estNameStr) + " " + \
-                    getDispNameLoc(estNameStr, location)
-                message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
-                sendEmail(sender, order['email'], message)
-        return(redirect(url_for('payments.successonline', estNameStr=estNameStr, location=location)))
-    else:
-        return(redirect(url_for('online_menu.startOnline', estNameStr=estNameStr, location=location)))
+        })
+
+        pathRequest = '/restaurants/' + estNameStr + '/' + location + "/requests"
+        reqRef = db.reference(
+            '/restaurants/' + estNameStr + '/' + location + "/requests")
+        newReq = reqRef.push({
+            "online": "True",
+            "cart": dict(order['cart']),
+            "info": {"name": order["name"],
+                     "number": order['phone'],
+                     "paid": "PAID",
+                     "token": orderToken,
+                     "type": "online",
+                     "subtotal": float(order['subtotal'] + billingInfo['custFee']),
+                     "total": order['total'],
+                     'table': order['table']
+                     }
+        })
+
+        updateTransactionFees(
+            billingInfo['totalFee'], estNameStr, location)
+        tzGl = {}
+        locationsPaths = {}
+        getSquare(estNameStr, tzGl, locationsPaths)
+        now = datetime.datetime.now(tzGl[location])
+        write_str = "Your Order From " + getDispNameEst(estNameStr) + " " + \
+            getDispNameLoc(estNameStr, location) + " on "
+
+        timeStamp = str(now.month) + "-" + str(now.day) + "-" + \
+            str(now.year) + " @ " + str(now.strftime("%H:%M"))
+
+        write_str += timeStamp
+
+        write_str += "\n \n"
+        cart = dict(order["cart"])
+        print(order)
+        startTime = session.get('startTime', None)
+        duration = order['start'] - time.time()
+        subtotal = 0
+        logOrd = {
+            "info": {
+                "location": location,
+                "menu": order['menu'],
+                "time": timeStamp,
+                "duartion": duration,
+                "name": order['name'],
+                "phone": order['phone'],
+                "payment": "square-online-cc",
+                "type": "Online",
+                "email": order['email'],
+                "subtotal": 0,
+                "feescustomer": billingInfo['custFee'],
+                "feesrestaurant": billingInfo['restFee'],
+                "feestotal": billingInfo['totalFee'],
+                "taxes": 0,
+                "total": 0
+            },
+            "order": [],
+            "orderDict": []
+        }
+        items = []
+        cartKeys = list(cart.keys())
+        for keys in cartKeys:
+            subtotal += cart[keys]["price"]
+            dispStr = cart[keys]["dispStr"]
+            write_str += dispStr + "\n"
+            logOrd['order'].append(dispStr)
+            logOrd['orderDict'].append(cart[keys])
+        billingRef = db.reference('/billing/' + estNameStr)
+        billingInfo = dict(billingRef.get())
+        logOrd['info'].update({"subtotal": subtotal})
+        subtotal += billingInfo['custFee']
+        subtotalStr = "Subtotal ${:0,.2f}".format(subtotal)
+        taxRate = float(db.reference(
+            '/restaurants/' + estNameStr + '/' + location + '/taxrate').get())
+        tax = "Tax ${:0,.2f}".format(subtotal * taxRate)
+        tax += " (" + str(float(taxRate * 100)) + "%)"
+        logOrd['info'].update({'taxes': float(subtotal * taxRate)})
+        total = "Total ${:0,.2f}".format(subtotal * (1 + taxRate))
+        logOrd['info'].update({"total": float(subtotal * (1 + taxRate))})
+        logRef = db.reference('/billing/' + estNameStr + '/fees/all/log')
+        logRef.push(logOrd)
+        logRef = db.reference(
+            '/billing/' + estNameStr + '/fees/locations/' + location + '/log')
+        logRef.push(logOrd)
+        sendSQpos(estNameStr, location)
+        if(order['email'] != "no-email"):
+            write_str += "\n \n"
+            write_str += "Order Fee " + \
+                "${:0,.2f}".format(billingInfo['custFee']) + "\n"
+            write_str += "Subtotal: " + subtotalStr + "\n " + \
+                "Tax: " + tax + "\n" + "Total: " + total + "\n \n \n"
+            write_str += 'Thank You For Your Order ' + \
+                str(order['name']).capitalize() + " !"
+            SUBJECT = "Your Order From " + getDispNameEst(estNameStr) + " " + \
+                getDispNameLoc(estNameStr, location)
+            message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
+            sendEmail(sender, order['email'], message)
+    return(redirect(url_for('payments.successonline', estNameStr=estNameStr, location=location)))
 
 
 @payments_blueprint.route('/<estNameStr>/<location>/onlinesuccess', methods=['GET'])
