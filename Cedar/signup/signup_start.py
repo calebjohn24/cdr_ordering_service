@@ -380,24 +380,10 @@ def checkoutStandardconfirm():
             custId,
             source=rsp['stripeToken'],
         )
-        '''
-        paymentMethod = stripe.PaymentMethod.create(
-            type="card",
-            card={"token":rsp['stripeToken']}
-        )
-        pmId = paymentMethod.id
-        '''
-        '''
-        stripe.PaymentMethod.attach(
-            card.id,
-            customer=custId,
-        )
-        '''
         billingRef = db.reference('/billing/' + estNameStr + '/info')
         billingRef.update({
             "paymentId": card.id
         })
-        print(card.id)
     except Exception as e:
         print(e, "error")
         return(render_template('Signup/card-declined.html'))
@@ -451,7 +437,8 @@ def checkoutStandardconfirm():
                         break
         items.append({"plan": "plan_GgHGo3gFH4zsBA"})
         items.append({"plan": "plan_GgHGgVAJmMlkrQ"})
-        items.append({"plan": "plan_GgHGeI5cXGDfEM", "quantity": int(countKiosk)})
+        items.append({"plan": "plan_GgHGeI5cXGDfEM",
+                      "quantity": int(countKiosk)})
         subscription = stripe.Subscription.create(
             customer=custId,
             default_tax_rates=['txr_1G9QLFLYFr9rSSIKx4JornAL'],
@@ -492,7 +479,8 @@ def checkoutStandardconfirm():
                         break
         items.append({"plan": "plan_GgHGo3gFH4zsBA"})
         items.append({"plan": "plan_GgHGgVAJmMlkrQ"})
-        items.append({"plan": "plan_GgHGeI5cXGDfEM", "quantity": int(countKiosk)})
+        items.append({"plan": "plan_GgHGeI5cXGDfEM",
+                      "quantity": int(countKiosk)})
         subscription = stripe.Subscription.create(
             customer=custId,
             default_tax_rates=['txr_1G9QLFLYFr9rSSIKx4JornAL'],
@@ -511,6 +499,7 @@ def checkoutStandardconfirm():
                 feesRef.update({"id": str(i.id)})
                 break
     else:
+        totalTmp = 0
         for g in groups:
             for k, v in g.items():
                 dictKiosk = {
@@ -526,10 +515,17 @@ def checkoutStandardconfirm():
                 skus = stripe.SKU.list().data
                 billingRef.push(dictKiosk)
                 for s in skus:
-                    if(s.price == amt):
+                    if (s.price == amt):
+                        totalTmp += (amt*int(v['count']))
                         items.append(
                             {"type": "sku", "parent": s.id, "quantity": int(v['count'])})
                         break
+        items.append({
+            "type": "tax",
+            "amount": int(totalTmp*0.1),
+            "description": "WA Sales Tax",
+            "parent": null,
+        })
         billingRef = db.reference('/billing/' + estNameStr + '/info')
         billingInfo = billingRef.get()
         order = stripe.Order.create(
@@ -557,7 +553,8 @@ def checkoutStandardconfirm():
         itemSub = []
         itemSub.append({"plan": "plan_GgHGo3gFH4zsBA"})
         itemSub.append({"plan": "plan_GgHGgVAJmMlkrQ"})
-        itemSub.append({"plan": "plan_GgHGeI5cXGDfEM", "quantity": int(countKiosk)})
+        itemSub.append({"plan": "plan_GgHGeI5cXGDfEM",
+                        "quantity": int(countKiosk)})
         subscription = stripe.Subscription.create(
             customer=custId,
             default_tax_rates=['txr_1G9QLFLYFr9rSSIKx4JornAL'],

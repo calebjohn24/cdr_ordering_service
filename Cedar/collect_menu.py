@@ -86,12 +86,13 @@ def getSquare(estNameStr, tzGl, locationsPaths):
         body = {}
         body['access_token'] = squareToken
         authorization = 'Authorization: Client sq0csp-oW3f74ovaUjZfC6Y_wVNrNQFg6sZVS7D12LfvWTl8Iw'
-        resultRenew = o_auth_api.renew_token(client_id, body, authorization)
+        resultRenew = squareClient.o_auth.o_auth_api.renew_token(
+            client_id, body, authorization)
         if result.is_success():
             squareToken = dict(resultRenew.body)['access_token']
             print(result.body)
             ref = db.reference('/restaurants/' + estNameStr)
-            ref.update({"sq-token": token})
+            ref.update({"sq-token": squareToken})
             squareClient = Client(
                 access_token=squareToken,
                 environment='production',

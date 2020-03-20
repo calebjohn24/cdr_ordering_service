@@ -33,22 +33,22 @@
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
     <script type="text/javascript" language="javascript" src="https://code.jquery.com/jquery-3.3.1.js"
         integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous">
-    </script>
+        </script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
         integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
         integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous">
-    </script>
+        </script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
         integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous">
-    </script>
+        </script>
     <script src="https://kit.fontawesome.com/80bbe0004b.js" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
         integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous">
-    </script>
+        </script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
         integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous">
-    </script>
+        </script>
     <title>Sign Up</title>
 </head>
 
@@ -88,7 +88,9 @@
                 <br>
                 <h5>Monthly Kiosk Software Fee $5.00 x {{countKiosk}} ({{ "$%.2f"|format((countKiosk*5)) }})</h5>
                 <h5>Monthly Server Fee $50.00</h5>
-                <br><h6>Monthly Bill:</h6><br> <h5>{{ "$%.2f"|format(50+(5*countKiosk)) }} + $0.50 per transaction</h5>
+                <br>
+                <h6>Monthly Bill:</h6><br>
+                <h5>{{ "$%.2f"|format(50+(5*countKiosk)) }} + $0.50 per transaction</h5>
                 <hr>
                 <br>
                 <br>
@@ -106,7 +108,7 @@
                 <hr>
                 <br>
                 <form method="POST" action="payment-kiosk">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                     <input type="hidden" name="type" value="upfront">
                     <input class="btn btn-lg btn-success" type="submit" name="payment-type" value="Pay Upfront">
                 </form>
@@ -120,7 +122,9 @@
                 <h5>Monthly Kiosk Software Fee $5.00 x {{countKiosk}} ({{ "$%.2f"|format((countKiosk*5)) }})</h5>
                 <h5>Monthly Server Fee $50.00</h5>
                 <h5>Monthly Kiosk Hardware Fee {{ "$%.2f"|format((kioskTotal/18.0)) }}</h5>
-                <br><h6>Monthly Bill:</h6><br> <h5>{{ "$%.2f"|format(50+(5*countKiosk) + (kioskTotal/18.0) ) }} + $0.50 per transaction</h5>
+                <br>
+                <h6>Monthly Bill:</h6><br>
+                <h5>{{ "$%.2f"|format(50+(5*countKiosk) + (kioskTotal/18.0) ) }} + $0.50 per transaction</h5>
                 <hr>
                 <br>
                 {% for g in range(groups|count)%}
@@ -135,9 +139,10 @@
                 <hr>
                 <br>
                 <form method="POST" action="payment-kiosk">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                     <input type="hidden" name="type" value="18">
-                    <input class="btn btn-lg btn-success" type="submit" name="payment-type" value="Start 18 Month Installment">
+                    <input class="btn btn-lg btn-success" type="submit" name="payment-type"
+                        value="Start 18 Month Installment">
                 </form>
             </div>
 
@@ -149,7 +154,9 @@
                 <h5>Monthly Kiosk Software Fee $5.00 x {{countKiosk}} ({{ "$%.2f"|format((countKiosk*5)) }})</h5>
                 <h5>Monthly Server Fee $50.00</h5>
                 <h5>Monthly Kiosk Hardware Installment {{ "$%.2f"|format((kioskTotal/24.0)) }}</h5>
-                <br><h6>Monthly Bill:</h6><br> <h5>{{ "$%.2f"|format(50+(5*countKiosk) + (kioskTotal/24.0) )  }} + $0.50 per transaction</h5>
+                <br>
+                <h6>Monthly Bill:</h6><br>
+                <h5>{{ "$%.2f"|format(50+(5*countKiosk) + (kioskTotal/24.0) )  }} + $0.50 per transaction</h5>
                 <hr><br>
                 {% for g in range(groups|count)%}
                 {% for k,v in groups[g].items() %}
@@ -163,14 +170,22 @@
                 <hr>
                 <br>
                 <form method="POST" action="payment-kiosk">
-                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
                     <input type="hidden" name="type" value="24">
-                    <input class="btn btn-lg btn-success" type="submit" name="payment-type" value="Start 24 Month Installment">
+                    <input class="btn btn-lg btn-success" type="submit" name="payment-type"
+                        value="Start 24 Month Installment">
                 </form>
             </div>
 
 
         </div>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
+        <br>
 
 
 
