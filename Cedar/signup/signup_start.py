@@ -432,13 +432,10 @@ def checkoutStandardconfirm():
                 plans = stripe.Plan.list()
                 for p in plans:
                     if(p.amount == amt):
-                        items.append(
-                            {"plan": p.id, "quantity": int(v['count'])})
                         break
-        items.append({"plan": "plan_GgHGo3gFH4zsBA"})
+
         items.append({"plan": "plan_GgHGgVAJmMlkrQ"})
-        items.append({"plan": "plan_GgHGeI5cXGDfEM",
-                      "quantity": int(countKiosk)})
+
         subscription = stripe.Subscription.create(
             customer=custId,
             default_tax_rates=['txr_1G9QLFLYFr9rSSIKx4JornAL'],
@@ -474,13 +471,10 @@ def checkoutStandardconfirm():
                 plans = stripe.Plan.list()
                 for p in plans:
                     if(p.amount == amt):
-                        items.append(
-                            {"plan": p.id, "quantity": int(v['count'])})
                         break
-        items.append({"plan": "plan_GgHGo3gFH4zsBA"})
+
         items.append({"plan": "plan_GgHGgVAJmMlkrQ"})
-        items.append({"plan": "plan_GgHGeI5cXGDfEM",
-                      "quantity": int(countKiosk)})
+
         subscription = stripe.Subscription.create(
             customer=custId,
             default_tax_rates=['txr_1G9QLFLYFr9rSSIKx4JornAL'],
