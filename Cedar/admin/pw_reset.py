@@ -70,9 +70,9 @@ def pwResetLink(estNameStr, location, token, user):
         if(token == token_check):
             return render_template("POS/AdminMini/changepw.html", token=token, user=user)
         else:
-            return(redirect(url_for("login", estNameStr=estNameStr, location=location)))
+            return(redirect(url_for("admin_panel.login", estNameStr=estNameStr, location=location)))
     except Exception as e:
-        return(redirect(url_for("login", estNameStr=estNameStr, location=location)))
+        return(redirect(url_for("admin_panel.login", estNameStr=estNameStr, location=location)))
 
 
 @pw_reset_blueprint.route('/<estNameStr>/<location>/pw-reset-confirm~<token>~<user>', methods=["POST"])
@@ -95,9 +95,9 @@ def pwResetCheck(estNameStr, location, token, user):
             })
             return render_template("POS/AdminMini/alertpw.html")
         else:
-            return(redirect(url_for("login", estNameStr=estNameStr, location=location)))
+            return(redirect(url_for("admin_panel.login", estNameStr=estNameStr, location=location)))
     except Exception as e:
-        return(redirect(url_for("login", estNameStr=estNameStr, location=location)))
+        return(redirect(url_for("admin_panel.login", estNameStr=estNameStr, location=location)))
 
 
 @pw_reset_blueprint.route('/<estNameStr>/<location>/forgot-password', methods=["GET"])

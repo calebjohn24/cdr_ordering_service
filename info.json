@@ -1,15 +1,11 @@
 {
   "number": "14255992978",
-  "mainLink": "https://cedarchatbot.appspot.com/",
+  "mainLink": "https://cedarrestaurants.com/",
   "restaurants": {
     "testraunt": {
       "dispname": "Testraunt",
-        "cedar-location-1": "Test Location",
-        "loc-2":"Location 2"
-
+      "cedar-location-1": "Test Location",
+      "loc-2": "Location 2"
     }
-
-
   }
-
 }

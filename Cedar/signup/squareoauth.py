@@ -47,30 +47,30 @@ def callback():
     authorization_code = request.args.get('code', None)
     if authorization_code:
 
-        # Provide the code in a request to the Obtain Token endpoint
         oauth_request_body = ObtainTokenRequest()
         oauth_request_body.client_id = application_id
         oauth_request_body.client_secret = application_secret
         oauth_request_body.code = authorization_code
         oauth_request_body.grant_type = 'authorization_code'
-
         response = oauth_api.obtain_token(oauth_request_body)
 
         if response.access_token:
 
-            # Here, instead of printing the access token, your application server should store it securely
-            # and use it in subsequent requests to the Connect API on behalf of the merchant.
             token = response.access_token
-            estNameStr = session.get('restnameDb', None)
+            return(render_template('Signup/dispsqcode.html', token=token))
 
-            ref = db.reference('/restaurants/' + estNameStr)
-            ref.update({"sq-token": token})
-            return(redirect(url_for('signup_start.genLoc')))
-
-        # The response from the Obtain Token endpoint did not include an access token. Something went wrong.
         else:
-            return 'Code exchange failed!'
+            return(render_template('Signup/squarecheck.html'))
 
-    # The request to the Redirect URL did not include an authorization code. Something went wrong.
     else:
-        return 'Authorization failed!'
+        return(render_template('Signup/squarecheck.html'))
+
+
+@oauth_api_blueprint.route('/add-sqToken/<restnameDb>', methods=['POST'])
+def addToken(restnameDb):
+    rsp = dict(request.form)
+    token = str(rsp['token']).replace(' ', '')
+    ref = db.reference('/restaurants/' + restnameDb)
+    ref.update({"sq-token": token})
+    session['restnameDb'] = restnameDb
+    return (redirect(url_for('signup_start.genLoc')))

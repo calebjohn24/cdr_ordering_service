@@ -70,6 +70,7 @@ def collectRestInfo():
             restnameDb += '-' + str(random.randint(0, 1000))
     except Exception as e:
         pass
+    session['restnameDb'] = restnameDb
     checkRef.update({
         restnameDb: {
             "admin-info": {
@@ -95,10 +96,10 @@ def collectRestInfo():
     })
     session['restnameDb'] = restnameDb
     collect_menu.addEst(restnameDb, str(rsp['restname']))
-    return(render_template('Signup/squarecheck.html'))
+    return(render_template('Signup/squarecheck.html', restnameDb=restnameDb))
 
 
-@signup_start_blueprint.route('/signupgenloc', methods=['GET'])
+@signup_start_blueprint.route('/signupgenloc')
 def genLoc():
     estNameStr = session.get('restnameDb', None)
     tzGl = {}
@@ -131,28 +132,25 @@ def genLoc2():
     del rsp['csrf_token']
     testData = db.reference('/restaurants/testraunt/cedar-location-1').get()
     for locKey, locVal in rsp.items():
-        restRef = db.reference('/restaurants/' + estNameStr)
-        collect_menu.addLoc(estNameStr, locKey, locVal)
-        billingRef = db.reference(
-            '/billing/' + estNameStr + '/fees/locations/' + locKey)
+        if(locKey != estNameStr):
+            collect_menu.addLoc(estNameStr, locKey, locVal)
+            billingRef = db.reference(
+                '/billing/' + estNameStr + '/fees/locations/' + locKey)
 
-        restRef.update({
-            locKey: testData
-        })
-        restRef = db.reference('/restaurants/' + estNameStr + '/' + locKey)
-        restRef.update({
-            "dispname": locVal
-        })
+            restRef = db.reference('/restaurants/' + estNameStr + '/' + locKey)
+            restRef.update({
+                "dispname": locVal
+            })
 
-        billingRef.update({"fees":
-                           {
-                               "transactions": {
-                                   "count": 0,
-                                   "fees": 0
+            billingRef.update({"fees":
+                               {
+                                   "transactions": {
+                                       "count": 0,
+                                       "fees": 0
+                                   }
+
                                }
-
-                           }
-                           })
+                               })
 
     tzGl = {}
     locationsPaths = {}
