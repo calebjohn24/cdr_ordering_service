@@ -209,11 +209,9 @@ def addEst(estNameStr, dispname):
 
 def addLoc(estNameStr, location, dispname):
     restaurants = db.reference(
-        '/restaurants/' + estNameStr)
+        '/restaurants/' + estNameStr + '/' + location)
     restaurants.update({
-        estNameStr: {
-            "dispname": dispname
-        }
+        "dispname": dispname
     })
     print("added")
     return

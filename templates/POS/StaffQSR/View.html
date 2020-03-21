@@ -3,10 +3,10 @@
 
 <head>
   <style>
-  input[type=checkbox] {
- zoom: 2.5;
-}
-   </style>
+    input[type=checkbox] {
+      zoom: 2.5;
+    }
+  </style>
   <link rel="apple-touch-icon" sizes="60x60" href="../../../static/img/CedarRoboticsLogo.jpg">
   <link rel="apple-touch-icon" sizes="57x57" href="../../../static/img/CedarRoboticsLogo.jpg">
   <link rel="apple-touch-icon" sizes="72x72" href="../../../static/img/CedarRoboticsLogo.jpg">
@@ -16,7 +16,7 @@
   <link rel="apple-touch-icon" sizes="144x144" href="../../../static/img/CedarRoboticsLogo.jpg">
   <link rel="apple-touch-icon" sizes="152x152" href="../../../static/img/CedarRoboticsLogo.jpg">
   <link rel="apple-touch-icon" sizes="180x180" href="../../../static/img/CedarRoboticsLogo.jpg">
-  <link rel="icon" type="image/png" sizes="192x192"  href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="icon" type="image/png" sizes="192x192" href="../../../static/img/CedarRoboticsLogo.jpg">
   <link rel="icon" type="image/png" sizes="32x32" href="../../../static/img/CedarRoboticsLogo.jpg">
   <link rel="icon" type="image/png" sizes="96x96" href="../../../static/img/CedarRoboticsLogo.jpg">
   <link rel="icon" type="image/png" sizes="16x16" href="../../../static/img/CedarRoboticsLogo.jpg">
@@ -29,165 +29,203 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="description" content="">
   <meta name="author" content="Caleb John">
-    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-      <link href="../../../static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
-      <meta name="viewport" content="width=device-width, initial-scale=1">
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+  <link
+    href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+    rel="stylesheet">
+  <link href="../../../static/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
   <title>Employee Panel</title>
 </head>
 
 <body>
-<br>
-
-<div class="container-fluid">
-  <h2>{{restName}} {{location}} Employee Panel <h6>QSR/Online Orders </h6> <button class="btn-lg btn-light" onClick="window.location.reload()"><i class="fas fa-sync"></i></button><br></h2>
   <br>
-  <!-- Nav tabs -->
-  <ul class="nav nav-tabs" role="tablist">
-    <li class="nav-item">
-      <a class="nav-link active" data-toggle="tab" href="#home">Orders</a>
-    </li>
 
-    <li class="nav-item">
-      <a class="nav-link" data-toggle="tab" href="#menu1">Deactivate Item</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" data-toggle="tab" href="#menu3">Activate Item</a>
-    </li>
+  <div class="container-fluid">
+    <h2>{{restName}} {{location}} Employee Panel <h6>QSR/Online Orders </h6> <button class="btn-lg btn-light"
+        onClick="window.location.reload()"><i class="fas fa-sync"></i></button><br></h2>
+    <br>
+    <!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist">
+      <li class="nav-item">
+        <a class="nav-link active" data-toggle="tab" href="#home">Orders</a>
+      </li>
 
-  </ul>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#menu1">Deactivate Item</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#menu3">Activate Item</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" data-toggle="tab" href="#wait-time">Wait Time</a>
+      </li>
 
-  <!-- Tab panes -->
-  <div class="tab-content">
-  <div id="home" class="container tab-pane active"><br>
-  <div class="container">
-      {% for key_ord, ord in orders.items() %}
-        <div class="row">
-        <div class="col-lg-8">
-        <div class="card">
-        <div class="card-body">
-        <h3 class="card-title">{{ord.info.table}}<br> Name: {{ord.info.name|capitalize}}<br>  Phone: {{ord.info.number}}</h3></h3><br><h3>{{ord.info.paid}}</h3>
-        <h3 class="card-text">
-          {% for key_itm, itm in ord.cart.items() %}
-          <h3>{{itm.dispStr}} <input type="checkbox"></h3>
-          {%endfor%}
-          <br>
-          <h4>Subtotal  (w/ order fee) {{"$%.2f"|format(ord.info.subtotal)}}</h4>
-          <h5>Taxes {{"$%.2f"|format(ord.info.total - ord.info.subtotal)}}</h5>
-        <h4>Total {{"$%.2f"|format(ord.info.total)}}</h4><br>
-      </h3><br><br>
-        <div class="row">
-        <div class="col-lg-3">
-          {% if ord.info.verify %}
-          <form method="POST" action="qsr-sendOrder">
-            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-            <button type="submit" name="token" value="{{key_ord}}" class="btn btn-warning btn-lg">
-              Confirm Payment
-            <i class="fas fa-money-check-alt"></i>
-            </button>
-          </form>
-          {% endif %}
-        </div>
-        <div class="col-lg-1">
-        </div>
-        <div class="col-lg-3">
-        <form method="POST" action="qsr-view-success">
-          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-        <button type="submit" name="req" value="{{key_ord}}" class="btn btn-success btn-lg">
-          Order Complete
-        <i class="fas fa-check"></i>
-        </button>
-        </form>
-        </div>
-        </div>
-        </div>
-        </div>
-        </div>
-        </div>
-        <hr>
+    </ul>
 
+    <!-- Tab panes -->
+    <div class="tab-content">
+      <div id="home" class="container tab-pane active"><br>
+        <div class="container">
+          {% for key_ord, ord in orders.items() %}
+          <div class="row">
+            <div class="col-lg-8">
+              <div class="card">
+                <div class="card-body">
+                  <h3 class="card-title">{{ord.info.table}}<br> Name: {{ord.info.name|capitalize}}<br> Phone:
+                    {{ord.info.number}}</h3>
+                  </h3><br>
+                  <h3>{{ord.info.paid}}</h3>
+                  <h3 class="card-text">
+                    {% for key_itm, itm in ord.cart.items() %}
+                    <h3>{{itm.dispStr}} <input type="checkbox"></h3>
+                    {%endfor%}
+                    <br>
+                    <h4>Subtotal (w/ order fee) {{"$%.2f"|format(ord.info.subtotal)}}</h4>
+                    <h5>Taxes {{"$%.2f"|format(ord.info.total - ord.info.subtotal)}}</h5>
+                    <h4>Total {{"$%.2f"|format(ord.info.total)}}</h4><br>
+                  </h3><br><br>
+                  <div class="row">
+                    <div class="col-lg-3">
+                      {% if ord.info.verify %}
+                      <form method="POST" action="qsr-sendOrder">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                        <button type="submit" name="token" value="{{key_ord}}" class="btn btn-warning btn-lg">
+                          Confirm Payment
+                          <i class="fas fa-money-check-alt"></i>
+                        </button>
+                      </form>
+                      {% endif %}
+                    </div>
+                    <div class="col-lg-1">
+                    </div>
+                    <div class="col-lg-3">
+                      <form method="POST" action="qsr-view-success">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                        <button type="submit" name="req" value="{{key_ord}}" class="btn btn-success btn-lg">
+                          Order Complete
+                          <i class="fas fa-check"></i>
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <hr>
 
-      {%endfor%}
-<br><br><br><br><br><br>
-    </div>
-    </div>
-
-
-
-
-    <div id="menu1" class="container tab-pane fade"><br>
-      <input class="form-control" id="myInput" type="text" placeholder="Search..">
-      <br>
-      <table class="table table-bordered table-striped">
-        <thead>
-          <tr>
-            <th>Active {{menu}} Items</th>
-          </tr>
-        </thead>
-
-        <tbody id="myTable">
-          {% for act in range(activeItems|count) %}
-
-          <tr>
-            <td>{{activeItems[act]}} <a href="qsr-deactivate-item~{{activeItems[act]}}~{{menu}}" class="btn btn-danger btn-circle btn-lg">
-              <i class="fas fa-times-circle"></i>
-              </a></td>
-          </tr>
 
           {%endfor%}
+          <br><br><br><br><br><br>
+        </div>
+      </div>
 
-        </tbody>
-      </table>
 
-    <script>
-    $(document).ready(function(){
-      $("#myInput").on("keyup", function() {
-        var value = $(this).val().toLowerCase();
-        $("#myTable tr").filter(function() {
-          $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+
+
+      <div id="menu1" class="container tab-pane fade"><br>
+        <input class="form-control" id="myInput" type="text" placeholder="Search..">
+        <br>
+        <table class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>Active {{menu}} Items</th>
+            </tr>
+          </thead>
+
+          <tbody id="myTable">
+            {% for act in range(activeItems|count) %}
+
+            <tr>
+              <td>{{activeItems[act]}} <a href="qsr-deactivate-item~{{activeItems[act]}}~{{menu}}"
+                  class="btn btn-danger btn-circle btn-lg">
+                  <i class="fas fa-times-circle"></i>
+                </a></td>
+            </tr>
+
+            {%endfor%}
+
+          </tbody>
+        </table>
+
+        <script>
+          $(document).ready(function () {
+            $("#myInput").on("keyup", function () {
+              var value = $(this).val().toLowerCase();
+              $("#myTable tr").filter(function () {
+                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+              });
+            });
+          });
+        </script>
+
+      </div>
+
+      <div id="menu3" class="container tab-pane fade"><br>
+
+        <input class="form-control" id="myInput2" type="text" placeholder="Search..">
+        <br>
+        <table class="table table-bordered table-striped">
+          <thead>
+            <tr>
+              <th>Inactive {{menu}} Items</th>
+            </tr>
+          </thead>
+          <tbody id="myTable2">
+            {% for inact in range(inactiveItems|count) %}
+            <tr>
+              <td>{{inactiveItems[inact]}} <a href="qsr-activate-item~{{inactiveItems[inact]}}~{{menu}}"
+                  class="btn btn-success btn-circle btn-lg">
+                  <i class="fas fa-check"></i>
+                </a></td>
+              {%endfor%}
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <script>
+        $(document).ready(function () {
+          $("#myInput2").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#myTable2 tr").filter(function () {
+              $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+            });
+          });
         });
-      });
-    });
-    </script>
+      </script>
+
+      <div id="wait-time" class="container tab-pane fade">
+        <br>
+        <h3>Current Order Wait Time: {{wait}} Minutes</h3>
+        <br>
+        <br>
+        <h4>Change Wait Time <small>(Minutes)</small>:</h4>
+        <form action="change-wait" method="POST">
+          <input type="number" class="border-dark" name="wait" min="10" value="{{wait}}">
+
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+
+          <br>
+          <br>
+          <hr>
+          <input type="submit" class="btn btn-lg btn-success" value="Change">
+        </form>
+      </div>
+
 
     </div>
-
-  <div id="menu3" class="container tab-pane fade"><br>
-
-  <input class="form-control" id="myInput2" type="text" placeholder="Search..">
-  <br>
-  <table class="table table-bordered table-striped">
-  <thead>
-  <tr>
-  <th>Inactive {{menu}} Items</th>
-  </tr>
-  </thead>
-  <tbody id="myTable2">
-    {% for inact in range(inactiveItems|count) %}
-  <tr>
-  <td>{{inactiveItems[inact]}} <a href="qsr-activate-item~{{inactiveItems[inact]}}~{{menu}}" class="btn btn-success btn-circle btn-lg">
-  <i class="fas fa-check"></i>
-  </a></td>
-{%endfor%}
-  </tr>
-  </tbody>
-  </table>
-  </div>
-
-  <script>
-  $(document).ready(function(){
-  $("#myInput2").on("keyup", function() {
-  var value = $(this).val().toLowerCase();
-  $("#myTable2 tr").filter(function() {
-  $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-  });
-  });
-  });
-  </script>
-
-  </div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
 
 
 
@@ -197,10 +235,11 @@
 
 
 
-<!-- Core plugin JavaScript-->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
+  <!-- Core plugin JavaScript-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.4.1/jquery.easing.js"></script>
 
-<!-- Custom scripts for all pages-->
+  <!-- Custom scripts for all pages-->
 
 </body>
+
 </html>

@@ -4,22 +4,22 @@
 <head>
   <link rel="manifest" href="../../../static/manifest.json">
   <link rel="apple-touch-icon" sizes="60x60" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="57x57" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="72x72" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="76x76" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="114x114" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="120x120" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="144x144" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="152x152" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="apple-touch-icon" sizes="180x180" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="icon" type="image/png" sizes="192x192"  href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="icon" type="image/png" sizes="32x32" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="icon" type="image/png" sizes="96x96" href="../../../static/img/CedarRoboticsLogo.jpg">
- <link rel="icon" type="image/png" sizes="16x16" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="57x57" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="72x72" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="76x76" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="114x114" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="120x120" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="144x144" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="152x152" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="apple-touch-icon" sizes="180x180" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="icon" type="image/png" sizes="192x192" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="icon" type="image/png" sizes="96x96" href="../../../static/img/CedarRoboticsLogo.jpg">
+  <link rel="icon" type="image/png" sizes="16x16" href="../../../static/img/CedarRoboticsLogo.jpg">
 
- <meta name="msapplication-TileColor" content="#000000">
- <meta name="msapplication-TileImage" content="../../../static/img/CedarRoboticsLogo.jpg">
- <meta name="theme-color" content="#000000">
+  <meta name="msapplication-TileColor" content="#000000">
+  <meta name="msapplication-TileImage" content="../../../static/img/CedarRoboticsLogo.jpg">
+  <meta name="theme-color" content="#000000">
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -30,7 +30,8 @@
 
   <!-- Custom fonts for this template-->
   <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
 
 </head>
@@ -39,10 +40,12 @@
   <br>
   <div class="container-fluid">
 
-      <div class="row">
+    <div class="row">
 
       <div class="col-10">
-      <h3>Welcome to {{restName|capitalize}} {{locName|capitalize}}</h3>
+        <h3>Welcome to {{restName|capitalize}} {{locName|capitalize}}</h3>
+        <br>
+        <small>Current Wait: {{wait}} minutes</small>
       </div>
 
       <div class="col-2">
@@ -52,73 +55,76 @@
     </div>
     <div class="text-center">
 
-  <hr>
-  <form method="POST" id="start" action="{{btn}}">
-    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
-  <div class="input-group mb-3">
-    <div class="input-group-prepend">
-      <span class="input-group-text" id="inputGroup-sizing-default">Phone Number</span>
-    </div>
-    <input type="number" name="number" id="phone" placeholder="1 555 555 5555" size="11" maxlength=11 class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" required>
-  </div>
-  <hr>
+      <hr>
+      <form method="POST" id="start" action="{{btn}}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="inputGroup-sizing-default">Phone Number</span>
+          </div>
+          <input type="number" name="number" id="phone" placeholder="1 555 555 5555" size="11" maxlength=11
+            class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" required>
+        </div>
+        <hr>
 
-  <div class="input-group mb-3">
-    <div class="input-group-prepend">
-      <span class="input-group-text" id="inputGroup-sizing-default">Name</span>
+        <div class="input-group mb-3">
+          <div class="input-group-prepend">
+            <span class="input-group-text" id="inputGroup-sizing-default">Name</span>
+          </div>
+          <input type="text" name="name" id="name" size="11" maxlength=11 class="form-control" aria-label="Default"
+            aria-describedby="inputGroup-sizing-default" required>
+          <br>
+      </form>
     </div>
-    <input type="text" name="name" id="name" size="11" maxlength=11 class="form-control" aria-label="Default" aria-describedby="inputGroup-sizing-default" required>
+    <hr>
+
+    {% if online == "False" %}
+    <h4>Is This Order For Here or Togo?</h4>
     <br>
-</form>
-  </div><hr>
+    <h1>
 
-{% if online == "False" %}
-<h4>Is This Order For Here or Togo?</h4>
-  <br>
-  <h1>
-
-    <input name="togo" type="submit" onclick="myFunction()" form="start" value = "To Go" class="btn-lg btn-primary">
-</h1>
-  <br>
+      <input name="togo" type="submit" onclick="myFunction()" form="start" value="To Go" class="btn-lg btn-primary">
+    </h1>
+    <br>
 
     <hr>
     <br>
     <div>
 
-    <h3>Enter Table Number</h3><br>
+      <h3>Enter Table Number</h3><br>
       <script>
-      function myFunction() {
-      document.getElementById("table").value = "1";
-      document.getElementById("start").setAttribute('togo','To Go');
-      var x = document.getElementById("phone").value;
-      var y = document.getElementById("name").value;
-      if(x != "" && y != ""){
-      document.getElementById("start").submit();
-    }
-      }
+        function myFunction() {
+          document.getElementById("table").value = "1";
+          document.getElementById("start").setAttribute('togo', 'To Go');
+          var x = document.getElementById("phone").value;
+          var y = document.getElementById("name").value;
+          if (x != "" && y != "") {
+            document.getElementById("start").submit();
+          }
+        }
       </script>
-    <input class="number" min="1" type="number" form="start" name="table" id="table" required><br><br>
-    <button type="submit" form= start name="togo" value = "here" class="btn-lg btn-primary">For Here</button>
-    <br>
-    {% else %}
-    <button type="submit" form= start name="togo" value = "online" class="btn-lg btn-primary">Start</button>
+      <input class="number" min="1" type="number" form="start" name="table" id="table" required><br><br>
+      <button type="submit" form=start name="togo" value="here" class="btn-lg btn-primary">For Here</button>
+      <br>
+      {% else %}
+      <button type="submit" form=start name="togo" value="online" class="btn-lg btn-primary">Start</button>
 
 
 
 
-    {% endif %}
+      {% endif %}
 
 
 
-  <br>
-  <br>
+      <br>
+      <br>
 
 
-  <img src="{{logo}}" width="300" loading="lazy">
-      </div>
+      <img src="{{logo}}" width="300" loading="lazy">
+    </div>
 
   </div>
-</div>
+  </div>
 
 
 </body>

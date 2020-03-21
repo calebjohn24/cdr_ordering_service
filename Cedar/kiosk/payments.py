@@ -583,7 +583,9 @@ def onlineVerify(estNameStr, location, orderToken):
 
 @payments_blueprint.route('/<estNameStr>/<location>/onlinesuccess', methods=['GET'])
 def successonline(estNameStr, location):
-    return(render_template("Customer/QSR/Payment-Success.html"))
+    wait = db.reference('/restaurants/' + estNameStr +
+                        '/' + location + '/wait').get()
+    return(render_template("Customer/QSR/Payment-Success.html", wait=wait))
 
 
 @payments_blueprint.route('/<estNameStr>/<location>/applyCpn', methods=["POST"])

@@ -26,7 +26,8 @@ from Cedar.collect_menu import findMenu, getDispNameEst, getDispNameLoc
 from Cedar.admin.admin_panel import checkLocation, sendEmail, getSquare
 
 
-online_menu_blueprint = Blueprint('online_menu', __name__,template_folder='templates')
+online_menu_blueprint = Blueprint(
+    'online_menu', __name__, template_folder='templates')
 
 infoFile = open("info.json")
 info = json.load(infoFile)
@@ -34,18 +35,21 @@ mainLink = info['mainLink']
 
 
 @online_menu_blueprint.route('/<estNameStr>/<location>/order', methods=["GET"])
-def startKiosk5(estNameStr,location):
-    if(checkLocation(estNameStr,location) == 1):
+def startKiosk5(estNameStr, location):
+    if(checkLocation(estNameStr, location) == 1):
         return(redirect(url_for("find_page.findRestaurant")))
-    logo = 'https://storage.googleapis.com/cedarchatbot.appspot.com/'+estNameStr+'/logo.jpg'
-    return(render_template("Customer/QSR/startKiosk.html",btn="startOnline", online="True", restName=getDispNameEst(estNameStr),locName=getDispNameLoc(estNameStr,location),logo=logo))
+    logo = 'https://storage.googleapis.com/cedarchatbot.appspot.com/' + \
+        estNameStr + '/logo.jpg'
+    wait = db.reference('/restaurants/' + estNameStr +
+                        '/' + location + '/wait').get()
+    return(render_template("Customer/QSR/startKiosk.html", btn="startOnline", online="True", wait=wait, restName=getDispNameEst(estNameStr), locName=getDispNameLoc(estNameStr, location), logo=logo))
 
 
 @online_menu_blueprint.route('/<estNameStr>/<location>/startOnline', methods=["POST"])
-def startOnline(estNameStr,location):
+def startOnline(estNameStr, location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
-    menu = findMenu(estNameStr,location)
+    menu = findMenu(estNameStr, location)
     phone = rsp["number"]
     name = rsp["name"]
     togo = rsp["togo"]
@@ -58,22 +62,22 @@ def startOnline(estNameStr,location):
     orderToken = str(uuid.uuid4())
     ref = db.reference(path)
     newOrd = ref.push({
-        'start':time.time(),
-        "menu":menu,
-        "togo":togo,
-        "QSR":0,
-        "cpn":1,
-        "kiosk":1,
-        "name":name,
-        "phone":phone,
-        "table":table,
-        "alert":"null",
-        "alertTime":0,
-        "timestamp":time.time(),
-        "subtotal":0.0
-        })
-    #print(newOrd.key)
+        'start': time.time(),
+        "menu": menu,
+        "togo": togo,
+        "QSR": 0,
+        "cpn": 1,
+        "kiosk": 1,
+        "name": name,
+        "phone": phone,
+        "table": table,
+        "alert": "null",
+        "alertTime": 0,
+        "timestamp": time.time(),
+        "subtotal": 0.0
+    })
+    # print(newOrd.key)
     session['orderToken'] = newOrd.key
     print(menu)
-    ##print(menu)
-    return(redirect(url_for('qsr_menu.qsrMenu',estNameStr=estNameStr,location=location)))
+    # print(menu)
+    return(redirect(url_for('qsr_menu.qsrMenu', estNameStr=estNameStr, location=location)))

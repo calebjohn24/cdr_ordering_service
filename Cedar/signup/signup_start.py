@@ -132,25 +132,27 @@ def genLoc2():
     del rsp['csrf_token']
     testData = db.reference('/restaurants/testraunt/cedar-location-1').get()
     for locKey, locVal in rsp.items():
-        if(locKey != estNameStr):
-            collect_menu.addLoc(estNameStr, locKey, locVal)
-            billingRef = db.reference(
-                '/billing/' + estNameStr + '/fees/locations/' + locKey)
+        restRef = db.reference('/restaurants/' + estNameStr)
+        restRef.update({
+            locKey: testData
+        })
+        collect_menu.addLoc(estNameStr, locKey, locVal)
+        billingRef = db.reference(
+            '/billing/' + estNameStr + '/fees/locations/' + locKey)
+        restRef = db.reference('/restaurants/' + estNameStr + '/' + locKey)
+        restRef.update({
+            "dispname": locVal
+        })
 
-            restRef = db.reference('/restaurants/' + estNameStr + '/' + locKey)
-            restRef.update({
-                "dispname": locVal
-            })
-
-            billingRef.update({"fees":
-                               {
-                                   "transactions": {
-                                       "count": 0,
-                                       "fees": 0
-                                   }
-
+        billingRef.update({"fees":
+                           {
+                               "transactions": {
+                                   "count": 0,
+                                   "fees": 0
                                }
-                               })
+
+                           }
+                           })
 
     tzGl = {}
     locationsPaths = {}
