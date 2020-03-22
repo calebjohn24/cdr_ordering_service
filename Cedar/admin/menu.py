@@ -187,7 +187,7 @@ def viewCategories(estNameStr, location, menu, category):
         'time': time.time()
     })
     menu_data = dict(db.reference('/restaurants/' + estNameStr +
-                     '/' + location + '/menu/'+str(menu)).get())
+                                  '/' + location + '/menu/'+str(menu)).get())
     items = []
     try:
         for itx in list(dict(menu_data["categories"][category]).keys()):
@@ -359,16 +359,19 @@ def editImgX(estNameStr, location, menu, cat, item):
         print(fileId)
         d = estNameStr + "/" + fileId
         d = bucket.blob(d)
-        d.upload_from_filename(str(str(UPLOAD_FOLDER)+str(file.filename).replace(" ","_")),content_type='image/jpeg')
+        d.upload_from_filename(str(str(
+            UPLOAD_FOLDER)+str(file.filename).replace(" ", "_")), content_type='image/jpeg')
         url = str(d.public_url)
-        opt_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+cat+"/"+str(item))
-        opt_ref.update({"img":url})
+        opt_ref = db.reference('/restaurants/' + estNameStr + '/' +
+                               location + '/menu/'+str(menu)+"/categories/"+cat+"/"+str(item))
+        opt_ref.update({"img": url})
     os.remove('/tmp/' + estNameStr + "/imgs/" + filename)
-    return(redirect(url_for("menu.viewItem", estNameStr=estNameStr,location=location,menu=menu,cat=cat,item=item)))
+    return(redirect(url_for("menu.viewItem", estNameStr=estNameStr, location=location, menu=menu, cat=cat, item=item)))
+
 
 @menu_panel_blueprint.route('/<estNameStr>/<location>/addCpn~<menu>~<category>~<item>~<modName>~<modItm>')
-def addCpn(estNameStr,location,menu,category,item,modName,modItm):
-    if(checkLocation(estNameStr,location) == 1):
+def addCpn(estNameStr, location, menu, category, item, modName, modItm):
+    if(checkLocation(estNameStr, location) == 1):
         return(redirect(url_for("find_page.findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
@@ -376,19 +379,19 @@ def addCpn(estNameStr,location,menu,category,item,modName,modItm):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
         'time': time.time()
     })
-    return render_template("POS/AdminMini/addCpn.html",menu=menu,cat=category,item=item,modName=modName,modItm=modItm)
+    return render_template("POS/AdminMini/addCpn.html", menu=menu, cat=category, item=item, modName=modName, modItm=modItm)
 
 
 @menu_panel_blueprint.route('/<estNameStr>/<location>/addCpn2~<menu>~<category>~<item>~<modName>~<modItm>', methods=["POST"])
-def addCpn2(estNameStr,location,menu,category,item,modName,modItm):
+def addCpn2(estNameStr, location, menu, category, item, modName, modItm):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     type = rsp["type"]
@@ -396,43 +399,49 @@ def addCpn2(estNameStr,location,menu,category,item,modName,modItm):
     amount = float(rsp["amount"])
     min = int(rsp["min"])
     limit = int(rsp["lim"])
-    discRef = db.reference('/restaurants/' + estNameStr +'/'+location + '/discounts/'+ menu)
+    discRef = db.reference('/restaurants/' + estNameStr +
+                           '/'+location + '/discounts/' + menu)
     discRef.update({
-        str(name):{
-        'cat': str(category),
-        'itm':str(item),
-        'mods':[modName,modItm],
-        'type':str(type),
-        'amt':amount,
-        'lim':limit,
-        'min':min
+        str(name): {
+            'cat': str(category),
+            'itm': str(item),
+            'mods': [modName, modItm],
+            'type': str(type),
+            'amt': amount,
+            'lim': limit,
+            'min': min
         }
     })
     # return str(rsp) +"-"+str(menu)+"-"+str(category)+"-"+str(item)
-    return(redirect(url_for("admin_panel.panel",estNameStr=estNameStr,location=location)))
+    return(redirect(url_for("admin_panel.panel", estNameStr=estNameStr, location=location)))
+
 
 @menu_panel_blueprint.route('/<estNameStr>/<location>/remCpn~<menu>~<cpn>')
-def remCpn(estNameStr,location,menu,cpn):
-    cpn_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/discounts/' + menu + '/' +cpn)
+def remCpn(estNameStr, location, menu, cpn):
+    cpn_ref = db.reference('/restaurants/' + estNameStr +
+                           '/' + location + '/discounts/' + menu + '/' + cpn)
     cpn_ref.delete()
-    return(redirect(url_for("admin_panel.panel",estNameStr=estNameStr,location=location)))
+    return(redirect(url_for("admin_panel.panel", estNameStr=estNameStr, location=location)))
 
 
 @menu_panel_blueprint.route('/<estNameStr>/<location>/importMenu', methods=['POST'])
-def uploadMenu(estNameStr,location):
+def uploadMenu(estNameStr, location):
     file = request.files['newMenu']
     newMenu = dict(json.load(file))
-    menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu')
+    menu_ref = db.reference(
+        '/restaurants/' + estNameStr + '/' + location + '/menu')
     menu_ref.update(newMenu)
-    return(redirect(url_for("menu.viewMenu",estNameStr=estNameStr,location=location)))
+    return(redirect(url_for("menu.viewMenu", estNameStr=estNameStr, location=location)))
+
 
 @menu_panel_blueprint.route('/<estNameStr>/<location>/exportMenu-<menu>')
-def exportMenu(estNameStr,location,menu):
-    menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/' + menu)
-    menu_dict ={menu : dict(menu_ref.get()) }
+def exportMenu(estNameStr, location, menu):
+    menu_ref = db.reference('/restaurants/' + estNameStr +
+                            '/' + location + '/menu/' + menu)
+    menu_dict = {menu: dict(menu_ref.get())}
     print(menu_dict)
     try:
-        with open( str('/tmp/' + estNameStr + '/menus/' + location + '-' + menu + '-menu.json') , 'w') as outfile:
+        with open(str('/tmp/' + estNameStr + '/menus/' + location + '-' + menu + '-menu.json'), 'w') as outfile:
             json.dump(menu_dict, outfile)
     except Exception as e:
         try:
@@ -440,20 +449,19 @@ def exportMenu(estNameStr,location,menu):
         except Exception as e:
             pass
         os.mkdir(str('/tmp/' + estNameStr + '/menus/'))
-        with open( str('/tmp/' + estNameStr + '/menus/' + location + '-' + menu + '-menu.json') , 'w') as outfile:
+        with open(str('/tmp/' + estNameStr + '/menus/' + location + '-' + menu + '-menu.json'), 'w') as outfile:
             json.dump(menu_dict, outfile)
     try:
-        return send_file(str('/tmp/' + estNameStr + '/menus/' + location + '-' + menu + '-menu.json'),as_attachment=True,mimetype='application/json',attachment_filename= str(location + '-' + menu + '-menu.json'))
+        return send_file(str('/tmp/' + estNameStr + '/menus/' + location + '-' + menu + '-menu.json'), as_attachment=True, mimetype='application/json', attachment_filename=str(location + '-' + menu + '-menu.json'))
         # os.remove(str(estNameStr + '/menus/' + location + '-' + menu + '-menu.json'))
     except Exception as e:
         print(e)
-        return(redirect(url_for("admin_panel.panel",estNameStr=estNameStr,location=location)))
-
+        return(redirect(url_for("admin_panel.panel", estNameStr=estNameStr, location=location)))
 
 
 @menu_panel_blueprint.route('/<estNameStr>/<location>/act-menu')
-def chooseMenu(estNameStr,location):
-    if(checkLocation(estNameStr,location) == 1):
+def chooseMenu(estNameStr, location):
+    if(checkLocation(estNameStr, location) == 1):
         return(redirect(url_for("find_page.findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
@@ -461,15 +469,16 @@ def chooseMenu(estNameStr,location):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
         'time': time.time()
     })
-    menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu')
+    menu_ref = db.reference(
+        '/restaurants/' + estNameStr + '/' + location + '/menu')
     menu_keys = list((menu_ref.get()).keys())
     menu_data = menu_ref.get()
     active = []
@@ -479,13 +488,12 @@ def chooseMenu(estNameStr,location):
             active.append(keys)
         else:
             inactive.append(keys)
-    return(render_template("POS/AdminMini/removeMenu.html",menusActive=active,menusInactive=inactive))
-
+    return(render_template("POS/AdminMini/removeMenu.html", menusActive=active, menusInactive=inactive))
 
 
 @menu_panel_blueprint.route('/<estNameStr>/<location>/activate-menu-<menu>')
-def enableMenu(estNameStr,location,menu):
-    if(checkLocation(estNameStr,location) == 1):
+def enableMenu(estNameStr, location, menu):
+    if(checkLocation(estNameStr, location) == 1):
         return(redirect(url_for("find_page.findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
@@ -493,21 +501,23 @@ def enableMenu(estNameStr,location,menu):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
         'time': time.time()
     })
-    menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu))
-    menu_ref.update({"active":True})
-    return(redirect(url_for("admin_panel.panel",estNameStr=estNameStr,location=location)))
+    menu_ref = db.reference('/restaurants/' + estNameStr +
+                            '/' + location + '/menu/'+str(menu))
+    menu_ref.update({"active": True})
+    return(redirect(url_for("admin_panel.panel", estNameStr=estNameStr, location=location)))
+
 
 @menu_panel_blueprint.route('/<estNameStr>/<location>/deactivate-menu-<menu>')
-def disableMenu(estNameStr,location,menu):
-    if(checkLocation(estNameStr,location) == 1):
+def disableMenu(estNameStr, location, menu):
+    if(checkLocation(estNameStr, location) == 1):
         return(redirect(url_for("find_page.findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
@@ -515,45 +525,49 @@ def disableMenu(estNameStr,location,menu):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
         'time': time.time()
     })
-    menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu))
-    menu_ref.update({"active":False})
-    return(redirect(url_for("admin_panel.panel",estNameStr=estNameStr,location=location)))
+    menu_ref = db.reference('/restaurants/' + estNameStr +
+                            '/' + location + '/menu/'+str(menu))
+    menu_ref.update({"active": False})
+    return(redirect(url_for("admin_panel.panel", estNameStr=estNameStr, location=location)))
+
 
 @menu_panel_blueprint.route("/<estNameStr>/<location>/remitm~<menu>~<cat>~<item>")
-def removeItem(estNameStr,location,menu,cat,item):
-    if(checkLocation(estNameStr,location) == 1):
+def removeItem(estNameStr, location, menu, cat, item):
+    if(checkLocation(estNameStr, location) == 1):
         return(redirect(url_for("find_page.findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
-    item = str(item).replace("-"," ")
+    item = str(item).replace("-", " ")
     # #print(item)
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
         'time': time.time()
     })
-    item_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+str(cat)+"/"+str(item))
+    item_ref = db.reference('/restaurants/' + estNameStr + '/' + location +
+                            '/menu/'+str(menu)+"/categories/"+str(cat)+"/"+str(item))
     item_ref.delete()
-    return(redirect(url_for("viewCategories",location=location,menu=menu,category=cat)))
+    return(redirect(url_for("viewCategories", location=location, menu=menu, category=cat)))
+
 
 @menu_panel_blueprint.route("/<estNameStr>/<location>/viewitm~<menu>~<cat>~<item>")
-def viewItem(estNameStr,location,menu,cat,item):
-    if(checkLocation(estNameStr,location) == 1):
+def viewItem(estNameStr, location, menu, cat, item):
+    if(checkLocation(estNameStr, location) == 1):
         return(redirect(url_for("find_page.findRestaurant")))
     # #print(menu,cat,item)
     idToken = session.get('token', None)
@@ -562,24 +576,27 @@ def viewItem(estNameStr,location,menu,cat,item):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
         'time': time.time()
     })
-    item_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/"+str(cat)+"/"+str(item)).get()
+    item_ref = db.reference('/restaurants/' + estNameStr + '/' +
+                            location + '/menu/'+str(menu)+"/"+str(cat)+"/"+str(item)).get()
     if(item_ref == None):
-        item = str(item).replace("-"," ")
+        item = str(item).replace("-", " ")
         # #print(item)
-        itemInfo = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+str(cat)+"/"+str(item)).get()
-        return(render_template("POS/AdminMini/editItem.html",menu=menu,cat=cat,item=item, itemInfo=itemInfo))
+        itemInfo = db.reference('/restaurants/' + estNameStr + '/' + location +
+                                '/menu/'+str(menu)+"/categories/"+str(cat)+"/"+str(item)).get()
+        return(render_template("POS/AdminMini/editItem.html", menu=menu, cat=cat, item=item, itemInfo=itemInfo))
+
 
 @menu_panel_blueprint.route("/<estNameStr>/<location>/addMod-<menu>~<cat>~<item>")
-def addMod(estNameStr,location,menu,cat,item):
-    if(checkLocation(estNameStr,location) == 1):
+def addMod(estNameStr, location, menu, cat, item):
+    if(checkLocation(estNameStr, location) == 1):
         return(redirect(url_for("find_page.findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
@@ -587,18 +604,19 @@ def addMod(estNameStr,location,menu,cat,item):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
         'time': time.time()
     })
-    return(render_template("POS/AdminMini/addMod2.html",location=location,menu=menu,cat=cat,item=item))
+    return(render_template("POS/AdminMini/addMod2.html", location=location, menu=menu, cat=cat, item=item))
+
 
 @menu_panel_blueprint.route("/<estNameStr>/<location>/addModX2~<menu>~<cat>~<item>", methods=["POST"])
-def addModX(estNameStr,location,menu,cat,item):
+def addModX(estNameStr, location, menu, cat, item):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     # return(str(rsp))
@@ -606,8 +624,9 @@ def addModX(estNameStr,location,menu,cat,item):
     # try:
     max = int(rsp["max"])
     min = int(rsp["min"])
-    item_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+str(cat)+"/"+str(item)+"/"+str(name))
-    item_ref.update({"max":max,"min":min})
+    item_ref = db.reference('/restaurants/' + estNameStr + '/' + location +
+                            '/menu/'+str(menu)+"/categories/"+str(cat)+"/"+str(item)+"/"+str(name))
+    item_ref.update({"max": max, "min": min})
     mods = []
     prices = []
     rsp = dict((request.form))
@@ -615,25 +634,29 @@ def addModX(estNameStr,location,menu,cat,item):
         prices.append(rsp[str("prce-")+str(keys+1)])
         mods.append(rsp[str("name-")+str(keys+1)])
     for m in range(len(mods)):
-        item_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+str(cat)+"/"+str(item)+"/"+str(name)+"/info")
-        item_ref.update({str(mods[m]):float(prices[m])})
+        item_ref = db.reference('/restaurants/' + estNameStr + '/' + location + '/menu/'+str(
+            menu)+"/categories/"+str(cat)+"/"+str(item)+"/"+str(name)+"/info")
+        item_ref.update({str(mods[m]): float(prices[m])})
     '''
     except Exception:
         return(render_template("POS/AdminMini/addMod.html",location=location,menu=menu,cat=cat,item=name))
     '''
-    return(redirect(url_for("menu.viewItem",estNameStr=estNameStr,location=location,menu=menu,cat=cat,item=item)))
+    return(redirect(url_for("menu.viewItem", estNameStr=estNameStr, location=location, menu=menu, cat=cat, item=item)))
+
 
 @menu_panel_blueprint.route("/<estNameStr>/<location>/remMod~<menu>~<cat>~<item>~<mod>")
-def remMod(estNameStr,location,menu,cat,item,mod):
-    if(checkLocation(estNameStr,location) == 1):
+def remMod(estNameStr, location, menu, cat, item, mod):
+    if(checkLocation(estNameStr, location) == 1):
         return(redirect(url_for("find_page.findRestaurant")))
-    item_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+str(cat)+"/"+str(item)+"/"+str(mod))
+    item_ref = db.reference('/restaurants/' + estNameStr + '/' + location +
+                            '/menu/'+str(menu)+"/categories/"+str(cat)+"/"+str(item)+"/"+str(mod))
     item_ref.delete()
-    return(redirect(url_for("menu.viewItem",estNameStr=estNameStr,location=location,menu=menu,cat=cat,item=item)))
+    return(redirect(url_for("menu.viewItem", estNameStr=estNameStr, location=location, menu=menu, cat=cat, item=item)))
+
 
 @menu_panel_blueprint.route("/<estNameStr>/<location>/addItm~<menu>~<cat>")
-def addItem(estNameStr,location,menu,cat):
-    if(checkLocation(estNameStr,location) == 1):
+def addItem(estNameStr, location, menu, cat):
+    if(checkLocation(estNameStr, location) == 1):
         return(redirect(url_for("find_page.findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
@@ -641,18 +664,19 @@ def addItem(estNameStr,location,menu,cat):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
         'time': time.time()
     })
-    return(render_template("POS/AdminMini/addItm.html",location=location,menu=menu,cat=cat))
+    return(render_template("POS/AdminMini/addItm.html", location=location, menu=menu, cat=cat))
 
-@menu_panel_blueprint.route("/<estNameStr>/<location>/addItmX~<menu>~<cat>" , methods=["POST"])
-def addItem2(estNameStr,location,menu,cat):
+
+@menu_panel_blueprint.route("/<estNameStr>/<location>/addItmX~<menu>~<cat>", methods=["POST"])
+def addItem2(estNameStr, location, menu, cat):
     UPLOAD_FOLDER = '/tmp/' + estNameStr+"/imgs/"
     idToken = session.get('token', None)
     username = session.get('user', None)
@@ -660,9 +684,9 @@ def addItem2(estNameStr,location,menu,cat):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -677,9 +701,11 @@ def addItem2(estNameStr,location,menu,cat):
     try:
         file = request.files['img']
         if file.filename == '':
-            menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+str(cat))
-            menu_ref.update({str(name):{ "descrip":str(descrip), "extra-info":str(exinfo),"img":""}})
-            return(render_template("POS/AdminMini/addMod.html",location=location,menu=menu,cat=cat,item=name))
+            menu_ref = db.reference('/restaurants/' + estNameStr + '/' +
+                                    location + '/menu/'+str(menu)+"/categories/"+str(cat))
+            menu_ref.update({str(name): {"descrip": str(descrip), "extra-info": str(
+                exinfo), "img": "", "uuid": str("a"+str(random.randint(10000, 99999)))}})
+            return(render_template("POS/AdminMini/addMod.html", location=location, menu=menu, cat=cat, item=name))
         if file and allowed_file(file.filename):
             try:
                 filename = secure_filename(file.filename)
@@ -689,10 +715,13 @@ def addItem2(estNameStr,location,menu,cat):
                 fileId = str(uuid.uuid4())
                 d = estNameStr + "/" + fileId
                 d = bucket.blob(d)
-                d.upload_from_filename(str(str(UPLOAD_FOLDER)+"/"+str(file.filename)),content_type='image/jpeg')
+                d.upload_from_filename(
+                    str(str(UPLOAD_FOLDER)+"/"+str(file.filename)), content_type='image/jpeg')
                 url = str(d.public_url)
-                menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+str(cat))
-                menu_ref.update({str(name):{ "descrip":str(descrip), "extra-info":str(exinfo),"img":url, "uuid":str("a"+str(random.randint(10000,99999)))}})
+                menu_ref = db.reference(
+                    '/restaurants/' + estNameStr + '/' + location + '/menu/'+str(menu)+"/categories/"+str(cat))
+                menu_ref.update({str(name): {"descrip": str(descrip), "extra-info": str(
+                    exinfo), "img": url, "uuid": str("a"+str(random.randint(10000, 99999)))}})
             except Exception as e:
                 try:
                     os.mkdir(str('/tmp/' + estNameStr + '/'))
@@ -706,22 +735,30 @@ def addItem2(estNameStr,location,menu,cat):
                 fileId = str(uuid.uuid4())
                 d = estNameStr + "/" + fileId
                 d = bucket.blob(d)
-                d.upload_from_filename(str(str(UPLOAD_FOLDER)+"/"+str(file.filename)),content_type='image/jpeg')
+                d.upload_from_filename(
+                    str(str(UPLOAD_FOLDER)+"/"+str(file.filename)), content_type='image/jpeg')
                 url = str(d.public_url)
-                menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+str(cat))
-                menu_ref.update({str(name):{ "descrip":str(descrip), "extra-info":str(exinfo),"img":url, "uuid":str("a"+str(random.randint(10000,99999)))}})
+                menu_ref = db.reference(
+                    '/restaurants/' + estNameStr + '/' + location + '/menu/'+str(menu)+"/categories/"+str(cat))
+                menu_ref.update({str(name): {"descrip": str(descrip), "extra-info": str(
+                    exinfo), "img": url, "uuid": str("a"+str(random.randint(10000, 99999)))}})
             os.remove('/tmp/' + estNameStr + "/imgs/" + filename)
         else:
-            menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+str(cat))
-            menu_ref.update({str(name):{ "descrip":str(descrip), "extra-info":str(exinfo),"img":"", "uuid":str("a"+str(random.randint(10000,99999)))}})
+            menu_ref = db.reference('/restaurants/' + estNameStr + '/' +
+                                    location + '/menu/'+str(menu)+"/categories/"+str(cat))
+            menu_ref.update({str(name): {"descrip": str(descrip), "extra-info": str(
+                exinfo), "img": "", "uuid": str("a"+str(random.randint(10000, 99999)))}})
     except Exception:
-        menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+str(cat))
-        menu_ref.update({str(name):{ "descrip":str(descrip), "extra-info":str(exinfo),"img":"", "uuid":str("a"+str("a"+str(random.randint(10000,99999))))}})
-    return(render_template("POS/AdminMini/addMod.html",location=location,menu=menu,cat=cat,item=name))
+        menu_ref = db.reference('/restaurants/' + estNameStr + '/' +
+                                location + '/menu/'+str(menu)+"/categories/"+str(cat))
+        menu_ref.update({str(name): {"descrip": str(descrip), "extra-info": str(exinfo),
+                                     "img": "", "uuid": str("a"+str("a"+str(random.randint(10000, 99999))))}})
+    return(render_template("POS/AdminMini/addMod.html", location=location, menu=menu, cat=cat, item=name))
+
 
 @menu_panel_blueprint.route("/<estNameStr>/<location>/addcat~<menu>")
-def addCat(estNameStr,location,menu):
-    if(checkLocation(estNameStr,location) == 1):
+def addCat(estNameStr, location, menu):
+    if(checkLocation(estNameStr, location) == 1):
         return(redirect(url_for("find_page.findRestaurant")))
     idToken = session.get('token', None)
     username = session.get('user', None)
@@ -729,19 +766,19 @@ def addCat(estNameStr,location,menu):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
         'time': time.time()
     })
-    return(render_template("POS/AdminMini/addCat.html",location=location,menu=menu))
+    return(render_template("POS/AdminMini/addCat.html", location=location, menu=menu))
 
 
 @menu_panel_blueprint.route("/<estNameStr>/<location>/addcatSubmit", methods=["POST"])
-def addCatX(estNameStr,location):
+def addCatX(estNameStr, location):
     UPLOAD_FOLDER = '/tmp/' + estNameStr+"/imgs/"
     idToken = session.get('token', None)
     username = session.get('user', None)
@@ -749,9 +786,9 @@ def addCatX(estNameStr,location):
     try:
         user_ref = ref.get()[str(username)]
     except Exception:
-        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
     if (checkAdminToken(estNameStr, idToken, username) == 1):
-        return redirect(url_for('admin_panel.login',estNameStr=estNameStr,location=location))
+        return redirect(url_for('admin_panel.login', estNameStr=estNameStr, location=location))
     ref = db.reference('/restaurants/' + estNameStr + '/admin-info')
     user_ref = ref.child(str(username))
     user_ref.update({
@@ -767,9 +804,11 @@ def addCatX(estNameStr,location):
     try:
         file = request.files['img']
         if file.filename == '':
-            menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories")
-            menu_ref.update({str(cat):{str(name):{ "descrip":str(descrip), "extra-info":str(exinfo),"img":""}}})
-            return(render_template("POS/AdminMini/addMod.html",location=location,menu=menu,cat=cat,item=name))
+            menu_ref = db.reference(
+                '/restaurants/' + estNameStr + '/' + location + '/menu/'+str(menu)+"/categories")
+            menu_ref.update({str(cat): {str(name): {"descrip": str(
+                descrip), "extra-info": str(exinfo), "img": ""}}})
+            return(render_template("POS/AdminMini/addMod.html", location=location, menu=menu, cat=cat, item=name))
         if file and allowed_file(file.filename):
             try:
                 filename = secure_filename(file.filename)
@@ -779,10 +818,13 @@ def addCatX(estNameStr,location):
                 fileId = str(uuid.uuid4())
                 d = estNameStr + "/" + fileId
                 d = bucket.blob(d)
-                d.upload_from_filename(str(str(UPLOAD_FOLDER)+"/"+str(file.filename)),content_type='image/jpeg')
+                d.upload_from_filename(
+                    str(str(UPLOAD_FOLDER)+"/"+str(file.filename)), content_type='image/jpeg')
                 url = str(d.public_url)
-                menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories/"+str(cat))
-                menu_ref.update({str(name):{ "descrip":str(descrip), "extra-info":str(exinfo),"img":url, "uuid":str("a"+str(random.randint(10000,99999)))}})
+                menu_ref = db.reference(
+                    '/restaurants/' + estNameStr + '/' + location + '/menu/'+str(menu)+"/categories/"+str(cat))
+                menu_ref.update({str(name): {"descrip": str(descrip), "extra-info": str(
+                    exinfo), "img": url, "uuid": str("a"+str(random.randint(10000, 99999)))}})
             except Exception as e:
                 try:
                     os.mkdir(str('/tmp/' + estNameStr + '/'))
@@ -796,15 +838,22 @@ def addCatX(estNameStr,location):
                 fileId = str(uuid.uuid4())
                 d = estNameStr + "/" + fileId
                 d = bucket.blob(d)
-                d.upload_from_filename(str(str(UPLOAD_FOLDER)+"/"+str(file.filename)),content_type='image/jpeg')
+                d.upload_from_filename(
+                    str(str(UPLOAD_FOLDER)+"/"+str(file.filename)), content_type='image/jpeg')
                 url = str(d.public_url)
-                menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories")
-                menu_ref.update({str(cat):{str(name):{ "descrip":str(descrip), "extra-info":str(exinfo),"img":url, "uuid":str("a"+str(random.randint(10000,99999))) }}})
+                menu_ref = db.reference(
+                    '/restaurants/' + estNameStr + '/' + location + '/menu/'+str(menu)+"/categories")
+                menu_ref.update({str(cat): {str(name): {"descrip": str(descrip), "extra-info": str(
+                    exinfo), "img": url, "uuid": str("a"+str(random.randint(10000, 99999)))}}})
             os.remove('/tmp/' + estNameStr + "/imgs/" + filename)
         else:
-            menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories")
-            menu_ref.update({str(cat):{str(name):{ "descrip":str(descrip), "extra-info":str(exinfo),"img":"", "uuid":str("a"+str(random.randint(10000,99999))) }}})
+            menu_ref = db.reference(
+                '/restaurants/' + estNameStr + '/' + location + '/menu/'+str(menu)+"/categories")
+            menu_ref.update({str(cat): {str(name): {"descrip": str(descrip), "extra-info": str(
+                exinfo), "img": "", "uuid": str("a"+str(random.randint(10000, 99999)))}}})
     except Exception:
-        menu_ref = db.reference('/restaurants/' + estNameStr + '/' +location+ '/menu/'+str(menu)+"/categories")
-        menu_ref.update({str(cat):{str(name):{ "descrip":str(descrip), "extra-info":str(exinfo),"img":"", "uuid":str("a"+str(random.randint(10000,99999)))}}})
-    return(render_template("POS/AdminMini/addMod.html",location=location,menu=menu,cat=cat,item=name))
+        menu_ref = db.reference(
+            '/restaurants/' + estNameStr + '/' + location + '/menu/'+str(menu)+"/categories")
+        menu_ref.update({str(cat): {str(name): {"descrip": str(descrip), "extra-info": str(
+            exinfo), "img": "", "uuid": str("a"+str(random.randint(10000, 99999)))}}})
+    return(render_template("POS/AdminMini/addMod.html", location=location, menu=menu, cat=cat, item=name))

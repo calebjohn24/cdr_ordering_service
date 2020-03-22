@@ -203,9 +203,9 @@
         <h3>Current Order Wait Time: {{wait}} Minutes</h3>
         <br>
         <br>
-        <h4>Change Wait Time <small>(Minutes)</small>:</h4>
+        <h4>Change Wait Time: </h4>
         <form action="change-wait" method="POST">
-          <input type="number" class="border-dark" name="wait" min="10" value="{{wait}}">
+          <input type="number" class="border-dark" name="wait" min="10" value="{{wait}}"><small> (Minutes)</small>
 
           <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 

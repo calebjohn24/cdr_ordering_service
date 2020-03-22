@@ -117,7 +117,7 @@ def EmployeePanelQSR(estNameStr, location):
     return(render_template("POS/StaffQSR/View.html", location=getDispNameLoc(estNameStr, location), wait=wait, restName=getDispNameEst(estNameStr), menu=menu, activeItems=activeItems, inactiveItems=inactiveItems, orders=ordsGet))
 
 
-@qsr_employee_blueprint.route('/<estNameStr>/<location>/change-wait')
+@qsr_employee_blueprint.route('/<estNameStr>/<location>/change-wait', methods=['POST'])
 def changeWait(estNameStr, location):
     rsp = dict(request.form)
     wait_ref = db.reference('/restaurants/' + estNameStr +

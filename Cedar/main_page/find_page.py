@@ -24,7 +24,8 @@ from flask import Blueprint, render_template, abort
 from Cedar.admin.admin_panel import checkLocation
 
 
-find_page_blueprint = Blueprint('find_page', __name__,template_folder='templates')
+find_page_blueprint = Blueprint(
+    'find_page', __name__, template_folder='templates')
 
 infoFile = open("info.json")
 info = json.load(infoFile)
@@ -35,6 +36,7 @@ mainLink = info['mainLink']
 @find_page_blueprint.route('/find-restaurant')
 def findRestaurant():
     restaurantsDict = dict(db.reference('/billing').get())
+
     return(render_template("Global/findrestaurant.html", restaurants=restaurantsDict))
 
 
@@ -44,8 +46,9 @@ def findRestaurantLocation(restaurant):
     del restaurantsDict['admin-info']
     del restaurantsDict['sq-token']
     locations = restaurantsDict
-    return(render_template("Global/findrestaurantloc.html",restaurant=restaurant,locations=locations))
+    return(render_template("Global/findrestaurantloc.html", restaurant=restaurant, locations=locations))
+
 
 @find_page_blueprint.route('/pickscreen-<restaurant>~<location>')
 def pickScreen(restaurant, location):
-    return(render_template("Global/pickscreen.html",restaurant=restaurant,location=location))
+    return(render_template("Global/pickscreen.html", restaurant=restaurant, location=location))
