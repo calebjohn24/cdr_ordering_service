@@ -114,7 +114,32 @@ def EmployeePanelQSR(estNameStr, location):
                 inactiveItems.append(appItem)
     wait = db.reference('/restaurants/' + estNameStr +
                         '/' + location + '/wait').get()
+    db.reference('/restaurants/' + estNameStr +
+                 '/' + location + '/employee').update({
+                     'reload': 1
+                 })
     return(render_template("POS/StaffQSR/View.html", location=getDispNameLoc(estNameStr, location), wait=wait, restName=getDispNameEst(estNameStr), menu=menu, activeItems=activeItems, inactiveItems=inactiveItems, orders=ordsGet))
+
+
+@qsr_employee_blueprint.route('/<estNameStr>/<location>/QsrEmpUpdate')
+def kioskUpdate(estNameStr, location):
+    change = db.reference('/restaurants/' + estNameStr +
+                          '/' + location + '/employee/reload').get()
+    print(change)
+    info = {'update': 1}
+    if(change == 1):
+        info = {
+            "update": 1,
+        }
+    elif(change == 0):
+        info = {
+            "update": 0,
+        }
+        db.reference('/restaurants/' + estNameStr +
+                     '/' + location + '/employee').update({
+                         'reload': 1
+                     })
+    return jsonify(info)
 
 
 @qsr_employee_blueprint.route('/<estNameStr>/<location>/change-wait', methods=['POST'])

@@ -343,6 +343,10 @@ def payStaffQSR(estNameStr, location):
         sendEmail(sender, order['email'], message)
     updateTransactionFees(billingInfo['totalFee'], estNameStr, location)
     kioskCode = session.get('kioskCode', None)
+    db.reference('/restaurants/' + estNameStr +
+                 '/' + location + '/employee').update({
+                     'reload': 0
+                 })
     testCode = db.reference('/billing/' + estNameStr +
                             '/kiosks/' + kioskCode).get()
     if(testCode['active'] == 0):
@@ -585,6 +589,11 @@ def onlineVerify(estNameStr, location, orderToken):
 def successonline(estNameStr, location):
     wait = db.reference('/restaurants/' + estNameStr +
                         '/' + location + '/wait').get()
+
+    db.reference('/restaurants/' + estNameStr +
+                 '/' + location + '/employee').update({
+                     'reload': 0
+                 })
     return(render_template("Customer/QSR/Payment-Success.html", wait=wait))
 
 

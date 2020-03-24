@@ -38,6 +38,46 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
   <title>Employee Panel</title>
+  <script type="text/javascript">
+    $(document).ready(function (e) {
+      $('#alert').hide();
+      var refresher = setInterval("update_content();", 5000); // 1 seconds
+    })
+
+    function update_content() {
+      var csrf_token = "{{ csrf_token() }}";
+
+      $.ajaxSetup({
+        beforeSend: function (xhr, settings) {
+          if (!/^(GET|HEAD|OPTIONS|TRACE)$/i.test(settings.type) && !this.crossDomain) {
+            xhr.setRequestHeader("X-CSRFToken", csrf_token);
+          }
+        }
+      });
+
+      $.ajax({
+        url: 'QsrEmpUpdate',
+        success: function (data) {
+          $('#info').html(JSON.stringify(data, null, '   '));
+          console.log(data);
+          if (data['update'] == 0) {
+            let src = 'https://storage.googleapis.com/cedarchatbot.appspot.com/beep-02.mp3';
+            let audio = new Audio(src);
+            audio.play();
+            window.location.reload();
+
+          }
+          else {
+            console.log('1');
+          }
+
+
+        }
+      });
+
+
+    }
+  </script>
 </head>
 
 <body>
@@ -66,6 +106,7 @@
     </ul>
 
     <!-- Tab panes -->
+
     <div class="tab-content">
       <div id="home" class="container tab-pane active"><br>
         <div class="container">

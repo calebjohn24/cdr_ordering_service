@@ -33,11 +33,11 @@ infoFile = open("info.json")
 info = json.load(infoFile)
 mainLink = info['mainLink']
 
-kioskApi_blueprint = Blueprint('kioskApi', __name__,template_folder='templates')
+kioskApi_blueprint = Blueprint(
+    'kioskApi', __name__, template_folder='templates')
 
 sender = 'cedarrestaurantsbot@gmail.com'
 emailPass = "cda33d07-f6bd-479e-806f-5d039ae2fa2d"
-
 
 
 @kioskApi_blueprint.before_request
@@ -46,30 +46,31 @@ def check_csrf():
 
 
 @kioskApi_blueprint.route('/<estNameStr>/<locationX>/kiosksetup/<type>', methods=["POST"])
-def GenReaderCode(estNameStr,locationX,type):
+def GenReaderCode(estNameStr, locationX, type):
     locationX = str(locationX).lower()
     rsp = request.get_json()
     print(rsp, locationX)
     code = rsp['code']
-    kioskRef = db.reference('/billing/' + estNameStr.lower() + '/kiosks/' + code)
+    kioskRef = db.reference(
+        '/billing/' + estNameStr.lower() + '/kiosks/' + code)
     try:
         check = kioskRef.get()
         print(check, "check")
         if(check == None):
             packet = {
-                "success":"no",
-                "code":"Invlaid Kiosk code"
+                "success": "no",
+                "code": "Invlaid Kiosk code"
             }
             return jsonify(packet)
         elif(check['active'] == 1):
             print(check)
             packet = {
-                "success":"no",
-                "code":"Kiosk Already In Use. Please Deauthorize In The Admin Panel"
+                "success": "no",
+                "code": "Kiosk Already In Use. Please Deauthorize In The Admin Panel"
             }
             return jsonify(packet)
         else:
-            kioskType = ["qsr-startKiosk","sitdown-startKiosk"]
+            kioskType = ["qsr-startKiosk", "sitdown-startKiosk"]
             sqRef = db.reference(str('/restaurants/' + estNameStr))
             squareToken = dict(sqRef.get())["sq-token"]
             print(squareToken)
@@ -82,45 +83,48 @@ def GenReaderCode(estNameStr,locationX,type):
             # Call list_locatio
             result = api_locations.list_locations()
             if result.is_success():
-            	# The body property is a list of locations
+                # The body property is a list of locations
                 locations = result.body['locations']
-            	# Iterate over the list
+                # Iterate over the list
                 for location in locations:
                     if((dict(location.items())["status"]) == "ACTIVE"):
                         # print(dict(location.items()))
-                        locationName = (dict(location.items())["name"]).replace(" ","-")
+                        locationName = (dict(location.items())[
+                                        "name"]).replace(" ", "-")
                         # print(locationName)
                         locationId = dict(location.items())["id"]
                         if(str(locationName).lower() == locationX):
                             body = {}
                             body['location_id'] = locationId
-                            result = mobile_authorization_api.create_mobile_authorization_code(body)
+                            result = mobile_authorization_api.create_mobile_authorization_code(
+                                body)
                             if result.is_success():
                                 code = dict(result.body)['authorization_code']
                                 print(code)
-                                kioskRef = db.reference('/billing/' + estNameStr + '/kiosks')
+                                kioskRef = db.reference(
+                                    '/billing/' + estNameStr + '/kiosks')
                                 kioskRef.update({str(rsp['code']):
-                                    {"active":1,
-                                     "loc":locationX}})
+                                                 {"active": 1,
+                                                  "loc": locationX}})
                                 packet = {
-                                    "success":"yes",
-                                    "code":code ,
-                                    "link": str(mainLink+estNameStr+'/'+ locationX + "/" + str(kioskType[int(type)]) + "-" + str(rsp['code']))
+                                    "success": "yes",
+                                    "code": code,
+                                    "link": str(mainLink+estNameStr+'/' + locationX + "/" + str(kioskType[int(type)]) + "-" + str(rsp['code']))
                                 }
                                 return jsonify(packet)
                             elif result.is_error():
                                 print('err')
                                 packet = {
-                                    "success":"no",
-                                    "code":"invlaid location"
+                                    "success": "no",
+                                    "code": "invlaid location"
                                 }
                                 return jsonify(packet)
     except Exception as e:
         print(e)
         print(2)
         packet = {
-            "success":"no",
-            "code":"Invlaid Kiosk code"
+            "success": "no",
+            "code": "Invlaid Kiosk code"
         }
         return jsonify(packet)
 
@@ -155,8 +159,6 @@ def verifyOrder(estNameStr, location, kioskCode):
         logRef = str(now.month) + '-' + str(now.year)[:2]
         checkmate = db.reference(
             '/restaurants/' + estNameStr + '/' + location + '/checkmate').get()
-        if(checkmate == 0):
-            sendCheckmate(estNameStr, location, token)
         tzGl = {}
         locationsPaths = {}
         billingRef = db.reference('/billing/' + estNameStr)
@@ -164,7 +166,7 @@ def verifyOrder(estNameStr, location, kioskCode):
         getSquare(estNameStr, tzGl, locationsPaths)
         now = datetime.datetime.now(tzGl[location])
         write_str = "Your Order From " + getDispNameEst(estNameStr) + " " + \
-            getDispNameLoc(estNameStr,location) + " on "
+            getDispNameLoc(estNameStr, location) + " on "
         timeStamp = str(now.month) + "-" + str(now.day) + "-" + \
             str(now.year) + " @ " + str(now.strftime("%H:%M"))
         write_str += timeStamp
@@ -219,7 +221,6 @@ def verifyOrder(estNameStr, location, kioskCode):
         logRef = db.reference('/billing/' + estNameStr +
                               '/fees/locations/' + location + '/log')
         logRef.push(logOrd)
-        sendSQpos2(estNameStr, location, token)
         if(order['email'] != "no-email"):
             write_str += "\n \n"
             write_str += "Order Fee " + \
@@ -229,7 +230,7 @@ def verifyOrder(estNameStr, location, kioskCode):
             write_str += 'Thank You For Your Order ' + \
                 str(order['name']).capitalize() + " !"
             SUBJECT = "Your Order From " + getDispNameEst(estNameStr) + " " + \
-                getDispNameLoc(estNameStr,location)
+                getDispNameLoc(estNameStr, location)
             message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
             sendEmail(sender, order['email'], message)
         kioskCode = session.get('kioskCode', None)
@@ -247,6 +248,10 @@ def verifyOrder(estNameStr, location, kioskCode):
             }
         updateTransactionFees(billingInfo['totalFee'], estNameStr, location)
         orderRef.delete()
+        db.reference('/restaurants/' + estNameStr +
+                     '/' + location + '/employee').update({
+                         'reload': 0
+                     })
         return jsonify(packet)
     else:
         pathOrder = '/restaurants/' + estNameStr + '/' + location + "/orders/" + token
@@ -314,10 +319,11 @@ def verifyOrder(estNameStr, location, kioskCode):
             write_str += "Order Fee " + \
                 "${:0,.2f}".format(billingInfo['custFee'])
             write_str += "\n"
-            write_str += "Subtotal: " +subtotalStr + "\n" + "Sales Tax: "+tax + "\n" + "Total: " +total + "\n \n \n"
+            write_str += "Subtotal: " + subtotalStr + "\n" + \
+                "Sales Tax: "+tax + "\n" + "Total: " + total + "\n \n \n"
             write_str += 'Thank You For Dining with us ' + \
                 str(order['name']).capitalize() + " !"
-            SUBJECT = "Thank You For Dining at " + getDispNameEst(estNameStr)+ " " + \
+            SUBJECT = "Thank You For Dining at " + getDispNameEst(estNameStr) + " " + \
                 getDispNameLoc(estNameStr, location)
             message = 'Subject: {}\n\n{}'.format(SUBJECT, write_str)
             sendEmail(sender, order['email'], message)
@@ -336,9 +342,11 @@ def verifyOrder(estNameStr, location, kioskCode):
                 "success": "kiosk deactivated"
             }
         updateTransactionFees(billingInfo['totalFee'], estNameStr, location)
+        db.reference('/restaurants/' + estNameStr +
+                     '/' + location + '/employee').update({
+                         'reload': 0
+                     })
         return jsonify(packet)
-
-
 
 
 @kioskApi_blueprint.route('/signup-card', methods=['POST'])

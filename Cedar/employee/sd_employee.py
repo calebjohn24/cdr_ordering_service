@@ -28,30 +28,35 @@ from Cedar.admin.admin_panel import checkLocation, sendEmail, getSquare
 from Cedar.collect_menu import findMenu, getDispNameEst, getDispNameLoc, updateEst, updateLoc
 
 
-sd_employee_blueprint = Blueprint('sd_employee', __name__,template_folder='templates')
+sd_employee_blueprint = Blueprint(
+    'sd_employee', __name__, template_folder='templates')
 
 infoFile = open("info.json")
 info = json.load(infoFile)
 mainLink = info['mainLink']
 
+
 @sd_employee_blueprint.route('/<estNameStr>/<location>/employee-login')
-def EmployeeLogin(estNameStr,location):
-    if(checkLocation(estNameStr,location) == 1):
+def EmployeeLogin(estNameStr, location):
+    if(checkLocation(estNameStr, location) == 1):
         return(redirect(url_for("find_page.findRestaurant")))
     return(render_template("POS/StaffSitdown/login.html"))
 
+
 @sd_employee_blueprint.route('/<estNameStr>/<location>/employee-login2')
-def EmployeeLogin2(estNameStr,location):
-    if(checkLocation(estNameStr,location) == 1):
+def EmployeeLogin2(estNameStr, location):
+    if(checkLocation(estNameStr, location) == 1):
         return(redirect(url_for("find_page.findRestaurant")))
     return(render_template("POS/StaffSitdown/login2.html"))
 
+
 @sd_employee_blueprint.route('/<estNameStr>/<location>/employee-login', methods=['POST'])
-def EmployeeLoginCheck(estNameStr,location):
+def EmployeeLoginCheck(estNameStr, location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     code = rsp['code']
-    loginRef = db.reference('/restaurants/' + estNameStr + '/' + location + "/employee")
+    loginRef = db.reference(
+        '/restaurants/' + estNameStr + '/' + location + "/employee")
     loginData = dict(loginRef.get())
     try:
         hashCheck = pbkdf2_sha256.verify(code, loginData['code'])
@@ -60,29 +65,31 @@ def EmployeeLoginCheck(estNameStr,location):
     if(hashCheck == True):
         token = str(uuid.uuid4())
         loginRef.update({
-            "token":token,
-            "time":time.time()
+            "token": token,
+            "time": time.time()
         })
         session["token"] = token
-        return(redirect(url_for("sd_employee.EmployeePanel",estNameStr=estNameStr,location=location)))
+        return(redirect(url_for("sd_employee.EmployeePanel", estNameStr=estNameStr, location=location)))
     else:
-        return(redirect(url_for("sd_employee.EmployeeLogin2",estNameStr=estNameStr,location=location)))
+        return(redirect(url_for("sd_employee.EmployeeLogin2", estNameStr=estNameStr, location=location)))
+
 
 @sd_employee_blueprint.route('/<estNameStr>/<location>/view')
-def EmployeePanel(estNameStr,location):
-    if(checkLocation(estNameStr,location) == 1):
+def EmployeePanel(estNameStr, location):
+    if(checkLocation(estNameStr, location) == 1):
         return(redirect(url_for("find_page.findRestaurant")))
-    token = session.get('token',None)
-    loginRef = db.reference('/restaurants/' + estNameStr + '/' + location + "/employee")
+    token = session.get('token', None)
+    loginRef = db.reference(
+        '/restaurants/' + estNameStr + '/' + location + "/employee")
     loginData = dict(loginRef.get())
     try:
         if(((token == loginData["token"]))):
             pass
         else:
-            return(redirect(url_for("sd_employee.EmployeeLogin",estNameStr=estNameStr,location=location)))
+            return(redirect(url_for("sd_employee.EmployeeLogin", estNameStr=estNameStr, location=location)))
     except Exception as e:
         print(e)
-        return(redirect(url_for("sd_employee.EmployeeLogin2",estNameStr=estNameStr,location=location)))
+        return(redirect(url_for("sd_employee.EmployeeLogin2", estNameStr=estNameStr, location=location)))
     try:
         ordPath = '/restaurants/' + estNameStr + '/' + location + "/orders"
         ordsRef = db.reference(ordPath)
@@ -102,8 +109,9 @@ def EmployeePanel(estNameStr,location):
         reqData = dict(reqRef.get())
     except Exception as e:
         reqData = {}
-    menu = findMenu(estNameStr,location)
-    pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu + "/categories"
+    menu = findMenu(estNameStr, location)
+    pathMenu = '/restaurants/' + estNameStr + '/' + \
+        location + "/menu/" + menu + "/categories"
     menuInfo = dict(db.reference(pathMenu).get())
     categories = list(menuInfo.keys())
     activeItems = []
@@ -121,41 +129,47 @@ def EmployeePanel(estNameStr,location):
 
 
 @sd_employee_blueprint.route('/<estNameStr>/<location>/activate-item~<cat>~<item>~<menu>')
-def activateItem(estNameStr,location,cat,item,menu):
-    if(checkLocation(estNameStr,location) == 1):
+def activateItem(estNameStr, location, cat, item, menu):
+    if(checkLocation(estNameStr, location) == 1):
         return(redirect(url_for("find_page.findRestaurant")))
-    pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu + "/categories/"+ cat + "/" + item
+    pathMenu = '/restaurants/' + estNameStr + '/' + location + \
+        "/menu/" + menu + "/categories/" + cat + "/" + item
     descrip = dict(db.reference(pathMenu).get())["tmp"]
-    db.reference(pathMenu).update({"descrip":descrip})
-    pathDel = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu + "/categories/"+ cat + "/" + item +"/tmp"
+    db.reference(pathMenu).update({"descrip": descrip})
+    pathDel = '/restaurants/' + estNameStr + '/' + location + \
+        "/menu/" + menu + "/categories/" + cat + "/" + item + "/tmp"
     db.reference(pathDel).delete()
-    return(redirect(url_for("sd_employee.EmployeePanel",estNameStr=estNameStr,location=location)))
+    return(redirect(url_for("sd_employee.EmployeePanel", estNameStr=estNameStr, location=location)))
 
 
 @sd_employee_blueprint.route('/<estNameStr>/<location>/deactivate-item~<cat>~<item>~<menu>')
-def deactivateItem(estNameStr,location,cat,item,menu):
-    if(checkLocation(estNameStr,location) == 1):
+def deactivateItem(estNameStr, location, cat, item, menu):
+    if(checkLocation(estNameStr, location) == 1):
         return(redirect(url_for("find_page.findRestaurant")))
-    pathMenu = '/restaurants/' + estNameStr + '/' + location + "/menu/" + menu + "/categories/"+ cat + "/" + item
+    pathMenu = '/restaurants/' + estNameStr + '/' + location + \
+        "/menu/" + menu + "/categories/" + cat + "/" + item
     descrip = dict(db.reference(pathMenu).get())["descrip"]
-    db.reference(pathMenu).update({"tmp":descrip})
-    db.reference(pathMenu).update({"descrip":"INACTIVE"})
-    return(redirect(url_for("sd_employee.EmployeePanel",estNameStr=estNameStr,location=location)))
+    db.reference(pathMenu).update({"tmp": descrip})
+    db.reference(pathMenu).update({"descrip": "INACTIVE"})
+    return(redirect(url_for("sd_employee.EmployeePanel", estNameStr=estNameStr, location=location)))
 
 
 @sd_employee_blueprint.route('/<estNameStr>/<location>/view-success', methods=["POST"])
-def EmployeeSuccess(estNameStr,location):
+def EmployeeSuccess(estNameStr, location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     reqToken = rsp["req"]
     print(reqToken)
-    pathRequest = '/restaurants/' + estNameStr + '/' + location + "/requests/" + reqToken
+    pathRequest = '/restaurants/' + estNameStr + \
+        '/' + location + "/requests/" + reqToken
     reqRef = db.reference(pathRequest)
     reqData = dict(reqRef.get())
     orderToken = reqData["info"]["token"]
     if(reqData["info"]["type"] == "order"):
-        pathTicket = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken +"/ticket"
-        pathTotal = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
+        pathTicket = '/restaurants/' + estNameStr + '/' + \
+            location + "/orders/" + orderToken + "/ticket"
+        pathTotal = '/restaurants/' + estNameStr + \
+            '/' + location + "/orders/" + orderToken
         del reqData["info"]
         tickRef = db.reference(pathTicket)
         cartData = reqData
@@ -167,28 +181,35 @@ def EmployeeSuccess(estNameStr,location):
             addTotal += float(cartData[cartKeys[ccx]]["price"])
         tickRef.push(reqData)
         currTotal = float(dict(db.reference(pathTotal).get())["subtotal"])
-        tickTotal = db.reference(pathTotal).update({"subtotal":float(currTotal+addTotal)})
+        tickTotal = db.reference(pathTotal).update(
+            {"subtotal": float(currTotal+addTotal)})
     reqRef.delete()
-    return(redirect(url_for("sd_employee.EmployeePanel",estNameStr=estNameStr,location=location)))
+    return(redirect(url_for("sd_employee.EmployeePanel", estNameStr=estNameStr, location=location)))
+
 
 @sd_employee_blueprint.route('/<estNameStr>/<location>/view-warning', methods=["POST"])
-def EmployeeWarn(estNameStr,location):
+def EmployeeWarn(estNameStr, location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     reqToken = rsp["req"]
     alert = rsp["reason"]
-    pathRequest = '/restaurants/' + estNameStr + '/' + location + "/requests/" + reqToken
+    pathRequest = '/restaurants/' + estNameStr + \
+        '/' + location + "/requests/" + reqToken
     reqRef = db.reference(pathRequest)
     reqData = dict(reqRef.get())
     orderToken = reqData["info"]["token"]
-    pathRequest = '/restaurants/' + estNameStr + '/' + location + "/requests/" + reqToken
-    pathUser = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
+    pathRequest = '/restaurants/' + estNameStr + \
+        '/' + location + "/requests/" + reqToken
+    pathUser = '/restaurants/' + estNameStr + \
+        '/' + location + "/orders/" + orderToken
     reqRef = db.reference(pathRequest)
     reqData = dict(reqRef.get())
     orderToken = reqData["info"]["token"]
     if(reqData["info"]["type"] == "order"):
-        pathTicket = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken +"/ticket"
-        pathTotal = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
+        pathTicket = '/restaurants/' + estNameStr + '/' + \
+            location + "/orders/" + orderToken + "/ticket"
+        pathTotal = '/restaurants/' + estNameStr + \
+            '/' + location + "/orders/" + orderToken
         del reqData["info"]
         tickRef = db.reference(pathTicket)
         cartData = reqData
@@ -200,63 +221,69 @@ def EmployeeWarn(estNameStr,location):
             addTotal += float(cartData[cartKeys[ccx]]["price"])
         tickRef.push(reqData)
         currTotal = float(dict(db.reference(pathTotal).get())["subtotal"])
-        tickTotal = db.reference(pathTotal).update({"subtotal":float(currTotal+addTotal)})
-    AlertSend = db.reference(pathUser).update({"alert":str(alert)})
-    AlertTime = db.reference(pathUser).update({"alertTime":time.time()})
+        tickTotal = db.reference(pathTotal).update(
+            {"subtotal": float(currTotal+addTotal)})
+    AlertSend = db.reference(pathUser).update({"alert": str(alert)})
+    AlertTime = db.reference(pathUser).update({"alertTime": time.time()})
     reqRef.delete()
-    return(redirect(url_for("sd_employee.EmployeePanel",estNameStr=estNameStr,location=location)))
+    return(redirect(url_for("sd_employee.EmployeePanel", estNameStr=estNameStr, location=location)))
 
 
 @sd_employee_blueprint.route('/<estNameStr>/<location>/view-reject', methods=["POST"])
-def EmployeeReject(estNameStr,location):
+def EmployeeReject(estNameStr, location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     reqToken = rsp["req"]
     alert = rsp["reason"]
-    pathRequest = '/restaurants/' + estNameStr + '/' + location + "/requests/" + reqToken
+    pathRequest = '/restaurants/' + estNameStr + \
+        '/' + location + "/requests/" + reqToken
     reqRef = db.reference(pathRequest)
     reqData = dict(reqRef.get())
     orderToken = reqData["info"]["token"]
-    pathUser = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
-    AlertSend = db.reference(pathUser).update({"alert":str("Staff Message: "+alert)})
-    AlertTime = db.reference(pathUser).update({"alertTime":time.time()})
+    pathUser = '/restaurants/' + estNameStr + \
+        '/' + location + "/orders/" + orderToken
+    db.reference(pathUser).update({"alert": str("Staff Message: "+alert)})
+    db.reference(pathUser).update({"alertTime": time.time()})
     reqRef.delete()
-    return(redirect(url_for("sd_employee.EmployeePanel",estNameStr=estNameStr,location=location)))
+    return(redirect(url_for("sd_employee.EmployeePanel", estNameStr=estNameStr, location=location)))
 
 
 @sd_employee_blueprint.route('/<estNameStr>/<location>/view-editBill', methods=["POST"])
-def EditBill(estNameStr,location):
+def EditBill(estNameStr, location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     orderToken = rsp["req"]
     amt = float(rsp["amt"])
     itm = str(rsp["itm"])
-    pathUserX = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
-    pathUser = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken + "/ticket"
+    pathUserX = '/restaurants/' + estNameStr + \
+        '/' + location + "/orders/" + orderToken
+    pathUser = '/restaurants/' + estNameStr + '/' + \
+        location + "/orders/" + orderToken + "/ticket"
     cartRefItm = db.reference(pathUser)
     subtotal = float(db.reference(pathUserX).get()["subtotal"])
     subtotal += amt
-    db.reference(pathUserX).update({"subtotal":subtotal})
-    cartRefItm.push({str(uuid.uuid4()):{
-        'cat':"",
-        'img':"",
-        'itm':itm,
-        'qty':1,
-        'notes':"added by staff",
-        'dispStr':"Staff Correction: "+ itm + "  ($" + "{:0,.2f}".format(amt) + ")",
-        'price':amt,
-        'mods':[["",str(amt)]],
-        'unitPrice':amt
+    db.reference(pathUserX).update({"subtotal": subtotal})
+    cartRefItm.push({str(uuid.uuid4()): {
+        'cat': "",
+        'img': "",
+        'itm': itm,
+        'qty': 1,
+        'notes': "added by staff",
+        'dispStr': "Staff Correction: " + itm + "  ($" + "{:0,.2f}".format(amt) + ")",
+        'price': amt,
+        'mods': [["", str(amt)]],
+        'unitPrice': amt
     }})
-    return(redirect(url_for("sd_employee.EmployeePanel",estNameStr=estNameStr,location=location)))
+    return(redirect(url_for("sd_employee.EmployeePanel", estNameStr=estNameStr, location=location)))
 
 
 @sd_employee_blueprint.route('/<estNameStr>/<location>/view-clearTicket', methods=["POST"])
-def RemBill(estNameStr,location):
+def RemBill(estNameStr, location):
     request.parameter_storage_class = ImmutableOrderedMultiDict
     rsp = ((request.form))
     orderToken = rsp["req"]
-    pathUserX = '/restaurants/' + estNameStr + '/' + location + "/orders/" + orderToken
+    pathUserX = '/restaurants/' + estNameStr + \
+        '/' + location + "/orders/" + orderToken
     remRef = db.reference(pathUserX)
     remRef.delete()
-    return(redirect(url_for("sd_employee.EmployeePanel",estNameStr=estNameStr,location=location)))
+    return(redirect(url_for("sd_employee.EmployeePanel", estNameStr=estNameStr, location=location)))
