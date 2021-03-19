@@ -104,7 +104,7 @@ python-shorturl==0.0.4
 python-socketio==4.3.1
 pytracking==0.2.0
 pytz==2019.2
-PyYAML==3.13
+PyYAML==5.1
 redis==3.3.8
 regex==2019.8.19
 requests==2.22.0
