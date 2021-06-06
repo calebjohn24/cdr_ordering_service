@@ -38,7 +38,7 @@ from apscheduler.schedulers.background import BackgroundScheduler
 import stripe
 
 
-stripe.api_key = "sk_live_sRI03xt3QaCpWZahwnybqnPe007xtcIzKe"
+stripe.api_key = "STRIPE_KEY"
 
 
 infoFile = open("info.json")
@@ -60,8 +60,8 @@ ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 storage_client = storage.Client.from_service_account_json(
     'CedarChatbot-b443efe11b73.json')
 bucket = storage_client.get_bucket('cedarchatbot.appspot.com')
-sender = 'cedarrestaurantsbot@gmail.com'
-emailPass = "cda33d07-f6bd-479e-806f-5d039ae2fa2d"
+sender = 'EMAIL'
+emailPass = "PW"
 dayNames = ["MON", "TUE", "WED", "THURS", "FRI", "SAT", "SUN"]
 global locationsPaths
 locationsPaths = {}

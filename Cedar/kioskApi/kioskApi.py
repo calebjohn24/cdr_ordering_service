@@ -36,8 +36,8 @@ mainLink = info['mainLink']
 kioskApi_blueprint = Blueprint(
     'kioskApi', __name__, template_folder='templates')
 
-sender = 'cedarrestaurantsbot@gmail.com'
-emailPass = "cda33d07-f6bd-479e-806f-5d039ae2fa2d"
+sender = 'EMAIL'
+emailPass = "PW"
 
 
 @kioskApi_blueprint.before_request

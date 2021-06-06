@@ -28,7 +28,7 @@ from Cedar import collect_menu
 from Cedar.admin.admin_panel import checkLocation, sendEmail, getSquare, checkAdminToken
 import stripe
 
-stripe.api_key = "sk_live_sRI03xt3QaCpWZahwnybqnPe007xtcIzKe"
+stripe.api_key = "STRIPE_KEY"
 
 
 infoFile = open("info.json")

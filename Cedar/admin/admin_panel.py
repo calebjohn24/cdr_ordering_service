@@ -40,8 +40,8 @@ adminSessTime = 3599
 global locationsPaths
 tzGl = {}
 locationsPaths = {}
-sender = 'cedarrestaurantsbot@gmail.com'
-emailPass = "cda33d07-f6bd-479e-806f-5d039ae2fa2d"
+sender = 'EMAIL'
+emailPass = "PW"
 dayNames = ["MON", "TUE", "WED", "THURS", "FRI", "SAT", "SUN"]
 
 
@@ -72,7 +72,7 @@ def getSquare(estNameStr, tzGl, locationsPaths):
     squareToken = dict(sqRef.get())["sq-token"]
     squareClient = Client(
         access_token=squareToken,
-        environment='production',
+        environment='testing',
     )
     api_locations = squareClient.locations
     mobile_authorization_api = squareClient.mobile_authorization

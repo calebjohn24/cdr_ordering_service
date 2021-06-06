@@ -38,8 +38,8 @@ cred = credentials.Certificate('CedarChatbot-b443efe11b73.json')
 storage_client = storage.Client.from_service_account_json(
     'CedarChatbot-b443efe11b73.json')
 bucket = storage_client.get_bucket("cedarchatbot.appspot.com")
-sender = 'cedarrestaurantsbot@gmail.com'
-emailPass = "cda33d07-f6bd-479e-806f-5d039ae2fa2d"
+sender = 'EMAIL'
+emailPass = "PW"
 # smtpObj = smtplib.SMTP_SSL("smtp.gmail.com", 465)
 # smtpObj.login(sender, emailPass)
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}

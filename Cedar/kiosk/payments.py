@@ -35,8 +35,8 @@ infoFile = open("info.json")
 info = json.load(infoFile)
 mainLink = info['mainLink']
 
-sender = 'cedarrestaurantsbot@gmail.com'
-emailPass = "cda33d07-f6bd-479e-806f-5d039ae2fa2d"
+sender = 'EMAIL'
+emailPass = "PW"
 
 
 def sendSQpos(estNameStr, location):
