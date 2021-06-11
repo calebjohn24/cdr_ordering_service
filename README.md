@@ -1,6 +1,6 @@
 CDR Ordering Service
  
-Restuarant Ordering, Menu, and Dish Management App
+Restaurant Ordering, Menu, and Dish Management App
 
 Built From Oct 2019 - Feb 2020 to help digitize indoor dining
 
