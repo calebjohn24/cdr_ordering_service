@@ -31,3 +31,19 @@ Uses Cart System To Manage Food Requests
 Contact Staff For Service Requests
 
 <img src="https://github.com/calebjohn24/cdr_ordering_service/blob/master/mdImages/IMG_20200210_130657.jpg" alt="image menu 4" width="500"/>
+
+
+View Alerts From Staff
+
+<img src="https://github.com/calebjohn24/cdr_ordering_service/blob/master/mdImages/IMG_20200210_131013.jpg" alt="image menu 5" width="500"/>
+
+
+Get Feedback From Guests 
+
+<img src="https://github.com/calebjohn24/cdr_ordering_service/blob/master/mdImages/IMG_20200210_131039.jpg" alt="image menu 6" width="500"/>
+
+
+Swipe Credit Card to Pay with Sqaure Reader 
+
+<img src="https://github.com/calebjohn24/cdr_ordering_service/blob/master/mdImages/IMG_20200210_131249.jpg" alt="image menu 6" width="500"/>
+
