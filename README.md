@@ -11,13 +11,23 @@ Integrates with a square reader to take payments, in a react native wrapper.
 
 
 
-<img src="https://github.com/calebjohn24/cdr_ordering_service/blob/master/mdImages/IMG_20200210_130511.jpg" alt="image start" width="450"/>
+<img src="https://github.com/calebjohn24/cdr_ordering_service/blob/master/mdImages/IMG_20200210_130511.jpg" alt="image start" width="500"/>
 
 
 View Menu
 
-<img src="https://github.com/calebjohn24/cdr_ordering_service/blob/master/mdImages/IMG_20200210_130532.jpg" alt="image menu 1" width="450"/>
+<img src="https://github.com/calebjohn24/cdr_ordering_service/blob/master/mdImages/IMG_20200210_130532.jpg" alt="image menu 1" width="500"/>
 
 Select Sizes and Modifiers
 
-<img src="https://github.com/calebjohn24/cdr_ordering_service/blob/master/mdImages/IMG_20200210_130553.jpg" alt="image menu 2" width="450"/>
+<img src="https://github.com/calebjohn24/cdr_ordering_service/blob/master/mdImages/IMG_20200210_130553.jpg" alt="image menu 2" width="500"/>
+
+
+Uses Cart System To Manage Food Requests
+
+<img src="https://github.com/calebjohn24/cdr_ordering_service/blob/master/mdImages/IMG_20200210_130637.jpg" alt="image menu 3" width="500"/>
+
+
+Contact Staff For Service Requests
+
+<img src="https://github.com/calebjohn24/cdr_ordering_service/blob/master/mdImages/IMG_20200210_130657.jpg" alt="image menu 4" width="500"/>
