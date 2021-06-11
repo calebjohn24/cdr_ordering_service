@@ -11,10 +11,10 @@ Integrates with a square reader to take payments, in a react native wrapper.
 
 
 
-![Image Start](https://github.com/calebjohn24/cdr_ordering_service/blob/master/mdImages/IMG_20200210_130511.jpg)
+![Image Start](https://github.com/calebjohn24/cdr_ordering_service/blob/master/mdImages/IMG_20200210_130511.jpg =250x)
 
 View Menu
-![Image Menu1](https://github.com/calebjohn24/cdr_ordering_service/blob/master/mdImages/IMG_20200210_130532.jpg)
+![Image Menu1](https://github.com/calebjohn24/cdr_ordering_service/blob/master/mdImages/IMG_20200210_130532.jpg =250x)
 
 Select Sizes and Modifiers
-![Image_Menu2](https://github.com/calebjohn24/cdr_ordering_service/blob/master/mdImages/IMG_20200210_130553.jpg)
+![Image_Menu2](https://github.com/calebjohn24/cdr_ordering_service/blob/master/mdImages/IMG_20200210_130553.jpg =250x)
