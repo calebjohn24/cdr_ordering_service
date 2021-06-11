@@ -31,7 +31,7 @@ info = json.load(infoFile)
 mainLink = info['mainLink']
 
 storage_client = storage.Client.from_service_account_json(
-    'CedarChatbot-b443efe11b73.json')
+    'CREDS')
 bucket = storage_client.get_bucket("cedarchatbot.appspot.com")
 admin_panel_blueprint = Blueprint(
     'admin_panel', __name__, template_folder='templates')

@@ -7,4 +7,3 @@ Built with Flask, Bootstrap, and Firebase
 Integrates with a square reader to take payments, in a react native wrapper.
 
 
-

@@ -34,9 +34,9 @@ mainLink = info['mainLink']
 adminSessTime = 3599
 client = plivo.RestClient(auth_id='MAYTVHN2E1ZDY4ZDA2YZ',
                           auth_token='ODgzZDA1OTFiMjE2ZTRjY2U4ZTVhYzNiODNjNDll')
-cred = credentials.Certificate('CedarChatbot-b443efe11b73.json')
+cred = credentials.Certificate('CREDS')
 storage_client = storage.Client.from_service_account_json(
-    'CedarChatbot-b443efe11b73.json')
+    'CREDS')
 bucket = storage_client.get_bucket("cedarchatbot.appspot.com")
 sender = 'EMAIL'
 emailPass = "PW"

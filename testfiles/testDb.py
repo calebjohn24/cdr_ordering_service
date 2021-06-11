@@ -13,12 +13,12 @@ tz = pytz.timezone("America/Los_Angeles")
 #print(datetime.datetime.now(tz).weekday())
 day = "TUE"
 # Use a service account
-cred = credentials.Certificate('/Users/caleb/Documents/GitHub/CedarFlask/CedarChatbot-b443efe11b73.json')
+cred = credentials.Certificate('/Users/caleb/Documents/GitHub/CedarFlask/CREDS')
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://cedarchatbot.firebaseio.com/',
     'storageBucket': 'cedarchatbot.appspot.com'
 })
-storage_client = storage.Client.from_service_account_json('CedarChatbot-b443efe11b73.json')
+storage_client = storage.Client.from_service_account_json('CREDS')
 bucket = storage_client.get_bucket("cedarchatbot.appspot.com")
 d = estNameStr + "/" + "coffee.jpg"
 d = bucket.blob(d)

@@ -34,7 +34,7 @@ import Cedar
 infoFile = open("info.json")
 info = json.load(infoFile)
 mainLink = info['mainLink']
-storage_client = storage.Client.from_service_account_json('CedarChatbot-b443efe11b73.json')
+storage_client = storage.Client.from_service_account_json('CREDS')
 bucket = storage_client.get_bucket("cedarchatbot.appspot.com")
 register_kiosk_blueprint = Blueprint('register', __name__,template_folder='templates')
 global tzGl
