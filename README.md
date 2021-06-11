@@ -6,7 +6,7 @@ Built From Oct 2019 - Feb 2020 to help digitize indoor dining
 
 Built with Flask, Bootstrap, and Firebase
 
-Integrates with a square reader to take payments, in a <a href="https://github.com/calebjohn24/cdr_kiosk_wrapper" target="__blank">react native wrapper</a>
+Integrates with a square reader to take payments, in a <a href="https://github.com/calebjohn24/cdr_ordering_kiosk" target="__blank">react native wrapper</a>
 
 
 
