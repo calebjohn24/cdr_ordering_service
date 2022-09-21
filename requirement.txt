@@ -98,7 +98,7 @@ pyparsing==2.4.2
 python-dateutil==2.8.0
 python-engineio==3.9.3
 python-jsonrpc-server==0.2.0
-python-jwt==2.0.1
+python-jwt==3.3.4
 python-language-server==0.28.3
 python-shorturl==0.0.4
 python-socketio==4.3.1
