@@ -82,7 +82,7 @@ pathspec==0.5.9
 pipreqs==0.4.9
 plivo==4.3.2
 pluggy==0.13.0
-protobuf==3.9.1
+protobuf==3.18.3
 pusher==2.1.4
 pyasn1==0.4.6
 pyasn1-modules==0.2.6
